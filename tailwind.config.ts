@@ -41,7 +41,9 @@ const config: Config = {
         md: "var(--shadow-md)",
       },
       maxWidth: {
-        content: "1180px",
+        // Full-bleed content width. `mx-auto` becomes a no-op; the horizontal
+        // px-* padding on each container keeps content off the viewport edges.
+        content: "100%",
       },
     },
   },
