@@ -1,0 +1,275 @@
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<title>Raksha Drishti — Spatiotemporal Clusters</title>
+
+<!-- Free & token-free: MapLibre GL JS heatmap over Esri satellite + CARTO 3D buildings & labels. -->
+<link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+
+<style>
+  :root {
+    --panel: rgba(17,22,30,0.94); --border: #2b3340; --ink: #e6edf3; --dim: #93a1b0;
+    --accent: #2e90e5; --hot: #e51e8c;
+  }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #0a0d12; color: var(--ink);
+    font-family: Inter, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
+  #map { position: absolute; inset: 0; }
+
+  .card { position: absolute; z-index: 10; background: var(--panel); border: 1px solid var(--border);
+    border-radius: 12px; backdrop-filter: blur(8px); box-shadow: 0 8px 30px rgba(0,0,0,.55); }
+
+  #left { top: 14px; left: 14px; width: 292px; max-height: calc(100vh - 28px); overflow-y: auto; }
+  #left .sect { padding: 13px 15px; border-bottom: 1px solid var(--border); }
+  #left .sect:last-child { border-bottom: none; }
+  .sect h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .6px; color: var(--dim); margin: 0 0 10px; }
+  .brand { display: flex; align-items: center; justify-content: space-between; padding: 11px 15px !important; }
+  .brand .back { font-size: 12px; color: var(--accent); text-decoration: none; font-weight: 600; }
+  .brand .back:hover { text-decoration: underline; }
+  .brand .brandname { font-size: 12px; font-weight: 700; letter-spacing: .3px; }
+  select { width: 100%; box-sizing: border-box; background: #10151d; color: var(--ink);
+    border: 1px solid var(--border); border-radius: 8px; padding: 9px 10px; font-size: 13px; }
+  .rng label { display: flex; justify-content: space-between; font-size: 12px; color: var(--dim); margin: 8px 0 5px; }
+  .rng label b { color: var(--ink); font-variant-numeric: tabular-nums; }
+  input[type=range] { width: 100%; accent-color: var(--accent); }
+  .play { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+  .play button { background: var(--accent); color: #fff; border: none; font-weight: 700; font-size: 12px;
+    padding: 7px 12px; border-radius: 8px; cursor: pointer; }
+  .play span { font-size: 10.5px; color: var(--dim); }
+  .seg { display: flex; gap: 6px; }
+  .seg button { flex: 1; font-size: 11px; padding: 6px 0; border-radius: 7px; cursor: pointer;
+    border: 1px solid var(--border); background: #10151d; color: var(--dim); }
+  .seg button.active { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; }
+  .types { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px; font-size: 12px; }
+  .types label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+  .types label span.dot { width: 9px; height: 9px; border-radius: 2px; flex: none; }
+  .allnone { text-align: right; font-size: 11px; margin-top: 8px; color: var(--accent); }
+  .allnone a { cursor: pointer; margin-left: 10px; }
+
+  #legend { position: absolute; bottom: 16px; left: 14px; padding: 9px 12px; font-size: 11px; }
+  #legend .bar { height: 9px; width: 200px; border-radius: 3px; margin: 6px 0 3px;
+    background: linear-gradient(90deg,#2a55e5,#22c3d6,#39d353,#e0d024,#ef8a2b,#e5242a); }
+  #legend .ends { display: flex; justify-content: space-between; color: var(--dim); }
+  #legend .note { margin-top: 7px; color: var(--dim); font-size: 10px; }
+
+  #loading { position: absolute; inset: 0; z-index: 40; display: flex; align-items: center;
+    justify-content: center; background: #0a0d12; color: var(--dim); font-size: 14px; }
+</style>
+
+<div id="map"></div>
+<div id="loading">Loading Bengaluru clusters…</div>
+
+<div id="left" class="card">
+  <div class="sect brand">
+    <a href="/dashboard" target="_parent" class="back">‹ Dashboard</a>
+    <div class="brandname">Spatiotemporal Clusters</div>
+  </div>
+
+  <div class="sect">
+    <h2>Jump to a hotspot</h2>
+    <select id="place"><option value="">Fly to a crime area…</option></select>
+  </div>
+
+  <div class="sect">
+    <h2>Time of day</h2>
+    <div class="rng">
+      <label>Hour window <b id="hourLbl">00:00 – 23:00</b></label>
+      <input type="range" id="hourStart" min="0" max="23" value="0" />
+      <input type="range" id="hourEnd" min="0" max="23" value="23" />
+    </div>
+    <div class="play">
+      <button id="playBtn">▶ Play day</button>
+      <span>watch clusters migrate 0→23h</span>
+    </div>
+    <div class="rng" style="margin-top:10px">
+      <label>Day type</label>
+      <div class="seg" id="dayType">
+        <button data-day="all" class="active">All</button>
+        <button data-day="weekday">Weekday</button>
+        <button data-day="weekend">Weekend</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sect">
+    <h2>Crime types</h2>
+    <div class="types" id="types"></div>
+    <div class="allnone"><a id="selAll">All</a><a id="selNone">None</a></div>
+  </div>
+</div>
+
+<div id="legend" class="card">
+  <div>Crime density</div>
+  <div class="bar"></div>
+  <div class="ends"><span>Low</span><span>Hotspot</span></div>
+  <div class="note">⚠ Simulated data — realistic demo, not real reported crime.</div>
+</div>
+
+<script type="module">
+const CRIME_TYPES = [
+  { id: "theft", label: "Theft", color: "#4fc3f7" },
+  { id: "vehicle_theft", label: "Vehicle theft", color: "#26c6da" },
+  { id: "burglary", label: "Burglary", color: "#66bb6a" },
+  { id: "assault", label: "Assault", color: "#ef5350" },
+  { id: "harassment", label: "Harassment", color: "#ab47bc" },
+  { id: "fraud", label: "Fraud", color: "#ffca28" },
+];
+const PLACES = [
+  ["Majestic", 12.9770, 77.5710], ["KR Market", 12.9630, 77.5770], ["Shivajinagar", 12.9850, 77.6050],
+  ["MG Road", 12.9750, 77.6070], ["Koramangala", 12.9350, 77.6250], ["Indiranagar", 12.9720, 77.6410],
+  ["Electronic City", 12.8450, 77.6600], ["Whitefield", 12.9700, 77.7500], ["Marathahalli", 12.9560, 77.7010],
+  ["BTM Layout", 12.9160, 77.6100], ["HSR Layout", 12.9120, 77.6410], ["Jayanagar", 12.9300, 77.5830],
+];
+
+const state = { all: [], hourStart: 0, hourEnd: 23, day: "all",
+  types: new Set(CRIME_TYPES.map(c => c.id)), playing: false, playHour: 0, timer: null };
+
+// ---- Base style: satellite + 3D buildings + place/road labels (labels sit BELOW the heatmap) ----
+const style = {
+  version: 8,
+  glyphs: "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/{fontstack}/{range}.pbf",
+  sources: {
+    sat: { type: "raster", tileSize: 256,
+      tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"],
+      attribution: "Esri, Maxar, Earthstar Geographics" },
+    carto: { type: "vector", url: "https://tiles.basemaps.cartocdn.com/vector/carto.streets/v1/tiles.json" },
+  },
+  layers: [
+    { id: "sat", type: "raster", source: "sat" },
+    { id: "buildings-3d", type: "fill-extrusion", source: "carto", "source-layer": "building", minzoom: 14,
+      paint: {
+        "fill-extrusion-color": "#b9b2a8",
+        "fill-extrusion-height": ["interpolate", ["linear"], ["zoom"], 14, 0, 16,
+          ["coalesce", ["get", "render_height"], ["get", "height"], 8]],
+        "fill-extrusion-base": ["coalesce", ["get", "render_min_height"], 0],
+        "fill-extrusion-opacity": 0.45,
+      } },
+    { id: "road-labels", type: "symbol", source: "carto", "source-layer": "transportation_name", minzoom: 14,
+      layout: { "symbol-placement": "line", "text-field": "{name}", "text-size": 11,
+        "text-font": ["Open Sans Regular"], "symbol-spacing": 250, "text-pitch-alignment": "viewport" },
+      paint: { "text-color": "#ffffff", "text-halo-color": "#000000", "text-halo-width": 1.4 } },
+    { id: "place-labels", type: "symbol", source: "carto", "source-layer": "place", minzoom: 9,
+      filter: ["!=", "class", "continent"],
+      layout: { "text-field": ["coalesce", ["get", "name_en"], ["get", "name"]], "text-font": ["Open Sans Bold"],
+        "text-size": ["interpolate", ["linear"], ["zoom"], 9, 11, 14, 15, 18, 18] },
+      paint: { "text-color": "#ffffff", "text-halo-color": "#000000", "text-halo-width": 1.6 } },
+  ],
+};
+
+const map = new maplibregl.Map({
+  container: "map", style,
+  center: [77.615, 12.955], zoom: 12.4, pitch: 55, bearing: -18, maxZoom: 19, minZoom: 9,
+});
+map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), "top-right");
+
+const emptyFC = () => ({ type: "FeatureCollection", features: [] });
+
+function addHeatmap() {
+  if (map.getSource("crimes")) return;
+  map.addSource("crimes", { type: "geojson", data: emptyFC() });
+  // Smooth density heatmap: blue (low) → cyan → green → yellow → orange → red (hotspot),
+  // exactly like the reference heat overlays. Radius grows with zoom so a cluster of incidents
+  // on a single street/building lights up red when you zoom right in.
+  map.addLayer({
+    id: "crime-heat", type: "heatmap", source: "crimes", maxzoom: 20,
+    paint: {
+      "heatmap-weight": ["interpolate", ["linear"], ["get", "severity"], 1, 0.5, 3, 1.2],
+      "heatmap-intensity": ["interpolate", ["linear"], ["zoom"], 9, 0.6, 13, 1.0, 16, 1.6, 19, 2.6],
+      "heatmap-radius": ["interpolate", ["linear"], ["zoom"], 9, 6, 12, 12, 14, 22, 16, 38, 18, 60, 19, 80],
+      "heatmap-opacity": ["interpolate", ["linear"], ["zoom"], 9, 0.85, 18, 0.78],
+      "heatmap-color": ["interpolate", ["linear"], ["heatmap-density"],
+        0.00, "rgba(0,0,0,0)",
+        0.15, "rgba(42,85,229,0.75)",   // blue
+        0.35, "rgba(34,195,214,0.85)",  // cyan
+        0.55, "rgba(57,211,83,0.90)",   // green
+        0.72, "rgba(224,208,36,0.92)",  // yellow
+        0.87, "rgba(239,138,43,0.95)",  // orange
+        1.00, "rgba(229,36,42,1)"],     // red hotspot
+    },
+  });
+}
+
+function inHourWindow(h) {
+  return state.hourStart <= state.hourEnd
+    ? (h >= state.hourStart && h <= state.hourEnd)
+    : (h >= state.hourStart || h <= state.hourEnd);
+}
+function passFilters(d) {
+  return inHourWindow(d.hour) && state.types.has(d.crime_type) &&
+    (state.day === "all" || (state.day === "weekend" ? d.is_weekend === 1 : d.is_weekend === 0));
+}
+function render() {
+  if (!map.getSource("crimes")) return;
+  const feats = [];
+  for (const d of state.all) {
+    if (!passFilters(d)) continue;
+    feats.push({ type: "Feature", geometry: { type: "Point", coordinates: [d.lon, d.lat] },
+      properties: { severity: d.severity } });
+  }
+  map.getSource("crimes").setData({ type: "FeatureCollection", features: feats });
+}
+
+map.on("load", () => {
+  addHeatmap();
+  document.getElementById("loading").style.display = "none";
+  render();
+});
+
+// ---- Controls ----
+const placeSel = document.getElementById("place");
+PLACES.forEach(([n, la, lo]) => { const o = document.createElement("option"); o.value = `${la},${lo}`; o.textContent = n; placeSel.appendChild(o); });
+placeSel.onchange = e => { if (!e.target.value) return; const [la, lo] = e.target.value.split(",").map(Number);
+  map.flyTo({ center: [lo, la], zoom: 15.5, pitch: 58, duration: 1400 }); };
+
+const hs = document.getElementById("hourStart"), he = document.getElementById("hourEnd"), hl = document.getElementById("hourLbl");
+const pad = n => String(n).padStart(2, "0");
+function hourLabel() { hl.textContent = pad(state.hourStart) + ":00 – " + pad(state.hourEnd) + ":00"; }
+hs.oninput = e => { state.hourStart = +e.target.value; hourLabel(); render(); };
+he.oninput = e => { state.hourEnd = +e.target.value; hourLabel(); render(); };
+
+document.querySelectorAll("#dayType button").forEach(btn => {
+  btn.onclick = () => { document.querySelectorAll("#dayType button").forEach(x => x.classList.remove("active"));
+    btn.classList.add("active"); state.day = btn.dataset.day; render(); };
+});
+
+const WIN = 3;
+const playBtn = document.getElementById("playBtn");
+playBtn.onclick = () => {
+  state.playing = !state.playing;
+  playBtn.textContent = state.playing ? "⏸ Pause" : "▶ Play day";
+  if (state.playing) {
+    state.timer = setInterval(() => {
+      state.playHour = (state.playHour + 1) % 24;
+      state.hourStart = state.playHour; state.hourEnd = (state.playHour + WIN) % 24;
+      hs.value = state.hourStart; he.value = state.hourEnd; hourLabel(); render();
+    }, 950);
+  } else clearInterval(state.timer);
+};
+
+const typesEl = document.getElementById("types");
+CRIME_TYPES.forEach(c => {
+  const l = document.createElement("label");
+  l.innerHTML = `<input type="checkbox" checked><span class="dot" style="background:${c.color}"></span>${c.label}`;
+  typesEl.appendChild(l);
+  l.querySelector("input").onchange = ev => { ev.target.checked ? state.types.add(c.id) : state.types.delete(c.id); render(); };
+});
+document.getElementById("selAll").onclick = () => setAll(true);
+document.getElementById("selNone").onclick = () => setAll(false);
+function setAll(on) { state.types = new Set(on ? CRIME_TYPES.map(c => c.id) : []);
+  typesEl.querySelectorAll("input").forEach(i => i.checked = on); render(); }
+
+// ---- Load synthetic crime data ----
+fetch("data/bangalore_crime.csv").then(r => r.text()).then(text => {
+  const lines = text.trim().split("\n"), h = lines[0].split(","), ix = Object.fromEntries(h.map((x, i) => [x.trim(), i]));
+  state.all = new Array(lines.length - 1);
+  for (let i = 1; i < lines.length; i++) {
+    const c = lines[i].split(",");
+    state.all[i - 1] = { lat: +c[ix.lat], lon: +c[ix.lon], hour: +c[ix.hour], is_weekend: +c[ix.is_weekend],
+      crime_type: c[ix.crime_type].trim(), severity: +c[ix.severity] };
+  }
+  hourLabel();
+  if (map.getSource("crimes")) render();
+});
+</script>
