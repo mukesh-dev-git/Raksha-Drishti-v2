@@ -1,11 +1,14 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
-import PageShell from "@/components/PageShell";
-import Placeholder from "@/components/Placeholder";
+import { ArrowLeft, FolderOpen } from "lucide-react";
+import CaseFileFlipbook from "@/components/flipbook/CaseFileFlipbook";
 import { getCaseFile, getCaseType, getDistrict } from "@/lib/data";
+import { getCaseFileContent } from "@/lib/investigationData";
 
 // -----------------------------------------------------------------------------
 // /cases/[caseType]/[district]/case-files/[caseId]
-// Case Booklet — full detail of a single case file.
+// Digital Case File — rendered as a page-turning flipbook instead of a
+// static booklet/PDF viewer.
 // -----------------------------------------------------------------------------
 export default async function CaseBookletPage({
   params,
@@ -19,35 +22,43 @@ export default async function CaseBookletPage({
   if (!c || !d || !f) notFound();
 
   const base = `/cases/${caseType}/${district}`;
+  const content = getCaseFileContent(caseType, district, f.id);
 
   return (
-    <PageShell
-      title={`Case Booklet — ${f.id}`}
-      description={`${c.name} · ${d.name} · Status: ${f.status}`}
-      breadcrumbs={[
-        { label: "Cases", href: "/cases" },
-        { label: c.name, href: `/cases/${caseType}/district-wise` },
-        { label: d.name, href: `${base}/investigation-workspace` },
-        { label: "Case Files", href: `${base}/case-files` },
-        { label: f.id, href: `${base}/case-files/${f.id}` },
-      ]}
-    >
-      <div className="grid gap-6">
-        <Placeholder label="FIR details">
-          Add the FIR summary: complainant, date/time, location, sections
-          invoked, and a narrative description.
-        </Placeholder>
-        <Placeholder label="Timeline of events">
-          Add a chronological timeline of the incident and investigation
-          milestones.
-        </Placeholder>
-        <Placeholder label="Suspects & accused">
-          Add suspect profiles, links to related cases, and status.
-        </Placeholder>
-        <Placeholder label="Evidence & attachments">
-          Add evidence log, seized items, forensic reports, and file uploads.
-        </Placeholder>
+    <main className="min-h-screen bg-slate-950 px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-5xl">
+        <nav className="mb-6 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+            <Link href="/dashboard" className="hover:text-slate-300">Dashboard</Link>
+            <span>/</span>
+            <Link href="/cases" className="hover:text-slate-300">Cases</Link>
+            <span>/</span>
+            <Link href={`/cases/${caseType}/district-wise`} className="hover:text-slate-300">{c.name}</Link>
+            <span>/</span>
+            <Link href={`${base}/investigation-workspace`} className="hover:text-slate-300">{d.name}</Link>
+            <span>/</span>
+            <Link href={`${base}/case-files`} className="hover:text-slate-300">Case Files</Link>
+            <span>/</span>
+            <span className="text-slate-300">{f.id}</span>
+          </div>
+          <div className="flex gap-2">
+            <Link
+              href={`${base}/investigation-workspace`}
+              className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-slate-300 transition hover:border-white/20 hover:text-white"
+            >
+              <ArrowLeft size={12} /> Investigation Board
+            </Link>
+            <Link
+              href={`${base}/case-files`}
+              className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-slate-300 transition hover:border-white/20 hover:text-white"
+            >
+              <FolderOpen size={12} /> All Case Files
+            </Link>
+          </div>
+        </nav>
+
+        <CaseFileFlipbook content={content} />
       </div>
-    </PageShell>
+    </main>
   );
 }

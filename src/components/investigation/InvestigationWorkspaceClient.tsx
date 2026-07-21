@@ -1,0 +1,302 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import {
+  Network,
+  Clock,
+  FolderArchive,
+  Sparkles,
+  Layers,
+  FileStack,
+  FileText,
+  Radar,
+  Fingerprint,
+  ShieldAlert,
+  ArrowRight,
+} from "lucide-react";
+import type { InvestigationData } from "@/lib/investigationData";
+import { computeHighlightSet, getEntityDetail } from "@/lib/investigationData";
+import { caseFiles } from "@/lib/data";
+import RelationshipGraph from "./RelationshipGraph";
+import TimelinePanel from "./TimelinePanel";
+import EvidencePanel from "./EvidencePanel";
+import AIPanel from "./AIPanel";
+import SectionHeading from "./SectionHeading";
+import PinnedCard from "./PinnedCard";
+import EntityDetailCard from "./EntityDetailCard";
+import { ENTITY_STYLES } from "./entityStyles";
+
+export default function InvestigationWorkspaceClient({
+  data,
+  caseTypeName,
+  districtName,
+  base,
+}: {
+  data: InvestigationData;
+  caseTypeName: string;
+  districtName: string;
+  base: string;
+}) {
+  const [activeId, setActiveId] = useState<string | null>(null);
+
+  const highlightSet = useMemo(() => computeHighlightSet(activeId, data), [activeId, data]);
+  const detail = useMemo(
+    () => (activeId ? getEntityDetail(data, activeId) : null),
+    [activeId, data]
+  );
+
+  const stats = [
+    { label: "Suspects", value: data.entities.suspects.length, Icon: ShieldAlert, accent: "#fb7185" },
+    { label: "Evidence Items", value: data.evidence.length, Icon: Fingerprint, accent: "#fb923c" },
+    { label: "Network Nodes", value: data.graph.nodes.length, Icon: Network, accent: "#38bdf8" },
+    { label: "Connections", value: data.graph.edges.length, Icon: Radar, accent: "#a78bfa" },
+    { label: "Timeline Events", value: data.timeline.length, Icon: Clock, accent: "#34d399" },
+  ];
+
+  return (
+    <div className="relative space-y-14">
+      {/* detective-board backdrop */}
+      <div className="pointer-events-none fixed inset-0 -z-10 bg-slate-950" />
+      <div
+        className="pointer-events-none fixed inset-0 -z-10 opacity-[0.5]"
+        style={{
+          backgroundImage:
+            "radial-gradient(ellipse 70% 55% at 50% -8%, rgba(56,189,248,0.10), transparent), radial-gradient(ellipse 50% 45% at 100% 105%, rgba(251,113,133,0.08), transparent), radial-gradient(circle, rgba(148,163,184,0.06) 1px, transparent 1px)",
+          backgroundSize: "auto, auto, 26px 26px",
+        }}
+      />
+
+      {/* ── Section 1 · Investigation Summary ─────────────────────────── */}
+      <section>
+        <SectionHeading
+          icon={FileText}
+          title="Investigation Summary"
+          subtitle={`${caseTypeName} · ${districtName} jurisdiction`}
+          accent="#38bdf8"
+          right={
+            <Link
+              href={`${base}/case-files`}
+              className="flex items-center gap-2 rounded-xl bg-sky-600 px-5 py-3 text-[15px] font-semibold text-white shadow-lg shadow-sky-950/40 transition hover:bg-sky-500"
+            >
+              <FolderArchive size={17} /> Open Case Files
+            </Link>
+          }
+        />
+        <PinnedCard>
+          <div className="grid gap-6 p-6 lg:grid-cols-[1.4fr_1fr] lg:p-8">
+            <div>
+              <div className="mb-3 flex flex-wrap gap-2">
+                {data.sections.map((s) => (
+                  <span
+                    key={s}
+                    className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[13px] text-slate-300"
+                  >
+                    {s}
+                  </span>
+                ))}
+              </div>
+              <p className="text-[17px] leading-relaxed text-slate-300">
+                Active investigation into <span className="font-semibold text-slate-100">{caseTypeName.toLowerCase()}</span>{" "}
+                offences across <span className="font-semibold text-slate-100">{districtName}</span>. The board below maps{" "}
+                {data.graph.nodes.length} linked entities and {data.graph.edges.length} relationships spanning suspects,
+                victims, witnesses, physical and digital evidence, and connected case files. AI analysis places the
+                current composite risk at <span className="font-semibold text-slate-100">{data.ai.riskScore}/100</span>.
+              </p>
+              <p className="mt-4 border-l-2 border-sky-500/40 pl-4 text-[16px] italic leading-relaxed text-slate-400">
+                {data.ai.modusOperandi}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 self-start sm:grid-cols-3 lg:grid-cols-2">
+              {stats.map((s) => (
+                <div key={s.label} className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+                  <s.Icon size={20} style={{ color: s.accent }} />
+                  <p className="mt-2 text-3xl font-bold text-slate-100">{s.value}</p>
+                  <p className="text-[13px] text-slate-400">{s.label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </PinnedCard>
+      </section>
+
+      {/* ── Section 2 · Criminal Network (hero) ───────────────────────── */}
+      <section>
+        <SectionHeading
+          icon={Network}
+          title="Criminal Network"
+          subtitle="Drag nodes to reposition · scroll to zoom · click any entity to trace its links"
+          accent="#38bdf8"
+        />
+        <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
+          <PinnedCard className="h-[600px] overflow-hidden">
+            <RelationshipGraph
+              nodes={data.graph.nodes}
+              edges={data.graph.edges}
+              activeId={activeId}
+              highlightSet={highlightSet}
+              onSelect={setActiveId}
+            />
+          </PinnedCard>
+
+          <div className="flex flex-col gap-6">
+            <PinnedCard pin="#a78bfa" className="min-h-[300px] flex-1">
+              <EntityDetailCard detail={detail} />
+            </PinnedCard>
+            <PinnedCard pin="#94a3b8">
+              <div className="p-5">
+                <p className="mb-3 text-[13px] font-bold uppercase tracking-[0.14em] text-slate-400">Legend</p>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-2.5">
+                  {(Object.keys(ENTITY_STYLES) as (keyof typeof ENTITY_STYLES)[]).map((k) => {
+                    const s = ENTITY_STYLES[k];
+                    return (
+                      <span key={k} className="flex items-center gap-2 text-[14px] text-slate-300">
+                        <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: s.color }} />
+                        {s.label}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+            </PinnedCard>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Section 3 · Timeline ──────────────────────────────────────── */}
+      <section>
+        <SectionHeading
+          icon={Clock}
+          title="Investigation Timeline"
+          subtitle="Chronological record from first report to latest action"
+          accent="#34d399"
+        />
+        <PinnedCard pin="#34d399">
+          <div className="p-5">
+            <TimelinePanel
+              events={data.timeline}
+              activeId={activeId}
+              highlightSet={highlightSet}
+              onSelect={setActiveId}
+            />
+          </div>
+        </PinnedCard>
+      </section>
+
+      {/* ── Section 4 · Evidence ──────────────────────────────────────── */}
+      <section>
+        <SectionHeading
+          icon={Fingerprint}
+          title="Evidence Locker"
+          subtitle={`${data.evidence.length} exhibits — click to trace links to suspects and locations`}
+          accent="#fb923c"
+        />
+        <EvidencePanel
+          evidence={data.evidence}
+          activeId={activeId}
+          highlightSet={highlightSet}
+          onSelect={setActiveId}
+        />
+      </section>
+
+      {/* ── Section 5 · AI Investigation Insights ─────────────────────── */}
+      <section>
+        <SectionHeading
+          icon={Sparkles}
+          title="AI Investigation Insights"
+          subtitle="Automated modus operandi, pattern, and next-action analysis"
+          accent="#a78bfa"
+          right={
+            <span className="flex items-center gap-2 rounded-full border border-violet-500/30 bg-violet-500/10 px-3.5 py-2 text-[13px] font-medium text-violet-300">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-violet-400" /> Live analysis
+            </span>
+          }
+        />
+        <AIPanel ai={data.ai} suspects={data.entities.suspects} activeId={activeId} onSelect={setActiveId} />
+      </section>
+
+      {/* ── Section 6 · Related Cases ─────────────────────────────────── */}
+      <section>
+        <SectionHeading
+          icon={Layers}
+          title="Related Cases"
+          subtitle="Cases sharing suspects, locations, or modus operandi"
+          accent="#fbbf24"
+        />
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {data.ai.similarCases.map((sc, i) => (
+            <motion.div
+              key={sc.id}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05, duration: 0.3 }}
+            >
+              <PinnedCard pin="#fbbf24">
+                <div className="p-5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[18px] font-bold text-slate-100">{sc.id}</span>
+                    <span className="rounded-full bg-amber-500/15 px-2.5 py-1 text-[13px] font-semibold text-amber-300">
+                      {sc.similarity}% match
+                    </span>
+                  </div>
+                  <p className="mt-1.5 text-[15px] text-slate-400">{sc.title}</p>
+                  <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/5">
+                    <motion.div
+                      className="h-full rounded-full bg-amber-400"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${sc.similarity}%` }}
+                      transition={{ duration: 0.8, ease: "easeOut" }}
+                    />
+                  </div>
+                  <p className="mt-3 text-[13px] uppercase tracking-wide text-slate-500">
+                    {sc.district} district
+                  </p>
+                </div>
+              </PinnedCard>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Section 7 · Open Case Files ───────────────────────────────── */}
+      <section>
+        <SectionHeading
+          icon={FileStack}
+          title="Open Case Files"
+          subtitle="Open a file to read the full digital case-file flipbook"
+          accent="#e2e8f0"
+        />
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {caseFiles.map((f, i) => (
+            <motion.div
+              key={f.id}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05, duration: 0.3 }}
+            >
+              <Link href={`${base}/case-files/${f.id}`} className="block">
+                <PinnedCard variant="paper" pin="#e11d48" interactive>
+                  <div className="flex items-start gap-4 p-5">
+                    <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-stone-800/90">
+                      <FileStack size={22} className="text-stone-100" />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[19px] font-bold text-stone-900">{f.id}</p>
+                      <p className="mt-0.5 text-[15px] text-stone-600">{f.title}</p>
+                      <span className="mt-2 inline-block rounded-full border border-stone-300 bg-stone-100 px-2.5 py-1 text-[12px] font-medium text-stone-700">
+                        {f.status}
+                      </span>
+                    </div>
+                    <ArrowRight size={18} className="mt-1 shrink-0 text-stone-400" />
+                  </div>
+                </PinnedCard>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}
