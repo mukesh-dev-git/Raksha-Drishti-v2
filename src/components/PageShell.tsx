@@ -1,8 +1,5 @@
-import Link from "next/link";
 import { ReactNode } from "react";
-import { ChevronRight, Home } from "lucide-react";
-
-type Crumb = { label: string; href: string };
+import Breadcrumb, { type Crumb } from "@/components/ui/Breadcrumb";
 
 // -----------------------------------------------------------------------------
 // PageShell — standard page scaffold: breadcrumb + page-title band + content.
@@ -25,34 +22,7 @@ export default function PageShell({
   return (
     <main className="mx-auto w-full max-w-content px-4 pb-16">
       {/* Breadcrumb */}
-      <nav
-        aria-label="Breadcrumb"
-        className="flex flex-wrap items-center gap-1.5 py-4 text-sm text-muted"
-      >
-        <Link
-          href="/dashboard"
-          className="inline-flex items-center gap-1 hover:text-navy hover:underline"
-        >
-          <Home size={14} aria-hidden="true" /> Home
-        </Link>
-        {breadcrumbs.map((c, i) => {
-          const last = i === breadcrumbs.length - 1;
-          return (
-            <span key={c.href} className="flex items-center gap-1.5">
-              <ChevronRight size={14} aria-hidden="true" className="text-line-strong" />
-              {last ? (
-                <span className="font-medium text-ink" aria-current="page">
-                  {c.label}
-                </span>
-              ) : (
-                <Link href={c.href} className="hover:text-navy hover:underline">
-                  {c.label}
-                </Link>
-              )}
-            </span>
-          );
-        })}
-      </nav>
+      <Breadcrumb items={breadcrumbs} />
 
       {/* Title band */}
       <div className="flex flex-col gap-4 border-b border-line pb-6 sm:flex-row sm:items-end sm:justify-between">
