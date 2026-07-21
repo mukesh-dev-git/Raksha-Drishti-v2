@@ -25,7 +25,7 @@ export default async function InvestigationWorkspacePage({
 
   return (
     <main className="min-h-screen bg-paper px-4 py-2 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-[1600px]">
+      <div className="w-full">
         <Breadcrumb
           backHref={`/cases/${caseType}/district-wise`}
           backLabel={`Back to ${c.name} districts`}

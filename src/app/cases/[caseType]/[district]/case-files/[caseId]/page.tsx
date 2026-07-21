@@ -27,7 +27,7 @@ export default async function CaseBookletPage({
 
   return (
     <main className="min-h-screen bg-paper px-4 py-2 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-5xl">
+      <div className="w-full">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <Breadcrumb
             backHref={`${base}/case-files`}
