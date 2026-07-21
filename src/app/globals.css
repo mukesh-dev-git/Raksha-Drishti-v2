@@ -2,7 +2,125 @@
 @tailwind components;
 @tailwind utilities;
 
+/* =============================================================================
+   RAKSHA-DRISHTI — DESIGN SYSTEM
+   Official Indian State Police Department portal visual language.
+   Dignified, trustworthy, calm authority. Light, navy-led, WCAG 2.1 AA.
+   ========================================================================== */
+
+:root {
+  /* Surfaces ------------------------------------------------------------- */
+  --paper: #f7f8fa;        /* page background (off-white) */
+  --surface: #ffffff;      /* cards / panels */
+  --surface-2: #eef1f5;    /* subtle inset / hover */
+  --line: #d2d8e0;         /* borders */
+  --line-strong: #b4bdc9;
+
+  /* Text ----------------------------------------------------------------- */
+  --ink: #1a2230;          /* primary text (AA on paper) */
+  --muted: #55617a;        /* secondary text (AA on paper) */
+
+  /* Brand ---------------------------------------------------------------- */
+  --navy: #0b2e59;         /* primary */
+  --navy-hover: #0f3d76;
+  --navy-ink: #ffffff;     /* text on navy */
+
+  /* National tricolor (used only as a single thin divider) --------------- */
+  --saffron: #ff9933;
+  --tricolor-white: #ffffff;
+  --green: #138808;
+
+  /* Functional status (muted) ------------------------------------------- */
+  --success: #1a7f37;
+  --success-bg: #e7f4ea;
+  --warning: #b45309;
+  --warning-bg: #fdf3e6;
+  --danger: #b3261e;
+  --danger-bg: #fbeae9;
+
+  /* Focus ---------------------------------------------------------------- */
+  --focus: #0b57d0;
+
+  /* Type scale root — driven by accessibility font-size control ---------- */
+  --font-scale: 1;
+
+  --radius: 10px;
+  --radius-sm: 6px;
+  --shadow-sm: 0 1px 2px rgba(16, 30, 54, 0.06), 0 1px 3px rgba(16, 30, 54, 0.08);
+  --shadow-md: 0 2px 6px rgba(16, 30, 54, 0.08), 0 6px 16px rgba(16, 30, 54, 0.08);
+}
+
+/* Font-size accessibility control ---------------------------------------- */
+:root[data-font-size="large"]  { --font-scale: 1.12; }
+:root[data-font-size="xlarge"] { --font-scale: 1.25; }
+
+html {
+  font-size: calc(100% * var(--font-scale));
+}
+
+/* High-contrast accessibility mode --------------------------------------- */
+:root[data-contrast="high"] {
+  --paper: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #f0f0f0;
+  --line: #000000;
+  --line-strong: #000000;
+  --ink: #000000;
+  --muted: #1a1a1a;
+  --navy: #002060;
+  --navy-hover: #001845;
+  --focus: #0033cc;
+  --success: #0a5c26;
+  --warning: #8a3d00;
+  --danger: #8a1610;
+}
+:root[data-contrast="high"] * {
+  border-color: #000000 !important;
+}
+
 body {
-  background-color: #0f172a; /* slate-900 */
-  color: #e2e8f0; /* slate-200 */
+  background-color: var(--paper);
+  color: var(--ink);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Consistent, visible focus for every interactive element ---------------- */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* Skip link (accessibility) --------------------------------------------- */
+.skip-link {
+  position: absolute;
+  left: -999px;
+  top: 0;
+  z-index: 100;
+  background: var(--navy);
+  color: #fff;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0 0 var(--radius-sm) 0;
+}
+.skip-link:focus {
+  left: 0;
+}
+
+/* The single tricolor divider — used at most once per screen ------------- */
+.tricolor-rule {
+  height: 3px;
+  border: 0;
+  background: linear-gradient(
+    to right,
+    var(--saffron) 0 33.33%,
+    var(--tricolor-white) 33.33% 66.66%,
+    var(--green) 66.66% 100%
+  );
 }

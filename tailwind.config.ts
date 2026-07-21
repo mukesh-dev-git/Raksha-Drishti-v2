@@ -7,7 +7,43 @@ const config: Config = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        // Semantic tokens — resolve to CSS vars so high-contrast mode works.
+        paper: "var(--paper)",
+        surface: "var(--surface)",
+        "surface-2": "var(--surface-2)",
+        line: "var(--line)",
+        "line-strong": "var(--line-strong)",
+        ink: "var(--ink)",
+        muted: "var(--muted)",
+        navy: {
+          DEFAULT: "var(--navy)",
+          hover: "var(--navy-hover)",
+          ink: "var(--navy-ink)",
+        },
+        saffron: "var(--saffron)",
+        green: "var(--green)",
+        success: { DEFAULT: "var(--success)", bg: "var(--success-bg)" },
+        warning: { DEFAULT: "var(--warning)", bg: "var(--warning-bg)" },
+        danger: { DEFAULT: "var(--danger)", bg: "var(--danger-bg)" },
+        focus: "var(--focus)",
+      },
+      fontFamily: {
+        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+      },
+      borderRadius: {
+        DEFAULT: "var(--radius)",
+        sm: "var(--radius-sm)",
+      },
+      boxShadow: {
+        sm: "var(--shadow-sm)",
+        md: "var(--shadow-md)",
+      },
+      maxWidth: {
+        content: "1180px",
+      },
+    },
   },
   plugins: [],
 };

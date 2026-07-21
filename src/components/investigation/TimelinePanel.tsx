@@ -20,7 +20,7 @@ export default function TimelinePanel({
     <div className="overflow-x-auto pb-3">
       <div className="relative flex min-w-max gap-5 px-1 pt-5">
         {/* the connecting thread */}
-        <div className="absolute left-4 right-4 top-2 h-px bg-gradient-to-r from-transparent via-slate-500/50 to-transparent" />
+        <div className="absolute left-4 right-4 top-2 h-px bg-gradient-to-r from-transparent via-line-strong to-transparent" />
 
         {events.map((ev, i) => {
           const active = ev.id === activeId;
@@ -33,27 +33,27 @@ export default function TimelinePanel({
               animate={{ opacity: dimmed ? 0.4 : 1, y: 0 }}
               transition={{ delay: i * 0.05, duration: 0.3 }}
               onClick={() => onSelect(active ? null : ev.id)}
-              className={`relative w-[264px] shrink-0 rounded-xl border px-4 py-4 text-left transition ${
+              className={`relative w-[264px] shrink-0 rounded border px-4 py-4 text-left transition ${
                 active
-                  ? "border-sky-400/60 bg-sky-500/10 ring-1 ring-sky-400/40"
-                  : "border-white/10 bg-white/[0.03] hover:-translate-y-0.5 hover:border-white/25"
+                  ? "border-navy bg-surface-2 ring-1 ring-navy/40"
+                  : "border-line bg-surface shadow-sm hover:-translate-y-0.5 hover:border-navy"
               }`}
             >
               {/* pin on the thread */}
               <span
                 className={`absolute -top-[9px] left-1/2 h-3.5 w-3.5 -translate-x-1/2 rounded-full border-2 ${
                   active || related
-                    ? "border-sky-300 bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.8)]"
-                    : "border-slate-500 bg-slate-800"
+                    ? "border-navy bg-navy"
+                    : "border-line-strong bg-surface-2"
                 }`}
               />
-              <div className="flex items-center justify-between text-[13px] text-slate-400">
+              <div className="flex items-center justify-between text-[13px] text-muted">
                 <span>{ev.date}</span>
                 <span className="font-mono">{ev.time}</span>
               </div>
-              <p className="mt-1.5 text-[17px] font-semibold leading-snug text-slate-100">{ev.title}</p>
-              <p className="mt-1.5 text-[14px] leading-relaxed text-slate-400">{ev.description}</p>
-              <span className="mt-2 inline-block text-[12px] font-medium text-slate-500">
+              <p className="mt-1.5 text-[17px] font-semibold leading-snug text-ink">{ev.title}</p>
+              <p className="mt-1.5 text-[14px] leading-relaxed text-muted">{ev.description}</p>
+              <span className="mt-2 inline-block text-[12px] font-medium text-muted">
                 Step {i + 1} of {events.length}
               </span>
             </motion.button>

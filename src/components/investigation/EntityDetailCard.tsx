@@ -30,11 +30,11 @@ export default function EntityDetailCard({ detail }: { detail: EntityDetail | nu
             exit={{ opacity: 0 }}
             className="flex h-full flex-col items-center justify-center gap-3 px-6 text-center"
           >
-            <span className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03]">
-              <MousePointerClick size={24} className="text-slate-500" />
+            <span className="flex h-14 w-14 items-center justify-center rounded-sm border border-line bg-surface-2">
+              <MousePointerClick size={24} className="text-muted" />
             </span>
-            <p className="text-lg font-semibold text-slate-300">Select an entity</p>
-            <p className="max-w-[15rem] text-[15px] leading-relaxed text-slate-500">
+            <p className="text-lg font-semibold text-ink">Select an entity</p>
+            <p className="max-w-[15rem] text-[15px] leading-relaxed text-muted">
               Click any node in the network — or a timeline event or evidence card — to trace its
               connections and read the full record here.
             </p>
@@ -64,8 +64,8 @@ function DetailBody({ detail }: { detail: EntityDetail }) {
           >
             {style.label}
           </p>
-          <h3 className="mt-0.5 truncate text-xl font-bold text-slate-100">{detail.title}</h3>
-          {detail.subtitle && <p className="text-[15px] text-slate-400">{detail.subtitle}</p>}
+          <h3 className="mt-0.5 truncate text-xl font-bold text-ink">{detail.title}</h3>
+          {detail.subtitle && <p className="text-[15px] text-muted">{detail.subtitle}</p>}
         </div>
       </div>
 
@@ -73,22 +73,22 @@ function DetailBody({ detail }: { detail: EntityDetail }) {
         <dl className="mt-5 grid grid-cols-2 gap-x-4 gap-y-3">
           {detail.fields.map((f) => (
             <div key={f.label}>
-              <dt className="text-[11px] uppercase tracking-wide text-slate-500">{f.label}</dt>
-              <dd className="mt-0.5 text-[15px] font-medium text-slate-200">{f.value}</dd>
+              <dt className="text-[11px] uppercase tracking-wide text-muted">{f.label}</dt>
+              <dd className="mt-0.5 text-[15px] font-medium text-ink">{f.value}</dd>
             </div>
           ))}
         </dl>
       )}
 
       {detail.description && (
-        <p className="mt-5 rounded-xl border border-white/5 bg-white/[0.02] p-3.5 text-[15px] leading-relaxed text-slate-300">
+        <p className="mt-5 rounded-sm border border-line bg-surface-2 p-3.5 text-[15px] leading-relaxed text-ink">
           {detail.description}
         </p>
       )}
 
-      <div className="mt-auto flex items-center gap-2 pt-5 text-[13px] text-slate-500">
+      <div className="mt-auto flex items-center gap-2 pt-5 text-[13px] text-muted">
         <Link2 size={14} style={{ color: style.color }} />
-        Highlighting <span className="font-semibold text-slate-300">{detail.relatedCount}</span>{" "}
+        Highlighting <span className="font-semibold text-ink">{detail.relatedCount}</span>{" "}
         direct connection{detail.relatedCount === 1 ? "" : "s"} on the board.
       </div>
     </div>

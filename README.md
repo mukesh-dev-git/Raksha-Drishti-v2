@@ -1,10 +1,10 @@
 # Raksha-Drishti
 
-Crime analytics & investigation dashboard — **page/navigation scaffold**.
+**Karnataka State Police — Crime Analytics & Investigation Portal.**
 
-This repo currently contains only **pages, links, and placeholder descriptions**.
-Every feature area is marked with a dashed box and a `TODO: teammate` comment
-showing what to build there.
+A Next.js (App Router) portal for viewing crime counts and hotspots, browsing
+cases by district, and working individual investigations through to the digital
+case file. Built with a dignified, accessible government-portal design system.
 
 ## Getting started
 
@@ -19,32 +19,79 @@ Open http://localhost:3000 → redirects to `/dashboard`.
 
 ```
 /                                    -> redirects to /dashboard
-/dashboard                           -> 3 box links
+/dashboard                           -> hero, summary stats, 3 modules
    |- /crime-count
    |- /crime-hotspots
    |- /cases
-        |- /cases/[caseType]/district-wise            (click a case)
-             |- .../[district]/investigation-workspace   (click a district)
-                  |- .../case-files                       (link in workspace)
-                       |- .../[caseId]                    (click a file = booklet)
+        |- /cases/[caseType]/district-wise            (ranked district table)
+             |- .../[district]/investigation-workspace   (the investigation board)
+                  |- .../case-files                       (case-file list)
+                       |- .../[caseId]                    (digital case-file flipbook)
 ```
 
-## Where teammates add features
+## Design system
 
-| Page | File | What to add |
-|------|------|-------------|
-| Crime Count | `src/app/crime-count/page.tsx` | Charts/KPIs of crime totals |
-| Crime Hotspots | `src/app/crime-hotspots/page.tsx` | Map / heatmap |
-| Cases | `src/app/cases/page.tsx` | Real case-type list |
-| District-wise | `src/app/cases/[caseType]/district-wise/page.tsx` | Real district counts |
-| Investigation Workspace | `.../[district]/investigation-workspace/page.tsx` | Socio-economic graph + MO |
-| Case Files | `.../[district]/case-files/page.tsx` | Real case-file list |
-| Case Booklet | `.../case-files/[caseId]/page.tsx` | FIR, timeline, suspects, evidence |
+The visual language models an official Indian State Police portal — calm,
+trustworthy authority over flash.
 
-Sample/placeholder data lives in `src/lib/data.ts` — replace with real API data.
+- **Colour**: deep navy (`#0B2E59`) primary on an off-white base; a single
+  saffron/white/green tricolor divider per screen; muted, functional status
+  colours (green verified, amber pending, red alert only).
+- **Type**: Inter throughout, generous 1.6 line-height, weight/colour for
+  emphasis (no italics, no display fonts).
+- **Layout**: grid-based, symmetrical, generous whitespace; solid cards with
+  soft shadows and 6–10px radius; barely-rounded rectangular buttons.
+- **Chrome**: a persistent first-class emergency/helpline bar (112 + Police,
+  Women, Child, Ambulance), navy masthead with the Karnataka State Police
+  emblem, and a simple click-first horizontal nav.
+
+### Accessibility (WCAG 2.1 AA)
+
+- Visible **font-size** stepper (A / A+ / A++) and **high-contrast** toggle in
+  the header, persisted to `localStorage` and applied via `<html>` data-attrs.
+- Skip link, visible focus rings on every interactive element, `aria-current`
+  on the active nav/breadcrumb, and status never conveyed by colour alone.
+
+### Design tokens
+
+Semantic CSS variables in [`globals.css`](src/app/globals.css) (surfaces, ink,
+navy, tricolor, status, focus) are exposed to Tailwind in
+[`tailwind.config.ts`](tailwind.config.ts) as `paper`, `surface`, `line`,
+`ink`, `muted`, `navy`, `saffron`, `success`, `warning`, `danger`. High-contrast
+and font-size modes override the same variables.
+
+## Screens
+
+| Page | File | Notes |
+|------|------|-------|
+| Dashboard | `src/app/dashboard/page.tsx` | Navy hero, summary stat tiles, 3 module cards |
+| Crime Count | `src/app/crime-count/page.tsx` | Stats + charts placeholders |
+| Crime Hotspots | `src/app/crime-hotspots/page.tsx` | Map / heatmap placeholder |
+| Cases | `src/app/cases/page.tsx` | Case-type cards |
+| District-wise | `src/app/cases/[caseType]/district-wise/page.tsx` | Ranked district table |
+| Investigation Workspace | `.../[district]/investigation-workspace/page.tsx` | Relationship graph, timeline, evidence, AI insights |
+| Case Files | `.../[district]/case-files/page.tsx` | Case-file list with status badges |
+| Case File (booklet) | `.../case-files/[caseId]/page.tsx` | Page-turning digital case-file flipbook |
+
+Placeholder boxes marked **"Pending — feature to be added"** show teammates
+where data features slot in. Sample data lives in
+[`src/lib/data.ts`](src/lib/data.ts); the investigation board's seeded mock data
+is in [`src/lib/investigationData.ts`](src/lib/investigationData.ts).
 
 ## Shared building blocks
 
-- `src/components/PageShell.tsx` — breadcrumb + title + description wrapper
-- `src/components/LinkCard.tsx` — the box-template link
-- `src/components/Placeholder.tsx` — dashed "add feature here" box
+- `src/components/layout/` — `SiteHeader`, `EmergencyBar`, `SiteNav`,
+  `SiteFooter`, `AccessibilityControls`
+- `src/components/ui/` — `Breadcrumb`, `StatTile`, `StatusBadge`
+- `src/components/` — `PageShell`, `LinkCard`, `Placeholder`
+- `src/components/investigation/` and `src/components/flipbook/` — the
+  investigation board and case-file flipbook
+
+## Assets
+
+The masthead emblem is served from `public/karnataka-state-police.png`. Replace
+it with a clean, licensed asset before any non-demo use.
+
+## Tech
+
+Next.js 15 · React 19 · TypeScript · Tailwind CSS · d3-force · Framer Motion.

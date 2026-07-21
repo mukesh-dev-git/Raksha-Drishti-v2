@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, FolderOpen } from "lucide-react";
+import Breadcrumb from "@/components/ui/Breadcrumb";
 import CaseFileFlipbook from "@/components/flipbook/CaseFileFlipbook";
 import { getCaseFile, getCaseType, getDistrict } from "@/lib/data";
 import { getCaseFileContent } from "@/lib/investigationData";
@@ -25,37 +26,35 @@ export default async function CaseBookletPage({
   const content = getCaseFileContent(caseType, district, f.id);
 
   return (
-    <main className="min-h-screen bg-slate-950 px-4 py-8 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-paper px-4 py-2 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-5xl">
-        <nav className="mb-6 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
-            <Link href="/dashboard" className="hover:text-slate-300">Dashboard</Link>
-            <span>/</span>
-            <Link href="/cases" className="hover:text-slate-300">Cases</Link>
-            <span>/</span>
-            <Link href={`/cases/${caseType}/district-wise`} className="hover:text-slate-300">{c.name}</Link>
-            <span>/</span>
-            <Link href={`${base}/investigation-workspace`} className="hover:text-slate-300">{d.name}</Link>
-            <span>/</span>
-            <Link href={`${base}/case-files`} className="hover:text-slate-300">Case Files</Link>
-            <span>/</span>
-            <span className="text-slate-300">{f.id}</span>
-          </div>
-          <div className="flex gap-2">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <Breadcrumb
+            backHref={`${base}/case-files`}
+            backLabel="Back to case files"
+            items={[
+              { label: "Cases", href: "/cases" },
+              { label: c.name, href: `/cases/${caseType}/district-wise` },
+              { label: d.name, href: `${base}/investigation-workspace` },
+              { label: "Case Files", href: `${base}/case-files` },
+              { label: f.id, href: `${base}/case-files/${f.id}` },
+            ]}
+          />
+          <div className="flex gap-2 pb-4">
             <Link
               href={`${base}/investigation-workspace`}
-              className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-slate-300 transition hover:border-white/20 hover:text-white"
+              className="flex items-center gap-1.5 rounded-sm border border-line bg-surface px-3 py-1.5 text-xs text-ink transition hover:border-navy hover:text-navy"
             >
               <ArrowLeft size={12} /> Investigation Board
             </Link>
             <Link
               href={`${base}/case-files`}
-              className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-slate-300 transition hover:border-white/20 hover:text-white"
+              className="flex items-center gap-1.5 rounded-sm border border-line bg-surface px-3 py-1.5 text-xs text-ink transition hover:border-navy hover:text-navy"
             >
               <FolderOpen size={12} /> All Case Files
             </Link>
           </div>
-        </nav>
+        </div>
 
         <CaseFileFlipbook content={content} />
       </div>

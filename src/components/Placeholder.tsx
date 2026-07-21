@@ -1,6 +1,11 @@
 import { ReactNode } from "react";
+import { Wrench } from "lucide-react";
 
-// A dashed box that tells teammates what feature goes here.
+// -----------------------------------------------------------------------------
+// Placeholder — marks where a teammate feature will be built. Uses a functional
+// amber "pending" treatment (not a bright/playful color), with a text label so
+// status is never conveyed by color alone.
+// -----------------------------------------------------------------------------
 export default function Placeholder({
   label,
   children,
@@ -9,12 +14,20 @@ export default function Placeholder({
   children?: ReactNode;
 }) {
   return (
-    <div className="rounded-xl border border-dashed border-slate-600 bg-slate-800/40 p-6">
-      <p className="text-xs font-semibold uppercase tracking-wide text-amber-400">
-        TODO: teammate — add feature here
-      </p>
-      <p className="mt-2 font-medium text-slate-200">{label}</p>
-      {children && <div className="mt-3 text-sm text-slate-400">{children}</div>}
-    </div>
+    <section className="rounded border border-line bg-surface p-6 shadow-sm">
+      <div className="flex items-center gap-2">
+        <span
+          className="flex h-6 w-6 items-center justify-center rounded-sm bg-warning-bg text-warning"
+          aria-hidden="true"
+        >
+          <Wrench size={14} />
+        </span>
+        <span className="rounded-sm bg-warning-bg px-2 py-0.5 text-xs font-semibold uppercase tracking-wide text-warning">
+          Pending — feature to be added
+        </span>
+      </div>
+      <h3 className="mt-3 text-lg font-semibold text-ink">{label}</h3>
+      {children && <div className="mt-2 text-sm leading-relaxed text-muted">{children}</div>}
+    </section>
   );
 }

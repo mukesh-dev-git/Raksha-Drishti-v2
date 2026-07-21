@@ -182,7 +182,7 @@ export default function RelationshipGraph({
             key={label}
             onClick={fn}
             aria-label={label}
-            className="rounded-lg border border-white/10 bg-slate-950/70 p-2 text-slate-300 backdrop-blur transition hover:border-sky-500/40 hover:text-sky-300"
+            className="rounded-sm border border-line bg-surface p-2 text-navy shadow-sm transition hover:border-navy"
           >
             <Icon size={16} />
           </button>
@@ -222,9 +222,9 @@ export default function RelationshipGraph({
                 key={link.id}
                 d={d}
                 fill="none"
-                stroke={active ? "#7dd3fc" : "#64748b"}
-                strokeWidth={active ? 2 : 1.1}
-                strokeOpacity={activeId ? (active ? 0.9 : 0.08) : 0.3}
+                stroke={active ? "#0b57d0" : "#94a3b8"}
+                strokeWidth={active ? 2.2 : 1.2}
+                strokeOpacity={activeId ? (active ? 0.95 : 0.12) : 0.5}
                 strokeDasharray={active ? "5 7" : undefined}
               >
                 {active && (
@@ -263,7 +263,7 @@ export default function RelationshipGraph({
                 )}
                 <circle
                   r={r}
-                  fill="#0b1120"
+                  fill="#ffffff"
                   stroke={style.color}
                   strokeWidth={selected ? 3 : 1.75}
                   style={{
@@ -277,7 +277,7 @@ export default function RelationshipGraph({
                   y={r + 17}
                   textAnchor="middle"
                   className="pointer-events-none select-none"
-                  fill={dimmed ? "#64748b" : "#e2e8f0"}
+                  fill={dimmed ? "#94a3b8" : "#1a2230"}
                   fontSize={13}
                   fontWeight={selected ? 700 : 500}
                 >
