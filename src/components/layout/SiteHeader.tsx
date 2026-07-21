@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Shield } from "lucide-react";
+import Image from "next/image";
 import AccessibilityControls from "./AccessibilityControls";
 import EmergencyBar from "./EmergencyBar";
 import SiteNav from "./SiteNav";
@@ -31,18 +31,20 @@ export default function SiteHeader() {
       <div className="bg-surface">
         <div className="mx-auto flex max-w-content items-center gap-4 px-4 py-4">
           <Link href="/dashboard" className="flex items-center gap-3">
-            <span
-              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-sm bg-navy text-white"
-              aria-hidden="true"
-            >
-              <Shield size={26} strokeWidth={1.75} />
-            </span>
+            <Image
+              src="/karnataka-state-police.png"
+              alt="Karnataka State Police emblem"
+              width={56}
+              height={56}
+              priority
+              className="h-14 w-14 shrink-0 object-contain"
+            />
             <span className="leading-tight">
               <span className="block text-lg font-semibold text-navy">
                 Raksha&#8209;Drishti
               </span>
               <span className="block text-xs text-muted">
-                State Police Department · Crime Analytics &amp; Investigation Portal
+                Karnataka State Police · Crime Analytics &amp; Investigation Portal
               </span>
             </span>
           </Link>
