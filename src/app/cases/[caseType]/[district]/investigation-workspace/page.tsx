@@ -25,25 +25,25 @@ export default async function InvestigationWorkspacePage({
   const data = getInvestigationData(caseType, district);
 
   return (
-    <main className="min-h-screen bg-slate-950 px-4 py-6 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-paper px-4 py-6 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-[1600px]">
-        <nav className="mb-4 flex flex-wrap items-center gap-2 text-xs text-slate-500">
-          <Link href="/dashboard" className="hover:text-slate-300">
+        <nav className="mb-4 flex flex-wrap items-center gap-2 text-xs text-muted">
+          <Link href="/dashboard" className="hover:text-navy hover:underline">
             Dashboard
           </Link>
           <span>/</span>
-          <Link href="/cases" className="hover:text-slate-300">
+          <Link href="/cases" className="hover:text-navy hover:underline">
             Cases
           </Link>
           <span>/</span>
-          <Link href={`/cases/${caseType}/district-wise`} className="hover:text-slate-300">
+          <Link href={`/cases/${caseType}/district-wise`} className="hover:text-navy hover:underline">
             {c.name}
           </Link>
           <span>/</span>
-          <span className="text-slate-300">{d.name}</span>
+          <span className="font-medium text-ink">{d.name}</span>
           <Link
             href={`/cases/${caseType}/district-wise`}
-            className="ml-2 flex items-center gap-1 rounded-full border border-white/10 px-2 py-0.5 text-slate-400 transition hover:border-white/20 hover:text-slate-200"
+            className="ml-2 flex items-center gap-1 rounded-sm border border-line px-2 py-0.5 text-muted transition hover:border-navy hover:text-navy"
           >
             <ArrowLeft size={11} /> Districts
           </Link>

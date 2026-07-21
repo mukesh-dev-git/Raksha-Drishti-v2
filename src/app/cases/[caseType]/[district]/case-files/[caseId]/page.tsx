@@ -25,32 +25,32 @@ export default async function CaseBookletPage({
   const content = getCaseFileContent(caseType, district, f.id);
 
   return (
-    <main className="min-h-screen bg-slate-950 px-4 py-8 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-paper px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-5xl">
         <nav className="mb-6 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
-            <Link href="/dashboard" className="hover:text-slate-300">Dashboard</Link>
+          <div className="flex flex-wrap items-center gap-2 text-xs text-muted">
+            <Link href="/dashboard" className="hover:text-navy hover:underline">Dashboard</Link>
             <span>/</span>
-            <Link href="/cases" className="hover:text-slate-300">Cases</Link>
+            <Link href="/cases" className="hover:text-navy hover:underline">Cases</Link>
             <span>/</span>
-            <Link href={`/cases/${caseType}/district-wise`} className="hover:text-slate-300">{c.name}</Link>
+            <Link href={`/cases/${caseType}/district-wise`} className="hover:text-navy hover:underline">{c.name}</Link>
             <span>/</span>
-            <Link href={`${base}/investigation-workspace`} className="hover:text-slate-300">{d.name}</Link>
+            <Link href={`${base}/investigation-workspace`} className="hover:text-navy hover:underline">{d.name}</Link>
             <span>/</span>
-            <Link href={`${base}/case-files`} className="hover:text-slate-300">Case Files</Link>
+            <Link href={`${base}/case-files`} className="hover:text-navy hover:underline">Case Files</Link>
             <span>/</span>
-            <span className="text-slate-300">{f.id}</span>
+            <span className="font-medium text-ink">{f.id}</span>
           </div>
           <div className="flex gap-2">
             <Link
               href={`${base}/investigation-workspace`}
-              className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-slate-300 transition hover:border-white/20 hover:text-white"
+              className="flex items-center gap-1.5 rounded-sm border border-line bg-surface px-3 py-1.5 text-xs text-ink transition hover:border-navy hover:text-navy"
             >
               <ArrowLeft size={12} /> Investigation Board
             </Link>
             <Link
               href={`${base}/case-files`}
-              className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-slate-300 transition hover:border-white/20 hover:text-white"
+              className="flex items-center gap-1.5 rounded-sm border border-line bg-surface px-3 py-1.5 text-xs text-ink transition hover:border-navy hover:text-navy"
             >
               <FolderOpen size={12} /> All Case Files
             </Link>

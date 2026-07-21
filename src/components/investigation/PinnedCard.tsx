@@ -1,10 +1,10 @@
 import clsx from "clsx";
 
 // A card that looks pinned to the board. Two surfaces:
-//  - "dark"  : frosted glass panel (data / analysis)
+//  - "dark"  : official white panel (data / analysis) — light theme
 //  - "paper" : warm document paper (evidence, notes, files)
-// A metallic push-pin sits at the top; the whole board reads as neatly
-// pinned documents rather than a scattered corkboard.
+// A push-pin sits at the top; the whole board reads as neatly pinned
+// documents rather than a scattered corkboard.
 export default function PinnedCard({
   variant = "dark",
   pin = "#38bdf8",
@@ -23,15 +23,15 @@ export default function PinnedCard({
   return (
     <div
       className={clsx(
-        "relative rounded-2xl border shadow-[0_18px_40px_-24px_rgba(0,0,0,0.85)] transition",
+        "relative rounded border shadow-md transition",
         variant === "paper"
-          ? "border-stone-300/50 bg-[#f4efe1] text-stone-800"
-          : "border-white/10 bg-slate-900/70 text-slate-100 backdrop-blur-xl",
+          ? "border-stone-300/70 bg-[#f4efe1] text-stone-800"
+          : "border-line bg-surface text-ink",
         interactive &&
           (variant === "paper"
-            ? "hover:-translate-y-0.5 hover:border-stone-400/70 hover:shadow-[0_24px_48px_-24px_rgba(0,0,0,0.9)]"
-            : "hover:-translate-y-0.5 hover:border-white/25"),
-        active && (variant === "paper" ? "ring-2 ring-sky-400/70" : "border-sky-400/60 ring-1 ring-sky-400/40"),
+            ? "hover:-translate-y-0.5 hover:border-stone-400/70"
+            : "hover:-translate-y-0.5 hover:border-navy"),
+        active && (variant === "paper" ? "ring-2 ring-navy/50" : "border-navy ring-1 ring-navy/40"),
         className
       )}
     >

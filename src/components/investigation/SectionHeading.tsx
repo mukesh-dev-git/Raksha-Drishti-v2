@@ -1,7 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 
 // A consistent, prominent section header for each board area.
-// Large serif title (~26px) + optional subtitle, with an accent icon chip.
+// Sans-serif (Inter) title + optional subtitle, with an accent icon chip.
 export default function SectionHeading({
   icon: Icon,
   title,
@@ -25,8 +25,8 @@ export default function SectionHeading({
           <Icon size={22} style={{ color: accent }} />
         </span>
         <div>
-          <h2 className="font-serif text-[26px] font-bold leading-tight text-slate-100">{title}</h2>
-          {subtitle && <p className="mt-0.5 text-[15px] text-slate-400">{subtitle}</p>}
+          <h2 className="text-[26px] font-semibold leading-tight text-navy">{title}</h2>
+          {subtitle && <p className="mt-0.5 text-[15px] text-muted">{subtitle}</p>}
         </div>
       </div>
       {right}

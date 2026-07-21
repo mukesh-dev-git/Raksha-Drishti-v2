@@ -28,6 +28,9 @@ import PinnedCard from "./PinnedCard";
 import EntityDetailCard from "./EntityDetailCard";
 import { ENTITY_STYLES } from "./entityStyles";
 
+// Dignified single accent used for section chrome across the board.
+const ACCENT = "#0b2e59";
+
 export default function InvestigationWorkspaceClient({
   data,
   caseTypeName,
@@ -48,23 +51,23 @@ export default function InvestigationWorkspaceClient({
   );
 
   const stats = [
-    { label: "Suspects", value: data.entities.suspects.length, Icon: ShieldAlert, accent: "#fb7185" },
-    { label: "Evidence Items", value: data.evidence.length, Icon: Fingerprint, accent: "#fb923c" },
-    { label: "Network Nodes", value: data.graph.nodes.length, Icon: Network, accent: "#38bdf8" },
-    { label: "Connections", value: data.graph.edges.length, Icon: Radar, accent: "#a78bfa" },
-    { label: "Timeline Events", value: data.timeline.length, Icon: Clock, accent: "#34d399" },
+    { label: "Suspects", value: data.entities.suspects.length, Icon: ShieldAlert },
+    { label: "Evidence Items", value: data.evidence.length, Icon: Fingerprint },
+    { label: "Network Nodes", value: data.graph.nodes.length, Icon: Network },
+    { label: "Connections", value: data.graph.edges.length, Icon: Radar },
+    { label: "Timeline Events", value: data.timeline.length, Icon: Clock },
   ];
 
   return (
     <div className="relative space-y-14">
-      {/* detective-board backdrop */}
-      <div className="pointer-events-none fixed inset-0 -z-10 bg-slate-950" />
+      {/* light board backdrop — subtle navy dot grid on paper */}
+      <div className="pointer-events-none fixed inset-0 -z-10 bg-paper" />
       <div
-        className="pointer-events-none fixed inset-0 -z-10 opacity-[0.5]"
+        className="pointer-events-none fixed inset-0 -z-10 opacity-60"
         style={{
           backgroundImage:
-            "radial-gradient(ellipse 70% 55% at 50% -8%, rgba(56,189,248,0.10), transparent), radial-gradient(ellipse 50% 45% at 100% 105%, rgba(251,113,133,0.08), transparent), radial-gradient(circle, rgba(148,163,184,0.06) 1px, transparent 1px)",
-          backgroundSize: "auto, auto, 26px 26px",
+            "radial-gradient(circle, rgba(11,46,89,0.05) 1px, transparent 1px)",
+          backgroundSize: "26px 26px",
         }}
       />
 
@@ -74,47 +77,47 @@ export default function InvestigationWorkspaceClient({
           icon={FileText}
           title="Investigation Summary"
           subtitle={`${caseTypeName} · ${districtName} jurisdiction`}
-          accent="#38bdf8"
+          accent={ACCENT}
           right={
             <Link
               href={`${base}/case-files`}
-              className="flex items-center gap-2 rounded-xl bg-sky-600 px-5 py-3 text-[15px] font-semibold text-white shadow-lg shadow-sky-950/40 transition hover:bg-sky-500"
+              className="flex items-center gap-2 rounded-sm bg-navy px-5 py-3 text-[15px] font-semibold text-white transition hover:bg-navy-hover"
             >
               <FolderArchive size={17} /> Open Case Files
             </Link>
           }
         />
-        <PinnedCard>
+        <PinnedCard pin={ACCENT}>
           <div className="grid gap-6 p-6 lg:grid-cols-[1.4fr_1fr] lg:p-8">
             <div>
               <div className="mb-3 flex flex-wrap gap-2">
                 {data.sections.map((s) => (
                   <span
                     key={s}
-                    className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[13px] text-slate-300"
+                    className="rounded-sm border border-line bg-surface-2 px-3 py-1.5 text-[13px] text-muted"
                   >
                     {s}
                   </span>
                 ))}
               </div>
-              <p className="text-[17px] leading-relaxed text-slate-300">
-                Active investigation into <span className="font-semibold text-slate-100">{caseTypeName.toLowerCase()}</span>{" "}
-                offences across <span className="font-semibold text-slate-100">{districtName}</span>. The board below maps{" "}
+              <p className="text-[17px] leading-relaxed text-ink">
+                Active investigation into <span className="font-semibold text-navy">{caseTypeName.toLowerCase()}</span>{" "}
+                offences across <span className="font-semibold text-navy">{districtName}</span>. The board below maps{" "}
                 {data.graph.nodes.length} linked entities and {data.graph.edges.length} relationships spanning suspects,
                 victims, witnesses, physical and digital evidence, and connected case files. AI analysis places the
-                current composite risk at <span className="font-semibold text-slate-100">{data.ai.riskScore}/100</span>.
+                current composite risk at <span className="font-semibold text-navy">{data.ai.riskScore}/100</span>.
               </p>
-              <p className="mt-4 border-l-2 border-sky-500/40 pl-4 text-[16px] italic leading-relaxed text-slate-400">
+              <p className="mt-4 border-l-2 border-navy/40 pl-4 text-[16px] leading-relaxed text-muted">
                 {data.ai.modusOperandi}
               </p>
             </div>
 
             <div className="grid grid-cols-2 gap-3 self-start sm:grid-cols-3 lg:grid-cols-2">
               {stats.map((s) => (
-                <div key={s.label} className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-                  <s.Icon size={20} style={{ color: s.accent }} />
-                  <p className="mt-2 text-3xl font-bold text-slate-100">{s.value}</p>
-                  <p className="text-[13px] text-slate-400">{s.label}</p>
+                <div key={s.label} className="rounded-sm border border-line bg-surface-2 p-4">
+                  <s.Icon size={20} className="text-navy" />
+                  <p className="mt-2 text-3xl font-semibold text-navy">{s.value}</p>
+                  <p className="text-[13px] text-muted">{s.label}</p>
                 </div>
               ))}
             </div>
@@ -128,10 +131,10 @@ export default function InvestigationWorkspaceClient({
           icon={Network}
           title="Criminal Network"
           subtitle="Drag nodes to reposition · scroll to zoom · click any entity to trace its links"
-          accent="#38bdf8"
+          accent={ACCENT}
         />
         <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
-          <PinnedCard className="h-[600px] overflow-hidden">
+          <PinnedCard pin={ACCENT} className="h-[600px] overflow-hidden">
             <RelationshipGraph
               nodes={data.graph.nodes}
               edges={data.graph.edges}
@@ -142,17 +145,17 @@ export default function InvestigationWorkspaceClient({
           </PinnedCard>
 
           <div className="flex flex-col gap-6">
-            <PinnedCard pin="#a78bfa" className="min-h-[300px] flex-1">
+            <PinnedCard pin={ACCENT} className="min-h-[300px] flex-1">
               <EntityDetailCard detail={detail} />
             </PinnedCard>
-            <PinnedCard pin="#94a3b8">
+            <PinnedCard pin={ACCENT}>
               <div className="p-5">
-                <p className="mb-3 text-[13px] font-bold uppercase tracking-[0.14em] text-slate-400">Legend</p>
+                <p className="mb-3 text-[13px] font-bold uppercase tracking-[0.14em] text-muted">Legend</p>
                 <div className="grid grid-cols-2 gap-x-4 gap-y-2.5">
                   {(Object.keys(ENTITY_STYLES) as (keyof typeof ENTITY_STYLES)[]).map((k) => {
                     const s = ENTITY_STYLES[k];
                     return (
-                      <span key={k} className="flex items-center gap-2 text-[14px] text-slate-300">
+                      <span key={k} className="flex items-center gap-2 text-[14px] text-ink">
                         <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: s.color }} />
                         {s.label}
                       </span>
@@ -171,9 +174,9 @@ export default function InvestigationWorkspaceClient({
           icon={Clock}
           title="Investigation Timeline"
           subtitle="Chronological record from first report to latest action"
-          accent="#34d399"
+          accent={ACCENT}
         />
-        <PinnedCard pin="#34d399">
+        <PinnedCard pin={ACCENT}>
           <div className="p-5">
             <TimelinePanel
               events={data.timeline}
@@ -191,7 +194,7 @@ export default function InvestigationWorkspaceClient({
           icon={Fingerprint}
           title="Evidence Locker"
           subtitle={`${data.evidence.length} exhibits — click to trace links to suspects and locations`}
-          accent="#fb923c"
+          accent={ACCENT}
         />
         <EvidencePanel
           evidence={data.evidence}
@@ -207,10 +210,10 @@ export default function InvestigationWorkspaceClient({
           icon={Sparkles}
           title="AI Investigation Insights"
           subtitle="Automated modus operandi, pattern, and next-action analysis"
-          accent="#a78bfa"
+          accent={ACCENT}
           right={
-            <span className="flex items-center gap-2 rounded-full border border-violet-500/30 bg-violet-500/10 px-3.5 py-2 text-[13px] font-medium text-violet-300">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-violet-400" /> Live analysis
+            <span className="flex items-center gap-2 rounded-sm border border-line bg-surface-2 px-3.5 py-2 text-[13px] font-medium text-muted">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-navy" /> Live analysis
             </span>
           }
         />
@@ -223,7 +226,7 @@ export default function InvestigationWorkspaceClient({
           icon={Layers}
           title="Related Cases"
           subtitle="Cases sharing suspects, locations, or modus operandi"
-          accent="#fbbf24"
+          accent={ACCENT}
         />
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {data.ai.similarCases.map((sc, i) => (
@@ -233,24 +236,24 @@ export default function InvestigationWorkspaceClient({
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05, duration: 0.3 }}
             >
-              <PinnedCard pin="#fbbf24">
+              <PinnedCard pin={ACCENT}>
                 <div className="p-5">
                   <div className="flex items-center justify-between">
-                    <span className="text-[18px] font-bold text-slate-100">{sc.id}</span>
-                    <span className="rounded-full bg-amber-500/15 px-2.5 py-1 text-[13px] font-semibold text-amber-300">
+                    <span className="text-[18px] font-bold text-navy">{sc.id}</span>
+                    <span className="rounded-sm bg-surface-2 px-2.5 py-1 text-[13px] font-semibold text-ink">
                       {sc.similarity}% match
                     </span>
                   </div>
-                  <p className="mt-1.5 text-[15px] text-slate-400">{sc.title}</p>
-                  <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/5">
+                  <p className="mt-1.5 text-[15px] text-muted">{sc.title}</p>
+                  <div className="mt-3 h-1.5 overflow-hidden rounded-sm bg-surface-2">
                     <motion.div
-                      className="h-full rounded-full bg-amber-400"
+                      className="h-full rounded-sm bg-navy"
                       initial={{ width: 0 }}
                       animate={{ width: `${sc.similarity}%` }}
                       transition={{ duration: 0.8, ease: "easeOut" }}
                     />
                   </div>
-                  <p className="mt-3 text-[13px] uppercase tracking-wide text-slate-500">
+                  <p className="mt-3 text-[13px] uppercase tracking-wide text-muted">
                     {sc.district} district
                   </p>
                 </div>
@@ -266,7 +269,7 @@ export default function InvestigationWorkspaceClient({
           icon={FileStack}
           title="Open Case Files"
           subtitle="Open a file to read the full digital case-file flipbook"
-          accent="#e2e8f0"
+          accent={ACCENT}
         />
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {caseFiles.map((f, i) => (
@@ -277,15 +280,15 @@ export default function InvestigationWorkspaceClient({
               transition={{ delay: i * 0.05, duration: 0.3 }}
             >
               <Link href={`${base}/case-files/${f.id}`} className="block">
-                <PinnedCard variant="paper" pin="#e11d48" interactive>
+                <PinnedCard variant="paper" pin="#b45309" interactive>
                   <div className="flex items-start gap-4 p-5">
-                    <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-stone-800/90">
+                    <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-sm bg-stone-800/90">
                       <FileStack size={22} className="text-stone-100" />
                     </span>
                     <div className="min-w-0 flex-1">
                       <p className="text-[19px] font-bold text-stone-900">{f.id}</p>
                       <p className="mt-0.5 text-[15px] text-stone-600">{f.title}</p>
-                      <span className="mt-2 inline-block rounded-full border border-stone-300 bg-stone-100 px-2.5 py-1 text-[12px] font-medium text-stone-700">
+                      <span className="mt-2 inline-block rounded-sm border border-stone-300 bg-stone-100 px-2.5 py-1 text-[12px] font-medium text-stone-700">
                         {f.status}
                       </span>
                     </div>
