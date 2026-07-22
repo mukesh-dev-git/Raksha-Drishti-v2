@@ -1,4 +1,5 @@
 import PageShell from "@/components/PageShell";
+import MapEmbed from "@/components/MapEmbed";
 
 // -----------------------------------------------------------------------------
 // /crime-count
@@ -12,13 +13,7 @@ export default function CrimeCountPage() {
       description="Total registered crime, broken down by category, time period, and region. Use the interactive map below to explore totals across Bengaluru."
       breadcrumbs={[{ label: "Crime Count", href: "/crime-count" }]}
     >
-      <div className="h-[80vh] w-full overflow-hidden rounded border border-line">
-        <iframe
-          src="/crime-map/map.html"
-          title="Bengaluru crime map"
-          className="h-full w-full border-0"
-        />
-      </div>
+      <MapEmbed src="/crime-map/map.html" title="Bengaluru crime map" />
     </PageShell>
   );
 }

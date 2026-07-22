@@ -1,4 +1,5 @@
 import PageShell from "@/components/PageShell";
+import MapEmbed from "@/components/MapEmbed";
 
 // -----------------------------------------------------------------------------
 // /crime-hotspots
@@ -12,13 +13,10 @@ export default function CrimeHotspotsPage() {
       description="Geographic concentration of reported incidents. Use the map to identify high-risk areas, direct patrols, and monitor how hotspots shift over time."
       breadcrumbs={[{ label: "Crime Hotspots", href: "/crime-hotspots" }]}
     >
-      <div className="h-[80vh] w-full overflow-hidden rounded border border-line">
-        <iframe
-          src="/crime-map/spatiotemporal.html"
-          title="Bengaluru spatiotemporal crime clusters"
-          className="h-full w-full border-0"
-        />
-      </div>
+      <MapEmbed
+        src="/crime-map/spatiotemporal.html"
+        title="Bengaluru spatiotemporal crime clusters"
+      />
     </PageShell>
   );
 }
