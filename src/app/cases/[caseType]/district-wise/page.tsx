@@ -3,7 +3,17 @@ import { notFound } from "next/navigation";
 import { ArrowRight, TrendingUp, TrendingDown } from "lucide-react";
 import PageShell from "@/components/PageShell";
 import Sparkline from "@/components/ui/Sparkline";
+import StatusBadge from "@/components/ui/StatusBadge";
 import { districts, getCaseType, trendYears } from "@/lib/data";
+
+// Clearance rate thresholds — mirrors the muted, functional status system
+// used throughout the portal (StatusBadge). Never colour alone: each badge
+// pairs an icon with the rate as text.
+function clearanceStatus(rate: number): "verified" | "pending" | "alert" {
+  if (rate >= 60) return "verified";
+  if (rate >= 35) return "pending";
+  return "alert";
+}
 
 // -----------------------------------------------------------------------------
 // /cases/[caseType]/district-wise
@@ -54,6 +64,9 @@ export default async function DistrictWisePage({
               <th scope="col" className="hidden px-4 py-3 font-medium sm:table-cell">
                 Trend {firstYear}–{lastYear}
               </th>
+              <th scope="col" className="hidden px-4 py-3 font-medium md:table-cell">
+                Clearance Rate
+              </th>
               <th scope="col" className="px-4 py-3 text-right font-medium">
                 <span className="sr-only">Open workspace</span>
               </th>
@@ -92,6 +105,12 @@ export default async function DistrictWisePage({
                       {up ? "+" : "−"}{Math.abs(pct)}%
                     </span>
                   </div>
+                </td>
+                <td className="hidden px-4 py-3 md:table-cell">
+                  <StatusBadge
+                    status={clearanceStatus(d.clearanceRate)}
+                    label={`${d.clearanceRate}% cleared`}
+                  />
                 </td>
                 <td className="px-4 py-3 text-right">
                   <Link

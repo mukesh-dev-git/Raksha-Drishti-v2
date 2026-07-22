@@ -16,8 +16,11 @@ export type District = {
   name: string;
   count: number;
   // Registered cases per year (oldest → newest), aligned with `trendYears`.
-  // The last value equals `count`.
+  // The last value equals `count`. Not monotonic — real crime trends rise
+  // and fall year to year.
   trend: number[];
+  // Share of registered cases resolved/charge-sheeted, 0–100.
+  clearanceRate: number;
 };
 
 // Year labels for the district trend series (oldest → newest).
@@ -37,13 +40,18 @@ export const caseTypes: CaseType[] = [
   { slug: "burglary", name: "Burglary", total: 398 },
 ];
 
-// District-wise counts (same list reused for every case type as placeholder)
+// District-wise counts — real Karnataka districts, spanning Bengaluru's
+// metro core, the coastal, northern, and Malnad regions. Same list reused
+// for every case type as placeholder.
 export const districts: District[] = [
-  { slug: "central", name: "Central District", count: 320, trend: [180, 214, 249, 288, 320] },
-  { slug: "north", name: "North District", count: 210, trend: [124, 142, 168, 191, 210] },
-  { slug: "south", name: "South District", count: 185, trend: [98, 118, 141, 167, 185] },
-  { slug: "east", name: "East District", count: 142, trend: [72, 91, 108, 127, 142] },
-  { slug: "west", name: "West District", count: 98, trend: [61, 68, 79, 90, 98] },
+  { slug: "bengaluru", name: "Bengaluru Urban", count: 620, trend: [540, 595, 565, 600, 620], clearanceRate: 58 },
+  { slug: "mysuru", name: "Mysuru", count: 310, trend: [265, 290, 275, 295, 310], clearanceRate: 71 },
+  { slug: "belagavi", name: "Belagavi", count: 275, trend: [240, 260, 235, 268, 275], clearanceRate: 64 },
+  { slug: "kalaburagi", name: "Kalaburagi", count: 230, trend: [205, 195, 218, 210, 230], clearanceRate: 47 },
+  { slug: "dakshina-kannada", name: "Dakshina Kannada", count: 205, trend: [180, 200, 190, 212, 205], clearanceRate: 76 },
+  { slug: "tumakuru", name: "Tumakuru", count: 168, trend: [150, 145, 160, 155, 168], clearanceRate: 69 },
+  { slug: "ballari", name: "Ballari", count: 152, trend: [135, 150, 140, 148, 152], clearanceRate: 28 },
+  { slug: "shivamogga", name: "Shivamogga", count: 120, trend: [100, 108, 102, 115, 120], clearanceRate: 82 },
 ];
 
 // Individual case files shown in /case-files

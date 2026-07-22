@@ -2,7 +2,7 @@ import Link from "next/link";
 import { BarChart3, MapPin, FolderKanban, ArrowRight } from "lucide-react";
 import LinkCard from "@/components/LinkCard";
 import StatTile from "@/components/ui/StatTile";
-import { caseTypes } from "@/lib/data";
+import { caseTypes, districts } from "@/lib/data";
 
 // -----------------------------------------------------------------------------
 // /dashboard — portal home. Navy gradient hero (imagery placeholder), a summary
@@ -58,7 +58,7 @@ export default function DashboardPage() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <StatTile label="Registered cases" value={totalCases.toLocaleString("en-IN")} hint="Across all categories" />
             <StatTile label="Crime categories" value={String(caseTypes.length)} hint="Tracked case types" />
-            <StatTile label="Districts covered" value="5" hint="Statewide reporting" />
+            <StatTile label="Districts covered" value={String(districts.length)} hint="Statewide reporting" />
             <StatTile label="Helpline" value="112" hint="24×7 emergency response" />
           </div>
         </section>
