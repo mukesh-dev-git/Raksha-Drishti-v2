@@ -15,7 +15,13 @@ export type District = {
   slug: string;
   name: string;
   count: number;
+  // Registered cases per year (oldest → newest), aligned with `trendYears`.
+  // The last value equals `count`.
+  trend: number[];
 };
+
+// Year labels for the district trend series (oldest → newest).
+export const trendYears = [2022, 2023, 2024, 2025, 2026];
 
 export type CaseFile = {
   id: string;
@@ -33,11 +39,11 @@ export const caseTypes: CaseType[] = [
 
 // District-wise counts (same list reused for every case type as placeholder)
 export const districts: District[] = [
-  { slug: "central", name: "Central District", count: 320 },
-  { slug: "north", name: "North District", count: 210 },
-  { slug: "south", name: "South District", count: 185 },
-  { slug: "east", name: "East District", count: 142 },
-  { slug: "west", name: "West District", count: 98 },
+  { slug: "central", name: "Central District", count: 320, trend: [180, 214, 249, 288, 320] },
+  { slug: "north", name: "North District", count: 210, trend: [124, 142, 168, 191, 210] },
+  { slug: "south", name: "South District", count: 185, trend: [98, 118, 141, 167, 185] },
+  { slug: "east", name: "East District", count: 142, trend: [72, 91, 108, 127, 142] },
+  { slug: "west", name: "West District", count: 98, trend: [61, 68, 79, 90, 98] },
 ];
 
 // Individual case files shown in /case-files

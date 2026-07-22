@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, TrendingUp, TrendingDown } from "lucide-react";
 import PageShell from "@/components/PageShell";
-import { districts, getCaseType } from "@/lib/data";
+import Sparkline from "@/components/ui/Sparkline";
+import { districts, getCaseType, trendYears } from "@/lib/data";
 
 // -----------------------------------------------------------------------------
 // /cases/[caseType]/district-wise
@@ -29,7 +30,8 @@ export default async function DistrictWisePage({
   if (!c) notFound();
 
   const ranked = [...districts].sort((a, b) => b.count - a.count);
-  const max = ranked[0]?.count ?? 1;
+  const firstYear = trendYears[0];
+  const lastYear = trendYears[trendYears.length - 1];
 
   return (
     <PageShell
@@ -50,7 +52,7 @@ export default async function DistrictWisePage({
               <th scope="col" className="px-4 py-3 font-medium">District</th>
               <th scope="col" className="px-4 py-3 font-medium">Cases</th>
               <th scope="col" className="hidden px-4 py-3 font-medium sm:table-cell">
-                Share
+                Trend {firstYear}–{lastYear}
               </th>
               <th scope="col" className="px-4 py-3 text-right font-medium">
                 <span className="sr-only">Open workspace</span>
@@ -58,7 +60,13 @@ export default async function DistrictWisePage({
             </tr>
           </thead>
           <tbody>
-            {ranked.map((d) => (
+            {ranked.map((d) => {
+              const first = d.trend[0];
+              const last = d.trend[d.trend.length - 1];
+              const pct = Math.round(((last - first) / first) * 100);
+              const up = pct >= 0;
+              const TrendIcon = up ? TrendingUp : TrendingDown;
+              return (
               <tr key={d.slug} className="border-b border-line last:border-0 hover:bg-surface-2">
                 <th scope="row" className="px-4 py-3 font-medium text-navy">
                   <Link
@@ -72,15 +80,16 @@ export default async function DistrictWisePage({
                   {d.count.toLocaleString("en-IN")}
                 </td>
                 <td className="hidden px-4 py-3 sm:table-cell">
-                  <div className="flex items-center gap-2">
-                    <span className="h-2 w-32 overflow-hidden rounded-sm bg-surface-2">
-                      <span
-                        className="block h-full bg-navy"
-                        style={{ width: `${Math.round((d.count / max) * 100)}%` }}
-                      />
-                    </span>
-                    <span className="text-xs text-muted">
-                      {Math.round((d.count / max) * 100)}%
+                  <div className="flex items-center gap-3">
+                    <Sparkline
+                      data={d.trend}
+                      width={96}
+                      height={28}
+                      ariaLabel={`${d.name} ${c.name.toLowerCase()} cases went from ${first} in ${firstYear} to ${last} in ${lastYear}, ${up ? "up" : "down"} ${Math.abs(pct)} percent.`}
+                    />
+                    <span className="inline-flex items-center gap-1 text-xs font-medium text-ink">
+                      <TrendIcon size={14} aria-hidden="true" />
+                      {up ? "+" : "−"}{Math.abs(pct)}%
                     </span>
                   </div>
                 </td>
@@ -94,7 +103,8 @@ export default async function DistrictWisePage({
                   </Link>
                 </td>
               </tr>
-            ))}
+              );
+            })}
           </tbody>
         </table>
       </div>
