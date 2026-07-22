@@ -1,12 +1,12 @@
-import Link from "next/link";
-import { BarChart3, MapPin, FolderKanban, ArrowRight } from "lucide-react";
+import { BarChart3, MapPin, FolderKanban } from "lucide-react";
 import LinkCard from "@/components/LinkCard";
 import StatTile from "@/components/ui/StatTile";
+import ScrollZoomHero from "@/components/dashboard/ScrollZoomHero";
 import { caseTypes, districts } from "@/lib/data";
 
 // -----------------------------------------------------------------------------
-// /dashboard — portal home. Navy gradient hero (imagery placeholder), a summary
-// stat row, and the three primary modules as solid cards.
+// /dashboard — portal home. Animated photographic hero, a summary stat row,
+// and the three primary modules as solid cards.
 // -----------------------------------------------------------------------------
 export const metadata = { title: "Home" };
 
@@ -15,46 +15,11 @@ const totalCases = caseTypes.reduce((sum, c) => sum + c.total, 0);
 export default function DashboardPage() {
   return (
     <main id="dashboard">
-      {/* Hero — solid navy gradient placeholder (no flashy media) */}
-      <section
-        className="bg-navy text-white"
-        style={{
-          backgroundImage:
-            "linear-gradient(135deg, var(--navy) 0%, var(--navy-hover) 100%)",
-        }}
-      >
-        <div className="mx-auto max-w-content px-4 py-12 sm:py-16">
-          <p className="text-sm font-medium uppercase tracking-wide text-white/70">
-            State Police Department
-          </p>
-          <h1 className="mt-2 max-w-3xl text-3xl font-semibold sm:text-4xl">
-            Crime Analytics &amp; Investigation Portal
-          </h1>
-          <p className="mt-4 max-w-2xl text-white/85">
-            A single, reliable place to understand crime in the state — view
-            counts and trends, locate hotspots, and follow cases from district
-            summaries through to individual investigation files.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link
-              href="/cases"
-              className="inline-flex items-center gap-2 rounded-sm bg-white px-5 py-2.5 font-medium text-navy hover:bg-white/90"
-            >
-              Browse cases <ArrowRight size={16} aria-hidden="true" />
-            </Link>
-            <Link
-              href="/crime-count"
-              className="inline-flex items-center gap-2 rounded-sm border border-white/40 px-5 py-2.5 font-medium text-white hover:bg-white/10"
-            >
-              View crime statistics
-            </Link>
-          </div>
-        </div>
-      </section>
+      <ScrollZoomHero />
 
       <div className="mx-auto max-w-content px-4">
         {/* Summary stats */}
-        <section aria-label="Summary statistics" className="-mt-8 sm:-mt-10">
+        <section aria-label="Summary statistics" className="mt-10">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <StatTile label="Registered cases" value={totalCases.toLocaleString("en-IN")} hint="Across all categories" />
             <StatTile label="Crime categories" value={String(caseTypes.length)} hint="Tracked case types" />
