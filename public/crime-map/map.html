@@ -1,0 +1,639 @@
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<title>Bengaluru Crime Map — 3D H3 Hotspots</title>
+
+<!-- SAME TECHNIQUE AS crimerate.co.uk: GL JS + Uber H3 hexagons + fill-extrusion columns + symbol count labels.
+     MapLibre GL JS is the free, API-compatible fork of Mapbox GL JS (no access token needed). -->
+<link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script src="https://unpkg.com/h3-js@4.1.0/dist/h3-js.umd.js"></script>
+
+<style>
+  :root {
+    --panel: rgba(17,22,30,0.94); --border: #2b3340; --ink: #e6edf3; --dim: #93a1b0;
+    --accent: #2e90e5; --hot: #e51e8c;
+  }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #0a0d12; color: var(--ink);
+    font-family: Inter, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
+  #map { position: absolute; inset: 0; }
+
+  .card { position: absolute; z-index: 10; background: var(--panel); border: 1px solid var(--border);
+    border-radius: 12px; backdrop-filter: blur(8px); box-shadow: 0 8px 30px rgba(0,0,0,.55); }
+
+  /* ---- Left control stack ---- */
+  #left { top: 14px; left: 14px; width: 296px; max-height: calc(100vh - 28px); overflow-y: auto; }
+  #left .sect { padding: 13px 15px; border-bottom: 1px solid var(--border); }
+  #left .sect:last-child { border-bottom: none; }
+  #left .brand { display: flex; align-items: center; justify-content: space-between; padding: 11px 15px; }
+  #left .brand .back { font-size: 12px; color: var(--accent); text-decoration: none; font-weight: 600; }
+  #left .brand .back:hover { text-decoration: underline; }
+  #left .brand .brandname { font-size: 12px; font-weight: 700; letter-spacing: .3px; color: var(--ink); }
+  .sect h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .6px; color: var(--dim);
+    margin: 0 0 10px; }
+  .find input, .find select { width: 100%; box-sizing: border-box; background: #10151d; color: var(--ink);
+    border: 1px solid var(--border); border-radius: 8px; padding: 9px 10px; font-size: 13px; }
+  .seg { display: flex; gap: 6px; }
+  .seg button { flex: 1; font-size: 11px; padding: 6px 0; border-radius: 7px; cursor: pointer;
+    border: 1px solid var(--border); background: #10151d; color: var(--dim); }
+  .seg button.active { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; }
+  .rng label { display: flex; justify-content: space-between; font-size: 12px; color: var(--dim); margin: 8px 0 5px; }
+  .rng label b { color: var(--ink); font-variant-numeric: tabular-nums; }
+  input[type=range] { width: 100%; accent-color: var(--accent); }
+  .play { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+  .play button { background: var(--accent); color: #fff; border: none; font-weight: 700; font-size: 12px;
+    padding: 7px 12px; border-radius: 8px; cursor: pointer; }
+  .play span { font-size: 10.5px; color: var(--dim); }
+  .totalStat { display: flex; justify-content: space-between; align-items: baseline;
+    margin: -2px 0 12px; padding-bottom: 11px; border-bottom: 1px solid var(--border); }
+  .totalStat .k { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--dim); }
+  .totalStat b { font-size: 20px; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .types { display: grid; grid-template-columns: 1fr; gap: 6px; font-size: 12px; }
+  .types label { display: flex; align-items: center; gap: 6px; cursor: pointer; white-space: nowrap; }
+  .types label span.dot { width: 9px; height: 9px; border-radius: 2px; flex: none; }
+  .types label span.cnt { margin-left: auto; color: var(--dim); font-size: 11px; font-variant-numeric: tabular-nums; }
+  .allnone { text-align: right; font-size: 11px; margin-top: 8px; color: var(--accent); }
+  .allnone a { cursor: pointer; margin-left: 10px; }
+
+  /* ---- Right info panel (area selection) ---- */
+  #info { top: 14px; right: 14px; width: 300px; padding: 15px 16px; }
+  #info h2 { font-size: 15px; margin: 0 0 12px; display: flex; justify-content: space-between; align-items: center; }
+  #info .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 14px; }
+  #info .stat .k { font-size: 10px; text-transform: uppercase; letter-spacing: .5px; color: var(--dim); }
+  #info .stat .v { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; margin-top: 2px; }
+  #info .breakdown { margin-top: 14px; border-top: 1px solid var(--border); padding-top: 12px; }
+  #info .brow { display: flex; align-items: center; gap: 8px; font-size: 12px; margin: 5px 0; }
+  #info .brow .dot { width: 9px; height: 9px; border-radius: 2px; flex: none; }
+  #info .brow .bar { height: 6px; border-radius: 3px; background: var(--accent); }
+  #info .brow .n { margin-left: auto; color: var(--dim); font-variant-numeric: tabular-nums; }
+  #info .muted { color: var(--dim); font-size: 12px; }
+
+  /* ---- Basemap style switch ---- */
+  #styles { bottom: 16px; left: 14px; padding: 7px 8px; display: flex; gap: 4px; }
+  #styles button { font-size: 11.5px; padding: 6px 11px; border-radius: 7px; cursor: pointer;
+    border: 1px solid var(--border); background: transparent; color: var(--dim); display: flex; gap: 6px; align-items: center; }
+  #styles button.active { background: #10151d; color: var(--ink); border-color: var(--accent); }
+  #styles button i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+
+  /* ---- Legend ---- */
+  #legend { bottom: 16px; right: 14px; padding: 9px 12px; font-size: 11px; }
+  #legend .bar { height: 9px; width: 190px; border-radius: 3px; margin: 6px 0 3px; }
+  #legend .ends { display: flex; justify-content: space-between; color: var(--dim); }
+  #legend .note { margin-top: 7px; color: var(--dim); font-size: 10px; }
+
+  #loading { position: absolute; inset: 0; z-index: 40; display: flex; align-items: center;
+    justify-content: center; background: #0a0d12; color: var(--dim); font-size: 14px; }
+
+  /* ---- On-hexagon popup ---- */
+  .crime-pop .maplibregl-popup-content { background: var(--panel); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 13px; color: var(--ink); box-shadow: 0 8px 30px rgba(0,0,0,.6); }
+  .crime-pop .maplibregl-popup-tip { border-top-color: var(--panel); border-bottom-color: var(--panel); }
+  .crime-pop .maplibregl-popup-close-button { color: var(--dim); font-size: 17px; padding: 0 6px; }
+  .crime-pop .pop-title { font-size: 14px; font-weight: 700; }
+  .crime-pop .pop-sub { font-size: 10.5px; color: var(--dim); margin: 2px 0 9px; }
+  .crime-pop .pop-stats { display: flex; gap: 12px; padding: 8px 0; border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border); margin-bottom: 8px; }
+  .crime-pop .pop-stats div { display: flex; flex-direction: column; font-size: 10px; color: var(--dim);
+    text-transform: uppercase; letter-spacing: .4px; }
+  .crime-pop .pop-stats span { font-size: 16px; font-weight: 700; color: var(--ink); text-transform: none;
+    letter-spacing: 0; font-variant-numeric: tabular-nums; }
+  .crime-pop .pop-break .brow { display: flex; align-items: center; gap: 7px; font-size: 11.5px; margin: 4px 0; }
+  .crime-pop .pop-break .dot { width: 8px; height: 8px; border-radius: 2px; flex: none; }
+  .crime-pop .pop-break .bar { height: 5px; border-radius: 3px; }
+  .crime-pop .pop-break .n { margin-left: auto; color: var(--dim); font-variant-numeric: tabular-nums; }
+</style>
+
+<div id="map"></div>
+<div id="loading">Loading Bengaluru incidents…</div>
+
+<!-- LEFT: controls -->
+<div id="left" class="card">
+  <div class="sect brand">
+    <a href="/dashboard" target="_parent" class="back">‹ Dashboard</a>
+    <div class="brandname">Raksha Drishti</div>
+  </div>
+  <div class="sect find">
+    <h2>Find a location</h2>
+    <select id="place">
+      <option value="">Jump to an area…</option>
+    </select>
+  </div>
+
+  <div class="sect">
+    <h2>Time of day</h2>
+    <div class="rng">
+      <label>Hour window <b id="hourLbl">00:00 – 23:00</b></label>
+      <input type="range" id="hourStart" min="0" max="23" value="0" />
+      <input type="range" id="hourEnd" min="0" max="23" value="23" />
+    </div>
+    <div class="play">
+      <button id="playBtn">▶ Play day</button>
+      <span>sweeps a 3-hour window 0→23h</span>
+    </div>
+    <div class="rng" style="margin-top:10px">
+      <label>Day type</label>
+      <div class="seg" id="dayType">
+        <button data-day="all" class="active">All</button>
+        <button data-day="weekday">Weekday</button>
+        <button data-day="weekend">Weekend</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sect">
+    <h2>Crime types</h2>
+    <div class="totalStat"><span class="k">Total reports</span><b id="totalCount">0</b></div>
+    <div class="types" id="types"></div>
+    <div class="allnone"><a id="selAll">All</a><a id="selNone">None</a></div>
+  </div>
+</div>
+
+<!-- RIGHT: area selection info -->
+<div id="info" class="card">
+  <h2><span id="infoTitle">No area selected</span></h2>
+  <div id="infoBody" class="muted">Click any hexagon to see its report count, top crime and how it ranks
+    against the other areas in view.</div>
+</div>
+
+<!-- Basemap switch -->
+<div id="styles" class="card">
+  <button data-style="night" class="active"><i style="background:#0a0d12;border:1px solid #444"></i>Night</button>
+  <button data-style="light"><i style="background:#e8ebef"></i>Light</button>
+  <button data-style="bright"><i style="background:#f6e7c0"></i>Bright</button>
+  <button data-style="aerial"><i style="background:#3d5a34"></i>Aerial</button>
+</div>
+
+<!-- Legend -->
+<div id="legend" class="card">
+  <div>Reports per hexagon</div>
+  <div class="bar" id="legendBar"></div>
+  <div class="ends"><span>Low</span><span>High</span></div>
+  <div class="note">⚠ Simulated data — realistic demo, not real reported crime.</div>
+</div>
+
+<script type="module">
+// ---------------------------------------------------------------------------
+// Config
+// ---------------------------------------------------------------------------
+const CRIME_TYPES = [
+  { id: "theft",         label: "Theft",          color: "#4fc3f7" },
+  { id: "vehicle_theft", label: "Vehicle theft",  color: "#26c6da" },
+  { id: "burglary",      label: "Burglary",       color: "#66bb6a" },
+  { id: "assault",       label: "Assault",        color: "#ef5350" },
+  { id: "harassment",    label: "Harassment",     color: "#ab47bc" },
+  { id: "fraud",         label: "Fraud",          color: "#ffca28" },
+];
+const CRIME_COLOR = Object.fromEntries(CRIME_TYPES.map(c => [c.id, c.color]));
+const CRIME_LABEL = Object.fromEntries(CRIME_TYPES.map(c => [c.id, c.label]));
+
+// Bangalore hotspot localities to fly to (matches the data anchors).
+const PLACES = [
+  ["Majestic / City Rly", 12.9770, 77.5710], ["KR Market", 12.9630, 77.5770],
+  ["Shivajinagar", 12.9850, 77.6050], ["MG Road / Brigade Rd", 12.9750, 77.6070],
+  ["Koramangala", 12.9350, 77.6250], ["Indiranagar", 12.9720, 77.6410],
+  ["Electronic City", 12.8450, 77.6600], ["Whitefield", 12.9700, 77.7500],
+  ["Marathahalli", 12.9560, 77.7010], ["BTM Layout", 12.9160, 77.6100],
+  ["HSR Layout", 12.9120, 77.6410], ["Jayanagar", 12.9300, 77.5830],
+  ["Banashankari", 12.9250, 77.5470], ["Malleshwaram", 13.0030, 77.5700],
+  ["Hebbal", 13.0360, 77.5970], ["Yelahanka", 13.1000, 77.5960],
+];
+
+// Reverse-lookup helpers (no geocoding API): nearest known locality = "Area", plus a coarse city zone.
+const CITY = [12.9716, 77.5946];
+function haversineKm(aLat, aLng, bLat, bLng) {
+  const R = 6371, dLat = (bLat - aLat) * Math.PI / 180, dLng = (bLng - aLng) * Math.PI / 180;
+  const la1 = aLat * Math.PI / 180, la2 = bLat * Math.PI / 180;
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(la1) * Math.cos(la2) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+function nearestArea(lat, lng) {
+  let best = null, bd = Infinity;
+  for (const [name, la, lo] of PLACES) { const d = haversineKm(lat, lng, la, lo); if (d < bd) { bd = d; best = name; } }
+  return { name: best, dist: bd };
+}
+function zoneOf(lat, lng) {
+  if (haversineKm(lat, lng, CITY[0], CITY[1]) < 3) return "Central Bengaluru";
+  const dLat = lat - CITY[0], dLng = lng - CITY[1];
+  return (Math.abs(dLat) >= Math.abs(dLng) ? (dLat >= 0 ? "North" : "South") : (dLng >= 0 ? "East" : "West")) + " Bengaluru";
+}
+
+// Turbo-style ramp (green → teal → yellow → orange → red → magenta), matching crimerate's look.
+const RAMP = [
+  [0.00, [44, 180, 120]], [0.20, [30, 190, 190]], [0.38, [150, 210, 55]],
+  [0.55, [240, 220, 50]], [0.72, [245, 150, 30]], [0.86, [230, 55, 55]],
+  [1.00, [233, 30, 140]],
+];
+function ramp(t) {
+  t = Math.max(0, Math.min(1, t));
+  for (let i = 1; i < RAMP.length; i++) {
+    if (t <= RAMP[i][0]) {
+      const [t0, c0] = RAMP[i - 1], [t1, c1] = RAMP[i];
+      const f = (t - t0) / (t1 - t0);
+      return `rgb(${Math.round(c0[0] + f * (c1[0] - c0[0]))},${Math.round(c0[1] + f * (c1[1] - c0[1]))},${Math.round(c0[2] + f * (c1[2] - c0[2]))})`;
+    }
+  }
+  return `rgb(233,30,140)`;
+}
+
+// Basemap styles (all token-free).
+const CARTO = s => `https://basemaps.cartocdn.com/gl/${s}/style.json`;
+const STYLES = {
+  night:  CARTO("dark-matter-gl-style"),
+  light:  CARTO("positron-gl-style"),
+  bright: CARTO("voyager-gl-style"),
+  aerial: null, // built below once we know a glyphs URL
+};
+function satelliteStyle(glyphs) {
+  return {
+    version: 8,
+    glyphs: glyphs || "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/{fontstack}/{range}.pbf",
+    sources: {
+      sat: { type: "raster", tileSize: 256,
+        tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"],
+        attribution: "Esri, Maxar, Earthstar Geographics" },
+    },
+    layers: [{ id: "sat", type: "raster", source: "sat" }],
+  };
+}
+
+// H3 resolution by zoom → this is what makes it "zoom in area-wise": cells subdivide as you zoom.
+// Approx hexagon width (corner-to-corner): r7 2.4km · r8 0.9km · r9 350m · r10 132m · r11 50m · r12 19m.
+function resForZoom(z) {
+  if (z < 10.4) return 7;
+  if (z < 11.8) return 8;
+  if (z < 13.2) return 9;
+  if (z < 14.6) return 10;
+  if (z < 16.0) return 11;
+  return 12;
+}
+// Column height is LINEAR in the report count (metres per case), capped per resolution so a single
+// case stays short and a busy cell grows proportionally without shooting off the screen.
+const HUNIT = { 7: 2.0, 8: 3.5, 9: 6, 10: 7, 11: 5, 12: 4 };   // metres of height per reported case
+const HCAP  = { 7: 3200, 8: 1500, 9: 720, 10: 280, 11: 130, 12: 70 }; // max column height (m)
+const heightFor = (res, count) => Math.min(HCAP[res], 5 + count * HUNIT[res]);
+
+// ---------------------------------------------------------------------------
+// State
+// ---------------------------------------------------------------------------
+const state = {
+  all: [], hourStart: 0, hourEnd: 23, day: "all",
+  types: new Set(CRIME_TYPES.map(c => c.id)),
+  selected: null, styleKey: "night", glyphs: null,
+  playing: false, playHour: 0, timer: null, lastCells: [],
+};
+
+// Embed mode (used by the Case Board): ?only=<crimeType> shows just that crime family;
+// ?embed=1 hides the control/style panels so it drops cleanly into a case view.
+const _qp = new URLSearchParams(location.search);
+const ONLY_TYPE = _qp.get("only");
+if (ONLY_TYPE && CRIME_TYPES.some(c => c.id === ONLY_TYPE)) state.types = new Set([ONLY_TYPE]);
+if (_qp.get("embed")) {
+  ["left", "styles"].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = "none"; });
+}
+
+// ---------------------------------------------------------------------------
+// Map
+// ---------------------------------------------------------------------------
+const map = new maplibregl.Map({
+  container: "map", style: STYLES.night,
+  center: [77.62, 12.955], zoom: 11.4, pitch: 55, bearing: -18, maxZoom: 18.5, minZoom: 9,
+});
+map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), "top-right");
+
+// Extruded 3D buildings from the basemap's vector tiles, so the street reads in 3D when you zoom in.
+// CARTO uses the OpenMapTiles schema (a "building" source-layer with render_height); satellite has none.
+function addBuildings() {
+  if (map.getLayer("3d-buildings")) return;
+  const layers = (map.getStyle().layers) || [];
+  const bl = layers.find(l => l["source-layer"] === "building");
+  if (!bl) return; // e.g. the Aerial/raster style has no buildings
+  map.addLayer({
+    id: "3d-buildings", type: "fill-extrusion", source: bl.source, "source-layer": "building",
+    minzoom: 13.5,
+    paint: {
+      "fill-extrusion-color": ["interpolate", ["linear"], ["zoom"], 13.5, "#1a2230", 16.5, "#28323f"],
+      "fill-extrusion-height": ["interpolate", ["linear"], ["zoom"],
+        13.5, 0, 15, ["coalesce", ["get", "render_height"], ["get", "height"], 8]],
+      "fill-extrusion-base": ["coalesce", ["get", "render_min_height"], ["get", "min_height"], 0],
+      "fill-extrusion-opacity": 0.9,
+    },
+  }, "hex-3d"); // insert beneath the crime columns so hexes stay on top
+}
+
+// The basemap's own place/road name labels are "symbol" layers. Any layer we add without a
+// beforeId paints ON TOP of everything already in the style, including those labels — which is
+// why area/road names were getting hidden under the hexagons. Inserting our fill layers just
+// BEFORE the first symbol layer keeps them beneath the basemap's text so labels stay legible.
+function firstSymbolLayerId() {
+  const layers = map.getStyle().layers || [];
+  const sym = layers.find(l => l.type === "symbol");
+  return sym ? sym.id : undefined;
+}
+
+function addLayers() {
+  if (map.getSource("hexes")) return;
+  map.addSource("hexes", { type: "geojson", data: emptyFC() });
+  map.addSource("centroids", { type: "geojson", data: emptyFC() });
+  const beforeLabels = firstSymbolLayerId();
+
+  map.addLayer({
+    id: "hex-3d", type: "fill-extrusion", source: "hexes",
+    paint: {
+      "fill-extrusion-color": ["get", "color"],
+      "fill-extrusion-height": ["get", "height"],
+      "fill-extrusion-base": 0,
+      "fill-extrusion-opacity": 0.5,
+      "fill-extrusion-vertical-gradient": true,
+    },
+  }, beforeLabels);
+  map.addLayer({
+    id: "hex-selected", type: "line", source: "hexes",
+    paint: { "line-color": "#ffffff", "line-width": 2.5 },
+    filter: ["==", ["get", "id"], "__none__"],
+  }, beforeLabels);
+  addBuildings();
+  // Crime-count digits stay on top so they're always readable over the hexagon tops.
+  map.addLayer({
+    id: "hex-count", type: "symbol", source: "centroids",
+    layout: {
+      "text-field": ["get", "countStr"], "text-size": 12, "text-font": ["Open Sans Bold"],
+      "text-allow-overlap": false, "text-ignore-placement": false,
+    },
+    paint: { "text-color": "#ffffff", "text-halo-color": "#000000", "text-halo-width": 1.2 },
+  });
+}
+
+const emptyFC = () => ({ type: "FeatureCollection", features: [] });
+
+map.on("load", () => {
+  try { state.glyphs = map.getStyle().glyphs; } catch (e) {}
+  addLayers();
+  document.getElementById("loading").style.display = "none";
+  render();
+});
+
+// Re-add our layers whenever the basemap style is swapped (setStyle wipes custom sources/layers).
+// A single style change fires styledata (style parsed) then sourcedata/idle (sources ready) — we
+// listen to all three and re-add the moment the new style is loaded and our source is missing.
+function ensureLayers() {
+  if (!map.isStyleLoaded() || map.getSource("hexes")) return;
+  try { state.glyphs = map.getStyle().glyphs || state.glyphs; } catch (e) {}
+  addLayers();
+  if (state.all.length) render();
+}
+map.on("styledata", ensureLayers);
+map.on("sourcedata", ensureLayers);
+map.on("idle", ensureLayers);
+
+let moveTimer = null;
+map.on("moveend", () => { clearTimeout(moveTimer); moveTimer = setTimeout(render, 180); });
+
+// ---------------------------------------------------------------------------
+// Core: bin visible points into H3 cells → extruded hexagons + labels
+// ---------------------------------------------------------------------------
+function inHourWindow(h) {
+  return state.hourStart <= state.hourEnd
+    ? (h >= state.hourStart && h <= state.hourEnd)
+    : (h >= state.hourStart || h <= state.hourEnd);
+}
+function passFilters(d) {
+  return inHourWindow(d.hour) && state.types.has(d.crime_type) &&
+    (state.day === "all" || (state.day === "weekend" ? d.is_weekend === 1 : d.is_weekend === 0));
+}
+
+// Total + per-type counts for the current hour/day filters, city-wide (not limited to the
+// on-screen viewport — that's what makes this a stable summary rather than a number that
+// jumps around as you pan/zoom). Independent of the type checkboxes, so an unchecked type
+// still shows how many reports it has.
+function updateCounts() {
+  const counts = Object.fromEntries(CRIME_TYPES.map(c => [c.id, 0]));
+  let total = 0;
+  for (const d of state.all) {
+    if (!inHourWindow(d.hour)) continue;
+    if (!(state.day === "all" || (state.day === "weekend" ? d.is_weekend === 1 : d.is_weekend === 0))) continue;
+    counts[d.crime_type] = (counts[d.crime_type] || 0) + 1;
+    total++;
+  }
+  const totalEl = document.getElementById("totalCount");
+  if (totalEl) totalEl.textContent = total.toLocaleString();
+  CRIME_TYPES.forEach(c => {
+    const el = document.getElementById(`cnt-${c.id}`);
+    if (el) el.textContent = (counts[c.id] || 0).toLocaleString();
+  });
+}
+
+function render() {
+  if (!map.getSource("hexes")) return;
+  const res = resForZoom(map.getZoom());
+  const b = map.getBounds();
+  const [w, s, e, n] = [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()];
+
+  // Aggregate in-view, filtered points into H3 cells.
+  const cells = new Map(); // cellId -> { total, mix:{} }
+  for (const d of state.all) {
+    if (d.lon < w || d.lon > e || d.lat < s || d.lat > n) continue;
+    if (!passFilters(d)) continue;
+    const id = h3.latLngToCell(d.lat, d.lon, res);
+    let c = cells.get(id);
+    if (!c) { c = { total: 0, mix: {} }; cells.set(id, c); }
+    c.total++; c.mix[d.crime_type] = (c.mix[d.crime_type] || 0) + 1;
+  }
+
+  // Normalise colour/height against the 95th percentile so one huge cell doesn't wash out the ramp.
+  const counts = [...cells.values()].map(c => c.total).sort((a, z) => a - z);
+  const p95 = counts.length ? counts[Math.min(counts.length - 1, Math.floor(counts.length * 0.95))] : 1;
+  const norm = Math.max(p95, 1);
+
+  const polys = [], cents = [];
+  for (const [id, c] of cells) {
+    const t = Math.min(1, c.total / norm);
+    const color = ramp(t);
+    const boundary = h3.cellToBoundary(id).map(([la, lo]) => [lo, la]); // → GeoJSON [lng,lat]
+    boundary.push(boundary[0]);
+    const topCrime = Object.entries(c.mix).sort((a, z) => z[1] - a[1])[0][0];
+    polys.push({
+      type: "Feature",
+      properties: { id, color, height: heightFor(res, c.total), count: c.total,
+        top: topCrime, mix: JSON.stringify(c.mix) },
+      geometry: { type: "Polygon", coordinates: [boundary] },
+    });
+    const [clat, clng] = h3.cellToLatLng(id);
+    cents.push({ type: "Feature", properties: { countStr: String(c.total) },
+      geometry: { type: "Point", coordinates: [clng, clat] } });
+  }
+
+  map.getSource("hexes").setData({ type: "FeatureCollection", features: polys });
+  map.getSource("centroids").setData({ type: "FeatureCollection", features: cents });
+  state.lastCells = [...cells.values()].map(c => c.total);
+
+  // If a selection is showing, refresh its stats against the new binning.
+  if (state.selected && cells.has(state.selected)) updatePanel(state.selected, cells.get(state.selected));
+}
+
+// ---------------------------------------------------------------------------
+// Area selection (click a hexagon → stats panel, like crimerate)
+// ---------------------------------------------------------------------------
+let popup = null;
+
+map.on("click", "hex-3d", (ev) => {
+  const f = ev.features[0];
+  const id = f.properties.id;
+  state.selected = id;
+  map.setFilter("hex-selected", ["==", ["get", "id"], id]);
+  const cell = { total: f.properties.count, mix: JSON.parse(f.properties.mix) };
+  updatePanel(id, cell);
+  showPopup(id, cell);
+});
+map.on("mouseenter", "hex-3d", () => map.getCanvas().style.cursor = "pointer");
+map.on("mouseleave", "hex-3d", () => map.getCanvas().style.cursor = "");
+
+// Shared context: locality (Area), city zone (District), percentile rank, sorted crime breakdown.
+function cellContext(id, cell) {
+  const [lat, lng] = h3.cellToLatLng(id);
+  const area = nearestArea(lat, lng), zone = zoneOf(lat, lng);
+  const all = state.lastCells.slice().sort((a, z) => a - z);
+  const pct = all.length ? Math.round((all.filter(v => v <= cell.total).length / all.length) * 100) : 0;
+  const entries = Object.entries(cell.mix).sort((a, z) => z[1] - a[1]);
+  const maxMix = Math.max(...Object.values(cell.mix));
+  return { lat, lng, area, zone, pct, entries, maxMix, top: entries[0] };
+}
+function breakdownRows(entries, maxMix) {
+  return entries.map(([k, v]) => `
+    <div class="brow"><span class="dot" style="background:${CRIME_COLOR[k]}"></span>${CRIME_LABEL[k]}
+      <span class="bar" style="width:${8 + (v / maxMix) * 90}px;background:${CRIME_COLOR[k]}"></span>
+      <span class="n">${v}</span></div>`).join("");
+}
+
+// Right-hand panel
+function updatePanel(id, cell) {
+  const c = cellContext(id, cell);
+  document.getElementById("infoTitle").textContent = c.area.name;
+  document.getElementById("infoBody").innerHTML = `
+    <div style="font-size:11.5px;color:var(--dim);margin:-4px 0 12px">
+      ${c.zone} · Bengaluru Urban district · hex ${id.slice(-6)}</div>
+    <div class="grid">
+      <div class="stat"><div class="k">Reports</div><div class="v">${cell.total}</div></div>
+      <div class="stat"><div class="k">Top crime</div><div class="v" style="font-size:15px">${CRIME_LABEL[c.top[0]]}</div></div>
+      <div class="stat"><div class="k">Area percentile</div><div class="v">${c.pct}<span style="font-size:13px">th</span></div></div>
+      <div class="stat"><div class="k">Crime types</div><div class="v">${c.entries.length}</div></div>
+    </div>
+    <div class="breakdown"><div class="k" style="font-size:10px;text-transform:uppercase;color:var(--dim);letter-spacing:.5px;margin-bottom:6px">Breakdown</div>${breakdownRows(c.entries, c.maxMix)}</div>`;
+}
+
+// On-hexagon popup (like crimerate's crime-point popup)
+function showPopup(id, cell) {
+  const c = cellContext(id, cell);
+  const html = `
+    <div class="pop-title">${c.area.name}</div>
+    <div class="pop-sub">${c.zone} · Bengaluru Urban · ${c.area.dist < 0.8 ? "in " + c.area.name : "≈" + c.area.dist.toFixed(1) + " km from " + c.area.name}</div>
+    <div class="pop-stats">
+      <div><span>${cell.total}</span>reports</div>
+      <div><span>${CRIME_LABEL[c.top[0]]}</span>top crime</div>
+      <div><span>${c.pct}th</span>percentile</div>
+    </div>
+    <div class="pop-break">${breakdownRows(c.entries, c.maxMix)}</div>`;
+  if (popup) popup.remove();
+  popup = new maplibregl.Popup({ closeButton: true, maxWidth: "260px", offset: 14, className: "crime-pop" })
+    .setLngLat([c.lng, c.lat]).setHTML(html).addTo(map);
+  popup.on("close", () => {
+    state.selected = null;
+    map.setFilter("hex-selected", ["==", ["get", "id"], "__none__"]);
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Controls
+// ---------------------------------------------------------------------------
+// Places
+const placeSel = document.getElementById("place");
+PLACES.forEach(([name, lat, lng]) => {
+  const o = document.createElement("option"); o.value = `${lat},${lng}`; o.textContent = name; placeSel.appendChild(o);
+});
+placeSel.onchange = e => {
+  if (!e.target.value) return;
+  const [lat, lng] = e.target.value.split(",").map(Number);
+  map.flyTo({ center: [lng, lat], zoom: 13.4, pitch: 55, duration: 1400 });
+};
+
+// Crime type checkboxes
+const typesEl = document.getElementById("types");
+CRIME_TYPES.forEach(c => {
+  const l = document.createElement("label");
+  l.innerHTML = `<input type="checkbox" checked><span class="dot" style="background:${c.color}"></span>${c.label}<span class="cnt" id="cnt-${c.id}">0</span>`;
+  typesEl.appendChild(l);
+  l.querySelector("input").onchange = e => {
+    if (e.target.checked) state.types.add(c.id); else state.types.delete(c.id);
+    render();
+  };
+});
+document.getElementById("selAll").onclick = () => { setAllTypes(true); };
+document.getElementById("selNone").onclick = () => { setAllTypes(false); };
+function setAllTypes(on) {
+  state.types = new Set(on ? CRIME_TYPES.map(c => c.id) : []);
+  typesEl.querySelectorAll("input").forEach(i => i.checked = on);
+  render();
+}
+
+// Hour window
+const hs = document.getElementById("hourStart"), he = document.getElementById("hourEnd"), hl = document.getElementById("hourLbl");
+const pad = n => String(n).padStart(2, "0");
+function hourLabel() { hl.textContent = pad(state.hourStart) + ":00 – " + pad(state.hourEnd) + ":00"; }
+hs.oninput = e => { state.hourStart = +e.target.value; hourLabel(); render(); updateCounts(); };
+he.oninput = e => { state.hourEnd = +e.target.value; hourLabel(); render(); updateCounts(); };
+
+// Day type
+document.querySelectorAll("#dayType button").forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll("#dayType button").forEach(x => x.classList.remove("active"));
+    btn.classList.add("active"); state.day = btn.dataset.day; render(); updateCounts();
+  };
+});
+
+// Play (spatiotemporal sweep)
+const WIN = 3;
+const playBtn = document.getElementById("playBtn");
+playBtn.onclick = () => {
+  state.playing = !state.playing;
+  playBtn.textContent = state.playing ? "⏸ Pause" : "▶ Play day";
+  if (state.playing) {
+    state.timer = setInterval(() => {
+      state.playHour = (state.playHour + 1) % 24;
+      state.hourStart = state.playHour; state.hourEnd = (state.playHour + WIN) % 24;
+      hs.value = state.hourStart; he.value = state.hourEnd; hourLabel(); render(); updateCounts();
+    }, 950);
+  } else clearInterval(state.timer);
+};
+
+// Basemap style switch
+document.querySelectorAll("#styles button").forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll("#styles button").forEach(x => x.classList.remove("active"));
+    btn.classList.add("active");
+    const key = btn.dataset.style; state.styleKey = key;
+    map.setStyle(key === "aerial" ? satelliteStyle(state.glyphs) : STYLES[key]);
+  };
+});
+
+// Legend gradient
+document.getElementById("legendBar").style.background =
+  `linear-gradient(90deg, ${[0, .2, .4, .6, .8, 1].map(t => ramp(t)).join(",")})`;
+
+// ---------------------------------------------------------------------------
+// Load data
+// ---------------------------------------------------------------------------
+fetch("data/bangalore_crime.csv").then(r => r.text()).then(text => {
+  const lines = text.trim().split("\n");
+  const h = lines[0].split(","); const ix = Object.fromEntries(h.map((x, i) => [x, i]));
+  state.all = new Array(lines.length - 1);
+  for (let i = 1; i < lines.length; i++) {
+    const c = lines[i].split(",");
+    state.all[i - 1] = { lat: +c[ix.lat], lon: +c[ix.lon], hour: +c[ix.hour],
+      is_weekend: +c[ix.is_weekend], crime_type: c[ix.crime_type] };
+  }
+  hourLabel();
+  updateCounts();
+  if (map.getSource("hexes")) render();
+});
+</script>
