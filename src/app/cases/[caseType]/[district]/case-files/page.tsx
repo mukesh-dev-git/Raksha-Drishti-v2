@@ -1,7 +1,15 @@
 import { notFound } from "next/navigation";
 import PageShell from "@/components/PageShell";
 import CaseFilesListClient from "@/components/cases/CaseFilesListClient";
-import { caseFiles, getCaseType, getDistrict } from "@/lib/data";
+import { caseTypes, districts, caseFiles, getCaseType, getDistrict } from "@/lib/data";
+
+// Pre-render every case type × district at build time (static export).
+export const dynamicParams = false;
+export function generateStaticParams() {
+  return caseTypes.flatMap((c) =>
+    districts.map((d) => ({ caseType: c.slug, district: d.slug }))
+  );
+}
 
 // -----------------------------------------------------------------------------
 // /cases/[caseType]/[district]/case-files
