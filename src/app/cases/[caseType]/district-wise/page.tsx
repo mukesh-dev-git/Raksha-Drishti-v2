@@ -1,7 +1,13 @@
 import { notFound } from "next/navigation";
 import PageShell from "@/components/PageShell";
 import DistrictWiseClient from "@/components/cases/DistrictWiseClient";
-import { districts, getCaseType, trendYears } from "@/lib/data";
+import { caseTypes, districts, getCaseType, trendYears } from "@/lib/data";
+
+// Pre-render every case type at build time (static export).
+export const dynamicParams = false;
+export function generateStaticParams() {
+  return caseTypes.map((c) => ({ caseType: c.slug }));
+}
 
 // -----------------------------------------------------------------------------
 // /cases/[caseType]/district-wise

@@ -1,8 +1,16 @@
 import { notFound } from "next/navigation";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import InvestigationWorkspaceClient from "@/components/investigation/InvestigationWorkspaceClient";
-import { getCaseType, getDistrict } from "@/lib/data";
+import { caseTypes, districts, getCaseType, getDistrict } from "@/lib/data";
 import { getInvestigationData } from "@/lib/investigationData";
+
+// Pre-render every case type × district at build time (static export).
+export const dynamicParams = false;
+export function generateStaticParams() {
+  return caseTypes.flatMap((c) =>
+    districts.map((d) => ({ caseType: c.slug, district: d.slug }))
+  );
+}
 
 // -----------------------------------------------------------------------------
 // /cases/[caseType]/[district]/investigation-workspace

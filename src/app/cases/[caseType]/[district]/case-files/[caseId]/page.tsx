@@ -3,8 +3,18 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, FolderOpen } from "lucide-react";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import CaseFileFlipbook from "@/components/flipbook/CaseFileFlipbook";
-import { getCaseFile, getCaseType, getDistrict } from "@/lib/data";
+import { caseTypes, districts, caseFiles, getCaseFile, getCaseType, getDistrict } from "@/lib/data";
 import { getCaseFileContent } from "@/lib/investigationData";
+
+// Pre-render every case type × district × case file at build time (static export).
+export const dynamicParams = false;
+export function generateStaticParams() {
+  return caseTypes.flatMap((c) =>
+    districts.flatMap((d) =>
+      caseFiles.map((f) => ({ caseType: c.slug, district: d.slug, caseId: f.id }))
+    )
+  );
+}
 
 // -----------------------------------------------------------------------------
 // /cases/[caseType]/[district]/case-files/[caseId]
