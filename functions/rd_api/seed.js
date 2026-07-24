@@ -74,17 +74,20 @@ function sqlString(v) {
 }
 
 // Which columns are numeric (bare in the INSERT) vs text/date (single-quoted)
-// — matches catalyst/DATA_STORE_SCHEMA.md exactly.
+// vs boolean (bare true/false keyword — Catalyst's Boolean type rejects a
+// plain 0/1) — matches catalyst/DATA_STORE_SCHEMA.md exactly.
 const TABLES = [
   {
     name: "District",
     file: "District.csv",
-    numberCols: ["DistrictID", "StateID", "Active"],
+    numberCols: ["DistrictID", "StateID"],
+    boolCols: ["Active"],
   },
   {
     name: "Unit",
     file: "Unit.csv",
-    numberCols: ["UnitID", "TypeID", "DistrictID", "StateID", "Active"],
+    numberCols: ["UnitID", "TypeID", "DistrictID", "StateID"],
+    boolCols: ["Active"],
   },
   {
     name: "CrimeSubHead",
@@ -110,11 +113,12 @@ const TABLES = [
   },
 ];
 
-function buildInsert(tableName, row, numberCols) {
+function buildInsert(tableName, row, numberCols, boolCols = []) {
   const cols = Object.keys(row);
   const values = cols.map((c) => {
     const v = row[c];
     if (v === "" || v === undefined) return "NULL";
+    if (boolCols.includes(c)) return String(v) === "1" || /^true$/i.test(v) ? "true" : "false";
     return numberCols.includes(c) ? v : sqlString(v);
   });
   return `INSERT INTO ${tableName} (${cols.join(", ")}) VALUES (${values.join(", ")})`;
@@ -147,7 +151,7 @@ async function seedTable(run, table) {
   for (let i = 0; i < rows.length; i += BATCH) {
     const batch = rows.slice(i, i + BATCH);
     const outcomes = await Promise.allSettled(
-      batch.map((row) => runWithRetry(buildInsert(table.name, row, table.numberCols)))
+      batch.map((row) => runWithRetry(buildInsert(table.name, row, table.numberCols, table.boolCols)))
     );
     outcomes.forEach((o, idx) => {
       if (o.status === "fulfilled") {
