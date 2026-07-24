@@ -22,10 +22,14 @@ const API_BASE = process.env.NEXT_PUBLIC_RD_API_BASE?.replace(/\/$/, "") || "";
 async function apiGet<T>(path: string): Promise<T | null> {
   if (!API_BASE) return null; // backend not configured → use fallback
   try {
+    // `output: "export"` bakes every fetch's result into the HTML at build
+    // time — there's no running server to ever re-fetch at request time, so
+    // "no-store" isn't just unnecessary here, it's actively incompatible:
+    // Next treats a no-store fetch as opting the route into dynamic
+    // rendering, which a static export can't do, and throws. Default
+    // (cached) fetch is exactly "resolve once at build time".
     const res = await fetch(`${API_BASE}${path}`, {
       headers: { Accept: "application/json" },
-      // build-time/runtime: always fetch fresh
-      cache: "no-store",
     });
     if (!res.ok) return null;
     return (await res.json()) as T;

@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "prepare:client": "node scripts/prepare-catalyst-client.mjs",
-    "build:catalyst": "cross-env NEXT_PUBLIC_BASE_PATH=/app next build",
+    "build:catalyst": "cross-env NEXT_PUBLIC_BASE_PATH=/app NEXT_PUBLIC_RD_API_BASE=https://rakshadrishti-60079393411.development.catalystserverless.in/server/rd_api next build",
     "deploy:catalyst": "npm run build:catalyst && npm run prepare:client && catalyst.cmd deploy --only client"
   },
   "dependencies": {
