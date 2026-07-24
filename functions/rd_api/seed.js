@@ -126,11 +126,28 @@ function buildInsert(tableName, row, numberCols) {
 async function seedTable(run, table) {
   const rows = loadCSV(table.file);
   const result = { table: table.name, total: rows.length, inserted: 0, errors: [] };
-  const BATCH = 20;
+  const BATCH = 5; // Catalyst enforces a concurrency limit — 20 was too many
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+  // Concurrency-limit errors are transient — worth a couple of retries with
+  // backoff before giving up and recording it as a real failure.
+  async function runWithRetry(query, attempt = 1) {
+    try {
+      return await run(query);
+    } catch (e) {
+      const msg = (e && e.message ? e.message : String(e)).toLowerCase();
+      if (attempt < 3 && msg.includes("concurrency limit")) {
+        await sleep(300 * attempt);
+        return runWithRetry(query, attempt + 1);
+      }
+      throw e;
+    }
+  }
+
   for (let i = 0; i < rows.length; i += BATCH) {
     const batch = rows.slice(i, i + BATCH);
     const outcomes = await Promise.allSettled(
-      batch.map((row) => run(buildInsert(table.name, row, table.numberCols)))
+      batch.map((row) => runWithRetry(buildInsert(table.name, row, table.numberCols)))
     );
     outcomes.forEach((o, idx) => {
       if (o.status === "fulfilled") {
@@ -143,6 +160,7 @@ async function seedTable(run, table) {
         });
       }
     });
+    await sleep(120); // small gap between batches, extra headroom against the limit
   }
   return result;
 }
