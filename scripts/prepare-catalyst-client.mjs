@@ -11,9 +11,12 @@ if (!existsSync(outDir)) {
   process.exit(1);
 }
 
-const pkg =
-  existsSync(pkgPath) &&
-  JSON.parse(readFileSync(pkgPath, "utf8"));
+// NOTE: must be `undefined` (not `false`) when the file doesn't exist yet,
+// so `pkg ?? {...default}` below actually falls back — `false ?? x` is `false`,
+// not `x`, since `??` only triggers on null/undefined.
+const pkg = existsSync(pkgPath)
+  ? JSON.parse(readFileSync(pkgPath, "utf8"))
+  : undefined;
 
 if (existsSync(clientDir)) {
   rmSync(clientDir, { recursive: true, force: true });
