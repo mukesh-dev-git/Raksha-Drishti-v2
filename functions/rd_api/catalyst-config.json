@@ -1,0 +1,9 @@
+{
+  "deployment": {
+    "name": "rd_api",
+    "stack": "node18",
+    "type": "advancedio",
+    "memory": 256,
+    "target_endpoint": "rd_api"
+  }
+}

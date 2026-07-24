@@ -9,6 +9,8 @@ export type CaseType = {
   slug: string;
   name: string;
   total: number;
+  // Data Store CrimeSubHead.CrimeSubHeadID — bridges the URL slug to the DB.
+  dbId: number;
 };
 
 export type District = {
@@ -21,6 +23,8 @@ export type District = {
   trend: number[];
   // Share of registered cases resolved/charge-sheeted, 0–100.
   clearanceRate: number;
+  // Data Store District.DistrictID — bridges the URL slug to the DB.
+  dbId: number;
 };
 
 // Year labels for the district trend series (oldest → newest).
@@ -34,24 +38,24 @@ export type CaseFile = {
 
 // Case types shown on /cases
 export const caseTypes: CaseType[] = [
-  { slug: "theft", name: "Theft", total: 1240 },
-  { slug: "assault", name: "Assault", total: 730 },
-  { slug: "fraud", name: "Fraud", total: 512 },
-  { slug: "burglary", name: "Burglary", total: 398 },
+  { slug: "theft", name: "Theft", total: 1240, dbId: 1 },
+  { slug: "assault", name: "Assault", total: 730, dbId: 2 },
+  { slug: "fraud", name: "Fraud", total: 512, dbId: 3 },
+  { slug: "burglary", name: "Burglary", total: 398, dbId: 4 },
 ];
 
 // District-wise counts — real Karnataka districts, spanning Bengaluru's
 // metro core, the coastal, northern, and Malnad regions. Same list reused
 // for every case type as placeholder.
 export const districts: District[] = [
-  { slug: "bengaluru", name: "Bengaluru Urban", count: 620, trend: [540, 595, 565, 600, 620], clearanceRate: 58 },
-  { slug: "mysuru", name: "Mysuru", count: 310, trend: [265, 290, 275, 295, 310], clearanceRate: 71 },
-  { slug: "belagavi", name: "Belagavi", count: 275, trend: [240, 260, 235, 268, 275], clearanceRate: 64 },
-  { slug: "kalaburagi", name: "Kalaburagi", count: 230, trend: [205, 195, 218, 210, 230], clearanceRate: 47 },
-  { slug: "dakshina-kannada", name: "Dakshina Kannada", count: 205, trend: [180, 200, 190, 212, 205], clearanceRate: 76 },
-  { slug: "tumakuru", name: "Tumakuru", count: 168, trend: [150, 145, 160, 155, 168], clearanceRate: 69 },
-  { slug: "ballari", name: "Ballari", count: 152, trend: [135, 150, 140, 148, 152], clearanceRate: 28 },
-  { slug: "shivamogga", name: "Shivamogga", count: 120, trend: [100, 108, 102, 115, 120], clearanceRate: 82 },
+  { slug: "bengaluru", name: "Bengaluru Urban", count: 620, trend: [540, 595, 565, 600, 620], clearanceRate: 58, dbId: 4401 },
+  { slug: "mysuru", name: "Mysuru", count: 310, trend: [265, 290, 275, 295, 310], clearanceRate: 71, dbId: 4402 },
+  { slug: "belagavi", name: "Belagavi", count: 275, trend: [240, 260, 235, 268, 275], clearanceRate: 64, dbId: 4403 },
+  { slug: "kalaburagi", name: "Kalaburagi", count: 230, trend: [205, 195, 218, 210, 230], clearanceRate: 47, dbId: 4404 },
+  { slug: "dakshina-kannada", name: "Dakshina Kannada", count: 205, trend: [180, 200, 190, 212, 205], clearanceRate: 76, dbId: 4405 },
+  { slug: "tumakuru", name: "Tumakuru", count: 168, trend: [150, 145, 160, 155, 168], clearanceRate: 69, dbId: 4406 },
+  { slug: "ballari", name: "Ballari", count: 152, trend: [135, 150, 140, 148, 152], clearanceRate: 28, dbId: 4407 },
+  { slug: "shivamogga", name: "Shivamogga", count: 120, trend: [100, 108, 102, 115, 120], clearanceRate: 82, dbId: 4408 },
 ];
 
 // Individual case files shown in /case-files

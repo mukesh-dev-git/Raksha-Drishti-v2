@@ -44,9 +44,46 @@ The seed gives you 8 districts, 4 crime types, and **406 CaseMaster rows**
 (2022–2026, per-district clearance skew) so the district trends, clearance
 rates, and case lists are computed from real data.
 
-## 3. Next (Functions + Auth)
-- **Functions**: Node endpoints running ZCQL over the Data Store
-  (`/api/districts`, `/api/cases`, `/api/case-files`, clearance/trend
-  aggregations), then rewire the frontend to fetch them instead of `src/lib/data.ts`.
-- **Auth**: Catalyst Authentication login gate (officer sign-in) via the web SDK.
+## 3. Functions (rd_api) — live FIR data
+
+The Node Function lives in [`functions/rd_api/`](../functions/rd_api). It runs
+**ZCQL** over the Data Store and returns the exact shapes the frontend expects:
+
+| Endpoint | Returns |
+|---|---|
+| `GET /summary` | dashboard totals |
+| `GET /casetypes` | crime sub-heads + counts |
+| `GET /districts` | district list |
+| `GET /district-stats?crime=<CrimeSubHeadID>` | per-district count, 5-yr trend, clearance rate |
+
+Deploy (scaffold once via CLI so the config matches your CLI version, then keep
+this `index.js`):
+```bash
+catalyst functions:add        # choose Advanced I/O, Node — name it rd_api
+# copy functions/rd_api/index.js + package.json into the generated folder
+catalyst deploy
+```
+
+### Wire the frontend to the Function
+The app reads through [`src/lib/api.ts`](../src/lib/api.ts), which **falls back
+to the bundled sample data** when no backend is set — so the site always builds
+and hosts. To serve live data, set the Function base URL and rebuild:
+```bash
+# .env.local
+NEXT_PUBLIC_RD_API_BASE=https://<project>.<zone>.catalystserverless.com/server/rd_api
+npm run build     # ./out now baked from live Data Store
+```
+Currently wired to live data: the **dashboard summary** and the **district-wise**
+table (counts, trends, clearance). Everything else uses the bundled data until
+extended the same way.
+
+## 4. Auth (officer sign-in)
+[`src/components/auth/AuthGate.tsx`](../src/components/auth/AuthGate.tsx) gates the
+app via Catalyst Authentication. It is **off by default** (`NEXT_PUBLIC_RD_AUTH`
+unset) so hosting is never blocked. To turn it on: enable Authentication in the
+console, ensure the Catalyst web SDK is served with the client, then build with
+`NEXT_PUBLIC_RD_AUTH=on`.
+
+## 5. Next
 - **Stratus**: move images + case-file evidence into blob storage.
+- Extend live data to case files / investigation board (same `api.ts` pattern).
