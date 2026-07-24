@@ -203,8 +203,19 @@ app.get("/admin/reset", async (req, res) => {
     return res.status(400).json({ error: "table and pk query params required" });
   }
   try {
-    await zcql(req, `DELETE FROM ${table} WHERE ${pk} > 0`);
-    res.json({ table, cleared: true });
+    // One DELETE doesn't necessarily clear every row on a large table (seen:
+    // 812 rows -> a single DELETE left 300 behind) — whether that's a
+    // per-call row cap or async completion isn't documented, so just loop
+    // until a plain SELECT confirms the table is actually empty.
+    let remaining = Infinity;
+    let iterations = 0;
+    const before = (await zcql(req, `SELECT ${pk} FROM ${table}`)).length;
+    while (remaining > 0 && iterations < 15) {
+      await zcql(req, `DELETE FROM ${table} WHERE ${pk} > 0`);
+      remaining = (await zcql(req, `SELECT ${pk} FROM ${table}`)).length;
+      iterations += 1;
+    }
+    res.json({ table, before, remaining, iterations, cleared: remaining === 0 });
   } catch (e) {
     fail(res, e);
   }
