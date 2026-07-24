@@ -133,6 +133,23 @@ async function seedTable(run, table) {
   const BATCH = 5; // Catalyst enforces a concurrency limit — 20 was too many
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+  // Idempotency guard: this endpoint has no upsert/dedup, so re-running it
+  // against an already-seeded table would duplicate every row. Skip any table
+  // that already has data instead.
+  const pkCol = table.numberCols[0];
+  try {
+    const countRows = await run(`SELECT COUNT(${pkCol}) AS c FROM ${table.name}`);
+    const existing = Number(countRows?.[0]?.[table.name]?.c || 0);
+    if (existing > 0) {
+      result.skipped = true;
+      result.existingRows = existing;
+      return result;
+    }
+  } catch {
+    // If the count check itself fails, fall through and attempt the insert —
+    // worst case we get the same clear per-row errors as before.
+  }
+
   // Concurrency-limit errors are transient — worth a couple of retries with
   // backoff before giving up and recording it as a real failure.
   async function runWithRetry(query, attempt = 1) {
