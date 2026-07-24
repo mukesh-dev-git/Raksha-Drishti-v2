@@ -19,6 +19,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import type { CaseFileContent, EvidenceType } from "@/lib/investigationData";
+import CaseBoardPage from "./CaseBoardPage";
 
 // -----------------------------------------------------------------------------
 // Case-file "paper" page bodies. Each renders inside the cream page shell
@@ -37,6 +38,7 @@ export const PAGE_DEFS = [
   { key: "ai", label: "AI Analysis" },
   { key: "similar", label: "Similar Cases" },
   { key: "report", label: "Final Report" },
+  { key: "board", label: "Case Board" },
 ] as const;
 
 export type PageKey = (typeof PAGE_DEFS)[number]["key"];
@@ -404,6 +406,9 @@ export function renderCaseFilePage(key: PageKey, c: CaseFileContent): React.Reac
           </div>
         </div>
       );
+
+    case "board":
+      return <CaseBoardPage content={c} />;
 
     default:
       return null;
