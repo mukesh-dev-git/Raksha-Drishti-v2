@@ -135,14 +135,15 @@ async function seedTable(run, table) {
 
   // Idempotency guard: this endpoint has no upsert/dedup, so re-running it
   // against an already-seeded table would duplicate every row. Skip any table
-  // that already has data instead.
+  // that already has data instead. Plain SELECT + JS .length, NOT
+  // COUNT(...) AS alias — that form silently returns 0 regardless of actual
+  // row count on this Data Store (the bug that caused the first duplicate).
   const pkCol = table.numberCols[0];
   try {
-    const countRows = await run(`SELECT COUNT(${pkCol}) AS c FROM ${table.name}`);
-    const existing = Number(countRows?.[0]?.[table.name]?.c || 0);
-    if (existing > 0) {
+    const existingRows = await run(`SELECT ${pkCol} FROM ${table.name}`);
+    if (existingRows.length > 0) {
       result.skipped = true;
-      result.existingRows = existing;
+      result.existingRows = existingRows.length;
       return result;
     }
   } catch {
