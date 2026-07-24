@@ -41,6 +41,22 @@ async function zcql(req, query) {
 }
 const pick = (row, table) => row[table] || {};
 
+// ZCQL caps any SELECT without its own LIMIT at 300 rows (confirmed: /summary
+// read 300 out of CaseMaster's real 406 until this was added) — paginate past
+// it, accumulating every row.
+const ZCQL_PAGE_SIZE = 300;
+async function zcqlAll(req, baseQuery) {
+  let offset = 0;
+  let all = [];
+  for (;;) {
+    const page = await zcql(req, `${baseQuery} LIMIT ${offset},${ZCQL_PAGE_SIZE}`);
+    all = all.concat(page);
+    if (page.length < ZCQL_PAGE_SIZE) break;
+    offset += ZCQL_PAGE_SIZE;
+  }
+  return all;
+}
+
 // String(e) on a plain (non-Error) object just gives "[object Object]" — the
 // zcatalyst SDK throws plain error objects, not Error instances, so pull every
 // own property into something JSON can actually show, and log the raw object
@@ -69,11 +85,11 @@ app.get("/summary", async (req, res) => {
     // Plain SELECT + JS .length instead of ZCQL COUNT(...) AS alias — the
     // alias form was silently returning 0 regardless of actual row count on
     // this Data Store; this is the same proven shape /district-stats already
-    // uses successfully.
+    // uses successfully. zcqlAll paginates past ZCQL's 300-row cap.
     const [cases, cats, dists] = await Promise.all([
-      zcql(req, "SELECT CaseMasterID FROM CaseMaster"),
-      zcql(req, "SELECT CrimeSubHeadID FROM CrimeSubHead"),
-      zcql(req, "SELECT DistrictID FROM District"),
+      zcqlAll(req, "SELECT CaseMasterID FROM CaseMaster"),
+      zcqlAll(req, "SELECT CrimeSubHeadID FROM CrimeSubHead"),
+      zcqlAll(req, "SELECT DistrictID FROM District"),
     ]);
     res.json({
       totalCases: cases.length,
@@ -87,13 +103,13 @@ app.get("/summary", async (req, res) => {
 
 app.get("/casetypes", async (req, res) => {
   try {
-    const subs = await zcql(
+    const subs = await zcqlAll(
       req,
       "SELECT CrimeSubHeadID, CrimeHeadName FROM CrimeSubHead"
     );
     // Same fix as /summary: plain SELECT + count-in-JS instead of
     // COUNT(...) AS alias / GROUP BY, which wasn't returning real counts.
-    const cases = await zcql(req, "SELECT CrimeMinorHeadID FROM CaseMaster");
+    const cases = await zcqlAll(req, "SELECT CrimeMinorHeadID FROM CaseMaster");
     const countBy = new Map();
     for (const row of cases) {
       const id = Number(pick(row, "CaseMaster").CrimeMinorHeadID);
@@ -118,7 +134,7 @@ app.get("/casetypes", async (req, res) => {
 
 app.get("/districts", async (req, res) => {
   try {
-    const rows = await zcql(
+    const rows = await zcqlAll(
       req,
       "SELECT DistrictID, DistrictName FROM District"
     );
@@ -142,8 +158,8 @@ app.get("/district-stats", async (req, res) => {
     // (SELECT ... WHERE) rather than depending on Catalyst's Lookup/JOIN
     // semantics, which weren't testable against a live Data Store beforehand.
     const [units, cases] = await Promise.all([
-      zcql(req, "SELECT UnitID, DistrictID FROM Unit"),
-      zcql(
+      zcqlAll(req, "SELECT UnitID, DistrictID FROM Unit"),
+      zcqlAll(
         req,
         `SELECT CaseMasterID, CrimeRegisteredDate, CaseStatusID, PoliceStationID
          FROM CaseMaster WHERE CrimeMinorHeadID = ${crime}`
@@ -206,16 +222,19 @@ app.get("/admin/reset", async (req, res) => {
     // One DELETE doesn't necessarily clear every row on a large table (seen:
     // 812 rows -> a single DELETE left 300 behind) — whether that's a
     // per-call row cap or async completion isn't documented, so just loop
-    // until a plain SELECT confirms the table is actually empty.
-    let remaining = Infinity;
+    // until a cheap existence probe confirms the table is actually empty.
+    // (LIMIT 0,1 rather than fetching every row each iteration — this can run
+    // up to 15 times.)
+    const hasAnyRows = async () => (await zcql(req, `SELECT ${pk} FROM ${table} LIMIT 0,1`)).length > 0;
+    const before = (await zcqlAll(req, `SELECT ${pk} FROM ${table}`)).length;
     let iterations = 0;
-    const before = (await zcql(req, `SELECT ${pk} FROM ${table}`)).length;
-    while (remaining > 0 && iterations < 15) {
+    let stillHasRows = before > 0;
+    while (stillHasRows && iterations < 15) {
       await zcql(req, `DELETE FROM ${table} WHERE ${pk} > 0`);
-      remaining = (await zcql(req, `SELECT ${pk} FROM ${table}`)).length;
+      stillHasRows = await hasAnyRows();
       iterations += 1;
     }
-    res.json({ table, before, remaining, iterations, cleared: remaining === 0 });
+    res.json({ table, before, iterations, cleared: !stillHasRows });
   } catch (e) {
     fail(res, e);
   }
