@@ -135,15 +135,17 @@ async function seedTable(run, table) {
 
   // Idempotency guard: this endpoint has no upsert/dedup, so re-running it
   // against an already-seeded table would duplicate every row. Skip any table
-  // that already has data instead. Plain SELECT + JS .length, NOT
-  // COUNT(...) AS alias — that form silently returns 0 regardless of actual
-  // row count on this Data Store (the bug that caused the first duplicate).
+  // that already has data instead. Plain SELECT (not COUNT(...) AS alias,
+  // which silently returns 0 regardless of actual row count on this Data
+  // Store — the bug that caused the first duplicate), and just LIMIT 0,1
+  // since existence is all that's needed here (a full unbounded SELECT would
+  // also be capped at ZCQL's 300-row default, which is irrelevant for a
+  // >0 check but wasteful).
   const pkCol = table.numberCols[0];
   try {
-    const existingRows = await run(`SELECT ${pkCol} FROM ${table.name}`);
-    if (existingRows.length > 0) {
+    const probe = await run(`SELECT ${pkCol} FROM ${table.name} LIMIT 0,1`);
+    if (probe.length > 0) {
       result.skipped = true;
-      result.existingRows = existingRows.length;
       return result;
     }
   } catch {
