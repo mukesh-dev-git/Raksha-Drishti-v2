@@ -48,19 +48,28 @@ Catalyst-served.
 
 ## 2. Create the Data Store (FIR schema)
 
-See [`DATA_STORE_SCHEMA.md`](./DATA_STORE_SCHEMA.md) for the full table→column
-mapping and import order.
+See [`DATA_STORE_SCHEMA.md`](./DATA_STORE_SCHEMA.md) for the full 21-table
+schema and import order — that's the complete picture, but you don't need all
+of it to get live data flowing.
 
-Fastest path — **CSV import** in the Catalyst console:
+### Fast path — the 4 tables `rd_api` actually queries
+`rd_api`'s ZCQL is deliberately written as plain `SELECT ... WHERE` /
+`GROUP BY` queries with **no JOINs and no Lookup columns required** (JOIN
+semantics weren't testable ahead of a live Data Store, so the risk was
+designed out). That means these 4 tables, imported as plain CSVs with no
+further column configuration, are enough for **all four endpoints** to work:
+
 1. Run `python gen_seed.py` (already generated into [`seed/`](./seed)).
-2. In the console → Data Store → import each CSV **in the order listed in the
-   schema doc** (parents before children).
-3. After import, convert the `*ID` foreign-key columns to **Lookup** columns
-   pointing at their parent table.
+2. In the console → Data Store → **Create Table → Import CSV**, for each of:
+   `District.csv`, `Unit.csv`, `CrimeSubHead.csv`, `CaseMaster.csv` — any order,
+   no Lookup conversion needed. Let Catalyst auto-infer column types.
+3. That's it — no other tables needed for the current UI.
 
 The seed gives you 8 districts, 4 crime types, and **406 CaseMaster rows**
 (2022–2026, per-district clearance skew) so the district trends, clearance
-rates, and case lists are computed from real data.
+rates, and case lists are computed from real data. The other 17 tables in
+`seed/` (Victim, Accused, Act, Court, Employee, …) are ready whenever the app
+extends past these 4 endpoints — import them later, same way.
 
 ## 3. Functions (rd_api) — live FIR data
 
@@ -69,18 +78,32 @@ The Node Function lives in [`functions/rd_api/`](../functions/rd_api). It runs
 
 | Endpoint | Returns |
 |---|---|
-| `GET /summary` | dashboard totals |
-| `GET /casetypes` | crime sub-heads + counts |
-| `GET /districts` | district list |
-| `GET /district-stats?crime=<CrimeSubHeadID>` | per-district count, 5-yr trend, clearance rate |
+| `GET /summary` | dashboard totals (`District`, `CrimeSubHead`, `CaseMaster`) |
+| `GET /casetypes` | crime sub-heads + counts (`CrimeSubHead`, `CaseMaster`) |
+| `GET /districts` | district list (`District`) |
+| `GET /district-stats?crime=<CrimeSubHeadID>` | per-district count, 5-yr trend, clearance rate (`CaseMaster`, `Unit`, joined in JS) |
 
-Deploy (scaffold once via CLI so the config matches your CLI version, then keep
-this `index.js`):
+### ⚠️ Deploy carefully — don't let the CLI scaffold over the existing code
+`functions/rd_api/index.js` and `package.json` already exist in this repo with
+the working logic. Running `catalyst functions:add` naming it `rd_api` would
+scaffold a **fresh, boilerplate** folder at that same path and could clobber
+them. Do this instead:
 ```bash
-catalyst functions:add        # choose Advanced I/O, Node — name it rd_api
-# copy functions/rd_api/index.js + package.json into the generated folder
-catalyst deploy
+mv functions/rd_api functions/rd_api.src   # move the real code aside
+catalyst functions:add                     # choose Advanced I/O, Node.js, name: rd_api
+# this creates a fresh functions/rd_api/ wired correctly into catalyst.json
+cp functions/rd_api.src/index.js functions/rd_api/index.js
+# merge the "dependencies" from functions/rd_api.src/package.json into the
+# newly-scaffolded functions/rd_api/package.json (keep the scaffolded file's
+# other fields — main, catalyst-specific keys — as the CLI wrote them)
+rm -rf functions/rd_api.src
+cd functions/rd_api && npm install && cd ../..
+catalyst deploy --only functions
 ```
+Then hit the deployed URL directly (e.g. `.../server/rd_api/summary`) and
+check it returns real JSON before wiring the frontend to it. **If a ZCQL query
+errors, send the exact error back — the query syntax was written without
+being able to test against a live Data Store, so a quick fix is expected.**
 
 ### Wire the frontend to the Function
 The app reads through [`src/lib/api.ts`](../src/lib/api.ts), which **falls back

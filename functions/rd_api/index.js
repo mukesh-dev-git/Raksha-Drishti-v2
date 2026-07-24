@@ -44,7 +44,7 @@ app.get("/summary", async (req, res) => {
     const [cases, cats, dists] = await Promise.all([
       zcql(req, "SELECT COUNT(CaseMasterID) AS c FROM CaseMaster"),
       zcql(req, "SELECT COUNT(CrimeSubHeadID) AS c FROM CrimeSubHead"),
-      zcql(req, "SELECT COUNT(DistrictID) AS c FROM District WHERE Active = 1"),
+      zcql(req, "SELECT COUNT(DistrictID) AS c FROM District"),
     ]);
     res.json({
       totalCases: Number(pick(cases[0], "CaseMaster").c || 0),
@@ -93,7 +93,7 @@ app.get("/districts", async (req, res) => {
   try {
     const rows = await zcql(
       req,
-      "SELECT DistrictID, DistrictName FROM District WHERE Active = 1"
+      "SELECT DistrictID, DistrictName FROM District"
     );
     res.json(
       rows.map((r) => {
@@ -110,22 +110,31 @@ app.get("/district-stats", async (req, res) => {
   const crime = parseInt(req.query.crime, 10);
   if (!crime) return res.status(400).json({ error: "crime (CrimeSubHeadID) required" });
   try {
-    // Join CaseMaster → Unit to resolve each case's district; filter by crime.
-    const rows = await zcql(
-      req,
-      `SELECT CaseMaster.CaseMasterID, CaseMaster.CrimeRegisteredDate,
-              CaseMaster.CaseStatusID, Unit.DistrictID
-       FROM CaseMaster
-       LEFT JOIN Unit ON CaseMaster.PoliceStationID = Unit.UnitID
-       WHERE CaseMaster.CrimeMinorHeadID = ${crime}`
+    // Two plain single-table queries + an in-memory join, instead of a ZCQL
+    // JOIN — keeps this to the most basic, reliably-supported ZCQL shape
+    // (SELECT ... WHERE) rather than depending on Catalyst's Lookup/JOIN
+    // semantics, which weren't testable against a live Data Store beforehand.
+    const [units, cases] = await Promise.all([
+      zcql(req, "SELECT UnitID, DistrictID FROM Unit"),
+      zcql(
+        req,
+        `SELECT CaseMasterID, CrimeRegisteredDate, CaseStatusID, PoliceStationID
+         FROM CaseMaster WHERE CrimeMinorHeadID = ${crime}`
+      ),
+    ]);
+
+    const districtByUnit = new Map(
+      units.map((r) => {
+        const u = pick(r, "Unit");
+        return [Number(u.UnitID), Number(u.DistrictID)];
+      })
     );
 
     // Aggregate in JS: per district → count, per-year trend, clearance rate.
     const agg = new Map(); // districtId -> { count, cleared, byYear }
-    for (const row of rows) {
+    for (const row of cases) {
       const cm = pick(row, "CaseMaster");
-      const u = pick(row, "Unit");
-      const did = Number(u.DistrictID);
+      const did = districtByUnit.get(Number(cm.PoliceStationID));
       if (!did) continue;
       const year = parseInt(String(cm.CrimeRegisteredDate).slice(0, 4), 10);
       const status = Number(cm.CaseStatusID);
