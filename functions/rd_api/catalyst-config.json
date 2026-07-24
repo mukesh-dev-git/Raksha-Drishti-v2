@@ -1,9 +1,11 @@
 {
-  "deployment": {
-    "name": "rd_api",
-    "stack": "node18",
-    "type": "advancedio",
-    "memory": 256,
-    "target_endpoint": "rd_api"
-  }
+	"deployment": {
+		"name": "rd_api",
+		"stack": "node24",
+		"type": "advancedio",
+		"env_variables": {}
+	},
+	"execution": {
+		"main": "index.js"
+	}
 }
