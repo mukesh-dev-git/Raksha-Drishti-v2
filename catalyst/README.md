@@ -9,21 +9,39 @@ FIR Data Store schema, and seed data.
 
 The app is configured for static export (`next.config.mjs` → `output: "export"`).
 
+### ⚠️ Subpath — set NEXT_PUBLIC_BASE_PATH before building
+Catalyst Web Client Hosting serves this project at
+`https://rakshadrishti-<id>.development.catalystserverless.in/app/` — **not** the
+domain root. Next.js hardcodes asset URLs (`/_next/...`) as root-absolute, so
+without telling it about the `/app` prefix, every JS chunk/image 404s and the
+site loads blank (browser console shows "MIME type application/json" errors —
+that's Catalyst's 404 fallback being mistaken for a script). Always build with:
 ```bash
-npm run build          # produces ./out (a static site)
+NEXT_PUBLIC_BASE_PATH=/app npm run build
+```
+(PowerShell: `$env:NEXT_PUBLIC_BASE_PATH="/app"; npm run build`). Leave it unset
+only if the app is ever mapped to a domain root instead of `/app/`.
+
+```bash
 npm install -g zcatalyst-cli
 catalyst login
 catalyst init          # select: Web Client Hosting  (+ Functions later)
 ```
 
-Point the client-hosting folder at the exported `out/` (copy `out/*` into the
-generated `client/`), then:
+Prepare the client folder from the static export (keeps `client-package.json`,
+strips Next.js `.txt` payloads that exceed Catalyst's file limit), then deploy:
 
 ```bash
-catalyst deploy
+NEXT_PUBLIC_BASE_PATH=/app npm run build
+npm run prepare:client
+catalyst.cmd deploy --only client   # use catalyst.cmd on Windows PowerShell
 ```
 
-You get a live `*.catalystserverless.com` URL. Everything the app serves is
+(`npm run deploy:catalyst` runs build + prepare, but **won't** have
+`NEXT_PUBLIC_BASE_PATH` set unless you export it in the shell first — safest to
+run the three commands above explicitly until this is wired into the script.)
+
+You get a live `*.catalystserverless.in/app/` URL. Everything the app serves is
 local (pages, the `crime-map/*.html` embeds, the logo) — only the hero/footer
 backdrops still hotlink Unsplash; localize those into `public/` to be fully
 Catalyst-served.

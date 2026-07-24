@@ -1,5 +1,6 @@
 import PageShell from "@/components/PageShell";
 import MapEmbed from "@/components/MapEmbed";
+import { BASE_PATH } from "@/lib/basePath";
 
 // -----------------------------------------------------------------------------
 // /crime-hotspots
@@ -14,7 +15,7 @@ export default function CrimeHotspotsPage() {
       breadcrumbs={[{ label: "Crime Hotspots", href: "/crime-hotspots" }]}
     >
       <MapEmbed
-        src="/crime-map/spatiotemporal.html"
+        src={`${BASE_PATH}/crime-map/spatiotemporal.html`}
         title="Bengaluru spatiotemporal crime clusters"
       />
     </PageShell>

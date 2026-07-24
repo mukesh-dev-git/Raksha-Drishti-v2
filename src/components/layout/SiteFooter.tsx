@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BASE_PATH } from "@/lib/basePath";
 
 // -----------------------------------------------------------------------------
 // Site footer — Government-of-India initiative strip (logos + tagline), an
@@ -21,7 +22,7 @@ const FOOTER_BG =
 function SkylineBand() {
   return (
     <img
-      src="/india-skyline.jpeg"
+      src={`${BASE_PATH}/india-skyline.jpeg`}
       alt=""
       aria-hidden="true"
       className="block w-full select-none"
