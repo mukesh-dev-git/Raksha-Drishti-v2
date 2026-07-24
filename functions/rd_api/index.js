@@ -1,0 +1,154 @@
+"use strict";
+
+// -----------------------------------------------------------------------------
+// rd_api — Catalyst Advanced I/O (Node) Function.
+// REST endpoints that query the FIR Data Store (ZCQL) and return the exact
+// shapes the Raksha-Drishti frontend expects. Read-only, GET only.
+//
+//   GET /summary                    -> { totalCases, crimeCategories, districtsCovered }
+//   GET /casetypes                  -> [{ slug, name, total, dbId }]
+//   GET /districts                  -> [{ dbId, name }]
+//   GET /district-stats?crime=<id>  -> [{ dbId, count, trend[5], clearanceRate }]
+//
+// Trend years are fixed 2022–2026. Clearance = share of cases with status
+// Charge Sheeted(2) or Closed(3).
+// -----------------------------------------------------------------------------
+
+const express = require("express");
+const catalyst = require("zcatalyst-sdk-node");
+
+const app = express();
+
+const TREND_YEARS = [2022, 2023, 2024, 2025, 2026];
+const CLEARED_STATUS = new Set([2, 3]); // Charge Sheeted, Closed
+
+// Permissive read-only CORS so the statically-hosted client can call this.
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Accept");
+  if (req.method === "OPTIONS") return res.sendStatus(204);
+  next();
+});
+
+// ZCQL rows come back as [{ TableName: {col: val}, ... }]. Flatten a table out.
+async function zcql(req, query) {
+  const capp = catalyst.initialize(req);
+  const rows = await capp.zcql().executeZCQLQuery(query);
+  return rows;
+}
+const pick = (row, table) => row[table] || {};
+
+app.get("/summary", async (req, res) => {
+  try {
+    const [cases, cats, dists] = await Promise.all([
+      zcql(req, "SELECT COUNT(CaseMasterID) AS c FROM CaseMaster"),
+      zcql(req, "SELECT COUNT(CrimeSubHeadID) AS c FROM CrimeSubHead"),
+      zcql(req, "SELECT COUNT(DistrictID) AS c FROM District WHERE Active = 1"),
+    ]);
+    res.json({
+      totalCases: Number(pick(cases[0], "CaseMaster").c || 0),
+      crimeCategories: Number(pick(cats[0], "CrimeSubHead").c || 0),
+      districtsCovered: Number(pick(dists[0], "District").c || 0),
+    });
+  } catch (e) {
+    res.status(500).json({ error: String(e) });
+  }
+});
+
+app.get("/casetypes", async (req, res) => {
+  try {
+    const subs = await zcql(
+      req,
+      "SELECT CrimeSubHeadID, CrimeHeadName FROM CrimeSubHead"
+    );
+    const counts = await zcql(
+      req,
+      "SELECT CrimeMinorHeadID, COUNT(CaseMasterID) AS c FROM CaseMaster GROUP BY CrimeMinorHeadID"
+    );
+    const countBy = new Map(
+      counts.map((r) => [
+        Number(pick(r, "CaseMaster").CrimeMinorHeadID),
+        Number(pick(r, "CaseMaster").c || 0),
+      ])
+    );
+    const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    res.json(
+      subs.map((r) => {
+        const s = pick(r, "CrimeSubHead");
+        return {
+          dbId: Number(s.CrimeSubHeadID),
+          name: s.CrimeHeadName,
+          slug: slug(s.CrimeHeadName),
+          total: countBy.get(Number(s.CrimeSubHeadID)) || 0,
+        };
+      })
+    );
+  } catch (e) {
+    res.status(500).json({ error: String(e) });
+  }
+});
+
+app.get("/districts", async (req, res) => {
+  try {
+    const rows = await zcql(
+      req,
+      "SELECT DistrictID, DistrictName FROM District WHERE Active = 1"
+    );
+    res.json(
+      rows.map((r) => {
+        const d = pick(r, "District");
+        return { dbId: Number(d.DistrictID), name: d.DistrictName };
+      })
+    );
+  } catch (e) {
+    res.status(500).json({ error: String(e) });
+  }
+});
+
+app.get("/district-stats", async (req, res) => {
+  const crime = parseInt(req.query.crime, 10);
+  if (!crime) return res.status(400).json({ error: "crime (CrimeSubHeadID) required" });
+  try {
+    // Join CaseMaster → Unit to resolve each case's district; filter by crime.
+    const rows = await zcql(
+      req,
+      `SELECT CaseMaster.CaseMasterID, CaseMaster.CrimeRegisteredDate,
+              CaseMaster.CaseStatusID, Unit.DistrictID
+       FROM CaseMaster
+       LEFT JOIN Unit ON CaseMaster.PoliceStationID = Unit.UnitID
+       WHERE CaseMaster.CrimeMinorHeadID = ${crime}`
+    );
+
+    // Aggregate in JS: per district → count, per-year trend, clearance rate.
+    const agg = new Map(); // districtId -> { count, cleared, byYear }
+    for (const row of rows) {
+      const cm = pick(row, "CaseMaster");
+      const u = pick(row, "Unit");
+      const did = Number(u.DistrictID);
+      if (!did) continue;
+      const year = parseInt(String(cm.CrimeRegisteredDate).slice(0, 4), 10);
+      const status = Number(cm.CaseStatusID);
+      if (!agg.has(did)) agg.set(did, { count: 0, cleared: 0, byYear: {} });
+      const a = agg.get(did);
+      a.count += 1;
+      if (CLEARED_STATUS.has(status)) a.cleared += 1;
+      a.byYear[year] = (a.byYear[year] || 0) + 1;
+    }
+
+    res.json(
+      [...agg.entries()].map(([dbId, a]) => ({
+        dbId,
+        count: a.count,
+        trend: TREND_YEARS.map((y) => a.byYear[y] || 0),
+        clearanceRate: a.count ? Math.round((a.cleared / a.count) * 100) : 0,
+      }))
+    );
+  } catch (e) {
+    res.status(500).json({ error: String(e) });
+  }
+});
+
+app.get("/", (_req, res) => res.json({ service: "rd_api", ok: true }));
+
+module.exports = app;

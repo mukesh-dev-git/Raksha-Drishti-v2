@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import SiteHeader from "@/components/layout/SiteHeader";
 import SiteFooter from "@/components/layout/SiteFooter";
+import AuthGate from "@/components/auth/AuthGate";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -32,7 +33,7 @@ export default function RootLayout({
         </a>
         <SiteHeader />
         <div id="main-content" className="flex-1">
-          {children}
+          <AuthGate>{children}</AuthGate>
         </div>
         <SiteFooter />
       </body>

@@ -2,7 +2,7 @@ import { BarChart3, MapPin, FolderKanban } from "lucide-react";
 import LinkCard from "@/components/LinkCard";
 import StatTile from "@/components/ui/StatTile";
 import ScrollZoomHero from "@/components/dashboard/ScrollZoomHero";
-import { caseTypes, districts } from "@/lib/data";
+import { getSummary } from "@/lib/api";
 
 // -----------------------------------------------------------------------------
 // /dashboard — portal home. Animated photographic hero, a summary stat row,
@@ -10,9 +10,10 @@ import { caseTypes, districts } from "@/lib/data";
 // -----------------------------------------------------------------------------
 export const metadata = { title: "Home" };
 
-const totalCases = caseTypes.reduce((sum, c) => sum + c.total, 0);
+export default async function DashboardPage() {
+  // Live from Catalyst Data Store when configured; bundled sample otherwise.
+  const summary = await getSummary();
 
-export default function DashboardPage() {
   return (
     <main id="dashboard">
       <ScrollZoomHero />
@@ -21,9 +22,9 @@ export default function DashboardPage() {
         {/* Summary stats */}
         <section aria-label="Summary statistics" className="mt-10">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <StatTile label="Registered cases" value={totalCases.toLocaleString("en-IN")} hint="Across all categories" />
-            <StatTile label="Crime categories" value={String(caseTypes.length)} hint="Tracked case types" />
-            <StatTile label="Districts covered" value={String(districts.length)} hint="Statewide reporting" />
+            <StatTile label="Registered cases" value={summary.totalCases.toLocaleString("en-IN")} hint="Across all categories" />
+            <StatTile label="Crime categories" value={String(summary.crimeCategories)} hint="Tracked case types" />
+            <StatTile label="Districts covered" value={String(summary.districtsCovered)} hint="Statewide reporting" />
             <StatTile label="Helpline" value="112" hint="24×7 emergency response" />
           </div>
         </section>

@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import PageShell from "@/components/PageShell";
 import DistrictWiseClient from "@/components/cases/DistrictWiseClient";
-import { caseTypes, districts, getCaseType, trendYears } from "@/lib/data";
+import { caseTypes, getCaseType, trendYears } from "@/lib/data";
+import { getDistrictStats } from "@/lib/api";
 
 // Pre-render every case type at build time (static export).
 export const dynamicParams = false;
@@ -33,6 +34,9 @@ export default async function DistrictWisePage({
   const { caseType } = await params;
   const c = getCaseType(caseType);
   if (!c) notFound();
+
+  // Live from Catalyst Data Store when configured; bundled sample otherwise.
+  const districts = await getDistrictStats(caseType);
 
   return (
     <PageShell
