@@ -39,6 +39,29 @@ async function zcql(req, query) {
 }
 const pick = (row, table) => row[table] || {};
 
+// String(e) on a plain (non-Error) object just gives "[object Object]" — the
+// zcatalyst SDK throws plain error objects, not Error instances, so pull every
+// own property into something JSON can actually show, and log the raw object
+// server-side too (visible in the Catalyst console's Function Logs).
+function serializeError(e) {
+  if (e instanceof Error) {
+    return { message: e.message, name: e.name };
+  }
+  try {
+    const plain = {};
+    for (const key of Object.getOwnPropertyNames(Object(e))) {
+      plain[key] = e[key];
+    }
+    return Object.keys(plain).length ? plain : { raw: String(e) };
+  } catch {
+    return { raw: String(e) };
+  }
+}
+function fail(res, e) {
+  console.error("rd_api error:", e);
+  res.status(500).json({ error: serializeError(e) });
+}
+
 app.get("/summary", async (req, res) => {
   try {
     const [cases, cats, dists] = await Promise.all([
@@ -52,7 +75,7 @@ app.get("/summary", async (req, res) => {
       districtsCovered: Number(pick(dists[0], "District").c || 0),
     });
   } catch (e) {
-    res.status(500).json({ error: String(e) });
+    fail(res, e);
   }
 });
 
@@ -85,7 +108,7 @@ app.get("/casetypes", async (req, res) => {
       })
     );
   } catch (e) {
-    res.status(500).json({ error: String(e) });
+    fail(res, e);
   }
 });
 
@@ -102,7 +125,7 @@ app.get("/districts", async (req, res) => {
       })
     );
   } catch (e) {
-    res.status(500).json({ error: String(e) });
+    fail(res, e);
   }
 });
 
@@ -154,7 +177,7 @@ app.get("/district-stats", async (req, res) => {
       }))
     );
   } catch (e) {
-    res.status(500).json({ error: String(e) });
+    fail(res, e);
   }
 });
 
