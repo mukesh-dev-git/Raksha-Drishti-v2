@@ -16,6 +16,7 @@
 
 const express = require("express");
 const catalyst = require("zcatalyst-sdk-node");
+const { TABLES: SEED_TABLES, seedTable } = require("./seed");
 
 const app = express();
 
@@ -176,6 +177,31 @@ app.get("/district-stats", async (req, res) => {
         clearanceRate: a.count ? Math.round((a.cleared / a.count) * 100) : 0,
       }))
     );
+  } catch (e) {
+    fail(res, e);
+  }
+});
+
+// -----------------------------------------------------------------------------
+// ONE-TIME SETUP — bulk-loads the 4 tables above from the bundled seed CSVs.
+// Exists because there's no CSV-import UI here and the ZCQL Console only runs
+// one statement at a time. Token-gated to avoid accidental re-triggering
+// (re-running would duplicate every row — there's no upsert/dedup).
+//
+// DELETE THIS ROUTE (and seed.js + the seed/ folder) once seeding succeeds.
+// -----------------------------------------------------------------------------
+const SEED_TOKEN = "raksha-seed-2026";
+app.get("/admin/seed", async (req, res) => {
+  if (req.query.token !== SEED_TOKEN) {
+    return res.status(403).json({ error: "missing or invalid token" });
+  }
+  const start = Date.now();
+  try {
+    const results = [];
+    for (const table of SEED_TABLES) {
+      results.push(await seedTable((q) => zcql(req, q), table));
+    }
+    res.json({ durationMs: Date.now() - start, results });
   } catch (e) {
     fail(res, e);
   }
