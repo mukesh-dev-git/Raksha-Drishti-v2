@@ -3,6 +3,7 @@ import Image from "next/image";
 import AccessibilityControls from "./AccessibilityControls";
 import EmergencyBar from "./EmergencyBar";
 import SiteNav from "./SiteNav";
+import { BASE_PATH } from "@/lib/basePath";
 
 // -----------------------------------------------------------------------------
 // Site header — three stacked bands:
@@ -32,7 +33,7 @@ export default function SiteHeader() {
         <div className="mx-auto flex max-w-content items-center gap-4 px-4 py-4">
           <Link href="/dashboard" className="flex items-center gap-3">
             <Image
-              src="/karnataka-state-police.png"
+              src={`${BASE_PATH}/karnataka-state-police.png`}
               alt="Karnataka State Police emblem"
               width={56}
               height={56}

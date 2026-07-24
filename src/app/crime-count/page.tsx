@@ -1,5 +1,6 @@
 import PageShell from "@/components/PageShell";
 import MapEmbed from "@/components/MapEmbed";
+import { BASE_PATH } from "@/lib/basePath";
 
 // -----------------------------------------------------------------------------
 // /crime-count
@@ -13,7 +14,7 @@ export default function CrimeCountPage() {
       description="Total registered crime, broken down by category, time period, and region. Use the interactive map below to explore totals across Bengaluru."
       breadcrumbs={[{ label: "Crime Count", href: "/crime-count" }]}
     >
-      <MapEmbed src="/crime-map/map.html" title="Bengaluru crime map" />
+      <MapEmbed src={`${BASE_PATH}/crime-map/map.html`} title="Bengaluru crime map" />
     </PageShell>
   );
 }

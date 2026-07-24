@@ -2,6 +2,8 @@
 /.next
 /out
 /build
+# Generated copy of ./out staged for `catalyst deploy` (see scripts/prepare-catalyst-client.mjs)
+/client
 next-env.d.ts
 .env*.local
 *.tsbuildinfo
