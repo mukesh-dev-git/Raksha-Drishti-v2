@@ -22,6 +22,7 @@ const app = express();
 
 const TREND_YEARS = [2022, 2023, 2024, 2025, 2026];
 const CLEARED_STATUS = new Set([2, 3]); // Charge Sheeted, Closed
+const SEED_TOKEN = "raksha-seed-2026"; // shared secret for the /admin/* routes below
 
 // Permissive read-only CORS so the statically-hosted client can call this.
 app.use((req, res, next) => {
@@ -65,15 +66,19 @@ function fail(res, e) {
 
 app.get("/summary", async (req, res) => {
   try {
+    // Plain SELECT + JS .length instead of ZCQL COUNT(...) AS alias — the
+    // alias form was silently returning 0 regardless of actual row count on
+    // this Data Store; this is the same proven shape /district-stats already
+    // uses successfully.
     const [cases, cats, dists] = await Promise.all([
-      zcql(req, "SELECT COUNT(CaseMasterID) AS c FROM CaseMaster"),
-      zcql(req, "SELECT COUNT(CrimeSubHeadID) AS c FROM CrimeSubHead"),
-      zcql(req, "SELECT COUNT(DistrictID) AS c FROM District"),
+      zcql(req, "SELECT CaseMasterID FROM CaseMaster"),
+      zcql(req, "SELECT CrimeSubHeadID FROM CrimeSubHead"),
+      zcql(req, "SELECT DistrictID FROM District"),
     ]);
     res.json({
-      totalCases: Number(pick(cases[0], "CaseMaster").c || 0),
-      crimeCategories: Number(pick(cats[0], "CrimeSubHead").c || 0),
-      districtsCovered: Number(pick(dists[0], "District").c || 0),
+      totalCases: cases.length,
+      crimeCategories: cats.length,
+      districtsCovered: dists.length,
     });
   } catch (e) {
     fail(res, e);
@@ -86,16 +91,14 @@ app.get("/casetypes", async (req, res) => {
       req,
       "SELECT CrimeSubHeadID, CrimeHeadName FROM CrimeSubHead"
     );
-    const counts = await zcql(
-      req,
-      "SELECT CrimeMinorHeadID, COUNT(CaseMasterID) AS c FROM CaseMaster GROUP BY CrimeMinorHeadID"
-    );
-    const countBy = new Map(
-      counts.map((r) => [
-        Number(pick(r, "CaseMaster").CrimeMinorHeadID),
-        Number(pick(r, "CaseMaster").c || 0),
-      ])
-    );
+    // Same fix as /summary: plain SELECT + count-in-JS instead of
+    // COUNT(...) AS alias / GROUP BY, which wasn't returning real counts.
+    const cases = await zcql(req, "SELECT CrimeMinorHeadID FROM CaseMaster");
+    const countBy = new Map();
+    for (const row of cases) {
+      const id = Number(pick(row, "CaseMaster").CrimeMinorHeadID);
+      countBy.set(id, (countBy.get(id) || 0) + 1);
+    }
     const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
     res.json(
       subs.map((r) => {
@@ -183,6 +186,31 @@ app.get("/district-stats", async (req, res) => {
 });
 
 // -----------------------------------------------------------------------------
+// ONE-TIME CLEANUP — wipes all rows from one table. Exists because an earlier
+// bug (COUNT(...) AS alias silently returning 0) made the seed endpoint's
+// idempotency check always think a table was empty, duplicating CrimeSubHead
+// and CaseMaster's rows. WHERE {pk} > 0 rather than a bare DELETE FROM, since
+// an unconditional DELETE wasn't confirmed to be valid ZCQL ahead of time.
+//
+// DELETE THIS ROUTE along with /admin/seed once the Data Store is clean.
+// -----------------------------------------------------------------------------
+app.get("/admin/reset", async (req, res) => {
+  if (req.query.token !== SEED_TOKEN) {
+    return res.status(403).json({ error: "missing or invalid token" });
+  }
+  const { table, pk } = req.query;
+  if (!table || !pk) {
+    return res.status(400).json({ error: "table and pk query params required" });
+  }
+  try {
+    await zcql(req, `DELETE FROM ${table} WHERE ${pk} > 0`);
+    res.json({ table, cleared: true });
+  } catch (e) {
+    fail(res, e);
+  }
+});
+
+// -----------------------------------------------------------------------------
 // ONE-TIME SETUP — bulk-loads the 4 tables above from the bundled seed CSVs.
 // Exists because there's no CSV-import UI here and the ZCQL Console only runs
 // one statement at a time. Token-gated to avoid accidental re-triggering
@@ -190,7 +218,6 @@ app.get("/district-stats", async (req, res) => {
 //
 // DELETE THIS ROUTE (and seed.js + the seed/ folder) once seeding succeeds.
 // -----------------------------------------------------------------------------
-const SEED_TOKEN = "raksha-seed-2026";
 app.get("/admin/seed", async (req, res) => {
   if (req.query.token !== SEED_TOKEN) {
     return res.status(403).json({ error: "missing or invalid token" });
