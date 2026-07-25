@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
-  Network,
+  Pin,
   Clock,
   FolderArchive,
   Sparkles,
@@ -19,7 +19,7 @@ import {
 import type { InvestigationData } from "@/lib/investigationData";
 import { computeHighlightSet, getEntityDetail } from "@/lib/investigationData";
 import { caseFiles } from "@/lib/data";
-import RelationshipGraph from "./RelationshipGraph";
+import EvidenceBoard from "./EvidenceBoard";
 import TimelinePanel from "./TimelinePanel";
 import EvidencePanel from "./EvidencePanel";
 import AIPanel from "./AIPanel";
@@ -53,8 +53,8 @@ export default function InvestigationWorkspaceClient({
   const stats = [
     { label: "Suspects", value: data.entities.suspects.length, Icon: ShieldAlert },
     { label: "Evidence Items", value: data.evidence.length, Icon: Fingerprint },
-    { label: "Network Nodes", value: data.graph.nodes.length, Icon: Network },
-    { label: "Connections", value: data.graph.edges.length, Icon: Radar },
+    { label: "Evidence Cards", value: data.graph.nodes.length, Icon: Pin },
+    { label: "Linked Threads", value: data.graph.edges.length, Icon: Radar },
     { label: "Timeline Events", value: data.timeline.length, Icon: Clock },
   ];
 
@@ -125,24 +125,25 @@ export default function InvestigationWorkspaceClient({
         </PinnedCard>
       </section>
 
-      {/* ── Section 2 · Criminal Network (hero) ───────────────────────── */}
+      {/* ── Section 2 · Investigation Evidence Board (hero) ───────────── */}
       <section>
         <SectionHeading
-          icon={Network}
-          title="Criminal Network"
-          subtitle="Drag nodes to reposition · scroll to zoom · click any entity to trace its links"
+          icon={Pin}
+          title="Investigation Evidence Board"
+          subtitle="Every entity is a pinned document — click a card to trace its red threads · drag to pan · scroll to zoom"
           accent={ACCENT}
         />
         <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
-          <PinnedCard pin={ACCENT} className="h-[600px] overflow-hidden">
-            <RelationshipGraph
-              nodes={data.graph.nodes}
-              edges={data.graph.edges}
+          <div className="h-[740px] overflow-hidden rounded-lg border-4 border-[#2a2018] shadow-[inset_0_0_60px_rgba(0,0,0,0.6),0_20px_40px_-20px_rgba(0,0,0,0.7)]">
+            <EvidenceBoard
+              data={data}
+              caseTypeName={caseTypeName}
+              districtName={districtName}
               activeId={activeId}
               highlightSet={highlightSet}
               onSelect={setActiveId}
             />
-          </PinnedCard>
+          </div>
 
           <div className="flex flex-col gap-6">
             <PinnedCard pin={ACCENT} className="min-h-[300px] flex-1">
