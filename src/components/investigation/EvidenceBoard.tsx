@@ -235,10 +235,12 @@ export default function EvidenceBoard({
       ref={containerRef}
       className="relative h-full w-full touch-none overflow-hidden"
       style={{
-        backgroundColor: "#15110c",
+        // Light paper board — matches the workspace's government light theme
+        // (was a dark corkboard; kept the same dot-texture idea, lightened).
+        backgroundColor: "var(--paper)",
         backgroundImage:
-          "radial-gradient(circle at 50% 40%, rgba(120,90,50,0.16), transparent 70%), radial-gradient(circle, rgba(160,120,70,0.10) 1px, transparent 1.4px), radial-gradient(circle, rgba(90,70,45,0.10) 1px, transparent 1.4px)",
-        backgroundSize: "auto, 7px 7px, 13px 11px",
+          "radial-gradient(circle, rgba(11,46,89,0.05) 1px, transparent 1.4px)",
+        backgroundSize: "26px 26px",
         cursor: panRef.current ? "grabbing" : "grab",
       }}
       onPointerDown={onPointerDown}
@@ -257,7 +259,7 @@ export default function EvidenceBoard({
             key={label}
             onClick={fn}
             aria-label={label}
-            className="rounded-md border border-amber-200/20 bg-black/40 p-2 text-amber-100/80 backdrop-blur transition hover:border-amber-200/50 hover:text-amber-50"
+            className="rounded-sm border border-line bg-surface p-2 text-navy shadow-sm transition hover:border-navy"
           >
             <Icon size={16} />
           </button>
@@ -279,7 +281,7 @@ export default function EvidenceBoard({
         ].map((z) => (
           <span
             key={z.t}
-            className="pointer-events-none absolute select-none whitespace-nowrap text-[13px] font-semibold uppercase tracking-[0.25em] text-amber-100/25"
+            className="pointer-events-none absolute select-none whitespace-nowrap text-[13px] font-semibold uppercase tracking-[0.25em] text-navy/15"
             style={{ left: z.x, top: z.y }}
           >
             {z.t}
@@ -376,9 +378,9 @@ export default function EvidenceBoard({
       </div>
 
       {/* corner case label */}
-      <div className="pointer-events-none absolute bottom-3 left-3 z-20 rounded-sm border border-amber-200/20 bg-black/40 px-3 py-1.5 backdrop-blur">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-amber-100/50">Case Board</p>
-        <p className="text-[13px] font-semibold text-amber-50/90">{caseTypeName} · {districtName}</p>
+      <div className="pointer-events-none absolute bottom-3 left-3 z-20 rounded-sm border border-line bg-surface px-3 py-1.5 shadow-sm">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted">Case Board</p>
+        <p className="text-[13px] font-semibold text-navy">{caseTypeName} · {districtName}</p>
       </div>
     </div>
   );

@@ -134,7 +134,7 @@ export default function InvestigationWorkspaceClient({
           accent={ACCENT}
         />
         <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
-          <div className="h-[740px] overflow-hidden rounded-lg border-4 border-[#2a2018] shadow-[inset_0_0_60px_rgba(0,0,0,0.6),0_20px_40px_-20px_rgba(0,0,0,0.7)]">
+          <PinnedCard pin={ACCENT} className="h-[740px] overflow-hidden">
             <EvidenceBoard
               data={data}
               caseTypeName={caseTypeName}
@@ -143,7 +143,7 @@ export default function InvestigationWorkspaceClient({
               highlightSet={highlightSet}
               onSelect={setActiveId}
             />
-          </div>
+          </PinnedCard>
 
           <div className="flex flex-col gap-6">
             <PinnedCard pin={ACCENT} className="min-h-[300px] flex-1">
