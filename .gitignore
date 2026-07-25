@@ -9,3 +9,6 @@ next-env.d.ts
 .env*.local
 *.tsbuildinfo
 .DS_Store
+
+# Reference-only nested project — never track or push
+/Raksha-Drishti-V2.0/
