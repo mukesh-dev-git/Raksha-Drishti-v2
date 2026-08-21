@@ -1,9 +1,18 @@
 # Catalyst deployment & backend
 
-Project: **RakshaDrishti** · ID `56806000000019001` · zone India (Asia/Kolkata).
-
 This folder holds everything for the Zoho Catalyst side: static hosting, the
-FIR Data Store schema, and seed data.
+FIR Data Store schema, and seed data. Zone India (Asia/Kolkata).
+
+**⚠️ Two Catalyst projects — always check which is active before deploying
+or touching the Data Store** (`catalyst.cmd project:list`,
+`catalyst.cmd project:use <name>`):
+- **`RakshaDrishti`** (`56806000000019001`) — original submitted project,
+  **frozen**. Only 4 tables live. Do not deploy or modify — it's the
+  public submission's demo link.
+- **`Raksha-Dhrishti-v2`** (`56806000000070001`) — **active** project for all
+  continued work. Deploy URL:
+  `https://raksha-dhrishti-v2-60079393411.development.catalystserverless.in/app/`.
+  See §2 below for current Data Store status.
 
 ## 1. Host the frontend (Web Client Hosting — static)
 
@@ -46,13 +55,18 @@ local (pages, the `crime-map/*.html` embeds, the logo) — only the hero/footer
 backdrops still hotlink Unsplash; localize those into `public/` to be fully
 Catalyst-served.
 
-## 2. Data Store (FIR schema) — ✅ done
+## 2. Data Store (FIR schema)
 
-`District` (8 rows), `Unit` (8), `CrimeSubHead` (4), `CaseMaster` (406) are
-live in the Data Store. See [`DATA_STORE_SCHEMA.md`](./DATA_STORE_SCHEMA.md)
-for the full 21-table schema if this ever needs extending — the other 17
-tables (Victim, Accused, Act, Court, Employee, …) aren't needed by the current
-UI, so they weren't imported.
+See [`DATA_STORE_SCHEMA.md`](./DATA_STORE_SCHEMA.md) for the full table
+reference. **Status in `Raksha-Dhrishti-v2`** (as of 2026-08-21): all 21 backbone tables
+from `DATA_STORE_SCHEMA.md` are built and schema-verified (queried table by
+table, columns confirmed correct — two tables even more complete than the
+seed CSVs, see that doc). **No data imported yet** — next step is
+`catalyst ds:import --table <Name> catalyst/seed/<Name>.csv` per table, then
+converting FK `Number` columns to proper `Lookup` columns. 6 more tables
+(arrest tracking + demographic lookups) are spec'd but not yet built — see
+`DATA_STORE_SCHEMA.md`'s "Extended tables" section for exact columns before
+building them from scratch.
 
 Two things worth knowing if you ever redo this:
 - **No CSV-import UI and no DDL via ZCQL or any SDK** on this Data Store —
@@ -90,8 +104,10 @@ them back in after, merging `package.json`'s `dependencies`.)
 [`src/lib/api.ts`](../src/lib/api.ts) reads through `NEXT_PUBLIC_RD_API_BASE`
 and **falls back to the bundled sample data** when it's unset — so a plain
 `npm run build` (local dev) still always works. `npm run build:catalyst` has
-the live Function URL baked in, so every Catalyst deploy serves live data
-automatically:
+the **`Raksha-Dhrishti-v2`** Function URL baked in (updated 2026-08-21 —
+previously pointed at the original frozen project's URL, which would have
+silently deployed against stale/frozen data), so every Catalyst deploy
+serves live data from the active project automatically:
 ```bash
 npm run deploy:catalyst
 ```

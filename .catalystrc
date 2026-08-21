@@ -4,7 +4,7 @@
     "env": 1
   },
   "actives": {
-    "project": 1,
+    "project": 2,
     "env": 1
   },
   "projects": [
@@ -15,6 +15,24 @@
       "domain": {
         "id": "50044296530",
         "name": "rakshadrishti-60079393411.development"
+      },
+      "timezone": "Asia/Kolkata",
+      "env": [
+        {
+          "idx": 1,
+          "id": "60079393411",
+          "name": "Development",
+          "type": 3
+        }
+      ]
+    },
+    {
+      "idx": 2,
+      "id": "56806000000070001",
+      "name": "Raksha-Dhrishti-v2",
+      "domain": {
+        "id": "50045121364",
+        "name": "raksha-dhrishti-v2-60079393411.development"
       },
       "timezone": "Asia/Kolkata",
       "env": [

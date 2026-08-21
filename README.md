@@ -6,6 +6,25 @@ A Next.js (App Router) portal for viewing crime counts and hotspots, browsing
 cases by district, and working individual investigations through to the digital
 case file. Built with a dignified, accessible government-portal design system.
 
+## Project status — read before deploying or touching the Data Store
+
+This is the **private** continuation repo for KSP Datathon26 (team Apex
+Analytics). The original submitted repo (public,
+`github.com/mukesh-dev-git/Raksha-Drishti-final`) is **frozen** — don't push
+there, don't change its visibility. This repo's `main` tracks a separate
+private remote.
+
+Same split on the backend: **two Zoho Catalyst projects** exist —
+`RakshaDrishti` (original, frozen, only 4 Data Store tables) and
+`Raksha-Dhrishti-v2` (active, all continued work). **Always confirm the
+active project** (`catalyst.cmd project:list`) before running `deploy` or
+any `ds:import`/`ds:export`. Full detail, current schema-build status, and
+what's still missing vs. the organizer's ER diagram:
+[`catalyst/README.md`](catalyst/README.md) and
+[`catalyst/DATA_STORE_SCHEMA.md`](catalyst/DATA_STORE_SCHEMA.md) — **read
+those before adding or changing any Data Store table**, rather than
+re-deriving the schema from `Police_FIR_ER_Diagram.pdf` by hand.
+
 ## Getting started
 
 ```bash
