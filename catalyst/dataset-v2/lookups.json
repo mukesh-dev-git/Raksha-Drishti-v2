@@ -1,0 +1,126 @@
+{
+  "State": [
+    { "StateID": 29, "StateName": "Karnataka", "NationalityID": 1, "Active": true }
+  ],
+  "District": [
+    { "DistrictID": 4401, "DistrictName": "Bengaluru Urban", "StateID": 29, "Active": true },
+    { "DistrictID": 4402, "DistrictName": "Mysuru", "StateID": 29, "Active": true },
+    { "DistrictID": 4403, "DistrictName": "Belagavi", "StateID": 29, "Active": true },
+    { "DistrictID": 4404, "DistrictName": "Kalaburagi", "StateID": 29, "Active": true },
+    { "DistrictID": 4405, "DistrictName": "Dakshina Kannada", "StateID": 29, "Active": true },
+    { "DistrictID": 4406, "DistrictName": "Tumakuru", "StateID": 29, "Active": true },
+    { "DistrictID": 4407, "DistrictName": "Ballari", "StateID": 29, "Active": true },
+    { "DistrictID": 4408, "DistrictName": "Shivamogga", "StateID": 29, "Active": true }
+  ],
+  "UnitType": [
+    { "UnitTypeID": 1, "UnitTypeName": "Police Station", "CityDistState": "City", "Hierarchy": 3, "Active": true },
+    { "UnitTypeID": 2, "UnitTypeName": "Circle Office", "CityDistState": "District", "Hierarchy": 2, "Active": true },
+    { "UnitTypeID": 3, "UnitTypeName": "SP Office", "CityDistState": "District", "Hierarchy": 1, "Active": true }
+  ],
+  "Unit": [
+    { "UnitID": 440101, "UnitName": "Yeshwanthpur PS", "TypeID": 1, "DistrictID": 4401, "StateID": 29, "Active": true },
+    { "UnitID": 440102, "UnitName": "Whitefield PS", "TypeID": 1, "DistrictID": 4401, "StateID": 29, "Active": true },
+    { "UnitID": 440103, "UnitName": "K.G. Halli PS", "TypeID": 1, "DistrictID": 4401, "StateID": 29, "Active": true },
+    { "UnitID": 440201, "UnitName": "K.R. Market PS", "TypeID": 1, "DistrictID": 4402, "StateID": 29, "Active": true },
+    { "UnitID": 440202, "UnitName": "Vidyaranyapuram PS", "TypeID": 1, "DistrictID": 4402, "StateID": 29, "Active": true },
+    { "UnitID": 440301, "UnitName": "Belagavi Camp PS", "TypeID": 1, "DistrictID": 4403, "StateID": 29, "Active": true },
+    { "UnitID": 440401, "UnitName": "Kalaburagi Town PS", "TypeID": 1, "DistrictID": 4404, "StateID": 29, "Active": true },
+    { "UnitID": 440501, "UnitName": "Mangaluru North PS", "TypeID": 1, "DistrictID": 4405, "StateID": 29, "Active": true },
+    { "UnitID": 440601, "UnitName": "Tumakuru City PS", "TypeID": 1, "DistrictID": 4406, "StateID": 29, "Active": true },
+    { "UnitID": 440602, "UnitName": "Sira Rural PS", "TypeID": 1, "DistrictID": 4406, "StateID": 29, "Active": true },
+    { "UnitID": 440701, "UnitName": "Ballari Town PS", "TypeID": 1, "DistrictID": 4407, "StateID": 29, "Active": true },
+    { "UnitID": 440801, "UnitName": "Shivamogga City PS", "TypeID": 1, "DistrictID": 4408, "StateID": 29, "Active": true },
+    { "UnitID": 440802, "UnitName": "Sagar Rural PS", "TypeID": 1, "DistrictID": 4408, "StateID": 29, "Active": true }
+  ],
+  "Rank": [
+    { "RankID": 1, "RankName": "Constable", "Hierarchy": 6, "Active": true },
+    { "RankID": 2, "RankName": "Head Constable", "Hierarchy": 5, "Active": true },
+    { "RankID": 3, "RankName": "Assistant Sub-Inspector", "Hierarchy": 4, "Active": true },
+    { "RankID": 4, "RankName": "Sub-Inspector", "Hierarchy": 3, "Active": true },
+    { "RankID": 5, "RankName": "Inspector", "Hierarchy": 2, "Active": true },
+    { "RankID": 6, "RankName": "Deputy Superintendent", "Hierarchy": 1, "Active": true }
+  ],
+  "Designation": [
+    { "DesignationID": 1, "DesignationName": "Investigating Officer", "SortOrder": 1, "Active": true },
+    { "DesignationID": 2, "DesignationName": "Station House Officer", "SortOrder": 2, "Active": true },
+    { "DesignationID": 3, "DesignationName": "Beat Officer", "SortOrder": 3, "Active": true }
+  ],
+  "Employee": [
+    { "EmployeeID": 5001, "DistrictID": 4401, "UnitID": 440101, "RankID": 5, "DesignationID": 1, "KGID": "KA-BLR-1001", "FirstName": "Manjunath R", "EmployeeDOB": "1985-04-12", "GenderID": 1, "AppointmentDate": "2009-06-01" },
+    { "EmployeeID": 5002, "DistrictID": 4401, "UnitID": 440102, "RankID": 4, "DesignationID": 2, "KGID": "KA-BLR-1002", "FirstName": "Kavya Shetty", "EmployeeDOB": "1990-11-03", "GenderID": 2, "AppointmentDate": "2014-02-15" },
+    { "EmployeeID": 5003, "DistrictID": 4402, "UnitID": 440201, "RankID": 5, "DesignationID": 1, "KGID": "KA-MYS-1003", "FirstName": "Puttaraju N", "EmployeeDOB": "1982-01-22", "GenderID": 1, "AppointmentDate": "2006-08-19" },
+    { "EmployeeID": 5004, "DistrictID": 4403, "UnitID": 440301, "RankID": 4, "DesignationID": 1, "KGID": "KA-BGM-1004", "FirstName": "Sunanda Patil", "EmployeeDOB": "1988-07-09", "GenderID": 2, "AppointmentDate": "2012-03-11" },
+    { "EmployeeID": 5005, "DistrictID": 4404, "UnitID": 440401, "RankID": 5, "DesignationID": 1, "KGID": "KA-GLB-1005", "FirstName": "Basavaraj Hiremath", "EmployeeDOB": "1980-09-30", "GenderID": 1, "AppointmentDate": "2004-05-20" },
+    { "EmployeeID": 5006, "DistrictID": 4405, "UnitID": 440501, "RankID": 4, "DesignationID": 1, "KGID": "KA-DK-1006", "FirstName": "Ananya Rai", "EmployeeDOB": "1991-12-14", "GenderID": 2, "AppointmentDate": "2015-07-01" },
+    { "EmployeeID": 5007, "DistrictID": 4406, "UnitID": 440601, "RankID": 5, "DesignationID": 1, "KGID": "KA-TMK-1007", "FirstName": "Chandrashekar B", "EmployeeDOB": "1984-03-27", "GenderID": 1, "AppointmentDate": "2008-10-05" },
+    { "EmployeeID": 5008, "DistrictID": 4406, "UnitID": 440602, "RankID": 4, "DesignationID": 1, "KGID": "KA-TMK-1008", "FirstName": "Divya Reddy", "EmployeeDOB": "1993-05-18", "GenderID": 2, "AppointmentDate": "2017-01-09" },
+    { "EmployeeID": 5009, "DistrictID": 4407, "UnitID": 440701, "RankID": 5, "DesignationID": 1, "KGID": "KA-BLY-1009", "FirstName": "Girish Naik", "EmployeeDOB": "1986-02-02", "GenderID": 1, "AppointmentDate": "2010-11-16" },
+    { "EmployeeID": 5010, "DistrictID": 4408, "UnitID": 440801, "RankID": 4, "DesignationID": 1, "KGID": "KA-SMG-1010", "FirstName": "Roopa Hegde", "EmployeeDOB": "1989-08-08", "GenderID": 2, "AppointmentDate": "2013-04-23" },
+    { "EmployeeID": 5011, "DistrictID": 4401, "UnitID": 440103, "RankID": 4, "DesignationID": 1, "KGID": "KA-BLR-1011", "FirstName": "Farhan Sheikh", "EmployeeDOB": "1987-06-06", "GenderID": 1, "AppointmentDate": "2011-09-01" },
+    { "EmployeeID": 5012, "DistrictID": 4408, "UnitID": 440802, "RankID": 5, "DesignationID": 1, "KGID": "KA-SMG-1012", "FirstName": "Nagesh Gowda", "EmployeeDOB": "1983-10-19", "GenderID": 1, "AppointmentDate": "2007-12-01" }
+  ],
+  "Court": [
+    { "CourtID": 3001, "CourtName": "Bengaluru Urban District & Sessions Court", "DistrictID": 4401, "StateID": 29, "Active": true },
+    { "CourtID": 3002, "CourtName": "Mysuru District & Sessions Court", "DistrictID": 4402, "StateID": 29, "Active": true },
+    { "CourtID": 3003, "CourtName": "Belagavi District & Sessions Court", "DistrictID": 4403, "StateID": 29, "Active": true },
+    { "CourtID": 3004, "CourtName": "Kalaburagi District & Sessions Court", "DistrictID": 4404, "StateID": 29, "Active": true },
+    { "CourtID": 3005, "CourtName": "Dakshina Kannada District & Sessions Court (Mangaluru)", "DistrictID": 4405, "StateID": 29, "Active": true },
+    { "CourtID": 3006, "CourtName": "Tumakuru District & Sessions Court", "DistrictID": 4406, "StateID": 29, "Active": true },
+    { "CourtID": 3007, "CourtName": "Ballari District & Sessions Court", "DistrictID": 4407, "StateID": 29, "Active": true },
+    { "CourtID": 3008, "CourtName": "Shivamogga District & Sessions Court", "DistrictID": 4408, "StateID": 29, "Active": true }
+  ],
+  "CaseCategory": [
+    { "CaseCategoryID": 1, "LookupValue": "FIR" },
+    { "CaseCategoryID": 2, "LookupValue": "UDR" },
+    { "CaseCategoryID": 3, "LookupValue": "Zero FIR" },
+    { "CaseCategoryID": 4, "LookupValue": "PAR" }
+  ],
+  "GravityOffence": [
+    { "GravityOffenceID": 1, "LookupValue": "Heinous" },
+    { "GravityOffenceID": 2, "LookupValue": "Non-Heinous" }
+  ],
+  "CaseStatusMaster": [
+    { "CaseStatusID": 1, "CaseStatusName": "Open" },
+    { "CaseStatusID": 2, "CaseStatusName": "Charge Sheeted" },
+    { "CaseStatusID": 3, "CaseStatusName": "Closed" },
+    { "CaseStatusID": 4, "CaseStatusName": "Under Investigation" }
+  ],
+  "_note_CaseStatusID": "IDs 2 and 3 MUST stay 'Charge Sheeted'/'Closed' - functions/rd_api/index.js hardcodes CLEARED_STATUS = new Set([2, 3]) for clearance-rate math. Don't renumber without updating rd_api too.",
+  "CrimeHead": [
+    { "CrimeHeadID": 1, "CrimeGroupName": "Crimes Against Property", "Active": true },
+    { "CrimeHeadID": 2, "CrimeGroupName": "Crimes Against Person", "Active": true }
+  ],
+  "CrimeSubHead": [
+    { "CrimeSubHeadID": 1, "CrimeHeadID": 1, "CrimeHeadName": "Theft", "SeqID": 1 },
+    { "CrimeSubHeadID": 2, "CrimeHeadID": 2, "CrimeHeadName": "Assault", "SeqID": 2 },
+    { "CrimeSubHeadID": 3, "CrimeHeadID": 1, "CrimeHeadName": "Fraud", "SeqID": 3 },
+    { "CrimeSubHeadID": 4, "CrimeHeadID": 1, "CrimeHeadName": "Burglary", "SeqID": 4 }
+  ],
+  "_note_CrimeSubHeadID": "IDs 1-4 MUST match src/lib/data.ts's caseTypes[].dbId (Theft=1, Assault=2, Fraud=3, Burglary=4) - hardcoded in the existing frontend, slugs/URLs depend on it.",
+  "Act": [
+    { "ActCode": "IPC", "ActDescription": "Indian Penal Code, 1860", "ShortName": "IPC", "Active": true },
+    { "ActCode": "ITACT", "ActDescription": "Information Technology Act, 2000", "ShortName": "IT Act", "Active": true }
+  ],
+  "Section": [
+    { "ActCode": "IPC", "SectionCode": "379", "SectionDescription": "Punishment for theft", "Active": true },
+    { "ActCode": "IPC", "SectionCode": "380", "SectionDescription": "Theft in dwelling house", "Active": true },
+    { "ActCode": "IPC", "SectionCode": "411", "SectionDescription": "Dishonestly receiving stolen property", "Active": true },
+    { "ActCode": "IPC", "SectionCode": "413", "SectionDescription": "Habitually dealing in stolen property", "Active": true },
+    { "ActCode": "IPC", "SectionCode": "420", "SectionDescription": "Cheating and dishonestly inducing delivery of property", "Active": true },
+    { "ActCode": "IPC", "SectionCode": "406", "SectionDescription": "Criminal breach of trust", "Active": true },
+    { "ActCode": "IPC", "SectionCode": "467", "SectionDescription": "Forgery of valuable security", "Active": true },
+    { "ActCode": "IPC", "SectionCode": "468", "SectionDescription": "Forgery for purpose of cheating", "Active": true },
+    { "ActCode": "IPC", "SectionCode": "471", "SectionDescription": "Using forged document as genuine", "Active": true },
+    { "ActCode": "IPC", "SectionCode": "384", "SectionDescription": "Punishment for extortion", "Active": true },
+    { "ActCode": "IPC", "SectionCode": "323", "SectionDescription": "Voluntarily causing hurt", "Active": true },
+    { "ActCode": "IPC", "SectionCode": "324", "SectionDescription": "Causing hurt by dangerous weapon", "Active": true },
+    { "ActCode": "IPC", "SectionCode": "506", "SectionDescription": "Criminal intimidation", "Active": true },
+    { "ActCode": "IPC", "SectionCode": "354", "SectionDescription": "Assault on a woman with intent to outrage modesty", "Active": true },
+    { "ActCode": "IPC", "SectionCode": "454", "SectionDescription": "House-breaking to commit an offence", "Active": true },
+    { "ActCode": "IPC", "SectionCode": "457", "SectionDescription": "House-breaking by night", "Active": true },
+    { "ActCode": "IPC", "SectionCode": "120B", "SectionDescription": "Criminal conspiracy", "Active": true },
+    { "ActCode": "IPC", "SectionCode": "34", "SectionDescription": "Acts done by several persons in furtherance of common intention", "Active": true },
+    { "ActCode": "ITACT", "SectionCode": "66D", "SectionDescription": "Cheating by personation using a computer resource", "Active": true },
+    { "ActCode": "ITACT", "SectionCode": "66C", "SectionDescription": "Identity theft", "Active": true }
+  ]
+}

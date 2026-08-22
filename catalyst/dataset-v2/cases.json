@@ -1,0 +1,994 @@
+{
+  "_id_ranges": "CaseMasterID 9001-9019 | AccusedMasterID 8001-8053 | VictimMasterID 7001-7020 | ComplainantID 6001-6020 | Employee/Unit/Court IDs come from lookups.json",
+  "_code_conventions": {
+    "GenderID": "1=Male, 2=Female, 3=Other",
+    "OccupationID": "1=Business/Shop Owner, 2=Farmer, 3=Government Employee, 4=Private Employee, 5=Driver, 6=Homemaker, 7=Student, 8=Daily Wage Worker, 9=Self-employed/Professional, 10=Retired (no OccupationMaster table yet - see DATA_STORE_SCHEMA.md Extended tables)",
+    "ReligionID_CasteID": "0 = Not specified for all records in this dataset - CasteMaster/ReligionMaster tables aren't built (deferred, see DATA_STORE_SCHEMA.md), and we deliberately don't assign specific values to fictional people for a demo dataset",
+    "cross_entity_ids": "person/vehicle/account/phone reference IDs used by calls/transactions/cctv/witnessStatements/timeline are local string IDs scoped to each scenario (e.g. 'P1'=first person mentioned in that scenario's accused/victim/complainant lists) - see each scenario's 'personRefs' map"
+  },
+  "cases": [
+    {
+      "scenarioId": "C1",
+      "title": "The Yeshwanthpur Fencing Ring",
+      "summary": "A motorcycle theft ring in Bengaluru launders stolen bikes through fake registration transfers sold as 'used vehicles' in Tumakuru. One accused (Suresh) is named inconsistently across the two FIRs - the entity-fusion target. CCTV places him in Tumakuru at a time his own witness statement says he was elsewhere in Bengaluru.",
+      "districts": [4401, 4406],
+      "firs": [
+        {
+          "CaseMasterID": 9001, "CrimeNo": "144010101202600001", "CaseNo": "202600001",
+          "CrimeRegisteredDate": "2026-03-15", "PolicePersonID": 5001, "PoliceStationID": 440101,
+          "CaseCategoryID": 1, "GravityOffenceID": 2, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 1,
+          "CaseStatusID": 4, "CourtID": 3001,
+          "IncidentFromDate": "2026-03-14T20:15:00", "IncidentToDate": "2026-03-14T20:30:00",
+          "InfoReceivedPSDate": "2026-03-14T21:00:00", "latitude": 13.0281, "longitude": 77.5540,
+          "BriefFacts": "Complainant reports 3 motorcycles stolen from a paid parking lot near Yeshwanthpur station between 8:15-8:30pm."
+        },
+        {
+          "CaseMasterID": 9002, "CrimeNo": "144060601202600001", "CaseNo": "202600001",
+          "CrimeRegisteredDate": "2026-03-20", "PolicePersonID": 5007, "PoliceStationID": 440601,
+          "CaseCategoryID": 1, "GravityOffenceID": 2, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 3,
+          "CaseStatusID": 4, "CourtID": 3006,
+          "IncidentFromDate": "2026-03-19T00:00:00", "IncidentToDate": "2026-03-19T00:00:00",
+          "InfoReceivedPSDate": "2026-03-20T11:30:00", "latitude": 13.3379, "longitude": 77.1173,
+          "BriefFacts": "4 buyers report being sold motorcycles with forged registration transfer papers by a man identifying himself as a used-vehicle dealer."
+        }
+      ],
+      "complainants": [
+        { "ComplainantID": 6001, "CaseMasterID": 9001, "ComplainantName": "Ramesh K", "AgeYear": 41, "OccupationID": 4, "ReligionID": 0, "CasteID": 0, "GenderID": 1 },
+        { "ComplainantID": 6002, "CaseMasterID": 9002, "ComplainantName": "Girish Patel", "AgeYear": 35, "OccupationID": 1, "ReligionID": 0, "CasteID": 0, "GenderID": 1 }
+      ],
+      "victims": [],
+      "accused": [
+        { "AccusedMasterID": 8001, "CaseMasterID": 9001, "AccusedName": "Suresh Naik", "AgeYear": 29, "GenderID": 1, "PersonID": "A1" },
+        { "AccusedMasterID": 8002, "CaseMasterID": 9001, "AccusedName": "Deepak M", "AgeYear": 24, "GenderID": 1, "PersonID": "A2" },
+        { "AccusedMasterID": 8003, "CaseMasterID": 9002, "AccusedName": "Suresh N.", "AgeYear": 29, "GenderID": 1, "PersonID": "A1" },
+        { "AccusedMasterID": 8004, "CaseMasterID": 9002, "AccusedName": "Iqbal Sait", "AgeYear": 38, "GenderID": 1, "PersonID": "A3" }
+      ],
+      "actSections": [
+        { "CaseMasterID": 9001, "ActID": "IPC", "SectionID": "379", "ActOrderID": 1, "SectionOrderID": 1 },
+        { "CaseMasterID": 9001, "ActID": "IPC", "SectionID": "34", "ActOrderID": 1, "SectionOrderID": 2 },
+        { "CaseMasterID": 9002, "ActID": "IPC", "SectionID": "420", "ActOrderID": 1, "SectionOrderID": 1 },
+        { "CaseMasterID": 9002, "ActID": "IPC", "SectionID": "468", "ActOrderID": 1, "SectionOrderID": 2 },
+        { "CaseMasterID": 9002, "ActID": "IPC", "SectionID": "471", "ActOrderID": 1, "SectionOrderID": 3 }
+      ],
+      "personRefs": {
+        "P1": "Suresh Naik / Suresh N. (AccusedMasterID 8001 & 8003 - SAME PERSON, entity-fusion target)",
+        "P2": "Deepak M (AccusedMasterID 8002 - getaway driver)",
+        "P3": "Iqbal Sait (AccusedMasterID 8004 - the forger)",
+        "V4": "unregistered SIM used only to coordinate the ring, traced to Iqbal"
+      },
+      "calls": [
+        { "id": "C1-CL-1", "from": "P1", "to": "P3", "timestamp": "2026-03-08T19:02:00", "durationSec": 184, "note": "First contact, a week before the theft" },
+        { "id": "C1-CL-2", "from": "P1", "to": "P3", "timestamp": "2026-03-11T21:47:00", "durationSec": 302, "note": "" },
+        { "id": "C1-CL-3", "from": "P1", "to": "P3", "timestamp": "2026-03-13T18:10:00", "durationSec": 95, "note": "Night before the theft" },
+        { "id": "C1-CL-4", "from": "P1", "to": "P2", "timestamp": "2026-03-14T20:05:00", "durationSec": 40, "note": "10 minutes before the theft window" },
+        { "id": "C1-CL-5", "from": "P3", "to": "V4", "timestamp": "2026-03-18T10:22:00", "durationSec": 261, "note": "Day before the Tumakuru sales" }
+      ],
+      "transactions": [
+        { "id": "C1-TX-1", "fromAccount": "Iqbal Sait - SBI xx4471", "toAccount": "Suresh Naik - Canara xx1190", "amount": 18000, "timestamp": "2026-03-21T09:15:00", "note": "2 days after the Tumakuru sales" },
+        { "id": "C1-TX-2", "fromAccount": "Iqbal Sait - SBI xx4471", "toAccount": "Deepak M - Paytm Wallet", "amount": 6000, "timestamp": "2026-03-21T09:20:00", "note": "Same session as TX-1" }
+      ],
+      "cctv": [
+        { "id": "C1-CC-1", "cameraLocation": "Yeshwanthpur parking lot, entrance camera", "personOrVehicle": "P2, on foot, matching description", "timestamp": "2026-03-14T20:12:00", "note": "" },
+        { "id": "C1-CC-2", "cameraLocation": "NH-48 toll camera near Nelamangala", "personOrVehicle": "Suresh Naik's registered vehicle KA-04-XX-1187", "timestamp": "2026-03-19T21:40:00", "note": "On the Bengaluru-Tumakuru highway, ~90 min drive to Tumakuru sale site" }
+      ],
+      "witnessStatements": [
+        { "id": "C1-WS-1", "witnessName": "Lakshmi Bai (parking attendant)", "statementDate": "2026-03-15", "statementText": "Saw two young men near the bikes around 8pm, one on a phone call the whole time.", "relatedPerson": "P2" },
+        { "id": "C1-WS-2", "witnessName": "Suresh Naik (as accused, recorded statement)", "statementDate": "2026-03-22", "statementText": "I was at my sister's house in Rajajinagar, Bengaluru, from 7pm to 11pm on 19 March. I was nowhere near Tumakuru.", "relatedPerson": "P1" }
+      ],
+      "timeline": [
+        { "id": "C1-T1", "timestamp": "2026-03-08T19:02:00", "source": "call", "sourceId": "C1-CL-1", "description": "Suresh first contacts Iqbal (the forger)" },
+        { "id": "C1-T2", "timestamp": "2026-03-14T20:15:00", "source": "fir", "sourceId": "9001", "description": "3 motorcycles stolen, Yeshwanthpur" },
+        { "id": "C1-T3", "timestamp": "2026-03-19T21:40:00", "source": "cctv", "sourceId": "C1-CC-2", "description": "Suresh's vehicle on NH-48 toward Tumakuru" },
+        { "id": "C1-T4", "timestamp": "2026-03-20T00:00:00", "source": "fir", "sourceId": "9002", "description": "Forged-papers vehicle sales in Tumakuru (incident date)" },
+        { "id": "C1-T5", "timestamp": "2026-03-21T09:15:00", "source": "transaction", "sourceId": "C1-TX-1", "description": "Iqbal pays Suresh's account, 2 days post-sale" },
+        { "id": "C1-T6", "timestamp": "2026-03-22T00:00:00", "source": "statement", "sourceId": "C1-WS-2", "description": "Suresh's alibi statement recorded" }
+      ],
+      "contradiction": {
+        "description": "Suresh's alibi (WS-2: in Bengaluru until 11pm on 19 March) directly conflicts with CCTV placing his vehicle on the Tumakuru highway at 9:40pm the same night - a ~90min drive that makes both being-in-Bengaluru-until-11pm AND being-on-the-highway-at-9:40pm mutually exclusive.",
+        "conflictingRecords": ["C1-WS-2", "C1-CC-2"],
+        "suggestedNextQuestion": "Ask Suresh to account for his vehicle's presence on NH-48 at 9:40pm on 19 March, given his statement places him in Rajajinagar until 11pm the same night."
+      }
+    },
+
+    {
+      "scenarioId": "C2",
+      "title": "K.R. Market Jewellery Heist",
+      "summary": "An organized gang robs a jewellery shop near K.R. Market, Mysuru, fencing the goods through an unlicensed pawnbroker. A shop assistant (victim) is grabbed and injured during the robbery.",
+      "districts": [4402],
+      "firs": [
+        {
+          "CaseMasterID": 9003, "CrimeNo": "144020201202600001", "CaseNo": "202600001",
+          "CrimeRegisteredDate": "2026-02-02", "PolicePersonID": 5003, "PoliceStationID": 440201,
+          "CaseCategoryID": 1, "GravityOffenceID": 1, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 1,
+          "CaseStatusID": 4, "CourtID": 3002,
+          "IncidentFromDate": "2026-02-01T18:40:00", "IncidentToDate": "2026-02-01T18:50:00",
+          "InfoReceivedPSDate": "2026-02-01T19:10:00", "latitude": 12.3050, "longitude": 76.6550,
+          "BriefFacts": "4-5 men enter a jewellery shop near K.R. Market at closing time, threaten staff, and flee with gold ornaments worth approx. Rs 32 lakh."
+        }
+      ],
+      "complainants": [
+        { "ComplainantID": 6003, "CaseMasterID": 9003, "ComplainantName": "Nataraj Shetty (shop owner)", "AgeYear": 52, "OccupationID": 1, "ReligionID": 0, "CasteID": 0, "GenderID": 1 }
+      ],
+      "victims": [
+        { "VictimMasterID": 7001, "CaseMasterID": 9003, "VictimName": "Anil Kumar (shop assistant)", "AgeYear": 22, "GenderID": 1, "VictimPolice": "No" }
+      ],
+      "accused": [
+        { "AccusedMasterID": 8005, "CaseMasterID": 9003, "AccusedName": "Praveen Achari", "AgeYear": 31, "GenderID": 1, "PersonID": "A1" },
+        { "AccusedMasterID": 8006, "CaseMasterID": 9003, "AccusedName": "Manoj Kumar S", "AgeYear": 27, "GenderID": 1, "PersonID": "A2" },
+        { "AccusedMasterID": 8007, "CaseMasterID": 9003, "AccusedName": "Yusuf Ali", "AgeYear": 33, "GenderID": 1, "PersonID": "A3" },
+        { "AccusedMasterID": 8008, "CaseMasterID": 9003, "AccusedName": "Ravindra Naidu (fence, pawnbroker)", "AgeYear": 47, "GenderID": 1, "PersonID": "A4" }
+      ],
+      "actSections": [
+        { "CaseMasterID": 9003, "ActID": "IPC", "SectionID": "384", "ActOrderID": 1, "SectionOrderID": 1 },
+        { "CaseMasterID": 9003, "ActID": "IPC", "SectionID": "324", "ActOrderID": 1, "SectionOrderID": 2 },
+        { "CaseMasterID": 9003, "ActID": "IPC", "SectionID": "411", "ActOrderID": 1, "SectionOrderID": 3 },
+        { "CaseMasterID": 9003, "ActID": "IPC", "SectionID": "120B", "ActOrderID": 1, "SectionOrderID": 4 }
+      ],
+      "personRefs": {
+        "P1": "Praveen Achari (lead)", "P2": "Manoj Kumar S", "P3": "Yusuf Ali (getaway driver)", "P4": "Ravindra Naidu (fence)"
+      },
+      "calls": [
+        { "id": "C2-CL-1", "from": "P1", "to": "P4", "timestamp": "2026-01-28T20:11:00", "durationSec": 410, "note": "Planning call, 4 days prior" },
+        { "id": "C2-CL-2", "from": "P1", "to": "P2", "timestamp": "2026-02-01T17:55:00", "durationSec": 22, "note": "Just before the robbery" },
+        { "id": "C2-CL-3", "from": "P3", "to": "P1", "timestamp": "2026-02-01T18:52:00", "durationSec": 15, "note": "2 minutes after fleeing the scene" },
+        { "id": "C2-CL-4", "from": "P1", "to": "P4", "timestamp": "2026-02-02T08:30:00", "durationSec": 190, "note": "Morning after, arranging the fence" }
+      ],
+      "transactions": [
+        { "id": "C2-TX-1", "fromAccount": "Ravindra Naidu - HDFC xx7723", "toAccount": "Praveen Achari - Cash", "amount": 480000, "timestamp": "2026-02-03T00:00:00", "note": "Cash withdrawal same day as pawn shop gold melt-down entry" }
+      ],
+      "cctv": [
+        { "id": "C2-CC-1", "cameraLocation": "Shop's own CCTV, interior", "personOrVehicle": "All 3 (P1,P2,P3), faces partially covered", "timestamp": "2026-02-01T18:41:00", "note": "" },
+        { "id": "C2-CC-2", "cameraLocation": "Ravindra Naidu's pawnshop, Devaraja Market", "personOrVehicle": "P1 entering with a bag", "timestamp": "2026-02-02T11:20:00", "note": "Next morning" }
+      ],
+      "witnessStatements": [
+        { "id": "C2-WS-1", "witnessName": "Anil Kumar (victim, shop assistant)", "statementDate": "2026-02-01", "statementText": "One of them called another 'Manu' during the robbery.", "relatedPerson": "P2" },
+        { "id": "C2-WS-2", "witnessName": "Ravindra Naidu (as accused)", "statementDate": "2026-02-05", "statementText": "I run a licensed pawn shop. I have never dealt with Praveen Achari.", "relatedPerson": "P4" }
+      ],
+      "timeline": [
+        { "id": "C2-T1", "timestamp": "2026-01-28T20:11:00", "source": "call", "sourceId": "C2-CL-1", "description": "Praveen and Ravindra's planning call" },
+        { "id": "C2-T2", "timestamp": "2026-02-01T18:40:00", "source": "fir", "sourceId": "9003", "description": "Robbery occurs" },
+        { "id": "C2-T3", "timestamp": "2026-02-02T11:20:00", "source": "cctv", "sourceId": "C2-CC-2", "description": "Praveen enters Ravindra's pawnshop with a bag" },
+        { "id": "C2-T4", "timestamp": "2026-02-03T00:00:00", "source": "transaction", "sourceId": "C2-TX-1", "description": "Ravindra withdraws cash matching a melt-down entry" }
+      ],
+      "contradiction": {
+        "description": "Ravindra's statement (WS-2) denies ever dealing with Praveen, but CCTV (CC-2) places Praveen entering his shop the morning after the robbery, and a planning call (CL-1) precedes the robbery by 4 days.",
+        "conflictingRecords": ["C2-WS-2", "C2-CC-2", "C2-CL-1"],
+        "suggestedNextQuestion": "Ask Ravindra to explain the 20 Feb 4-day-prior call to Praveen and the CCTV footage of Praveen entering his shop the morning after the robbery, given his statement he's never dealt with him."
+      }
+    },
+
+    {
+      "scenarioId": "C3",
+      "title": "QuickCash Loan-App Extortion",
+      "summary": "An illegal instant-loan app harasses and extorts borrowers across two districts, using leaked contact lists to threaten victims' families. Same operator (Zoya) runs both district-level complaints under different registered-agent names.",
+      "districts": [4403, 4401],
+      "firs": [
+        {
+          "CaseMasterID": 9004, "CrimeNo": "144030301202600001", "CaseNo": "202600001",
+          "CrimeRegisteredDate": "2026-04-05", "PolicePersonID": 5004, "PoliceStationID": 440301,
+          "CaseCategoryID": 1, "GravityOffenceID": 2, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 3,
+          "CaseStatusID": 4, "CourtID": 3003,
+          "IncidentFromDate": "2026-03-01T00:00:00", "IncidentToDate": "2026-04-04T00:00:00",
+          "InfoReceivedPSDate": "2026-04-05T14:00:00", "latitude": 15.8497, "longitude": 74.4977,
+          "BriefFacts": "Complainant took a small loan via a mobile app, was charged hidden fees far exceeding the loan, and received threatening calls to his contacts."
+        },
+        {
+          "CaseMasterID": 9005, "CrimeNo": "144010102202600002", "CaseNo": "202600002",
+          "CrimeRegisteredDate": "2026-04-10", "PolicePersonID": 5002, "PoliceStationID": 440102,
+          "CaseCategoryID": 1, "GravityOffenceID": 2, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 3,
+          "CaseStatusID": 4, "CourtID": 3001,
+          "IncidentFromDate": "2026-03-10T00:00:00", "IncidentToDate": "2026-04-09T00:00:00",
+          "InfoReceivedPSDate": "2026-04-10T16:20:00", "latitude": 12.9698, "longitude": 77.7500,
+          "BriefFacts": "3 separate complainants in Whitefield report the same app pattern - hidden charges, morphed photos sent to family, threats."
+        }
+      ],
+      "complainants": [
+        { "ComplainantID": 6004, "CaseMasterID": 9004, "ComplainantName": "Vinayak Desai", "AgeYear": 30, "OccupationID": 4, "ReligionID": 0, "CasteID": 0, "GenderID": 1 },
+        { "ComplainantID": 6005, "CaseMasterID": 9005, "ComplainantName": "Farida Banu", "AgeYear": 26, "OccupationID": 6, "ReligionID": 0, "CasteID": 0, "GenderID": 2 },
+        { "ComplainantID": 6006, "CaseMasterID": 9005, "ComplainantName": "Rohit Shetty", "AgeYear": 34, "OccupationID": 4, "ReligionID": 0, "CasteID": 0, "GenderID": 1 }
+      ],
+      "victims": [
+        { "VictimMasterID": 7002, "CaseMasterID": 9004, "VictimName": "Vinayak Desai", "AgeYear": 30, "GenderID": 1, "VictimPolice": "No" },
+        { "VictimMasterID": 7003, "CaseMasterID": 9005, "VictimName": "Farida Banu", "AgeYear": 26, "GenderID": 2, "VictimPolice": "No" }
+      ],
+      "accused": [
+        { "AccusedMasterID": 8009, "CaseMasterID": 9004, "AccusedName": "Zoya Merchant (app runs as 'QuickCash Lending')", "AgeYear": 33, "GenderID": 2, "PersonID": "A1" },
+        { "AccusedMasterID": 8010, "CaseMasterID": 9004, "AccusedName": "Tarun Bhatia (call-centre lead)", "AgeYear": 28, "GenderID": 1, "PersonID": "A2" },
+        { "AccusedMasterID": 8011, "CaseMasterID": 9005, "AccusedName": "Z. Merchant (app registered as 'RapidFin Solutions')", "AgeYear": 33, "GenderID": 2, "PersonID": "A1" },
+        { "AccusedMasterID": 8012, "CaseMasterID": 9005, "AccusedName": "Tarun Bhatia", "AgeYear": 28, "GenderID": 1, "PersonID": "A2" }
+      ],
+      "actSections": [
+        { "CaseMasterID": 9004, "ActID": "IPC", "SectionID": "384", "ActOrderID": 1, "SectionOrderID": 1 },
+        { "CaseMasterID": 9004, "ActID": "IPC", "SectionID": "506", "ActOrderID": 1, "SectionOrderID": 2 },
+        { "CaseMasterID": 9005, "ActID": "IPC", "SectionID": "384", "ActOrderID": 1, "SectionOrderID": 1 },
+        { "CaseMasterID": 9005, "ActID": "ITACT", "SectionID": "66D", "ActOrderID": 1, "SectionOrderID": 2 },
+        { "CaseMasterID": 9005, "ActID": "IPC", "SectionID": "506", "ActOrderID": 1, "SectionOrderID": 3 }
+      ],
+      "personRefs": {
+        "P1": "Zoya Merchant / Z. Merchant (AccusedMasterID 8009 & 8011 - SAME PERSON, entity-fusion target, registers under two front company names)",
+        "P2": "Tarun Bhatia (AccusedMasterID 8010 & 8012, call-centre lead, same name both FIRs but worth confirming same person)"
+      },
+      "calls": [
+        { "id": "C3-CL-1", "from": "P2", "to": "P1", "timestamp": "2026-03-28T10:05:00", "durationSec": 520, "note": "Weekly ops call pattern, recurring" },
+        { "id": "C3-CL-2", "from": "P2", "to": "P1", "timestamp": "2026-04-04T09:40:00", "durationSec": 480, "note": "Same recurring pattern" },
+        { "id": "C3-CL-3", "from": "P2", "to": "P1", "timestamp": "2026-04-09T10:15:00", "durationSec": 460, "note": "Same recurring pattern, spans both FIRs' complaint windows" },
+        { "id": "C3-CL-4", "from": "P2", "to": "V:Vinayak", "timestamp": "2026-04-03T22:10:00", "durationSec": 340, "note": "Threatening call cited in FIR 9004" },
+        { "id": "C3-CL-5", "from": "P2", "to": "V:Farida", "timestamp": "2026-04-08T21:50:00", "durationSec": 290, "note": "Threatening call cited in FIR 9005" }
+      ],
+      "transactions": [
+        { "id": "C3-TX-1", "fromAccount": "QuickCash Lending merchant account", "toAccount": "Zoya Merchant - Kotak xx3390", "amount": 210000, "timestamp": "2026-04-01T00:00:00", "note": "Weekly payout, tagged to the FIR 9004 front company" },
+        { "id": "C3-TX-2", "fromAccount": "RapidFin Solutions merchant account", "toAccount": "Zoya Merchant - Kotak xx3390", "amount": 340000, "timestamp": "2026-04-08T00:00:00", "note": "Same destination account as TX-1, different front company - the fusion link" }
+      ],
+      "cctv": [],
+      "witnessStatements": [
+        { "id": "C3-WS-1", "witnessName": "Vinayak Desai (complainant)", "statementDate": "2026-04-05", "statementText": "The recovery agent's voice matched calls I'd received before, threatening to send my photo to my relatives.", "relatedPerson": "P2" },
+        { "id": "C3-WS-2", "witnessName": "Tarun Bhatia (as accused)", "statementDate": "2026-04-12", "statementText": "QuickCash and RapidFin are unrelated companies. I only ever worked for RapidFin.", "relatedPerson": "P1" }
+      ],
+      "timeline": [
+        { "id": "C3-T1", "timestamp": "2026-03-28T10:05:00", "source": "call", "sourceId": "C3-CL-1", "description": "First recurring ops call, Tarun to Zoya" },
+        { "id": "C3-T2", "timestamp": "2026-04-01T00:00:00", "source": "transaction", "sourceId": "C3-TX-1", "description": "QuickCash payout to Zoya's Kotak account" },
+        { "id": "C3-T3", "timestamp": "2026-04-03T22:10:00", "source": "call", "sourceId": "C3-CL-4", "description": "Threatening call to Vinayak (FIR 9004)" },
+        { "id": "C3-T4", "timestamp": "2026-04-05T14:00:00", "source": "fir", "sourceId": "9004", "description": "FIR 9004 registered, Belagavi" },
+        { "id": "C3-T5", "timestamp": "2026-04-08T00:00:00", "source": "transaction", "sourceId": "C3-TX-2", "description": "RapidFin payout to the SAME Kotak account as TX-1" },
+        { "id": "C3-T6", "timestamp": "2026-04-08T21:50:00", "source": "call", "sourceId": "C3-CL-5", "description": "Threatening call to Farida (FIR 9005)" },
+        { "id": "C3-T7", "timestamp": "2026-04-10T16:20:00", "source": "fir", "sourceId": "9005", "description": "FIR 9005 registered, Bengaluru Whitefield" }
+      ],
+      "contradiction": {
+        "description": "Tarun's statement (WS-2) claims QuickCash and RapidFin are unrelated companies he had no connection to besides RapidFin - but both companies' payouts (TX-1, TX-2) land in the exact same Kotak account belonging to Zoya, and his own recurring call pattern to her (CL-1, CL-2, CL-3) spans both FIRs' complaint windows without a gap.",
+        "conflictingRecords": ["C3-WS-2", "C3-TX-1", "C3-TX-2"],
+        "suggestedNextQuestion": "Ask Tarun why 'unrelated' QuickCash and RapidFin payouts both settle into the same Kotak xx3390 account, and why his weekly ops calls to that account's holder don't stop between the two companies' operating windows."
+      }
+    },
+
+    {
+      "scenarioId": "C4",
+      "title": "Kalaburagi Land Title Forgery",
+      "summary": "A property broker, a complicit notary, and a buyer conspire to forge land title documents for an agricultural plot, defrauding the actual owner.",
+      "districts": [4404],
+      "firs": [
+        {
+          "CaseMasterID": 9006, "CrimeNo": "144040401202600001", "CaseNo": "202600001",
+          "CrimeRegisteredDate": "2026-05-12", "PolicePersonID": 5005, "PoliceStationID": 440401,
+          "CaseCategoryID": 1, "GravityOffenceID": 2, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 3,
+          "CaseStatusID": 4, "CourtID": 3004,
+          "IncidentFromDate": "2026-04-01T00:00:00", "IncidentToDate": "2026-05-10T00:00:00",
+          "InfoReceivedPSDate": "2026-05-12T10:00:00", "latitude": 17.3297, "longitude": 76.8343,
+          "BriefFacts": "Owner discovers his agricultural land was 'sold' via forged power-of-attorney while he was working abroad; documents bear a notary stamp he never visited."
+        }
+      ],
+      "complainants": [
+        { "ComplainantID": 6007, "CaseMasterID": 9006, "ComplainantName": "Basavaraj Patil (actual owner)", "AgeYear": 55, "OccupationID": 2, "ReligionID": 0, "CasteID": 0, "GenderID": 1 }
+      ],
+      "victims": [
+        { "VictimMasterID": 7004, "CaseMasterID": 9006, "VictimName": "Basavaraj Patil", "AgeYear": 55, "GenderID": 1, "VictimPolice": "No" }
+      ],
+      "accused": [
+        { "AccusedMasterID": 8013, "CaseMasterID": 9006, "AccusedName": "Mallikarjun Rao (property broker)", "AgeYear": 44, "GenderID": 1, "PersonID": "A1" },
+        { "AccusedMasterID": 8014, "CaseMasterID": 9006, "AccusedName": "Shantaram Kulkarni (notary)", "AgeYear": 58, "GenderID": 1, "PersonID": "A2" },
+        { "AccusedMasterID": 8015, "CaseMasterID": 9006, "AccusedName": "Prakash Jadhav (buyer)", "AgeYear": 39, "GenderID": 1, "PersonID": "A3" }
+      ],
+      "actSections": [
+        { "CaseMasterID": 9006, "ActID": "IPC", "SectionID": "467", "ActOrderID": 1, "SectionOrderID": 1 },
+        { "CaseMasterID": 9006, "ActID": "IPC", "SectionID": "468", "ActOrderID": 1, "SectionOrderID": 2 },
+        { "CaseMasterID": 9006, "ActID": "IPC", "SectionID": "471", "ActOrderID": 1, "SectionOrderID": 3 },
+        { "CaseMasterID": 9006, "ActID": "IPC", "SectionID": "420", "ActOrderID": 1, "SectionOrderID": 4 },
+        { "CaseMasterID": 9006, "ActID": "IPC", "SectionID": "120B", "ActOrderID": 1, "SectionOrderID": 5 }
+      ],
+      "personRefs": { "P1": "Mallikarjun Rao (broker)", "P2": "Shantaram Kulkarni (notary)", "P3": "Prakash Jadhav (buyer)" },
+      "calls": [
+        { "id": "C4-CL-1", "from": "P1", "to": "P2", "timestamp": "2026-03-25T11:00:00", "durationSec": 610, "note": "" },
+        { "id": "C4-CL-2", "from": "P1", "to": "P3", "timestamp": "2026-03-27T15:30:00", "durationSec": 380, "note": "" },
+        { "id": "C4-CL-3", "from": "P2", "to": "P3", "timestamp": "2026-04-01T09:00:00", "durationSec": 120, "note": "Notary and buyer speak directly - unusual if notary claims not to know buyer" }
+      ],
+      "transactions": [
+        { "id": "C4-TX-1", "fromAccount": "Prakash Jadhav - Union Bank xx5512", "toAccount": "Mallikarjun Rao - SBI xx8801", "amount": 1250000, "timestamp": "2026-04-02T00:00:00", "note": "'Sale' payment for forged plot" },
+        { "id": "C4-TX-2", "fromAccount": "Mallikarjun Rao - SBI xx8801", "toAccount": "Shantaram Kulkarni - SBI xx2290", "amount": 75000, "timestamp": "2026-04-03T00:00:00", "note": "Broker pays notary, day after receiving buyer's payment" }
+      ],
+      "cctv": [],
+      "witnessStatements": [
+        { "id": "C4-WS-1", "witnessName": "Shantaram Kulkarni (as accused)", "statementDate": "2026-05-14", "statementText": "I stamped the power-of-attorney in good faith based on documents the broker gave me. I don't know the buyer personally.", "relatedPerson": "P2" },
+        { "id": "C4-WS-2", "witnessName": "Sunita Patil (owner's wife)", "statementDate": "2026-05-12", "statementText": "My husband was in Dubai the entire period in question and never signed any power-of-attorney.", "relatedPerson": "V:Basavaraj" }
+      ],
+      "timeline": [
+        { "id": "C4-T1", "timestamp": "2026-03-25T11:00:00", "source": "call", "sourceId": "C4-CL-1", "description": "Broker and notary first contact" },
+        { "id": "C4-T2", "timestamp": "2026-04-01T09:00:00", "source": "call", "sourceId": "C4-CL-3", "description": "Notary calls buyer directly" },
+        { "id": "C4-T3", "timestamp": "2026-04-02T00:00:00", "source": "transaction", "sourceId": "C4-TX-1", "description": "Buyer pays broker" },
+        { "id": "C4-T4", "timestamp": "2026-04-03T00:00:00", "source": "transaction", "sourceId": "C4-TX-2", "description": "Broker pays notary, next day" },
+        { "id": "C4-T5", "timestamp": "2026-05-12T10:00:00", "source": "fir", "sourceId": "9006", "description": "Owner files complaint on return from Dubai" }
+      ],
+      "contradiction": {
+        "description": "Notary Shantaram's statement (WS-1) claims he doesn't know the buyer personally, but a call record (CL-3) shows him speaking directly with the buyer, and he received a payment from the broker (TX-2) the day after the buyer's payment cleared - inconsistent with an arm's-length, good-faith notarization.",
+        "conflictingRecords": ["C4-WS-1", "C4-CL-3", "C4-TX-2"],
+        "suggestedNextQuestion": "Ask Shantaram to explain his 1 April direct call with the buyer and the Rs 75,000 he received from the broker the day after the buyer's payment, given his statement that he doesn't know the buyer personally."
+      }
+    },
+
+    {
+      "scenarioId": "C5",
+      "title": "Mangaluru Warehouse Burglary-Resale Ring",
+      "summary": "A string of electronics-warehouse burglaries in Mangaluru feeds a secondhand electronics shop that resells the goods within days.",
+      "districts": [4405],
+      "firs": [
+        {
+          "CaseMasterID": 9007, "CrimeNo": "144050501202600001", "CaseNo": "202600001",
+          "CrimeRegisteredDate": "2026-06-03", "PolicePersonID": 5006, "PoliceStationID": 440501,
+          "CaseCategoryID": 1, "GravityOffenceID": 2, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 4,
+          "CaseStatusID": 4, "CourtID": 3005,
+          "IncidentFromDate": "2026-06-02T02:00:00", "IncidentToDate": "2026-06-02T03:30:00",
+          "InfoReceivedPSDate": "2026-06-02T08:00:00", "latitude": 12.9141, "longitude": 74.8560,
+          "BriefFacts": "Warehouse storing imported electronics broken into overnight; approx 40 laptops and mobile phones stolen, lock forced."
+        }
+      ],
+      "complainants": [
+        { "ComplainantID": 6008, "CaseMasterID": 9007, "ComplainantName": "Melvin D'Souza (warehouse manager)", "AgeYear": 40, "OccupationID": 4, "ReligionID": 0, "CasteID": 0, "GenderID": 1 }
+      ],
+      "victims": [],
+      "accused": [
+        { "AccusedMasterID": 8016, "CaseMasterID": 9007, "AccusedName": "Vinod Poojary", "AgeYear": 26, "GenderID": 1, "PersonID": "A1" },
+        { "AccusedMasterID": 8017, "CaseMasterID": 9007, "AccusedName": "Naveen Kotian", "AgeYear": 23, "GenderID": 1, "PersonID": "A2" },
+        { "AccusedMasterID": 8018, "CaseMasterID": 9007, "AccusedName": "Rafiq Ahmed (shop owner, fence)", "AgeYear": 45, "GenderID": 1, "PersonID": "A3" }
+      ],
+      "actSections": [
+        { "CaseMasterID": 9007, "ActID": "IPC", "SectionID": "457", "ActOrderID": 1, "SectionOrderID": 1 },
+        { "CaseMasterID": 9007, "ActID": "IPC", "SectionID": "380", "ActOrderID": 1, "SectionOrderID": 2 },
+        { "CaseMasterID": 9007, "ActID": "IPC", "SectionID": "411", "ActOrderID": 1, "SectionOrderID": 3 }
+      ],
+      "personRefs": { "P1": "Vinod Poojary", "P2": "Naveen Kotian", "P3": "Rafiq Ahmed (fence)" },
+      "calls": [
+        { "id": "C5-CL-1", "from": "P1", "to": "P3", "timestamp": "2026-06-02T04:10:00", "durationSec": 65, "note": "90 minutes after the break-in" },
+        { "id": "C5-CL-2", "from": "P1", "to": "P2", "timestamp": "2026-06-02T01:40:00", "durationSec": 30, "note": "20 minutes before the break-in window starts" }
+      ],
+      "transactions": [
+        { "id": "C5-TX-1", "fromAccount": "Rafiq Ahmed - shop till (cash)", "toAccount": "Vinod Poojary - cash", "amount": 95000, "timestamp": "2026-06-02T10:00:00", "note": "Same morning as the burglary" }
+      ],
+      "cctv": [
+        { "id": "C5-CC-1", "cameraLocation": "Warehouse perimeter camera", "personOrVehicle": "Two figures, one carrying a duffel bag", "timestamp": "2026-06-02T02:15:00", "note": "" },
+        { "id": "C5-CC-2", "cameraLocation": "Rafiq Ahmed's shop, street-facing camera", "personOrVehicle": "Vinod Poojary, entering with a duffel bag", "timestamp": "2026-06-02T09:40:00", "note": "" }
+      ],
+      "witnessStatements": [
+        { "id": "C5-WS-1", "witnessName": "Rafiq Ahmed (as accused)", "statementDate": "2026-06-05", "statementText": "I bought a few second-hand laptops from a regular walk-in customer. I had no idea they were stolen.", "relatedPerson": "P3" }
+      ],
+      "timeline": [
+        { "id": "C5-T1", "timestamp": "2026-06-02T02:00:00", "source": "fir", "sourceId": "9007", "description": "Burglary occurs" },
+        { "id": "C5-T2", "timestamp": "2026-06-02T04:10:00", "source": "call", "sourceId": "C5-CL-1", "description": "Vinod calls Rafiq 90 min after the break-in" },
+        { "id": "C5-T3", "timestamp": "2026-06-02T09:40:00", "source": "cctv", "sourceId": "C5-CC-2", "description": "Vinod seen entering Rafiq's shop with a duffel bag" },
+        { "id": "C5-T4", "timestamp": "2026-06-02T10:00:00", "source": "transaction", "sourceId": "C5-TX-1", "description": "Rafiq pays Vinod in cash" }
+      ],
+      "contradiction": {
+        "description": "Rafiq's statement (WS-1) frames Vinod as a random 'regular walk-in customer', but the call record (CL-1) shows Vinod contacting Rafiq just 90 minutes after the burglary window closed, well before any normal shop-visit conversation would happen.",
+        "conflictingRecords": ["C5-WS-1", "C5-CL-1"],
+        "suggestedNextQuestion": "Ask Rafiq why a 'regular walk-in customer' called him at 4:10am, 90 minutes after a nearby warehouse burglary, before any shop would normally be open."
+      }
+    },
+
+    {
+      "scenarioId": "C6",
+      "title": "Ballari Mining Contract Assault",
+      "summary": "A labor payment dispute at a mining site escalates into a group assault on a worker who raised the issue, allegedly ordered by the contractor.",
+      "districts": [4407],
+      "firs": [
+        {
+          "CaseMasterID": 9008, "CrimeNo": "144070701202600001", "CaseNo": "202600001",
+          "CrimeRegisteredDate": "2026-01-18", "PolicePersonID": 5009, "PoliceStationID": 440701,
+          "CaseCategoryID": 1, "GravityOffenceID": 1, "CrimeMajorHeadID": 2, "CrimeMinorHeadID": 2,
+          "CaseStatusID": 4, "CourtID": 3007,
+          "IncidentFromDate": "2026-01-17T19:00:00", "IncidentToDate": "2026-01-17T19:20:00",
+          "InfoReceivedPSDate": "2026-01-17T20:00:00", "latitude": 15.1394, "longitude": 76.9214,
+          "BriefFacts": "Worker who publicly demanded overdue wages is beaten by 3 men near the mine site gate; sustains a fractured arm."
+        }
+      ],
+      "complainants": [
+        { "ComplainantID": 6009, "CaseMasterID": 9008, "ComplainantName": "Hanumantha Naik", "AgeYear": 34, "OccupationID": 8, "ReligionID": 0, "CasteID": 0, "GenderID": 1 }
+      ],
+      "victims": [
+        { "VictimMasterID": 7005, "CaseMasterID": 9008, "VictimName": "Hanumantha Naik", "AgeYear": 34, "GenderID": 1, "VictimPolice": "No" }
+      ],
+      "accused": [
+        { "AccusedMasterID": 8019, "CaseMasterID": 9008, "AccusedName": "Chandru M (site supervisor)", "AgeYear": 40, "GenderID": 1, "PersonID": "A1" },
+        { "AccusedMasterID": 8020, "CaseMasterID": 9008, "AccusedName": "Basha Sab", "AgeYear": 29, "GenderID": 1, "PersonID": "A2" },
+        { "AccusedMasterID": 8021, "CaseMasterID": 9008, "AccusedName": "Ravi Kumar T", "AgeYear": 27, "GenderID": 1, "PersonID": "A3" },
+        { "AccusedMasterID": 8022, "CaseMasterID": 9008, "AccusedName": "Ismail Sheikh (mining contractor)", "AgeYear": 51, "GenderID": 1, "PersonID": "A4" }
+      ],
+      "actSections": [
+        { "CaseMasterID": 9008, "ActID": "IPC", "SectionID": "324", "ActOrderID": 1, "SectionOrderID": 1 },
+        { "CaseMasterID": 9008, "ActID": "IPC", "SectionID": "506", "ActOrderID": 1, "SectionOrderID": 2 },
+        { "CaseMasterID": 9008, "ActID": "IPC", "SectionID": "34", "ActOrderID": 1, "SectionOrderID": 3 }
+      ],
+      "personRefs": { "P1": "Chandru (supervisor)", "P2": "Basha Sab", "P3": "Ravi Kumar T", "P4": "Ismail Sheikh (contractor)" },
+      "calls": [
+        { "id": "C6-CL-1", "from": "P4", "to": "P1", "timestamp": "2026-01-17T17:30:00", "durationSec": 210, "note": "1.5 hours before the assault" },
+        { "id": "C6-CL-2", "from": "P1", "to": "P2", "timestamp": "2026-01-17T18:20:00", "durationSec": 40, "note": "" },
+        { "id": "C6-CL-3", "from": "P1", "to": "P3", "timestamp": "2026-01-17T18:22:00", "durationSec": 35, "note": "" }
+      ],
+      "transactions": [
+        { "id": "C6-TX-1", "fromAccount": "Ismail Sheikh - Axis xx1150", "toAccount": "Chandru M - cash withdrawal", "amount": 15000, "timestamp": "2026-01-19T00:00:00", "note": "2 days after the assault" }
+      ],
+      "cctv": [
+        { "id": "C6-CC-1", "cameraLocation": "Mine site gate camera", "personOrVehicle": "P2 and P3 approaching Hanumantha", "timestamp": "2026-01-17T19:02:00", "note": "" }
+      ],
+      "witnessStatements": [
+        { "id": "C6-WS-1", "witnessName": "Manjula K (co-worker)", "statementDate": "2026-01-18", "statementText": "Chandru told them to 'teach him a lesson' after the phone call with the contractor.", "relatedPerson": "P1" },
+        { "id": "C6-WS-2", "witnessName": "Ismail Sheikh (as accused)", "statementDate": "2026-01-20", "statementText": "I never instructed anyone to harm any worker. I only called Chandru about a routine payroll matter.", "relatedPerson": "P4" }
+      ],
+      "timeline": [
+        { "id": "C6-T1", "timestamp": "2026-01-17T17:30:00", "source": "call", "sourceId": "C6-CL-1", "description": "Contractor calls supervisor" },
+        { "id": "C6-T2", "timestamp": "2026-01-17T18:20:00", "source": "call", "sourceId": "C6-CL-2", "description": "Supervisor calls Basha" },
+        { "id": "C6-T3", "timestamp": "2026-01-17T19:00:00", "source": "fir", "sourceId": "9008", "description": "Assault occurs" },
+        { "id": "C6-T4", "timestamp": "2026-01-19T00:00:00", "source": "transaction", "sourceId": "C6-TX-1", "description": "Contractor withdraws cash for supervisor, 2 days later" }
+      ],
+      "contradiction": {
+        "description": "Ismail's statement (WS-2) claims his call to Chandru was a 'routine payroll matter', but it directly precedes Chandru's calls to the two men who carried out the assault (CL-2, CL-3), and a witness (WS-1) directly attributes an instruction to Chandru right after that call.",
+        "conflictingRecords": ["C6-WS-2", "C6-CL-1", "C6-CL-2", "C6-WS-1"],
+        "suggestedNextQuestion": "Ask Ismail what specifically was discussed in the 17 Jan 5:30pm call to Chandru, given it precedes by under an hour the calls that mobilized the two men who assaulted Hanumantha."
+      }
+    },
+
+    {
+      "scenarioId": "C7",
+      "title": "Shivamogga-Tumakuru Cattle Theft Corridor",
+      "summary": "A rural cattle theft ring moves stolen livestock across a district border overnight to avoid recognition, using a common transporter's truck for both districts' thefts.",
+      "districts": [4408, 4406],
+      "firs": [
+        {
+          "CaseMasterID": 9009, "CrimeNo": "144080802202600001", "CaseNo": "202600001",
+          "CrimeRegisteredDate": "2026-07-08", "PolicePersonID": 5012, "PoliceStationID": 440802,
+          "CaseCategoryID": 1, "GravityOffenceID": 2, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 1,
+          "CaseStatusID": 4, "CourtID": 3008,
+          "IncidentFromDate": "2026-07-07T23:00:00", "IncidentToDate": "2026-07-08T01:00:00",
+          "InfoReceivedPSDate": "2026-07-08T07:00:00", "latitude": 14.1667, "longitude": 75.0333,
+          "BriefFacts": "6 cattle stolen from a farm shed near Sagar overnight; fence cut, tyre tracks leading to the main road."
+        },
+        {
+          "CaseMasterID": 9010, "CrimeNo": "144060602202600002", "CaseNo": "202600002",
+          "CrimeRegisteredDate": "2026-07-15", "PolicePersonID": 5008, "PoliceStationID": 440602,
+          "CaseCategoryID": 1, "GravityOffenceID": 2, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 1,
+          "CaseStatusID": 4, "CourtID": 3006,
+          "IncidentFromDate": "2026-07-14T22:30:00", "IncidentToDate": "2026-07-15T00:30:00",
+          "InfoReceivedPSDate": "2026-07-15T06:30:00", "latitude": 13.7411, "longitude": 76.9046,
+          "BriefFacts": "5 cattle stolen from a farm near Sira overnight, same pattern as a prior Shivamogga complaint."
+        }
+      ],
+      "complainants": [
+        { "ComplainantID": 6010, "CaseMasterID": 9009, "ComplainantName": "Shivappa Gowda", "AgeYear": 58, "OccupationID": 2, "ReligionID": 0, "CasteID": 0, "GenderID": 1 },
+        { "ComplainantID": 6011, "CaseMasterID": 9010, "ComplainantName": "Nagaraju H", "AgeYear": 49, "OccupationID": 2, "ReligionID": 0, "CasteID": 0, "GenderID": 1 }
+      ],
+      "victims": [],
+      "accused": [
+        { "AccusedMasterID": 8023, "CaseMasterID": 9009, "AccusedName": "Halappa D", "AgeYear": 36, "GenderID": 1, "PersonID": "A1" },
+        { "AccusedMasterID": 8024, "CaseMasterID": 9009, "AccusedName": "Somesh K (truck driver)", "AgeYear": 31, "GenderID": 1, "PersonID": "A2" },
+        { "AccusedMasterID": 8025, "CaseMasterID": 9010, "AccusedName": "Halappa D", "AgeYear": 36, "GenderID": 1, "PersonID": "A1" },
+        { "AccusedMasterID": 8026, "CaseMasterID": 9010, "AccusedName": "Somesh Kumar", "AgeYear": 31, "GenderID": 1, "PersonID": "A2" }
+      ],
+      "actSections": [
+        { "CaseMasterID": 9009, "ActID": "IPC", "SectionID": "379", "ActOrderID": 1, "SectionOrderID": 1 },
+        { "CaseMasterID": 9010, "ActID": "IPC", "SectionID": "379", "ActOrderID": 1, "SectionOrderID": 1 },
+        { "CaseMasterID": 9010, "ActID": "IPC", "SectionID": "411", "ActOrderID": 1, "SectionOrderID": 2 }
+      ],
+      "personRefs": { "P1": "Halappa D (same person both FIRs)", "P2": "Somesh K / Somesh Kumar (AccusedMasterID 8024 & 8026 - SAME PERSON, truck driver, entity-fusion target on spelling)" },
+      "calls": [
+        { "id": "C7-CL-1", "from": "P1", "to": "P2", "timestamp": "2026-07-07T20:15:00", "durationSec": 90, "note": "Before the first theft" },
+        { "id": "C7-CL-2", "from": "P1", "to": "P2", "timestamp": "2026-07-14T19:50:00", "durationSec": 75, "note": "Before the second theft, same pattern a week later" }
+      ],
+      "transactions": [
+        { "id": "C7-TX-1", "fromAccount": "unknown buyer - cash", "toAccount": "Halappa D - cash", "amount": 42000, "timestamp": "2026-07-09T00:00:00", "note": "Cattle sold at a market 2 days after the Shivamogga theft" },
+        { "id": "C7-TX-2", "fromAccount": "unknown buyer - cash", "toAccount": "Halappa D - cash", "amount": 38000, "timestamp": "2026-07-16T00:00:00", "note": "Same market pattern, 2 days after the Tumakuru theft" }
+      ],
+      "cctv": [
+        { "id": "C7-CC-1", "cameraLocation": "NH-206 toll camera, Shivamogga-Tumakuru road", "personOrVehicle": "Truck KA-14-XX-9034 (registered to Somesh)", "timestamp": "2026-07-08T02:20:00", "note": "" },
+        { "id": "C7-CC-2", "cameraLocation": "Same toll camera", "personOrVehicle": "Same truck KA-14-XX-9034", "timestamp": "2026-07-15T01:50:00", "note": "Same route, one week later, matching the second theft" }
+      ],
+      "witnessStatements": [
+        { "id": "C7-WS-1", "witnessName": "Somesh K (as accused, FIR 9009)", "statementDate": "2026-07-10", "statementText": "My truck was used without my knowledge that night; I was asleep at home.", "relatedPerson": "P2" }
+      ],
+      "timeline": [
+        { "id": "C7-T1", "timestamp": "2026-07-07T20:15:00", "source": "call", "sourceId": "C7-CL-1", "description": "Halappa calls Somesh before first theft" },
+        { "id": "C7-T2", "timestamp": "2026-07-08T02:20:00", "source": "cctv", "sourceId": "C7-CC-1", "description": "Somesh's truck on the toll camera" },
+        { "id": "C7-T3", "timestamp": "2026-07-09T00:00:00", "source": "transaction", "sourceId": "C7-TX-1", "description": "First cattle sale" },
+        { "id": "C7-T4", "timestamp": "2026-07-14T19:50:00", "source": "call", "sourceId": "C7-CL-2", "description": "Same pre-theft call pattern, one week later" },
+        { "id": "C7-T5", "timestamp": "2026-07-15T01:50:00", "source": "cctv", "sourceId": "C7-CC-2", "description": "Same truck on the same toll camera again" },
+        { "id": "C7-T6", "timestamp": "2026-07-16T00:00:00", "source": "transaction", "sourceId": "C7-TX-2", "description": "Second cattle sale, same pattern" }
+      ],
+      "contradiction": {
+        "description": "Somesh's statement (WS-1, given only after FIR 9009) claims his truck was used without his knowledge and he was asleep - but the exact same truck was flagged on the same toll camera at nearly the same hour a week later (CC-2), right after another Halappa-to-Somesh call (CL-2) matching the first night's pattern precisely, which is hard to square with a one-off unauthorized use.",
+        "conflictingRecords": ["C7-WS-1", "C7-CC-1", "C7-CL-2", "C7-CC-2"],
+        "suggestedNextQuestion": "Ask Somesh how his truck ended up on the same toll camera at nearly the same hour a second time, one week after he says it was used without his knowledge, following another call from Halappa that matches the first night's pattern."
+      }
+    },
+
+    {
+      "scenarioId": "C8",
+      "title": "Whitefield Fake Tech-Support Call Centre",
+      "summary": "An illegal call centre in Whitefield runs a fake tech-support scam targeting elderly victims across multiple cities, extracting remote-access payments.",
+      "districts": [4401],
+      "firs": [
+        {
+          "CaseMasterID": 9011, "CrimeNo": "144010102202600003", "CaseNo": "202600003",
+          "CrimeRegisteredDate": "2026-08-01", "PolicePersonID": 5002, "PoliceStationID": 440102,
+          "CaseCategoryID": 1, "GravityOffenceID": 2, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 3,
+          "CaseStatusID": 4, "CourtID": 3001,
+          "IncidentFromDate": "2026-06-15T00:00:00", "IncidentToDate": "2026-07-30T00:00:00",
+          "InfoReceivedPSDate": "2026-08-01T09:00:00", "latitude": 12.9698, "longitude": 77.7500,
+          "BriefFacts": "Raid on a Whitefield office space following multiple victim complaints of fraudulent 'Microsoft support' calls resulting in remote-access bank fraud."
+        }
+      ],
+      "complainants": [
+        { "ComplainantID": 6012, "CaseMasterID": 9011, "ComplainantName": "Margaret Fernandes (victim, complainant)", "AgeYear": 68, "OccupationID": 10, "ReligionID": 0, "CasteID": 0, "GenderID": 2 },
+        { "ComplainantID": 6013, "CaseMasterID": 9011, "ComplainantName": "K.S. Venkataraman (victim, complainant)", "AgeYear": 71, "OccupationID": 10, "ReligionID": 0, "CasteID": 0, "GenderID": 1 }
+      ],
+      "victims": [
+        { "VictimMasterID": 7006, "CaseMasterID": 9011, "VictimName": "Margaret Fernandes", "AgeYear": 68, "GenderID": 2, "VictimPolice": "No" },
+        { "VictimMasterID": 7007, "CaseMasterID": 9011, "VictimName": "K.S. Venkataraman", "AgeYear": 71, "GenderID": 1, "VictimPolice": "No" }
+      ],
+      "accused": [
+        { "AccusedMasterID": 8027, "CaseMasterID": 9011, "AccusedName": "Rohan Malhotra (floor manager)", "AgeYear": 26, "GenderID": 1, "PersonID": "A1" },
+        { "AccusedMasterID": 8028, "CaseMasterID": 9011, "AccusedName": "Priya Kapoor (owner-of-record)", "AgeYear": 34, "GenderID": 2, "PersonID": "A2" },
+        { "AccusedMasterID": 8029, "CaseMasterID": 9011, "AccusedName": "Amit Verma (agent)", "AgeYear": 23, "GenderID": 1, "PersonID": "A3" },
+        { "AccusedMasterID": 8030, "CaseMasterID": 9011, "AccusedName": "Sana Iyer (agent)", "AgeYear": 22, "GenderID": 2, "PersonID": "A4" }
+      ],
+      "actSections": [
+        { "CaseMasterID": 9011, "ActID": "IPC", "SectionID": "420", "ActOrderID": 1, "SectionOrderID": 1 },
+        { "CaseMasterID": 9011, "ActID": "ITACT", "SectionID": "66D", "ActOrderID": 1, "SectionOrderID": 2 },
+        { "CaseMasterID": 9011, "ActID": "ITACT", "SectionID": "66C", "ActOrderID": 1, "SectionOrderID": 3 },
+        { "CaseMasterID": 9011, "ActID": "IPC", "SectionID": "120B", "ActOrderID": 1, "SectionOrderID": 4 }
+      ],
+      "personRefs": { "P1": "Rohan Malhotra (floor manager)", "P2": "Priya Kapoor (owner-of-record)", "P3": "Amit Verma (agent)", "P4": "Sana Iyer (agent)" },
+      "calls": [
+        { "id": "C8-CL-1", "from": "P3", "to": "V:Margaret", "timestamp": "2026-06-20T11:00:00", "durationSec": 1840, "note": "Fraudulent tech-support call, cited in complaint" },
+        { "id": "C8-CL-2", "from": "P4", "to": "V:Venkataraman", "timestamp": "2026-07-12T15:20:00", "durationSec": 2210, "note": "Fraudulent tech-support call, cited in complaint" },
+        { "id": "C8-CL-3", "from": "P1", "to": "P2", "timestamp": "2026-07-28T18:00:00", "durationSec": 340, "note": "2 days before the raid" }
+      ],
+      "transactions": [
+        { "id": "C8-TX-1", "fromAccount": "Margaret Fernandes - ICICI xx6610", "toAccount": "shell company 'TechFix Solutions'", "amount": 48000, "timestamp": "2026-06-20T11:45:00", "note": "Remote-access 'service fee', minutes after the call" },
+        { "id": "C8-TX-2", "fromAccount": "K.S. Venkataraman - Canara xx7742", "toAccount": "shell company 'TechFix Solutions'", "amount": 62000, "timestamp": "2026-07-12T16:05:00", "note": "Same shell company as TX-1" },
+        { "id": "C8-TX-3", "fromAccount": "shell company 'TechFix Solutions'", "toAccount": "Priya Kapoor - HDFC xx3301", "amount": 88000, "timestamp": "2026-07-15T00:00:00", "note": "Owner-of-record withdrawal from the shell account" }
+      ],
+      "cctv": [
+        { "id": "C8-CC-1", "cameraLocation": "Office building lobby, Whitefield", "personOrVehicle": "P1, P2, P3, P4 entering together", "timestamp": "2026-07-28T09:15:00", "note": "Morning of the last call before the raid" }
+      ],
+      "witnessStatements": [
+        { "id": "C8-WS-1", "witnessName": "Priya Kapoor (as accused)", "statementDate": "2026-08-02", "statementText": "I only lease the office space to a third party. I have no involvement in what they do inside.", "relatedPerson": "P2" }
+      ],
+      "timeline": [
+        { "id": "C8-T1", "timestamp": "2026-06-20T11:00:00", "source": "call", "sourceId": "C8-CL-1", "description": "Fraud call to Margaret" },
+        { "id": "C8-T2", "timestamp": "2026-06-20T11:45:00", "source": "transaction", "sourceId": "C8-TX-1", "description": "Margaret's payment to the shell company" },
+        { "id": "C8-T3", "timestamp": "2026-07-12T15:20:00", "source": "call", "sourceId": "C8-CL-2", "description": "Fraud call to Venkataraman" },
+        { "id": "C8-T4", "timestamp": "2026-07-15T00:00:00", "source": "transaction", "sourceId": "C8-TX-3", "description": "Priya withdraws from the shell company account" },
+        { "id": "C8-T5", "timestamp": "2026-07-28T09:15:00", "source": "cctv", "sourceId": "C8-CC-1", "description": "All 4 accused seen entering the office together" },
+        { "id": "C8-T6", "timestamp": "2026-08-01T09:00:00", "source": "fir", "sourceId": "9011", "description": "Raid and FIR registered" }
+      ],
+      "contradiction": {
+        "description": "Priya's statement (WS-1) claims she is only a landlord with no involvement in the office's activity, but the shell company both victims paid into (TX-1, TX-2) pays out directly to her personal HDFC account (TX-3), and CCTV shows her entering the office alongside the agents (CC-1), not visiting as an occasional landlord would.",
+        "conflictingRecords": ["C8-WS-1", "C8-TX-3", "C8-CC-1"],
+        "suggestedNextQuestion": "Ask Priya to explain the Rs 88,000 transfer from the 'TechFix Solutions' shell account - the same account both victims paid into - to her personal HDFC account, given her statement that she has no involvement beyond leasing the space."
+      }
+    },
+
+    {
+      "scenarioId": "C9",
+      "title": "Mysuru Domestic Dispute Escalation",
+      "summary": "A domestic assault complaint is followed by witness intimidation - a neighbor who gave an initial statement recants weeks later, but a CCTV timestamp on the intimidation visit conflicts with the accused's claimed whereabouts.",
+      "districts": [4402],
+      "firs": [
+        {
+          "CaseMasterID": 9012, "CrimeNo": "144020202202600004", "CaseNo": "202600004",
+          "CrimeRegisteredDate": "2026-02-20", "PolicePersonID": 5003, "PoliceStationID": 440202,
+          "CaseCategoryID": 1, "GravityOffenceID": 2, "CrimeMajorHeadID": 2, "CrimeMinorHeadID": 2,
+          "CaseStatusID": 4, "CourtID": 3002,
+          "IncidentFromDate": "2026-02-19T21:00:00", "IncidentToDate": "2026-02-19T21:30:00",
+          "InfoReceivedPSDate": "2026-02-19T22:15:00", "latitude": 12.3200, "longitude": 76.6200,
+          "BriefFacts": "Complainant reports being assaulted by her husband after a dispute; visible injuries noted by attending officer."
+        }
+      ],
+      "complainants": [
+        { "ComplainantID": 6014, "CaseMasterID": 9012, "ComplainantName": "Rekha Iyengar", "AgeYear": 31, "OccupationID": 6, "ReligionID": 0, "CasteID": 0, "GenderID": 2 }
+      ],
+      "victims": [
+        { "VictimMasterID": 7008, "CaseMasterID": 9012, "VictimName": "Rekha Iyengar", "AgeYear": 31, "GenderID": 2, "VictimPolice": "No" }
+      ],
+      "accused": [
+        { "AccusedMasterID": 8031, "CaseMasterID": 9012, "AccusedName": "Srinivas Iyengar", "AgeYear": 35, "GenderID": 1, "PersonID": "A1" },
+        { "AccusedMasterID": 8032, "CaseMasterID": 9012, "AccusedName": "Nandish Iyengar (accused's brother)", "AgeYear": 29, "GenderID": 1, "PersonID": "A2" }
+      ],
+      "actSections": [
+        { "CaseMasterID": 9012, "ActID": "IPC", "SectionID": "323", "ActOrderID": 1, "SectionOrderID": 1 },
+        { "CaseMasterID": 9012, "ActID": "IPC", "SectionID": "506", "ActOrderID": 1, "SectionOrderID": 2 }
+      ],
+      "personRefs": { "P1": "Srinivas Iyengar", "P2": "Nandish Iyengar (brother)", "W1": "Kamala Rao (neighbor, witness)" },
+      "calls": [
+        { "id": "C9-CL-1", "from": "P1", "to": "P2", "timestamp": "2026-03-04T08:10:00", "durationSec": 150, "note": "Morning of the witness's recant visit" }
+      ],
+      "transactions": [],
+      "cctv": [
+        { "id": "C9-CC-1", "cameraLocation": "Kamala Rao's building entrance camera", "personOrVehicle": "Nandish Iyengar entering", "timestamp": "2026-03-04T09:20:00", "note": "Same morning Kamala later gives a recanted statement" }
+      ],
+      "witnessStatements": [
+        { "id": "C9-WS-1", "witnessName": "Kamala Rao (neighbor)", "statementDate": "2026-02-20", "statementText": "I heard shouting and a loud crash from their flat around 9pm, and saw Rekha crying outside afterward.", "relatedPerson": "V:Rekha" },
+        { "id": "C9-WS-2", "witnessName": "Kamala Rao (neighbor, follow-up)", "statementDate": "2026-03-04", "statementText": "I may have been mistaken about the date and what I heard. No one visited or spoke to me about this since my first statement.", "relatedPerson": "V:Rekha" }
+      ],
+      "timeline": [
+        { "id": "C9-T1", "timestamp": "2026-02-19T21:00:00", "source": "fir", "sourceId": "9012", "description": "Assault occurs" },
+        { "id": "C9-T2", "timestamp": "2026-02-20T00:00:00", "source": "statement", "sourceId": "C9-WS-1", "description": "Kamala's initial statement" },
+        { "id": "C9-T3", "timestamp": "2026-03-04T08:10:00", "source": "call", "sourceId": "C9-CL-1", "description": "Srinivas calls his brother the morning of the recant" },
+        { "id": "C9-T4", "timestamp": "2026-03-04T09:20:00", "source": "cctv", "sourceId": "C9-CC-1", "description": "Nandish seen entering Kamala's building" },
+        { "id": "C9-T5", "timestamp": "2026-03-04T00:00:00", "source": "statement", "sourceId": "C9-WS-2", "description": "Kamala's recanted statement" }
+      ],
+      "contradiction": {
+        "description": "Kamala's recanted statement (WS-2) claims 'no one visited or spoke to me' since her first statement, but CCTV (CC-1) places the accused's brother entering her building that exact morning, less than an hour before she gave the recant - and a call from the accused to his brother (CL-1) precedes that visit.",
+        "conflictingRecords": ["C9-WS-2", "C9-CC-1", "C9-CL-1"],
+        "suggestedNextQuestion": "Ask Kamala directly about Nandish Iyengar's visit to her building at 9:20am on 4 March, less than an hour before her recanted statement, which contradicts her claim that no one visited her."
+      }
+    },
+
+    {
+      "scenarioId": "C10",
+      "title": "Belagavi Auto Chop-Shop",
+      "summary": "Stolen two-wheelers are stripped for parts at an unlicensed garage and the parts resold separately, making the vehicles themselves untraceable.",
+      "districts": [4403],
+      "firs": [
+        {
+          "CaseMasterID": 9013, "CrimeNo": "144030301202600002", "CaseNo": "202600002",
+          "CrimeRegisteredDate": "2026-05-22", "PolicePersonID": 5004, "PoliceStationID": 440301,
+          "CaseCategoryID": 1, "GravityOffenceID": 2, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 4,
+          "CaseStatusID": 4, "CourtID": 3003,
+          "IncidentFromDate": "2026-05-21T01:00:00", "IncidentToDate": "2026-05-21T02:00:00",
+          "InfoReceivedPSDate": "2026-05-21T07:30:00", "latitude": 15.8497, "longitude": 74.4977,
+          "BriefFacts": "Locked residential garage broken into overnight, 2 scooters stolen; recovered a week later stripped of engine and body parts at an unrelated site."
+        }
+      ],
+      "complainants": [
+        { "ComplainantID": 6015, "CaseMasterID": 9013, "ComplainantName": "Ajay Kulkarni", "AgeYear": 27, "OccupationID": 4, "ReligionID": 0, "CasteID": 0, "GenderID": 1 }
+      ],
+      "victims": [],
+      "accused": [
+        { "AccusedMasterID": 8033, "CaseMasterID": 9013, "AccusedName": "Sagar Bandekar", "AgeYear": 25, "GenderID": 1, "PersonID": "A1" },
+        { "AccusedMasterID": 8034, "CaseMasterID": 9013, "AccusedName": "Vasant Naik (garage owner)", "AgeYear": 43, "GenderID": 1, "PersonID": "A2" },
+        { "AccusedMasterID": 8035, "CaseMasterID": 9013, "AccusedName": "Ganesh Koli", "AgeYear": 22, "GenderID": 1, "PersonID": "A3" }
+      ],
+      "actSections": [
+        { "CaseMasterID": 9013, "ActID": "IPC", "SectionID": "457", "ActOrderID": 1, "SectionOrderID": 1 },
+        { "CaseMasterID": 9013, "ActID": "IPC", "SectionID": "379", "ActOrderID": 1, "SectionOrderID": 2 },
+        { "CaseMasterID": 9013, "ActID": "IPC", "SectionID": "413", "ActOrderID": 1, "SectionOrderID": 3 }
+      ],
+      "personRefs": { "P1": "Sagar Bandekar", "P2": "Vasant Naik (garage owner)", "P3": "Ganesh Koli" },
+      "calls": [
+        { "id": "C10-CL-1", "from": "P1", "to": "P2", "timestamp": "2026-05-21T02:30:00", "durationSec": 50, "note": "30 minutes after the theft window" }
+      ],
+      "transactions": [
+        { "id": "C10-TX-1", "fromAccount": "Vasant Naik - garage cash", "toAccount": "Sagar Bandekar - cash", "amount": 7000, "timestamp": "2026-05-21T09:00:00", "note": "" },
+        { "id": "C10-TX-2", "fromAccount": "Vasant Naik - garage cash", "toAccount": "Ganesh Koli - cash", "amount": 4000, "timestamp": "2026-05-21T09:00:00", "note": "Same timestamp session as TX-1" }
+      ],
+      "cctv": [
+        { "id": "C10-CC-1", "cameraLocation": "Street camera near garage", "personOrVehicle": "Two scooters being pushed in by hand, not ridden", "timestamp": "2026-05-21T03:10:00", "note": "" }
+      ],
+      "witnessStatements": [
+        { "id": "C10-WS-1", "witnessName": "Vasant Naik (as accused)", "statementDate": "2026-05-23", "statementText": "I buy scrap parts in bulk from various sellers. I don't ask where individual bikes come from.", "relatedPerson": "P2" }
+      ],
+      "timeline": [
+        { "id": "C10-T1", "timestamp": "2026-05-21T01:00:00", "source": "fir", "sourceId": "9013", "description": "Theft occurs" },
+        { "id": "C10-T2", "timestamp": "2026-05-21T02:30:00", "source": "call", "sourceId": "C10-CL-1", "description": "Sagar calls Vasant 30 min after the theft window" },
+        { "id": "C10-T3", "timestamp": "2026-05-21T03:10:00", "source": "cctv", "sourceId": "C10-CC-1", "description": "Scooters pushed into garage area, not ridden" },
+        { "id": "C10-T4", "timestamp": "2026-05-21T09:00:00", "source": "transaction", "sourceId": "C10-TX-1", "description": "Vasant pays both accused same morning" }
+      ],
+      "contradiction": {
+        "description": "Vasant's statement (WS-1) frames this as routine bulk scrap buying with no questions asked, but the timing is too tight for that story - a call 30 minutes after the theft (CL-1), scooters delivered by hand rather than ridden in (CC-1, consistent with them being stolen and disabled/hidden), and same-day payment (TX-1, TX-2) to both men involved.",
+        "conflictingRecords": ["C10-WS-1", "C10-CL-1", "C10-CC-1"],
+        "suggestedNextQuestion": "Ask Vasant why he paid Sagar and Ganesh cash the same morning two scooters were pushed (not ridden) into his garage, 30 minutes after a call from Sagar right after the theft window."
+      }
+    },
+
+    {
+      "scenarioId": "C11",
+      "title": "Kalaburagi Wedding Jewellery Robbery Gang",
+      "summary": "A gang cases wedding venues via an inside informant (a catering staff member) and robs guests of jewellery during the event.",
+      "districts": [4404],
+      "firs": [
+        {
+          "CaseMasterID": 9014, "CrimeNo": "144040401202600002", "CaseNo": "202600002",
+          "CrimeRegisteredDate": "2026-11-02", "PolicePersonID": 5005, "PoliceStationID": 440401,
+          "CaseCategoryID": 1, "GravityOffenceID": 1, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 1,
+          "CaseStatusID": 4, "CourtID": 3004,
+          "IncidentFromDate": "2026-11-01T20:00:00", "IncidentToDate": "2026-11-01T20:15:00",
+          "InfoReceivedPSDate": "2026-11-01T21:00:00", "latitude": 17.3297, "longitude": 76.8343,
+          "BriefFacts": "During a wedding reception, 3 masked men snatch jewellery from 2 female guests in the parking area and flee on a bike."
+        }
+      ],
+      "complainants": [
+        { "ComplainantID": 6016, "CaseMasterID": 9014, "ComplainantName": "Savitri Deshmukh (guest, victim)", "AgeYear": 45, "OccupationID": 6, "ReligionID": 0, "CasteID": 0, "GenderID": 2 }
+      ],
+      "victims": [
+        { "VictimMasterID": 7009, "CaseMasterID": 9014, "VictimName": "Savitri Deshmukh", "AgeYear": 45, "GenderID": 2, "VictimPolice": "No" },
+        { "VictimMasterID": 7010, "CaseMasterID": 9014, "VictimName": "Pooja Deshmukh", "AgeYear": 24, "GenderID": 2, "VictimPolice": "No" }
+      ],
+      "accused": [
+        { "AccusedMasterID": 8036, "CaseMasterID": 9014, "AccusedName": "Altaf Pathan", "AgeYear": 28, "GenderID": 1, "PersonID": "A1" },
+        { "AccusedMasterID": 8037, "CaseMasterID": 9014, "AccusedName": "Kiran Bhosale", "AgeYear": 25, "GenderID": 1, "PersonID": "A2" },
+        { "AccusedMasterID": 8038, "CaseMasterID": 9014, "AccusedName": "Santosh Waghmare", "AgeYear": 30, "GenderID": 1, "PersonID": "A3" },
+        { "AccusedMasterID": 8039, "CaseMasterID": 9014, "AccusedName": "Ravi Caterer (catering staff, informant)", "AgeYear": 33, "GenderID": 1, "PersonID": "A4" }
+      ],
+      "actSections": [
+        { "CaseMasterID": 9014, "ActID": "IPC", "SectionID": "379", "ActOrderID": 1, "SectionOrderID": 1 },
+        { "CaseMasterID": 9014, "ActID": "IPC", "SectionID": "354", "ActOrderID": 1, "SectionOrderID": 2 },
+        { "CaseMasterID": 9014, "ActID": "IPC", "SectionID": "120B", "ActOrderID": 1, "SectionOrderID": 3 }
+      ],
+      "personRefs": { "P1": "Altaf Pathan", "P2": "Kiran Bhosale", "P3": "Santosh Waghmare", "P4": "Ravi Caterer (informant)" },
+      "calls": [
+        { "id": "C11-CL-1", "from": "P4", "to": "P1", "timestamp": "2026-11-01T18:30:00", "durationSec": 95, "note": "90 min before the robbery, describing which guests had the most jewellery" },
+        { "id": "C11-CL-2", "from": "P1", "to": "P2", "timestamp": "2026-11-01T19:45:00", "durationSec": 20, "note": "15 min before" },
+        { "id": "C11-CL-3", "from": "P1", "to": "P3", "timestamp": "2026-11-01T19:46:00", "durationSec": 18, "note": "15 min before" }
+      ],
+      "transactions": [
+        { "id": "C11-TX-1", "fromAccount": "Altaf Pathan - cash (fenced jewellery)", "toAccount": "Ravi Caterer - cash", "amount": 25000, "timestamp": "2026-11-04T00:00:00", "note": "Informant's cut, 3 days later" }
+      ],
+      "cctv": [
+        { "id": "C11-CC-1", "cameraLocation": "Wedding hall parking area", "personOrVehicle": "3 men on a bike, faces covered", "timestamp": "2026-11-01T20:02:00", "note": "" }
+      ],
+      "witnessStatements": [
+        { "id": "C11-WS-1", "witnessName": "Ravi Caterer (as accused)", "statementDate": "2026-11-05", "statementText": "I was serving food the entire evening and never left the hall. I don't know any of the accused men.", "relatedPerson": "P4" }
+      ],
+      "timeline": [
+        { "id": "C11-T1", "timestamp": "2026-11-01T18:30:00", "source": "call", "sourceId": "C11-CL-1", "description": "Ravi tips off Altaf about guests' jewellery" },
+        { "id": "C11-T2", "timestamp": "2026-11-01T19:45:00", "source": "call", "sourceId": "C11-CL-2", "description": "Altaf mobilizes the other two" },
+        { "id": "C11-T3", "timestamp": "2026-11-01T20:00:00", "source": "fir", "sourceId": "9014", "description": "Robbery occurs" },
+        { "id": "C11-T4", "timestamp": "2026-11-04T00:00:00", "source": "transaction", "sourceId": "C11-TX-1", "description": "Ravi receives his cut" }
+      ],
+      "contradiction": {
+        "description": "Ravi's statement (WS-1) claims he never left the hall and doesn't know any of the accused, but a call record (CL-1) shows him contacting Altaf 90 minutes before the robbery with details matching what was stolen, and he received a payment from Altaf 3 days later (TX-1).",
+        "conflictingRecords": ["C11-WS-1", "C11-CL-1", "C11-TX-1"],
+        "suggestedNextQuestion": "Ask Ravi to explain his 6:30pm call to Altaf Pathan, 90 minutes before the robbery, and the Rs 25,000 he received from him 3 days later, given his statement that he doesn't know any of the accused."
+      }
+    },
+
+    {
+      "scenarioId": "C12",
+      "title": "Mangaluru Coastal Investment Ponzi",
+      "summary": "A fake 'guaranteed returns' investment scheme collects money from dozens of small investors before the operators vanish; two early investors act as unwitting local recruiters.",
+      "districts": [4405],
+      "firs": [
+        {
+          "CaseMasterID": 9015, "CrimeNo": "144050501202600002", "CaseNo": "202600002",
+          "CrimeRegisteredDate": "2026-09-10", "PolicePersonID": 5006, "PoliceStationID": 440501,
+          "CaseCategoryID": 1, "GravityOffenceID": 2, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 3,
+          "CaseStatusID": 4, "CourtID": 3005,
+          "IncidentFromDate": "2026-04-01T00:00:00", "IncidentToDate": "2026-09-05T00:00:00",
+          "InfoReceivedPSDate": "2026-09-10T10:30:00", "latitude": 12.9141, "longitude": 74.8560,
+          "BriefFacts": "Firm 'CoastalGrow Investments' collected deposits promising 5% monthly returns from an estimated 60+ investors before its office shut and operators became unreachable."
+        }
+      ],
+      "complainants": [
+        { "ComplainantID": 6017, "CaseMasterID": 9015, "ComplainantName": "Vincent Lobo", "AgeYear": 50, "OccupationID": 9, "ReligionID": 0, "CasteID": 0, "GenderID": 1 },
+        { "ComplainantID": 6018, "CaseMasterID": 9015, "ComplainantName": "Shwetha Kamath", "AgeYear": 37, "OccupationID": 4, "ReligionID": 0, "CasteID": 0, "GenderID": 2 }
+      ],
+      "victims": [
+        { "VictimMasterID": 7011, "CaseMasterID": 9015, "VictimName": "Vincent Lobo", "AgeYear": 50, "GenderID": 1, "VictimPolice": "No" },
+        { "VictimMasterID": 7012, "CaseMasterID": 9015, "VictimName": "Shwetha Kamath", "AgeYear": 37, "GenderID": 2, "VictimPolice": "No" }
+      ],
+      "accused": [
+        { "AccusedMasterID": 8040, "CaseMasterID": 9015, "AccusedName": "Wilfred Pinto (director)", "AgeYear": 46, "GenderID": 1, "PersonID": "A1" },
+        { "AccusedMasterID": 8041, "CaseMasterID": 9015, "AccusedName": "Neha D'Silva (co-director)", "AgeYear": 39, "GenderID": 2, "PersonID": "A2" },
+        { "AccusedMasterID": 8042, "CaseMasterID": 9015, "AccusedName": "Clifton Rego (local recruiter)", "AgeYear": 42, "GenderID": 1, "PersonID": "A3" }
+      ],
+      "actSections": [
+        { "CaseMasterID": 9015, "ActID": "IPC", "SectionID": "420", "ActOrderID": 1, "SectionOrderID": 1 },
+        { "CaseMasterID": 9015, "ActID": "IPC", "SectionID": "406", "ActOrderID": 1, "SectionOrderID": 2 },
+        { "CaseMasterID": 9015, "ActID": "IPC", "SectionID": "120B", "ActOrderID": 1, "SectionOrderID": 3 }
+      ],
+      "personRefs": { "P1": "Wilfred Pinto (director)", "P2": "Neha D'Silva (co-director)", "P3": "Clifton Rego (recruiter)" },
+      "calls": [
+        { "id": "C12-CL-1", "from": "P1", "to": "P2", "timestamp": "2026-08-28T14:00:00", "durationSec": 900, "note": "Long call, days before the office shut" },
+        { "id": "C12-CL-2", "from": "P1", "to": "P3", "timestamp": "2026-09-01T10:00:00", "durationSec": 60, "note": "Brief call right before Clifton stopped answering investors" }
+      ],
+      "transactions": [
+        { "id": "C12-TX-1", "fromAccount": "Vincent Lobo - Corporation Bank xx4420", "toAccount": "CoastalGrow Investments - current a/c", "amount": 500000, "timestamp": "2026-05-10T00:00:00", "note": "Initial deposit" },
+        { "id": "C12-TX-2", "fromAccount": "Shwetha Kamath - Corporation Bank xx9012", "toAccount": "CoastalGrow Investments - current a/c", "amount": 300000, "timestamp": "2026-06-02T00:00:00", "note": "" },
+        { "id": "C12-TX-3", "fromAccount": "CoastalGrow Investments - current a/c", "toAccount": "Wilfred Pinto - personal a/c, Dubai", "amount": 4200000, "timestamp": "2026-09-03T00:00:00", "note": "Bulk transfer out, 2 days before the office shut" }
+      ],
+      "cctv": [],
+      "witnessStatements": [
+        { "id": "C12-WS-1", "witnessName": "Clifton Rego (as accused)", "statementDate": "2026-09-12", "statementText": "I invested my own money too and lost it. I recruited friends in good faith believing the returns were genuine.", "relatedPerson": "P3" }
+      ],
+      "timeline": [
+        { "id": "C12-T1", "timestamp": "2026-05-10T00:00:00", "source": "transaction", "sourceId": "C12-TX-1", "description": "Vincent's deposit" },
+        { "id": "C12-T2", "timestamp": "2026-06-02T00:00:00", "source": "transaction", "sourceId": "C12-TX-2", "description": "Shwetha's deposit" },
+        { "id": "C12-T3", "timestamp": "2026-08-28T14:00:00", "source": "call", "sourceId": "C12-CL-1", "description": "Long call between the two directors" },
+        { "id": "C12-T4", "timestamp": "2026-09-01T10:00:00", "source": "call", "sourceId": "C12-CL-2", "description": "Wilfred briefs Clifton, day investors stop being answered" },
+        { "id": "C12-T5", "timestamp": "2026-09-03T00:00:00", "source": "transaction", "sourceId": "C12-TX-3", "description": "Bulk transfer to Wilfred's Dubai account" },
+        { "id": "C12-T6", "timestamp": "2026-09-10T10:30:00", "source": "fir", "sourceId": "9015", "description": "FIR registered" }
+      ],
+      "contradiction": {
+        "description": "Clifton's statement (WS-1) frames himself purely as a fellow victim who recruited 'in good faith', but a call from Wilfred to him (CL-2) on 1 September - the exact day investors stopped getting answers - precedes the mass fund transfer out (TX-3) by 2 days, suggesting advance knowledge rather than innocence.",
+        "conflictingRecords": ["C12-WS-1", "C12-CL-2", "C12-TX-3"],
+        "suggestedNextQuestion": "Ask Clifton what Wilfred told him in the 1 September call, the same day investors stopped receiving responses and two days before Wilfred transferred Rs 42 lakh out of the country."
+      }
+    },
+
+    {
+      "scenarioId": "C13",
+      "title": "Ballari-Bengaluru ATM Skimming Ring",
+      "summary": "A skimming device installer, a card-data cloner, and a network of cash-out mules operate across two cities, with the same mule appearing under different first names in each district's FIR.",
+      "districts": [4407, 4401],
+      "firs": [
+        {
+          "CaseMasterID": 9016, "CrimeNo": "144070701202600002", "CaseNo": "202600002",
+          "CrimeRegisteredDate": "2026-10-05", "PolicePersonID": 5009, "PoliceStationID": 440701,
+          "CaseCategoryID": 1, "GravityOffenceID": 2, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 3,
+          "CaseStatusID": 4, "CourtID": 3007,
+          "IncidentFromDate": "2026-09-20T00:00:00", "IncidentToDate": "2026-10-04T00:00:00",
+          "InfoReceivedPSDate": "2026-10-05T11:00:00", "latitude": 15.1394, "longitude": 76.9214,
+          "BriefFacts": "Bank reports a skimming device found on an ATM; 12 customers report unauthorized withdrawals totaling over Rs 6 lakh."
+        },
+        {
+          "CaseMasterID": 9017, "CrimeNo": "144010103202600004", "CaseNo": "202600004",
+          "CrimeRegisteredDate": "2026-10-18", "PolicePersonID": 5011, "PoliceStationID": 440103,
+          "CaseCategoryID": 1, "GravityOffenceID": 2, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 3,
+          "CaseStatusID": 4, "CourtID": 3001,
+          "IncidentFromDate": "2026-10-08T00:00:00", "IncidentToDate": "2026-10-17T00:00:00",
+          "InfoReceivedPSDate": "2026-10-18T09:45:00", "latitude": 12.9950, "longitude": 77.6200,
+          "BriefFacts": "Similar skimming pattern identified at a Bengaluru ATM, same bank's device model; 8 customers affected."
+        }
+      ],
+      "complainants": [
+        { "ComplainantID": 6019, "CaseMasterID": 9016, "ComplainantName": "Bank Nodal Officer, Ballari Branch", "AgeYear": 40, "OccupationID": 3, "ReligionID": 0, "CasteID": 0, "GenderID": 1 },
+        { "ComplainantID": 6020, "CaseMasterID": 9017, "ComplainantName": "Bank Nodal Officer, K.G. Halli Branch", "AgeYear": 38, "OccupationID": 3, "ReligionID": 0, "CasteID": 0, "GenderID": 2 }
+      ],
+      "victims": [],
+      "accused": [
+        { "AccusedMasterID": 8043, "CaseMasterID": 9016, "AccusedName": "Faizal Khan (device installer)", "AgeYear": 30, "GenderID": 1, "PersonID": "A1" },
+        { "AccusedMasterID": 8044, "CaseMasterID": 9016, "AccusedName": "Deepak Rathore (card cloner)", "AgeYear": 33, "GenderID": 1, "PersonID": "A2" },
+        { "AccusedMasterID": 8045, "CaseMasterID": 9016, "AccusedName": "Anand M (cash-out mule)", "AgeYear": 24, "GenderID": 1, "PersonID": "A3" },
+        { "AccusedMasterID": 8046, "CaseMasterID": 9017, "AccusedName": "Deepak Rathore", "AgeYear": 33, "GenderID": 1, "PersonID": "A2" }
+      ],
+      "actSections": [
+        { "CaseMasterID": 9016, "ActID": "ITACT", "SectionID": "66C", "ActOrderID": 1, "SectionOrderID": 1 },
+        { "CaseMasterID": 9016, "ActID": "IPC", "SectionID": "420", "ActOrderID": 1, "SectionOrderID": 2 },
+        { "CaseMasterID": 9017, "ActID": "ITACT", "SectionID": "66C", "ActOrderID": 1, "SectionOrderID": 1 },
+        { "CaseMasterID": 9017, "ActID": "IPC", "SectionID": "420", "ActOrderID": 1, "SectionOrderID": 2 }
+      ],
+      "personRefs": { "P1": "Faizal Khan (installer)", "P2": "Deepak Rathore (cloner, both FIRs)", "P3": "Anand M / A. Manjunath (mule - AccusedMasterID 8045, and a second mule in FIR 9017's data not yet named as accused - entity-fusion angle: cloned-card cash-out pattern at Bengaluru ATMs traces to an unregistered relative account of Anand's, per the transaction below)" },
+      "calls": [
+        { "id": "C13-CL-1", "from": "P1", "to": "P2", "timestamp": "2026-09-19T20:00:00", "durationSec": 130, "note": "Night before device installation, Ballari" },
+        { "id": "C13-CL-2", "from": "P2", "to": "P3", "timestamp": "2026-09-25T16:00:00", "durationSec": 45, "note": "" },
+        { "id": "C13-CL-3", "from": "P2", "to": "P3", "timestamp": "2026-10-09T11:00:00", "durationSec": 50, "note": "Similar pattern, timed with the Bengaluru withdrawals" }
+      ],
+      "transactions": [
+        { "id": "C13-TX-1", "fromAccount": "cloned card withdrawals, Ballari ATMs", "toAccount": "Anand M - account xx7761", "amount": 210000, "timestamp": "2026-09-26T00:00:00", "note": "" },
+        { "id": "C13-TX-2", "fromAccount": "cloned card withdrawals, Bengaluru ATMs", "toAccount": "account xx7761 (same account number as TX-1, different city's cash-out)", "amount": 165000, "timestamp": "2026-10-10T00:00:00", "note": "Same account number receiving both cities' cash-outs - the fusion link" }
+      ],
+      "cctv": [
+        { "id": "C13-CC-1", "cameraLocation": "Ballari ATM camera", "personOrVehicle": "Faizal Khan installing a device on the card slot", "timestamp": "2026-09-20T02:10:00", "note": "" },
+        { "id": "C13-CC-2", "cameraLocation": "K.G. Halli ATM camera, Bengaluru", "personOrVehicle": "Unidentified man withdrawing repeatedly from different cards", "timestamp": "2026-10-09T13:40:00", "note": "" }
+      ],
+      "witnessStatements": [
+        { "id": "C13-WS-1", "witnessName": "Deepak Rathore (as accused, FIR 9016)", "statementDate": "2026-10-06", "statementText": "I have never operated in Bengaluru. My activity was limited to Ballari.", "relatedPerson": "P2" }
+      ],
+      "timeline": [
+        { "id": "C13-T1", "timestamp": "2026-09-19T20:00:00", "source": "call", "sourceId": "C13-CL-1", "description": "Faizal and Deepak, night before Ballari installation" },
+        { "id": "C13-T2", "timestamp": "2026-09-20T02:10:00", "source": "cctv", "sourceId": "C13-CC-1", "description": "Device installed, Ballari" },
+        { "id": "C13-T3", "timestamp": "2026-09-26T00:00:00", "source": "transaction", "sourceId": "C13-TX-1", "description": "Ballari cash-out to account xx7761" },
+        { "id": "C13-T4", "timestamp": "2026-10-09T11:00:00", "source": "call", "sourceId": "C13-CL-3", "description": "Deepak calls Anand, timed with Bengaluru withdrawals" },
+        { "id": "C13-T5", "timestamp": "2026-10-09T13:40:00", "source": "cctv", "sourceId": "C13-CC-2", "description": "Bengaluru ATM cash-out" },
+        { "id": "C13-T6", "timestamp": "2026-10-10T00:00:00", "source": "transaction", "sourceId": "C13-TX-2", "description": "Bengaluru cash-out to the SAME account xx7761" }
+      ],
+      "contradiction": {
+        "description": "Deepak's statement (WS-1, given in the Ballari FIR) claims he never operated in Bengaluru, but the Bengaluru cash-out (TX-2) lands in the exact same account (xx7761) as the Ballari cash-out (TX-1), and a call from him to Anand (CL-3) is timed precisely with the Bengaluru withdrawals.",
+        "conflictingRecords": ["C13-WS-1", "C13-TX-1", "C13-TX-2", "C13-CL-3"],
+        "suggestedNextQuestion": "Ask Deepak why cloned-card cash-outs from both Ballari and Bengaluru settle into the same account xx7761, given his statement that his activity was limited to Ballari."
+      }
+    },
+
+    {
+      "scenarioId": "C14",
+      "title": "Shivamogga Forest Produce Theft",
+      "summary": "A sandalwood theft ring operates with an inside tip-off from a forest department watcher, felling trees inside a reserve and moving timber out via an unmonitored route.",
+      "districts": [4408],
+      "firs": [
+        {
+          "CaseMasterID": 9018, "CrimeNo": "144080801202600001", "CaseNo": "202600001",
+          "CrimeRegisteredDate": "2026-12-01", "PolicePersonID": 5010, "PoliceStationID": 440801,
+          "CaseCategoryID": 1, "GravityOffenceID": 1, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 4,
+          "CaseStatusID": 4, "CourtID": 3008,
+          "IncidentFromDate": "2026-11-29T02:00:00", "IncidentToDate": "2026-11-29T05:00:00",
+          "InfoReceivedPSDate": "2026-11-29T09:00:00", "latitude": 13.9299, "longitude": 75.5681,
+          "BriefFacts": "Forest range officer discovers 6 sandalwood trees felled overnight inside the reserve boundary; drag marks lead to an unmanned forest road exit."
+        }
+      ],
+      "complainants": [
+        { "ComplainantID": 6022, "CaseMasterID": 9018, "ComplainantName": "Forest Range Officer, Shivamogga", "AgeYear": 44, "OccupationID": 3, "ReligionID": 0, "CasteID": 0, "GenderID": 1 }
+      ],
+      "victims": [],
+      "accused": [
+        { "AccusedMasterID": 8047, "CaseMasterID": 9018, "AccusedName": "Manjappa Gowda", "AgeYear": 39, "GenderID": 1, "PersonID": "A1" },
+        { "AccusedMasterID": 8048, "CaseMasterID": 9018, "AccusedName": "Yallappa Naik", "AgeYear": 34, "GenderID": 1, "PersonID": "A2" },
+        { "AccusedMasterID": 8049, "CaseMasterID": 9018, "AccusedName": "Devaraj (forest watcher, insider)", "AgeYear": 41, "GenderID": 1, "PersonID": "A3" }
+      ],
+      "actSections": [
+        { "CaseMasterID": 9018, "ActID": "IPC", "SectionID": "379", "ActOrderID": 1, "SectionOrderID": 1 },
+        { "CaseMasterID": 9018, "ActID": "IPC", "SectionID": "120B", "ActOrderID": 1, "SectionOrderID": 2 }
+      ],
+      "personRefs": { "P1": "Manjappa Gowda", "P2": "Yallappa Naik", "P3": "Devaraj (watcher, insider)" },
+      "calls": [
+        { "id": "C14-CL-1", "from": "P3", "to": "P1", "timestamp": "2026-11-28T21:00:00", "durationSec": 70, "note": "Night before, confirming the watcher's off-duty shift" },
+        { "id": "C14-CL-2", "from": "P1", "to": "P2", "timestamp": "2026-11-28T22:30:00", "durationSec": 40, "note": "" }
+      ],
+      "transactions": [
+        { "id": "C14-TX-1", "fromAccount": "timber buyer (unregistered) - cash", "toAccount": "Manjappa Gowda - cash", "amount": 380000, "timestamp": "2026-12-02T00:00:00", "note": "" },
+        { "id": "C14-TX-2", "fromAccount": "Manjappa Gowda - cash", "toAccount": "Devaraj - cash", "amount": 40000, "timestamp": "2026-12-03T00:00:00", "note": "Watcher's cut, day after Manjappa's sale" }
+      ],
+      "cctv": [],
+      "witnessStatements": [
+        { "id": "C14-WS-1", "witnessName": "Devaraj (as accused)", "statementDate": "2026-12-04", "statementText": "I was on regular night duty as always. I noticed nothing unusual that night.", "relatedPerson": "P3" }
+      ],
+      "timeline": [
+        { "id": "C14-T1", "timestamp": "2026-11-28T21:00:00", "source": "call", "sourceId": "C14-CL-1", "description": "Devaraj calls Manjappa the night before" },
+        { "id": "C14-T2", "timestamp": "2026-11-29T02:00:00", "source": "fir", "sourceId": "9018", "description": "Trees felled" },
+        { "id": "C14-T3", "timestamp": "2026-12-02T00:00:00", "source": "transaction", "sourceId": "C14-TX-1", "description": "Timber sale proceeds to Manjappa" },
+        { "id": "C14-T4", "timestamp": "2026-12-03T00:00:00", "source": "transaction", "sourceId": "C14-TX-2", "description": "Manjappa pays Devaraj, day after" }
+      ],
+      "contradiction": {
+        "description": "Devaraj's statement (WS-1) claims he was on 'regular night duty as always' and noticed nothing, but a call from him to Manjappa the night before (CL-1) and a payment from Manjappa to him the day after the timber sale (TX-2) both point to prior coordination, not routine duty.",
+        "conflictingRecords": ["C14-WS-1", "C14-CL-1", "C14-TX-2"],
+        "suggestedNextQuestion": "Ask Devaraj about his 9pm call to Manjappa the night before the trees were felled, and the Rs 40,000 he received from him the day after the timber was sold, given his statement that it was a routine night with nothing unusual."
+      }
+    },
+
+    {
+      "scenarioId": "C15",
+      "title": "Bengaluru Turf Assault",
+      "summary": "A street-gang turf dispute erupts into a multi-person assault outside a college, with dense CCTV coverage typical of an urban setting and conflicting accounts of who struck first.",
+      "districts": [4401],
+      "firs": [
+        {
+          "CaseMasterID": 9019, "CrimeNo": "144010101202600002", "CaseNo": "202600002",
+          "CrimeRegisteredDate": "2026-07-25", "PolicePersonID": 5001, "PoliceStationID": 440101,
+          "CaseCategoryID": 1, "GravityOffenceID": 1, "CrimeMajorHeadID": 2, "CrimeMinorHeadID": 2,
+          "CaseStatusID": 4, "CourtID": 3001,
+          "IncidentFromDate": "2026-07-24T17:30:00", "IncidentToDate": "2026-07-24T17:45:00",
+          "InfoReceivedPSDate": "2026-07-24T18:10:00", "latitude": 13.0100, "longitude": 77.5600,
+          "BriefFacts": "Group clash outside a college gate involving 6+ young men, resulting in 2 hospitalized with head injuries; both sides claim the other started it."
+        }
+      ],
+      "complainants": [
+        { "ComplainantID": 6021, "CaseMasterID": 9019, "ComplainantName": "Arjun Reddy (victim, complainant)", "AgeYear": 20, "OccupationID": 7, "ReligionID": 0, "CasteID": 0, "GenderID": 1 }
+      ],
+      "victims": [
+        { "VictimMasterID": 7014, "CaseMasterID": 9019, "VictimName": "Arjun Reddy", "AgeYear": 20, "GenderID": 1, "VictimPolice": "No" },
+        { "VictimMasterID": 7015, "CaseMasterID": 9019, "VictimName": "Vikram Singh", "AgeYear": 21, "GenderID": 1, "VictimPolice": "No" }
+      ],
+      "accused": [
+        { "AccusedMasterID": 8050, "CaseMasterID": 9019, "AccusedName": "Zaid Khan", "AgeYear": 22, "GenderID": 1, "PersonID": "A1" },
+        { "AccusedMasterID": 8051, "CaseMasterID": 9019, "AccusedName": "Bharath Gowda", "AgeYear": 21, "GenderID": 1, "PersonID": "A2" },
+        { "AccusedMasterID": 8052, "CaseMasterID": 9019, "AccusedName": "Naveen Raju", "AgeYear": 23, "GenderID": 1, "PersonID": "A3" },
+        { "AccusedMasterID": 8053, "CaseMasterID": 9019, "AccusedName": "Suhail Ahmed", "AgeYear": 20, "GenderID": 1, "PersonID": "A4" }
+      ],
+      "actSections": [
+        { "CaseMasterID": 9019, "ActID": "IPC", "SectionID": "324", "ActOrderID": 1, "SectionOrderID": 1 },
+        { "CaseMasterID": 9019, "ActID": "IPC", "SectionID": "34", "ActOrderID": 1, "SectionOrderID": 2 },
+        { "CaseMasterID": 9019, "ActID": "IPC", "SectionID": "506", "ActOrderID": 1, "SectionOrderID": 3 }
+      ],
+      "personRefs": { "P1": "Zaid Khan", "P2": "Bharath Gowda", "P3": "Naveen Raju", "P4": "Suhail Ahmed" },
+      "calls": [
+        { "id": "C15-CL-1", "from": "P1", "to": "P4", "timestamp": "2026-07-24T16:50:00", "durationSec": 200, "note": "40 min before the clash" },
+        { "id": "C15-CL-2", "from": "P2", "to": "P3", "timestamp": "2026-07-24T15:30:00", "durationSec": 180, "note": "2 hours before, the other side's coordination" }
+      ],
+      "transactions": [],
+      "cctv": [
+        { "id": "C15-CC-1", "cameraLocation": "College main gate camera", "personOrVehicle": "Both groups converging from opposite directions", "timestamp": "2026-07-24T17:28:00", "note": "" },
+        { "id": "C15-CC-2", "cameraLocation": "College main gate camera, wider angle", "personOrVehicle": "Bharath Gowda throwing the first visible strike", "timestamp": "2026-07-24T17:31:00", "note": "Directly contradicts Zaid's group's claim that Bharath's side struck second" }
+      ],
+      "witnessStatements": [
+        { "id": "C15-WS-1", "witnessName": "Zaid Khan (as accused)", "statementDate": "2026-07-26", "statementText": "Bharath's group attacked us first without provocation. We only defended ourselves.", "relatedPerson": "P1" },
+        { "id": "C15-WS-2", "witnessName": "Bharath Gowda (as accused)", "statementDate": "2026-07-26", "statementText": "Zaid's group blocked our path and started it. We acted in self-defense.", "relatedPerson": "P2" }
+      ],
+      "timeline": [
+        { "id": "C15-T1", "timestamp": "2026-07-24T15:30:00", "source": "call", "sourceId": "C15-CL-2", "description": "Bharath's side coordinates, 2 hours before" },
+        { "id": "C15-T2", "timestamp": "2026-07-24T16:50:00", "source": "call", "sourceId": "C15-CL-1", "description": "Zaid's side coordinates, 40 min before" },
+        { "id": "C15-T3", "timestamp": "2026-07-24T17:28:00", "source": "cctv", "sourceId": "C15-CC-1", "description": "Both groups converge" },
+        { "id": "C15-T4", "timestamp": "2026-07-24T17:31:00", "source": "cctv", "sourceId": "C15-CC-2", "description": "First visible strike, by Bharath - contradicts Zaid's self-defense claim being about who struck first" }
+      ],
+      "contradiction": {
+        "description": "Both sides claim self-defense (WS-1 says Bharath's group struck first, WS-2 says Zaid's group struck first) - but wide-angle CCTV (CC-2) directly shows Bharath throwing the first visible strike, which contradicts WS-2's account but is worth weighing against the earlier coordination call on Bharath's side (CL-2, 2 hours before) versus the later, more reactive-looking call on Zaid's side (CL-1, 40 min before).",
+        "conflictingRecords": ["C15-WS-1", "C15-WS-2", "C15-CC-2", "C15-CL-2"],
+        "suggestedNextQuestion": "Show Bharath the wide-angle CCTV timestamped 17:31 and ask him to reconcile it with his statement that Zaid's group struck first - and ask why his side's coordination call (2 hours prior) precedes Zaid's side's (40 min prior) by so much, if this was a reactive, unplanned encounter."
+      }
+    }
+  ]
+}
