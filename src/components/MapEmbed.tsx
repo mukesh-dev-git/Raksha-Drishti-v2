@@ -25,18 +25,27 @@ export default function MapEmbed({
 }) {
   const [fullWidth, setFullWidth] = useState(false);
   const [html, setHtml] = useState<string | null>(null);
+  const [fetchError, setFetchError] = useState<string | null>(null);
+  const [retryKey, setRetryKey] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
+    setFetchError(null);
     fetch(src)
-      .then((r) => r.text())
+      .then((r) => {
+        if (!r.ok) throw new Error(`${r.status} ${r.statusText}`);
+        return r.text();
+      })
       .then((text) => {
         if (!cancelled) setHtml(text);
+      })
+      .catch((e) => {
+        if (!cancelled) setFetchError(e instanceof Error ? e.message : String(e));
       });
     return () => {
       cancelled = true;
     };
-  }, [src]);
+  }, [src, retryKey]);
 
   // Let Escape exit full-width mode, and stop the page from scrolling behind it.
   useEffect(() => {
@@ -82,7 +91,18 @@ export default function MapEmbed({
         </button>
       </div>
       <div className="h-[80vh] w-full overflow-hidden rounded border border-line">
-        {html === null ? (
+        {fetchError ? (
+          <div className="flex h-full w-full flex-col items-center justify-center gap-3 text-sm text-muted">
+            <p>Couldn&apos;t load the map ({fetchError}).</p>
+            <button
+              type="button"
+              onClick={() => setRetryKey((k) => k + 1)}
+              className="rounded-sm border border-line bg-surface px-3 py-1.5 text-xs font-medium text-navy hover:border-navy"
+            >
+              Retry
+            </button>
+          </div>
+        ) : html === null ? (
           <div className="flex h-full w-full items-center justify-center text-sm text-muted">
             Loading map…
           </div>

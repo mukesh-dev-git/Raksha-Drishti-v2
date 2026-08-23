@@ -371,8 +371,44 @@ map.on("load", () => {
   try { state.glyphs = map.getStyle().glyphs; } catch (e) {}
   addLayers();
   document.getElementById("loading").style.display = "none";
+  clearTimeout(loadWatchdog);
   render();
 });
+
+// The map's own errors (tile/style/source failures) were previously silent -
+// "load" just never fires and the loading screen hangs forever with no
+// signal why. Surface them directly in the loading div (visible without
+// devtools) and offer a retry, since transient network blips can and do
+// cause exactly this in this hosting environment.
+map.on("error", (e) => {
+  const msg = (e && e.error && e.error.message) || "Unknown map error";
+  showLoadFailure(msg);
+});
+
+function showLoadFailure(reason) {
+  clearTimeout(loadWatchdog);
+  const el = document.getElementById("loading");
+  el.innerHTML = "";
+  const text = document.createElement("div");
+  text.textContent = "Map failed to load" + (reason ? " (" + reason + ")" : "") + ".";
+  text.style.marginBottom = "10px";
+  const btn = document.createElement("button");
+  btn.textContent = "Retry";
+  btn.style.cssText = "padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:var(--panel);color:var(--ink);cursor:pointer;font-size:13px;";
+  btn.onclick = () => location.reload();
+  const wrap = document.createElement("div");
+  wrap.style.cssText = "display:flex;flex-direction:column;align-items:center;";
+  wrap.appendChild(text);
+  wrap.appendChild(btn);
+  el.appendChild(wrap);
+}
+
+// If "load" hasn't fired within 20s (style/tile fetch hung with no error
+// event at all - has happened in this environment), stop waiting silently
+// and offer the same retry instead of hanging forever.
+const loadWatchdog = setTimeout(() => {
+  if (!map.loaded()) showLoadFailure("timed out");
+}, 20000);
 
 // Re-add our layers whenever the basemap style is swapped (setStyle wipes custom sources/layers).
 // A single style change fires styledata (style parsed) then sourcedata/idle (sources ready) — we

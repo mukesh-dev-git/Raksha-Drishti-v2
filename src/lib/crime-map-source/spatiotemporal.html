@@ -214,8 +214,37 @@ function render() {
 map.on("load", () => {
   addHeatmap();
   document.getElementById("loading").style.display = "none";
+  clearTimeout(loadWatchdog);
   render();
 });
+
+// See map.html for why - same silent-hang issue, same fix.
+map.on("error", (e) => {
+  const msg = (e && e.error && e.error.message) || "Unknown map error";
+  showLoadFailure(msg);
+});
+
+function showLoadFailure(reason) {
+  clearTimeout(loadWatchdog);
+  const el = document.getElementById("loading");
+  el.innerHTML = "";
+  const text = document.createElement("div");
+  text.textContent = "Map failed to load" + (reason ? " (" + reason + ")" : "") + ".";
+  text.style.marginBottom = "10px";
+  const btn = document.createElement("button");
+  btn.textContent = "Retry";
+  btn.style.cssText = "padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:var(--panel);color:var(--ink);cursor:pointer;font-size:13px;";
+  btn.onclick = () => location.reload();
+  const wrap = document.createElement("div");
+  wrap.style.cssText = "display:flex;flex-direction:column;align-items:center;";
+  wrap.appendChild(text);
+  wrap.appendChild(btn);
+  el.appendChild(wrap);
+}
+
+const loadWatchdog = setTimeout(() => {
+  if (!map.loaded()) showLoadFailure("timed out");
+}, 20000);
 
 // ---- Controls ----
 const placeSel = document.getElementById("place");
