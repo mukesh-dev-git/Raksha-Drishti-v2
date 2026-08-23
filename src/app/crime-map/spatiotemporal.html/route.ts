@@ -15,6 +15,8 @@ export async function GET() {
     headers: {
       "Content-Type": "text/html; charset=utf-8",
       "X-Frame-Options": "SAMEORIGIN",
+      // See map.html/route.ts for why CSP frame-ancestors is the real fix.
+      "Content-Security-Policy": "frame-ancestors 'self'",
     },
   });
 }

@@ -30,6 +30,13 @@ export async function GET() {
     headers: {
       "Content-Type": "text/html; charset=utf-8",
       "X-Frame-Options": "SAMEORIGIN",
+      // Slate's edge layer adds its own X-Frame-Options: DENY alongside
+      // ours rather than replacing it - duplicate conflicting values make
+      // Chrome block the frame regardless of what we set here (confirmed:
+      // still blocked after adding SAMEORIGIN above). CSP frame-ancestors
+      // takes precedence over X-Frame-Options in every modern browser when
+      // both are present, so this is what actually wins.
+      "Content-Security-Policy": "frame-ancestors 'self'",
     },
   });
 }
