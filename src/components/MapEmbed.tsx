@@ -8,13 +8,22 @@ import { Maximize2, Minimize2, X } from "lucide-react";
 // expand the map to the full browser viewport (over the header/nav/footer) so
 // officers can view it edge-to-edge, and collapse back into the page layout.
 //
-// Fetches the map HTML and sets it via iframe.srcdoc instead of iframe.src.
+// Fetches the map HTML and loads it via a blob: URL instead of iframe.src.
 // Slate injects X-Frame-Options: DENY on every response (confirmed via curl
 // -i and a browser-side fetch, 2026-08-24) - alongside whatever we set
 // ourselves, as a genuinely duplicated header, and that blocks a src-loaded
-// iframe regardless of a CSP frame-ancestors override too. srcdoc content is
-// inline in the parent's own response, not a separate HTTP request/response,
-// so there's nothing for Slate's edge layer to inject a header into.
+// iframe regardless of a CSP frame-ancestors override too.
+//
+// Tried iframe.srcdoc first (inline HTML, no separate HTTP response for
+// Slate to inject a header into - same benefit as blob:) - that fixed the
+// blocking, but broke the map itself: loaded as a normal top-level page the
+// map renders perfectly (confirmed via screenshot, 2026-08-24), but inside
+// a srcdoc iframe maplibre-gl's map.on("load") never fires and map.on(
+// "error") never fires either - a silent hang specific to the about:srcdoc
+// context (likely a WebGL/fetch quirk of that specific origin), not a real
+// resource failure. blob: URLs get a proper blob: origin instead of
+// about:srcdoc, while keeping the same "not a real HTTP request" property
+// that avoids Slate's header injection - should sidestep both problems.
 // -----------------------------------------------------------------------------
 export default function MapEmbed({
   src,
@@ -24,12 +33,13 @@ export default function MapEmbed({
   title: string;
 }) {
   const [fullWidth, setFullWidth] = useState(false);
-  const [html, setHtml] = useState<string | null>(null);
+  const [blobUrl, setBlobUrl] = useState<string | null>(null);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [retryKey, setRetryKey] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
+    let objectUrl: string | null = null;
     setFetchError(null);
     fetch(src)
       .then((r) => {
@@ -37,13 +47,16 @@ export default function MapEmbed({
         return r.text();
       })
       .then((text) => {
-        if (!cancelled) setHtml(text);
+        if (cancelled) return;
+        objectUrl = URL.createObjectURL(new Blob([text], { type: "text/html" }));
+        setBlobUrl(objectUrl);
       })
       .catch((e) => {
         if (!cancelled) setFetchError(e instanceof Error ? e.message : String(e));
       });
     return () => {
       cancelled = true;
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
   }, [src, retryKey]);
 
@@ -65,7 +78,7 @@ export default function MapEmbed({
   if (fullWidth) {
     return (
       <div className="fixed inset-0 z-50 bg-ink">
-        <iframe srcDoc={html ?? undefined} title={title} className="h-full w-full border-0" />
+        {blobUrl && <iframe src={blobUrl} title={title} className="h-full w-full border-0" />}
         <button
           type="button"
           onClick={() => setFullWidth(false)}
@@ -102,12 +115,12 @@ export default function MapEmbed({
               Retry
             </button>
           </div>
-        ) : html === null ? (
+        ) : blobUrl === null ? (
           <div className="flex h-full w-full items-center justify-center text-sm text-muted">
             Loading map…
           </div>
         ) : (
-          <iframe srcDoc={html} title={title} className="h-full w-full border-0" />
+          <iframe src={blobUrl} title={title} className="h-full w-full border-0" />
         )}
       </div>
     </div>
