@@ -15,6 +15,20 @@ const nextConfig = {
   // direct load and client-side nav) - removing it fixed it. Only re-add this
   // if deploying to Web Client Hosting (static-only) again.
   ...(basePath ? { basePath, assetPrefix: basePath } : {}),
+
+  // Slate applies X-Frame-Options: DENY to every response by default
+  // (confirmed via curl -i on a public/ static file, 2026-08-24) - blocks
+  // MapEmbed.tsx's own same-origin iframe of public/crime-map/*.html.
+  // Override to SAMEORIGIN for just those two files so our own embed works,
+  // without weakening the DENY default anywhere else.
+  async headers() {
+    return [
+      {
+        source: "/crime-map/:path*",
+        headers: [{ key: "X-Frame-Options", value: "SAMEORIGIN" }],
+      },
+    ];
+  },
 };
 
 export default nextConfig;
