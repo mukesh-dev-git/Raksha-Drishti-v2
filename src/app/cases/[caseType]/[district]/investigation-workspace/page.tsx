@@ -4,8 +4,8 @@ import InvestigationWorkspaceClient from "@/components/investigation/Investigati
 import { caseTypes, districts, getCaseType, getDistrict } from "@/lib/data";
 import { getInvestigationData } from "@/lib/investigationData";
 
-// Pre-render every case type × district at build time; fall back to live
-// SSR for any param not in this list (dynamicParams defaults to true).
+// Always render live (see district-wise/page.tsx for why).
+export const dynamic = "force-dynamic";
 export function generateStaticParams() {
   return caseTypes.flatMap((c) =>
     districts.map((d) => ({ caseType: c.slug, district: d.slug }))

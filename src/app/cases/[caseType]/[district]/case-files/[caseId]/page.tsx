@@ -6,9 +6,8 @@ import CaseFileFlipbook from "@/components/flipbook/CaseFileFlipbook";
 import { caseTypes, districts, caseFiles, getCaseFile, getCaseType, getDistrict } from "@/lib/data";
 import { getCaseFileContent } from "@/lib/investigationData";
 
-// Pre-render every case type × district × case file at build time; fall
-// back to live SSR for any param not in this list (dynamicParams defaults
-// to true).
+// Always render live (see district-wise/page.tsx for why).
+export const dynamic = "force-dynamic";
 export function generateStaticParams() {
   return caseTypes.flatMap((c) =>
     districts.flatMap((d) =>
