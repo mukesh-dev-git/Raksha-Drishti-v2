@@ -1,0 +1,1446 @@
+[
+  {
+    "scenarioId": "C1",
+    "caseMasterIds": [
+      9001,
+      9002
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8001,
+        "name": "Suresh Naik"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8002,
+        "name": "Deepak M"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8004,
+        "name": "Iqbal Sait"
+      }
+    },
+    "id": "C1-CL-1",
+    "from": "P1",
+    "to": "P3",
+    "timestamp": "2026-03-08T19:02:00",
+    "durationSec": 184,
+    "note": "First contact, a week before the theft"
+  },
+  {
+    "scenarioId": "C1",
+    "caseMasterIds": [
+      9001,
+      9002
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8001,
+        "name": "Suresh Naik"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8002,
+        "name": "Deepak M"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8004,
+        "name": "Iqbal Sait"
+      }
+    },
+    "id": "C1-CL-2",
+    "from": "P1",
+    "to": "P3",
+    "timestamp": "2026-03-11T21:47:00",
+    "durationSec": 302,
+    "note": ""
+  },
+  {
+    "scenarioId": "C1",
+    "caseMasterIds": [
+      9001,
+      9002
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8001,
+        "name": "Suresh Naik"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8002,
+        "name": "Deepak M"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8004,
+        "name": "Iqbal Sait"
+      }
+    },
+    "id": "C1-CL-3",
+    "from": "P1",
+    "to": "P3",
+    "timestamp": "2026-03-13T18:10:00",
+    "durationSec": 95,
+    "note": "Night before the theft"
+  },
+  {
+    "scenarioId": "C1",
+    "caseMasterIds": [
+      9001,
+      9002
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8001,
+        "name": "Suresh Naik"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8002,
+        "name": "Deepak M"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8004,
+        "name": "Iqbal Sait"
+      }
+    },
+    "id": "C1-CL-4",
+    "from": "P1",
+    "to": "P2",
+    "timestamp": "2026-03-14T20:05:00",
+    "durationSec": 40,
+    "note": "10 minutes before the theft window"
+  },
+  {
+    "scenarioId": "C1",
+    "caseMasterIds": [
+      9001,
+      9002
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8001,
+        "name": "Suresh Naik"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8002,
+        "name": "Deepak M"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8004,
+        "name": "Iqbal Sait"
+      }
+    },
+    "id": "C1-CL-5",
+    "from": "P3",
+    "to": "V4",
+    "timestamp": "2026-03-18T10:22:00",
+    "durationSec": 261,
+    "note": "Day before the Tumakuru sales"
+  },
+  {
+    "scenarioId": "C2",
+    "caseMasterIds": [
+      9003
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8005,
+        "name": "Praveen Achari"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8006,
+        "name": "Manoj Kumar S"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8007,
+        "name": "Yusuf Ali"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8008,
+        "name": "Ravindra Naidu (fence, pawnbroker)"
+      },
+      "V:Anil": {
+        "type": "Victim",
+        "id": 7001,
+        "name": "Anil Kumar (shop assistant)"
+      }
+    },
+    "id": "C2-CL-1",
+    "from": "P1",
+    "to": "P4",
+    "timestamp": "2026-01-28T20:11:00",
+    "durationSec": 410,
+    "note": "Planning call, 4 days prior"
+  },
+  {
+    "scenarioId": "C2",
+    "caseMasterIds": [
+      9003
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8005,
+        "name": "Praveen Achari"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8006,
+        "name": "Manoj Kumar S"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8007,
+        "name": "Yusuf Ali"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8008,
+        "name": "Ravindra Naidu (fence, pawnbroker)"
+      },
+      "V:Anil": {
+        "type": "Victim",
+        "id": 7001,
+        "name": "Anil Kumar (shop assistant)"
+      }
+    },
+    "id": "C2-CL-2",
+    "from": "P1",
+    "to": "P2",
+    "timestamp": "2026-02-01T17:55:00",
+    "durationSec": 22,
+    "note": "Just before the robbery"
+  },
+  {
+    "scenarioId": "C2",
+    "caseMasterIds": [
+      9003
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8005,
+        "name": "Praveen Achari"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8006,
+        "name": "Manoj Kumar S"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8007,
+        "name": "Yusuf Ali"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8008,
+        "name": "Ravindra Naidu (fence, pawnbroker)"
+      },
+      "V:Anil": {
+        "type": "Victim",
+        "id": 7001,
+        "name": "Anil Kumar (shop assistant)"
+      }
+    },
+    "id": "C2-CL-3",
+    "from": "P3",
+    "to": "P1",
+    "timestamp": "2026-02-01T18:52:00",
+    "durationSec": 15,
+    "note": "2 minutes after fleeing the scene"
+  },
+  {
+    "scenarioId": "C2",
+    "caseMasterIds": [
+      9003
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8005,
+        "name": "Praveen Achari"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8006,
+        "name": "Manoj Kumar S"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8007,
+        "name": "Yusuf Ali"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8008,
+        "name": "Ravindra Naidu (fence, pawnbroker)"
+      },
+      "V:Anil": {
+        "type": "Victim",
+        "id": 7001,
+        "name": "Anil Kumar (shop assistant)"
+      }
+    },
+    "id": "C2-CL-4",
+    "from": "P1",
+    "to": "P4",
+    "timestamp": "2026-02-02T08:30:00",
+    "durationSec": 190,
+    "note": "Morning after, arranging the fence"
+  },
+  {
+    "scenarioId": "C3",
+    "caseMasterIds": [
+      9004,
+      9005
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8009,
+        "name": "Zoya Merchant (app runs as 'QuickCash Lending')"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8010,
+        "name": "Tarun Bhatia (call-centre lead)"
+      },
+      "V:Vinayak": {
+        "type": "Victim",
+        "id": 7002,
+        "name": "Vinayak Desai"
+      },
+      "V:Farida": {
+        "type": "Victim",
+        "id": 7003,
+        "name": "Farida Banu"
+      }
+    },
+    "id": "C3-CL-1",
+    "from": "P2",
+    "to": "P1",
+    "timestamp": "2026-03-28T10:05:00",
+    "durationSec": 520,
+    "note": "Weekly ops call pattern, recurring"
+  },
+  {
+    "scenarioId": "C3",
+    "caseMasterIds": [
+      9004,
+      9005
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8009,
+        "name": "Zoya Merchant (app runs as 'QuickCash Lending')"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8010,
+        "name": "Tarun Bhatia (call-centre lead)"
+      },
+      "V:Vinayak": {
+        "type": "Victim",
+        "id": 7002,
+        "name": "Vinayak Desai"
+      },
+      "V:Farida": {
+        "type": "Victim",
+        "id": 7003,
+        "name": "Farida Banu"
+      }
+    },
+    "id": "C3-CL-2",
+    "from": "P2",
+    "to": "P1",
+    "timestamp": "2026-04-04T09:40:00",
+    "durationSec": 480,
+    "note": "Same recurring pattern"
+  },
+  {
+    "scenarioId": "C3",
+    "caseMasterIds": [
+      9004,
+      9005
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8009,
+        "name": "Zoya Merchant (app runs as 'QuickCash Lending')"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8010,
+        "name": "Tarun Bhatia (call-centre lead)"
+      },
+      "V:Vinayak": {
+        "type": "Victim",
+        "id": 7002,
+        "name": "Vinayak Desai"
+      },
+      "V:Farida": {
+        "type": "Victim",
+        "id": 7003,
+        "name": "Farida Banu"
+      }
+    },
+    "id": "C3-CL-3",
+    "from": "P2",
+    "to": "P1",
+    "timestamp": "2026-04-09T10:15:00",
+    "durationSec": 460,
+    "note": "Same recurring pattern, spans both FIRs' complaint windows"
+  },
+  {
+    "scenarioId": "C3",
+    "caseMasterIds": [
+      9004,
+      9005
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8009,
+        "name": "Zoya Merchant (app runs as 'QuickCash Lending')"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8010,
+        "name": "Tarun Bhatia (call-centre lead)"
+      },
+      "V:Vinayak": {
+        "type": "Victim",
+        "id": 7002,
+        "name": "Vinayak Desai"
+      },
+      "V:Farida": {
+        "type": "Victim",
+        "id": 7003,
+        "name": "Farida Banu"
+      }
+    },
+    "id": "C3-CL-4",
+    "from": "P2",
+    "to": "V:Vinayak",
+    "timestamp": "2026-04-03T22:10:00",
+    "durationSec": 340,
+    "note": "Threatening call cited in FIR 9004"
+  },
+  {
+    "scenarioId": "C3",
+    "caseMasterIds": [
+      9004,
+      9005
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8009,
+        "name": "Zoya Merchant (app runs as 'QuickCash Lending')"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8010,
+        "name": "Tarun Bhatia (call-centre lead)"
+      },
+      "V:Vinayak": {
+        "type": "Victim",
+        "id": 7002,
+        "name": "Vinayak Desai"
+      },
+      "V:Farida": {
+        "type": "Victim",
+        "id": 7003,
+        "name": "Farida Banu"
+      }
+    },
+    "id": "C3-CL-5",
+    "from": "P2",
+    "to": "V:Farida",
+    "timestamp": "2026-04-08T21:50:00",
+    "durationSec": 290,
+    "note": "Threatening call cited in FIR 9005"
+  },
+  {
+    "scenarioId": "C4",
+    "caseMasterIds": [
+      9006
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8013,
+        "name": "Mallikarjun Rao (property broker)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8014,
+        "name": "Shantaram Kulkarni (notary)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8015,
+        "name": "Prakash Jadhav (buyer)"
+      },
+      "V:Basavaraj": {
+        "type": "Victim",
+        "id": 7004,
+        "name": "Basavaraj Patil"
+      }
+    },
+    "id": "C4-CL-1",
+    "from": "P1",
+    "to": "P2",
+    "timestamp": "2026-03-25T11:00:00",
+    "durationSec": 610,
+    "note": ""
+  },
+  {
+    "scenarioId": "C4",
+    "caseMasterIds": [
+      9006
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8013,
+        "name": "Mallikarjun Rao (property broker)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8014,
+        "name": "Shantaram Kulkarni (notary)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8015,
+        "name": "Prakash Jadhav (buyer)"
+      },
+      "V:Basavaraj": {
+        "type": "Victim",
+        "id": 7004,
+        "name": "Basavaraj Patil"
+      }
+    },
+    "id": "C4-CL-2",
+    "from": "P1",
+    "to": "P3",
+    "timestamp": "2026-03-27T15:30:00",
+    "durationSec": 380,
+    "note": ""
+  },
+  {
+    "scenarioId": "C4",
+    "caseMasterIds": [
+      9006
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8013,
+        "name": "Mallikarjun Rao (property broker)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8014,
+        "name": "Shantaram Kulkarni (notary)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8015,
+        "name": "Prakash Jadhav (buyer)"
+      },
+      "V:Basavaraj": {
+        "type": "Victim",
+        "id": 7004,
+        "name": "Basavaraj Patil"
+      }
+    },
+    "id": "C4-CL-3",
+    "from": "P2",
+    "to": "P3",
+    "timestamp": "2026-04-01T09:00:00",
+    "durationSec": 120,
+    "note": "Notary and buyer speak directly - unusual if notary claims not to know buyer"
+  },
+  {
+    "scenarioId": "C5",
+    "caseMasterIds": [
+      9007
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8016,
+        "name": "Vinod Poojary"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8017,
+        "name": "Naveen Kotian"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8018,
+        "name": "Rafiq Ahmed (shop owner, fence)"
+      }
+    },
+    "id": "C5-CL-1",
+    "from": "P1",
+    "to": "P3",
+    "timestamp": "2026-06-02T04:10:00",
+    "durationSec": 65,
+    "note": "90 minutes after the break-in"
+  },
+  {
+    "scenarioId": "C5",
+    "caseMasterIds": [
+      9007
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8016,
+        "name": "Vinod Poojary"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8017,
+        "name": "Naveen Kotian"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8018,
+        "name": "Rafiq Ahmed (shop owner, fence)"
+      }
+    },
+    "id": "C5-CL-2",
+    "from": "P1",
+    "to": "P2",
+    "timestamp": "2026-06-02T01:40:00",
+    "durationSec": 30,
+    "note": "20 minutes before the break-in window starts"
+  },
+  {
+    "scenarioId": "C6",
+    "caseMasterIds": [
+      9008
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8019,
+        "name": "Chandru M (site supervisor)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8020,
+        "name": "Basha Sab"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8021,
+        "name": "Ravi Kumar T"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8022,
+        "name": "Ismail Sheikh (mining contractor)"
+      },
+      "V:Hanumantha": {
+        "type": "Victim",
+        "id": 7005,
+        "name": "Hanumantha Naik"
+      }
+    },
+    "id": "C6-CL-1",
+    "from": "P4",
+    "to": "P1",
+    "timestamp": "2026-01-17T17:30:00",
+    "durationSec": 210,
+    "note": "1.5 hours before the assault"
+  },
+  {
+    "scenarioId": "C6",
+    "caseMasterIds": [
+      9008
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8019,
+        "name": "Chandru M (site supervisor)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8020,
+        "name": "Basha Sab"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8021,
+        "name": "Ravi Kumar T"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8022,
+        "name": "Ismail Sheikh (mining contractor)"
+      },
+      "V:Hanumantha": {
+        "type": "Victim",
+        "id": 7005,
+        "name": "Hanumantha Naik"
+      }
+    },
+    "id": "C6-CL-2",
+    "from": "P1",
+    "to": "P2",
+    "timestamp": "2026-01-17T18:20:00",
+    "durationSec": 40,
+    "note": ""
+  },
+  {
+    "scenarioId": "C6",
+    "caseMasterIds": [
+      9008
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8019,
+        "name": "Chandru M (site supervisor)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8020,
+        "name": "Basha Sab"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8021,
+        "name": "Ravi Kumar T"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8022,
+        "name": "Ismail Sheikh (mining contractor)"
+      },
+      "V:Hanumantha": {
+        "type": "Victim",
+        "id": 7005,
+        "name": "Hanumantha Naik"
+      }
+    },
+    "id": "C6-CL-3",
+    "from": "P1",
+    "to": "P3",
+    "timestamp": "2026-01-17T18:22:00",
+    "durationSec": 35,
+    "note": ""
+  },
+  {
+    "scenarioId": "C7",
+    "caseMasterIds": [
+      9009,
+      9010
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8023,
+        "name": "Halappa D"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8024,
+        "name": "Somesh K (truck driver)"
+      }
+    },
+    "id": "C7-CL-1",
+    "from": "P1",
+    "to": "P2",
+    "timestamp": "2026-07-07T20:15:00",
+    "durationSec": 90,
+    "note": "Before the first theft"
+  },
+  {
+    "scenarioId": "C7",
+    "caseMasterIds": [
+      9009,
+      9010
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8023,
+        "name": "Halappa D"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8024,
+        "name": "Somesh K (truck driver)"
+      }
+    },
+    "id": "C7-CL-2",
+    "from": "P1",
+    "to": "P2",
+    "timestamp": "2026-07-14T19:50:00",
+    "durationSec": 75,
+    "note": "Before the second theft, same pattern a week later"
+  },
+  {
+    "scenarioId": "C8",
+    "caseMasterIds": [
+      9011
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8027,
+        "name": "Rohan Malhotra (floor manager)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8028,
+        "name": "Priya Kapoor (owner-of-record)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8029,
+        "name": "Amit Verma (agent)"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8030,
+        "name": "Sana Iyer (agent)"
+      },
+      "V:Margaret": {
+        "type": "Victim",
+        "id": 7006,
+        "name": "Margaret Fernandes"
+      },
+      "V:K.S.": {
+        "type": "Victim",
+        "id": 7007,
+        "name": "K.S. Venkataraman"
+      }
+    },
+    "id": "C8-CL-1",
+    "from": "P3",
+    "to": "V:Margaret",
+    "timestamp": "2026-06-20T11:00:00",
+    "durationSec": 1840,
+    "note": "Fraudulent tech-support call, cited in complaint"
+  },
+  {
+    "scenarioId": "C8",
+    "caseMasterIds": [
+      9011
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8027,
+        "name": "Rohan Malhotra (floor manager)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8028,
+        "name": "Priya Kapoor (owner-of-record)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8029,
+        "name": "Amit Verma (agent)"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8030,
+        "name": "Sana Iyer (agent)"
+      },
+      "V:Margaret": {
+        "type": "Victim",
+        "id": 7006,
+        "name": "Margaret Fernandes"
+      },
+      "V:K.S.": {
+        "type": "Victim",
+        "id": 7007,
+        "name": "K.S. Venkataraman"
+      }
+    },
+    "id": "C8-CL-2",
+    "from": "P4",
+    "to": "V:Venkataraman",
+    "timestamp": "2026-07-12T15:20:00",
+    "durationSec": 2210,
+    "note": "Fraudulent tech-support call, cited in complaint"
+  },
+  {
+    "scenarioId": "C8",
+    "caseMasterIds": [
+      9011
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8027,
+        "name": "Rohan Malhotra (floor manager)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8028,
+        "name": "Priya Kapoor (owner-of-record)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8029,
+        "name": "Amit Verma (agent)"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8030,
+        "name": "Sana Iyer (agent)"
+      },
+      "V:Margaret": {
+        "type": "Victim",
+        "id": 7006,
+        "name": "Margaret Fernandes"
+      },
+      "V:K.S.": {
+        "type": "Victim",
+        "id": 7007,
+        "name": "K.S. Venkataraman"
+      }
+    },
+    "id": "C8-CL-3",
+    "from": "P1",
+    "to": "P2",
+    "timestamp": "2026-07-28T18:00:00",
+    "durationSec": 340,
+    "note": "2 days before the raid"
+  },
+  {
+    "scenarioId": "C9",
+    "caseMasterIds": [
+      9012
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8031,
+        "name": "Srinivas Iyengar"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8032,
+        "name": "Nandish Iyengar (accused's brother)"
+      },
+      "V:Rekha": {
+        "type": "Victim",
+        "id": 7008,
+        "name": "Rekha Iyengar"
+      }
+    },
+    "id": "C9-CL-1",
+    "from": "P1",
+    "to": "P2",
+    "timestamp": "2026-03-04T08:10:00",
+    "durationSec": 150,
+    "note": "Morning of the witness's recant visit"
+  },
+  {
+    "scenarioId": "C10",
+    "caseMasterIds": [
+      9013
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8033,
+        "name": "Sagar Bandekar"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8034,
+        "name": "Vasant Naik (garage owner)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8035,
+        "name": "Ganesh Koli"
+      }
+    },
+    "id": "C10-CL-1",
+    "from": "P1",
+    "to": "P2",
+    "timestamp": "2026-05-21T02:30:00",
+    "durationSec": 50,
+    "note": "30 minutes after the theft window"
+  },
+  {
+    "scenarioId": "C11",
+    "caseMasterIds": [
+      9014
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8036,
+        "name": "Altaf Pathan"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8037,
+        "name": "Kiran Bhosale"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8038,
+        "name": "Santosh Waghmare"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8039,
+        "name": "Ravi Caterer (catering staff, informant)"
+      },
+      "V:Savitri": {
+        "type": "Victim",
+        "id": 7009,
+        "name": "Savitri Deshmukh"
+      },
+      "V:Pooja": {
+        "type": "Victim",
+        "id": 7010,
+        "name": "Pooja Deshmukh"
+      }
+    },
+    "id": "C11-CL-1",
+    "from": "P4",
+    "to": "P1",
+    "timestamp": "2026-11-01T18:30:00",
+    "durationSec": 95,
+    "note": "90 min before the robbery, describing which guests had the most jewellery"
+  },
+  {
+    "scenarioId": "C11",
+    "caseMasterIds": [
+      9014
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8036,
+        "name": "Altaf Pathan"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8037,
+        "name": "Kiran Bhosale"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8038,
+        "name": "Santosh Waghmare"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8039,
+        "name": "Ravi Caterer (catering staff, informant)"
+      },
+      "V:Savitri": {
+        "type": "Victim",
+        "id": 7009,
+        "name": "Savitri Deshmukh"
+      },
+      "V:Pooja": {
+        "type": "Victim",
+        "id": 7010,
+        "name": "Pooja Deshmukh"
+      }
+    },
+    "id": "C11-CL-2",
+    "from": "P1",
+    "to": "P2",
+    "timestamp": "2026-11-01T19:45:00",
+    "durationSec": 20,
+    "note": "15 min before"
+  },
+  {
+    "scenarioId": "C11",
+    "caseMasterIds": [
+      9014
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8036,
+        "name": "Altaf Pathan"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8037,
+        "name": "Kiran Bhosale"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8038,
+        "name": "Santosh Waghmare"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8039,
+        "name": "Ravi Caterer (catering staff, informant)"
+      },
+      "V:Savitri": {
+        "type": "Victim",
+        "id": 7009,
+        "name": "Savitri Deshmukh"
+      },
+      "V:Pooja": {
+        "type": "Victim",
+        "id": 7010,
+        "name": "Pooja Deshmukh"
+      }
+    },
+    "id": "C11-CL-3",
+    "from": "P1",
+    "to": "P3",
+    "timestamp": "2026-11-01T19:46:00",
+    "durationSec": 18,
+    "note": "15 min before"
+  },
+  {
+    "scenarioId": "C12",
+    "caseMasterIds": [
+      9015
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8040,
+        "name": "Wilfred Pinto (director)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8041,
+        "name": "Neha D'Silva (co-director)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8042,
+        "name": "Clifton Rego (local recruiter)"
+      },
+      "V:Vincent": {
+        "type": "Victim",
+        "id": 7011,
+        "name": "Vincent Lobo"
+      },
+      "V:Shwetha": {
+        "type": "Victim",
+        "id": 7012,
+        "name": "Shwetha Kamath"
+      }
+    },
+    "id": "C12-CL-1",
+    "from": "P1",
+    "to": "P2",
+    "timestamp": "2026-08-28T14:00:00",
+    "durationSec": 900,
+    "note": "Long call, days before the office shut"
+  },
+  {
+    "scenarioId": "C12",
+    "caseMasterIds": [
+      9015
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8040,
+        "name": "Wilfred Pinto (director)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8041,
+        "name": "Neha D'Silva (co-director)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8042,
+        "name": "Clifton Rego (local recruiter)"
+      },
+      "V:Vincent": {
+        "type": "Victim",
+        "id": 7011,
+        "name": "Vincent Lobo"
+      },
+      "V:Shwetha": {
+        "type": "Victim",
+        "id": 7012,
+        "name": "Shwetha Kamath"
+      }
+    },
+    "id": "C12-CL-2",
+    "from": "P1",
+    "to": "P3",
+    "timestamp": "2026-09-01T10:00:00",
+    "durationSec": 60,
+    "note": "Brief call right before Clifton stopped answering investors"
+  },
+  {
+    "scenarioId": "C13",
+    "caseMasterIds": [
+      9016,
+      9017
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8043,
+        "name": "Faizal Khan (device installer)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8044,
+        "name": "Deepak Rathore (card cloner)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8045,
+        "name": "Anand M (cash-out mule)"
+      }
+    },
+    "id": "C13-CL-1",
+    "from": "P1",
+    "to": "P2",
+    "timestamp": "2026-09-19T20:00:00",
+    "durationSec": 130,
+    "note": "Night before device installation, Ballari"
+  },
+  {
+    "scenarioId": "C13",
+    "caseMasterIds": [
+      9016,
+      9017
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8043,
+        "name": "Faizal Khan (device installer)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8044,
+        "name": "Deepak Rathore (card cloner)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8045,
+        "name": "Anand M (cash-out mule)"
+      }
+    },
+    "id": "C13-CL-2",
+    "from": "P2",
+    "to": "P3",
+    "timestamp": "2026-09-25T16:00:00",
+    "durationSec": 45,
+    "note": ""
+  },
+  {
+    "scenarioId": "C13",
+    "caseMasterIds": [
+      9016,
+      9017
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8043,
+        "name": "Faizal Khan (device installer)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8044,
+        "name": "Deepak Rathore (card cloner)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8045,
+        "name": "Anand M (cash-out mule)"
+      }
+    },
+    "id": "C13-CL-3",
+    "from": "P2",
+    "to": "P3",
+    "timestamp": "2026-10-09T11:00:00",
+    "durationSec": 50,
+    "note": "Similar pattern, timed with the Bengaluru withdrawals"
+  },
+  {
+    "scenarioId": "C14",
+    "caseMasterIds": [
+      9018
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8047,
+        "name": "Manjappa Gowda"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8048,
+        "name": "Yallappa Naik"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8049,
+        "name": "Devaraj (forest watcher, insider)"
+      }
+    },
+    "id": "C14-CL-1",
+    "from": "P3",
+    "to": "P1",
+    "timestamp": "2026-11-28T21:00:00",
+    "durationSec": 70,
+    "note": "Night before, confirming the watcher's off-duty shift"
+  },
+  {
+    "scenarioId": "C14",
+    "caseMasterIds": [
+      9018
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8047,
+        "name": "Manjappa Gowda"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8048,
+        "name": "Yallappa Naik"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8049,
+        "name": "Devaraj (forest watcher, insider)"
+      }
+    },
+    "id": "C14-CL-2",
+    "from": "P1",
+    "to": "P2",
+    "timestamp": "2026-11-28T22:30:00",
+    "durationSec": 40,
+    "note": ""
+  },
+  {
+    "scenarioId": "C15",
+    "caseMasterIds": [
+      9019
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8050,
+        "name": "Zaid Khan"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8051,
+        "name": "Bharath Gowda"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8052,
+        "name": "Naveen Raju"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8053,
+        "name": "Suhail Ahmed"
+      },
+      "V:Arjun": {
+        "type": "Victim",
+        "id": 7014,
+        "name": "Arjun Reddy"
+      },
+      "V:Vikram": {
+        "type": "Victim",
+        "id": 7015,
+        "name": "Vikram Singh"
+      }
+    },
+    "id": "C15-CL-1",
+    "from": "P1",
+    "to": "P4",
+    "timestamp": "2026-07-24T16:50:00",
+    "durationSec": 200,
+    "note": "40 min before the clash"
+  },
+  {
+    "scenarioId": "C15",
+    "caseMasterIds": [
+      9019
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8050,
+        "name": "Zaid Khan"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8051,
+        "name": "Bharath Gowda"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8052,
+        "name": "Naveen Raju"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8053,
+        "name": "Suhail Ahmed"
+      },
+      "V:Arjun": {
+        "type": "Victim",
+        "id": 7014,
+        "name": "Arjun Reddy"
+      },
+      "V:Vikram": {
+        "type": "Victim",
+        "id": 7015,
+        "name": "Vikram Singh"
+      }
+    },
+    "id": "C15-CL-2",
+    "from": "P2",
+    "to": "P3",
+    "timestamp": "2026-07-24T15:30:00",
+    "durationSec": 180,
+    "note": "2 hours before, the other side's coordination"
+  }
+]

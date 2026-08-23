@@ -4,8 +4,9 @@ import DistrictWiseClient from "@/components/cases/DistrictWiseClient";
 import { caseTypes, getCaseType, trendYears } from "@/lib/data";
 import { getDistrictStats } from "@/lib/api";
 
-// Pre-render every case type at build time (static export).
-export const dynamicParams = false;
+// Pre-render every case type at build time; fall back to live SSR for any
+// param not in this list (dynamicParams defaults to true) - needed for real
+// dynamic serving on Slate/OpenNext, not just the old static-export path.
 export function generateStaticParams() {
   return caseTypes.map((c) => ({ caseType: c.slug }));
 }

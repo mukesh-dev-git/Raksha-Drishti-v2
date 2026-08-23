@@ -1,0 +1,7 @@
+RankID,RankName,Hierarchy,Active
+1,Constable,6,true
+2,Head Constable,5,true
+3,Assistant Sub-Inspector,4,true
+4,Sub-Inspector,3,true
+5,Inspector,2,true
+6,Deputy Superintendent,1,true

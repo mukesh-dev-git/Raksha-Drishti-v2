@@ -1,0 +1,826 @@
+[
+  {
+    "scenarioId": "C1",
+    "caseMasterIds": [
+      9001,
+      9002
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8001,
+        "name": "Suresh Naik"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8002,
+        "name": "Deepak M"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8004,
+        "name": "Iqbal Sait"
+      }
+    },
+    "id": "C1-TX-1",
+    "fromAccount": "Iqbal Sait - SBI xx4471",
+    "toAccount": "Suresh Naik - Canara xx1190",
+    "amount": 18000,
+    "timestamp": "2026-03-21T09:15:00",
+    "note": "2 days after the Tumakuru sales"
+  },
+  {
+    "scenarioId": "C1",
+    "caseMasterIds": [
+      9001,
+      9002
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8001,
+        "name": "Suresh Naik"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8002,
+        "name": "Deepak M"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8004,
+        "name": "Iqbal Sait"
+      }
+    },
+    "id": "C1-TX-2",
+    "fromAccount": "Iqbal Sait - SBI xx4471",
+    "toAccount": "Deepak M - Paytm Wallet",
+    "amount": 6000,
+    "timestamp": "2026-03-21T09:20:00",
+    "note": "Same session as TX-1"
+  },
+  {
+    "scenarioId": "C2",
+    "caseMasterIds": [
+      9003
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8005,
+        "name": "Praveen Achari"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8006,
+        "name": "Manoj Kumar S"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8007,
+        "name": "Yusuf Ali"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8008,
+        "name": "Ravindra Naidu (fence, pawnbroker)"
+      },
+      "V:Anil": {
+        "type": "Victim",
+        "id": 7001,
+        "name": "Anil Kumar (shop assistant)"
+      }
+    },
+    "id": "C2-TX-1",
+    "fromAccount": "Ravindra Naidu - HDFC xx7723",
+    "toAccount": "Praveen Achari - Cash",
+    "amount": 480000,
+    "timestamp": "2026-02-03T00:00:00",
+    "note": "Cash withdrawal same day as pawn shop gold melt-down entry"
+  },
+  {
+    "scenarioId": "C3",
+    "caseMasterIds": [
+      9004,
+      9005
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8009,
+        "name": "Zoya Merchant (app runs as 'QuickCash Lending')"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8010,
+        "name": "Tarun Bhatia (call-centre lead)"
+      },
+      "V:Vinayak": {
+        "type": "Victim",
+        "id": 7002,
+        "name": "Vinayak Desai"
+      },
+      "V:Farida": {
+        "type": "Victim",
+        "id": 7003,
+        "name": "Farida Banu"
+      }
+    },
+    "id": "C3-TX-1",
+    "fromAccount": "QuickCash Lending merchant account",
+    "toAccount": "Zoya Merchant - Kotak xx3390",
+    "amount": 210000,
+    "timestamp": "2026-04-01T00:00:00",
+    "note": "Weekly payout, tagged to the FIR 9004 front company"
+  },
+  {
+    "scenarioId": "C3",
+    "caseMasterIds": [
+      9004,
+      9005
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8009,
+        "name": "Zoya Merchant (app runs as 'QuickCash Lending')"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8010,
+        "name": "Tarun Bhatia (call-centre lead)"
+      },
+      "V:Vinayak": {
+        "type": "Victim",
+        "id": 7002,
+        "name": "Vinayak Desai"
+      },
+      "V:Farida": {
+        "type": "Victim",
+        "id": 7003,
+        "name": "Farida Banu"
+      }
+    },
+    "id": "C3-TX-2",
+    "fromAccount": "RapidFin Solutions merchant account",
+    "toAccount": "Zoya Merchant - Kotak xx3390",
+    "amount": 340000,
+    "timestamp": "2026-04-08T00:00:00",
+    "note": "Same destination account as TX-1, different front company - the fusion link"
+  },
+  {
+    "scenarioId": "C4",
+    "caseMasterIds": [
+      9006
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8013,
+        "name": "Mallikarjun Rao (property broker)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8014,
+        "name": "Shantaram Kulkarni (notary)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8015,
+        "name": "Prakash Jadhav (buyer)"
+      },
+      "V:Basavaraj": {
+        "type": "Victim",
+        "id": 7004,
+        "name": "Basavaraj Patil"
+      }
+    },
+    "id": "C4-TX-1",
+    "fromAccount": "Prakash Jadhav - Union Bank xx5512",
+    "toAccount": "Mallikarjun Rao - SBI xx8801",
+    "amount": 1250000,
+    "timestamp": "2026-04-02T00:00:00",
+    "note": "'Sale' payment for forged plot"
+  },
+  {
+    "scenarioId": "C4",
+    "caseMasterIds": [
+      9006
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8013,
+        "name": "Mallikarjun Rao (property broker)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8014,
+        "name": "Shantaram Kulkarni (notary)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8015,
+        "name": "Prakash Jadhav (buyer)"
+      },
+      "V:Basavaraj": {
+        "type": "Victim",
+        "id": 7004,
+        "name": "Basavaraj Patil"
+      }
+    },
+    "id": "C4-TX-2",
+    "fromAccount": "Mallikarjun Rao - SBI xx8801",
+    "toAccount": "Shantaram Kulkarni - SBI xx2290",
+    "amount": 75000,
+    "timestamp": "2026-04-03T00:00:00",
+    "note": "Broker pays notary, day after receiving buyer's payment"
+  },
+  {
+    "scenarioId": "C5",
+    "caseMasterIds": [
+      9007
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8016,
+        "name": "Vinod Poojary"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8017,
+        "name": "Naveen Kotian"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8018,
+        "name": "Rafiq Ahmed (shop owner, fence)"
+      }
+    },
+    "id": "C5-TX-1",
+    "fromAccount": "Rafiq Ahmed - shop till (cash)",
+    "toAccount": "Vinod Poojary - cash",
+    "amount": 95000,
+    "timestamp": "2026-06-02T10:00:00",
+    "note": "Same morning as the burglary"
+  },
+  {
+    "scenarioId": "C6",
+    "caseMasterIds": [
+      9008
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8019,
+        "name": "Chandru M (site supervisor)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8020,
+        "name": "Basha Sab"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8021,
+        "name": "Ravi Kumar T"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8022,
+        "name": "Ismail Sheikh (mining contractor)"
+      },
+      "V:Hanumantha": {
+        "type": "Victim",
+        "id": 7005,
+        "name": "Hanumantha Naik"
+      }
+    },
+    "id": "C6-TX-1",
+    "fromAccount": "Ismail Sheikh - Axis xx1150",
+    "toAccount": "Chandru M - cash withdrawal",
+    "amount": 15000,
+    "timestamp": "2026-01-19T00:00:00",
+    "note": "2 days after the assault"
+  },
+  {
+    "scenarioId": "C7",
+    "caseMasterIds": [
+      9009,
+      9010
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8023,
+        "name": "Halappa D"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8024,
+        "name": "Somesh K (truck driver)"
+      }
+    },
+    "id": "C7-TX-1",
+    "fromAccount": "unknown buyer - cash",
+    "toAccount": "Halappa D - cash",
+    "amount": 42000,
+    "timestamp": "2026-07-09T00:00:00",
+    "note": "Cattle sold at a market 2 days after the Shivamogga theft"
+  },
+  {
+    "scenarioId": "C7",
+    "caseMasterIds": [
+      9009,
+      9010
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8023,
+        "name": "Halappa D"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8024,
+        "name": "Somesh K (truck driver)"
+      }
+    },
+    "id": "C7-TX-2",
+    "fromAccount": "unknown buyer - cash",
+    "toAccount": "Halappa D - cash",
+    "amount": 38000,
+    "timestamp": "2026-07-16T00:00:00",
+    "note": "Same market pattern, 2 days after the Tumakuru theft"
+  },
+  {
+    "scenarioId": "C8",
+    "caseMasterIds": [
+      9011
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8027,
+        "name": "Rohan Malhotra (floor manager)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8028,
+        "name": "Priya Kapoor (owner-of-record)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8029,
+        "name": "Amit Verma (agent)"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8030,
+        "name": "Sana Iyer (agent)"
+      },
+      "V:Margaret": {
+        "type": "Victim",
+        "id": 7006,
+        "name": "Margaret Fernandes"
+      },
+      "V:K.S.": {
+        "type": "Victim",
+        "id": 7007,
+        "name": "K.S. Venkataraman"
+      }
+    },
+    "id": "C8-TX-1",
+    "fromAccount": "Margaret Fernandes - ICICI xx6610",
+    "toAccount": "shell company 'TechFix Solutions'",
+    "amount": 48000,
+    "timestamp": "2026-06-20T11:45:00",
+    "note": "Remote-access 'service fee', minutes after the call"
+  },
+  {
+    "scenarioId": "C8",
+    "caseMasterIds": [
+      9011
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8027,
+        "name": "Rohan Malhotra (floor manager)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8028,
+        "name": "Priya Kapoor (owner-of-record)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8029,
+        "name": "Amit Verma (agent)"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8030,
+        "name": "Sana Iyer (agent)"
+      },
+      "V:Margaret": {
+        "type": "Victim",
+        "id": 7006,
+        "name": "Margaret Fernandes"
+      },
+      "V:K.S.": {
+        "type": "Victim",
+        "id": 7007,
+        "name": "K.S. Venkataraman"
+      }
+    },
+    "id": "C8-TX-2",
+    "fromAccount": "K.S. Venkataraman - Canara xx7742",
+    "toAccount": "shell company 'TechFix Solutions'",
+    "amount": 62000,
+    "timestamp": "2026-07-12T16:05:00",
+    "note": "Same shell company as TX-1"
+  },
+  {
+    "scenarioId": "C8",
+    "caseMasterIds": [
+      9011
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8027,
+        "name": "Rohan Malhotra (floor manager)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8028,
+        "name": "Priya Kapoor (owner-of-record)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8029,
+        "name": "Amit Verma (agent)"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8030,
+        "name": "Sana Iyer (agent)"
+      },
+      "V:Margaret": {
+        "type": "Victim",
+        "id": 7006,
+        "name": "Margaret Fernandes"
+      },
+      "V:K.S.": {
+        "type": "Victim",
+        "id": 7007,
+        "name": "K.S. Venkataraman"
+      }
+    },
+    "id": "C8-TX-3",
+    "fromAccount": "shell company 'TechFix Solutions'",
+    "toAccount": "Priya Kapoor - HDFC xx3301",
+    "amount": 88000,
+    "timestamp": "2026-07-15T00:00:00",
+    "note": "Owner-of-record withdrawal from the shell account"
+  },
+  {
+    "scenarioId": "C10",
+    "caseMasterIds": [
+      9013
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8033,
+        "name": "Sagar Bandekar"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8034,
+        "name": "Vasant Naik (garage owner)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8035,
+        "name": "Ganesh Koli"
+      }
+    },
+    "id": "C10-TX-1",
+    "fromAccount": "Vasant Naik - garage cash",
+    "toAccount": "Sagar Bandekar - cash",
+    "amount": 7000,
+    "timestamp": "2026-05-21T09:00:00",
+    "note": ""
+  },
+  {
+    "scenarioId": "C10",
+    "caseMasterIds": [
+      9013
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8033,
+        "name": "Sagar Bandekar"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8034,
+        "name": "Vasant Naik (garage owner)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8035,
+        "name": "Ganesh Koli"
+      }
+    },
+    "id": "C10-TX-2",
+    "fromAccount": "Vasant Naik - garage cash",
+    "toAccount": "Ganesh Koli - cash",
+    "amount": 4000,
+    "timestamp": "2026-05-21T09:00:00",
+    "note": "Same timestamp session as TX-1"
+  },
+  {
+    "scenarioId": "C11",
+    "caseMasterIds": [
+      9014
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8036,
+        "name": "Altaf Pathan"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8037,
+        "name": "Kiran Bhosale"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8038,
+        "name": "Santosh Waghmare"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8039,
+        "name": "Ravi Caterer (catering staff, informant)"
+      },
+      "V:Savitri": {
+        "type": "Victim",
+        "id": 7009,
+        "name": "Savitri Deshmukh"
+      },
+      "V:Pooja": {
+        "type": "Victim",
+        "id": 7010,
+        "name": "Pooja Deshmukh"
+      }
+    },
+    "id": "C11-TX-1",
+    "fromAccount": "Altaf Pathan - cash (fenced jewellery)",
+    "toAccount": "Ravi Caterer - cash",
+    "amount": 25000,
+    "timestamp": "2026-11-04T00:00:00",
+    "note": "Informant's cut, 3 days later"
+  },
+  {
+    "scenarioId": "C12",
+    "caseMasterIds": [
+      9015
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8040,
+        "name": "Wilfred Pinto (director)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8041,
+        "name": "Neha D'Silva (co-director)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8042,
+        "name": "Clifton Rego (local recruiter)"
+      },
+      "V:Vincent": {
+        "type": "Victim",
+        "id": 7011,
+        "name": "Vincent Lobo"
+      },
+      "V:Shwetha": {
+        "type": "Victim",
+        "id": 7012,
+        "name": "Shwetha Kamath"
+      }
+    },
+    "id": "C12-TX-1",
+    "fromAccount": "Vincent Lobo - Corporation Bank xx4420",
+    "toAccount": "CoastalGrow Investments - current a/c",
+    "amount": 500000,
+    "timestamp": "2026-05-10T00:00:00",
+    "note": "Initial deposit"
+  },
+  {
+    "scenarioId": "C12",
+    "caseMasterIds": [
+      9015
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8040,
+        "name": "Wilfred Pinto (director)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8041,
+        "name": "Neha D'Silva (co-director)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8042,
+        "name": "Clifton Rego (local recruiter)"
+      },
+      "V:Vincent": {
+        "type": "Victim",
+        "id": 7011,
+        "name": "Vincent Lobo"
+      },
+      "V:Shwetha": {
+        "type": "Victim",
+        "id": 7012,
+        "name": "Shwetha Kamath"
+      }
+    },
+    "id": "C12-TX-2",
+    "fromAccount": "Shwetha Kamath - Corporation Bank xx9012",
+    "toAccount": "CoastalGrow Investments - current a/c",
+    "amount": 300000,
+    "timestamp": "2026-06-02T00:00:00",
+    "note": ""
+  },
+  {
+    "scenarioId": "C12",
+    "caseMasterIds": [
+      9015
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8040,
+        "name": "Wilfred Pinto (director)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8041,
+        "name": "Neha D'Silva (co-director)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8042,
+        "name": "Clifton Rego (local recruiter)"
+      },
+      "V:Vincent": {
+        "type": "Victim",
+        "id": 7011,
+        "name": "Vincent Lobo"
+      },
+      "V:Shwetha": {
+        "type": "Victim",
+        "id": 7012,
+        "name": "Shwetha Kamath"
+      }
+    },
+    "id": "C12-TX-3",
+    "fromAccount": "CoastalGrow Investments - current a/c",
+    "toAccount": "Wilfred Pinto - personal a/c, Dubai",
+    "amount": 4200000,
+    "timestamp": "2026-09-03T00:00:00",
+    "note": "Bulk transfer out, 2 days before the office shut"
+  },
+  {
+    "scenarioId": "C13",
+    "caseMasterIds": [
+      9016,
+      9017
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8043,
+        "name": "Faizal Khan (device installer)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8044,
+        "name": "Deepak Rathore (card cloner)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8045,
+        "name": "Anand M (cash-out mule)"
+      }
+    },
+    "id": "C13-TX-1",
+    "fromAccount": "cloned card withdrawals, Ballari ATMs",
+    "toAccount": "Anand M - account xx7761",
+    "amount": 210000,
+    "timestamp": "2026-09-26T00:00:00",
+    "note": ""
+  },
+  {
+    "scenarioId": "C13",
+    "caseMasterIds": [
+      9016,
+      9017
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8043,
+        "name": "Faizal Khan (device installer)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8044,
+        "name": "Deepak Rathore (card cloner)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8045,
+        "name": "Anand M (cash-out mule)"
+      }
+    },
+    "id": "C13-TX-2",
+    "fromAccount": "cloned card withdrawals, Bengaluru ATMs",
+    "toAccount": "account xx7761 (same account number as TX-1, different city's cash-out)",
+    "amount": 165000,
+    "timestamp": "2026-10-10T00:00:00",
+    "note": "Same account number receiving both cities' cash-outs - the fusion link"
+  },
+  {
+    "scenarioId": "C14",
+    "caseMasterIds": [
+      9018
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8047,
+        "name": "Manjappa Gowda"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8048,
+        "name": "Yallappa Naik"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8049,
+        "name": "Devaraj (forest watcher, insider)"
+      }
+    },
+    "id": "C14-TX-1",
+    "fromAccount": "timber buyer (unregistered) - cash",
+    "toAccount": "Manjappa Gowda - cash",
+    "amount": 380000,
+    "timestamp": "2026-12-02T00:00:00",
+    "note": ""
+  },
+  {
+    "scenarioId": "C14",
+    "caseMasterIds": [
+      9018
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8047,
+        "name": "Manjappa Gowda"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8048,
+        "name": "Yallappa Naik"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8049,
+        "name": "Devaraj (forest watcher, insider)"
+      }
+    },
+    "id": "C14-TX-2",
+    "fromAccount": "Manjappa Gowda - cash",
+    "toAccount": "Devaraj - cash",
+    "amount": 40000,
+    "timestamp": "2026-12-03T00:00:00",
+    "note": "Watcher's cut, day after Manjappa's sale"
+  }
+]

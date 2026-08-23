@@ -3,8 +3,8 @@ import PageShell from "@/components/PageShell";
 import CaseFilesListClient from "@/components/cases/CaseFilesListClient";
 import { caseTypes, districts, caseFiles, getCaseType, getDistrict } from "@/lib/data";
 
-// Pre-render every case type × district at build time (static export).
-export const dynamicParams = false;
+// Pre-render every case type × district at build time; fall back to live
+// SSR for any param not in this list (dynamicParams defaults to true).
 export function generateStaticParams() {
   return caseTypes.flatMap((c) =>
     districts.map((d) => ({ caseType: c.slug, district: d.slug }))

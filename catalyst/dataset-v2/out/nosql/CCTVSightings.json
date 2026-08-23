@@ -1,0 +1,564 @@
+[
+  {
+    "scenarioId": "C1",
+    "caseMasterIds": [
+      9001,
+      9002
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8001,
+        "name": "Suresh Naik"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8002,
+        "name": "Deepak M"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8004,
+        "name": "Iqbal Sait"
+      }
+    },
+    "id": "C1-CC-1",
+    "cameraLocation": "Yeshwanthpur parking lot, entrance camera",
+    "personOrVehicle": "P2, on foot, matching description",
+    "timestamp": "2026-03-14T20:12:00",
+    "note": ""
+  },
+  {
+    "scenarioId": "C1",
+    "caseMasterIds": [
+      9001,
+      9002
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8001,
+        "name": "Suresh Naik"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8002,
+        "name": "Deepak M"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8004,
+        "name": "Iqbal Sait"
+      }
+    },
+    "id": "C1-CC-2",
+    "cameraLocation": "NH-48 toll camera near Nelamangala",
+    "personOrVehicle": "Suresh Naik's registered vehicle KA-04-XX-1187",
+    "timestamp": "2026-03-19T21:40:00",
+    "note": "On the Bengaluru-Tumakuru highway, ~90 min drive to Tumakuru sale site"
+  },
+  {
+    "scenarioId": "C2",
+    "caseMasterIds": [
+      9003
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8005,
+        "name": "Praveen Achari"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8006,
+        "name": "Manoj Kumar S"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8007,
+        "name": "Yusuf Ali"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8008,
+        "name": "Ravindra Naidu (fence, pawnbroker)"
+      },
+      "V:Anil": {
+        "type": "Victim",
+        "id": 7001,
+        "name": "Anil Kumar (shop assistant)"
+      }
+    },
+    "id": "C2-CC-1",
+    "cameraLocation": "Shop's own CCTV, interior",
+    "personOrVehicle": "All 3 (P1,P2,P3), faces partially covered",
+    "timestamp": "2026-02-01T18:41:00",
+    "note": ""
+  },
+  {
+    "scenarioId": "C2",
+    "caseMasterIds": [
+      9003
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8005,
+        "name": "Praveen Achari"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8006,
+        "name": "Manoj Kumar S"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8007,
+        "name": "Yusuf Ali"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8008,
+        "name": "Ravindra Naidu (fence, pawnbroker)"
+      },
+      "V:Anil": {
+        "type": "Victim",
+        "id": 7001,
+        "name": "Anil Kumar (shop assistant)"
+      }
+    },
+    "id": "C2-CC-2",
+    "cameraLocation": "Ravindra Naidu's pawnshop, Devaraja Market",
+    "personOrVehicle": "P1 entering with a bag",
+    "timestamp": "2026-02-02T11:20:00",
+    "note": "Next morning"
+  },
+  {
+    "scenarioId": "C5",
+    "caseMasterIds": [
+      9007
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8016,
+        "name": "Vinod Poojary"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8017,
+        "name": "Naveen Kotian"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8018,
+        "name": "Rafiq Ahmed (shop owner, fence)"
+      }
+    },
+    "id": "C5-CC-1",
+    "cameraLocation": "Warehouse perimeter camera",
+    "personOrVehicle": "Two figures, one carrying a duffel bag",
+    "timestamp": "2026-06-02T02:15:00",
+    "note": ""
+  },
+  {
+    "scenarioId": "C5",
+    "caseMasterIds": [
+      9007
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8016,
+        "name": "Vinod Poojary"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8017,
+        "name": "Naveen Kotian"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8018,
+        "name": "Rafiq Ahmed (shop owner, fence)"
+      }
+    },
+    "id": "C5-CC-2",
+    "cameraLocation": "Rafiq Ahmed's shop, street-facing camera",
+    "personOrVehicle": "Vinod Poojary, entering with a duffel bag",
+    "timestamp": "2026-06-02T09:40:00",
+    "note": ""
+  },
+  {
+    "scenarioId": "C6",
+    "caseMasterIds": [
+      9008
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8019,
+        "name": "Chandru M (site supervisor)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8020,
+        "name": "Basha Sab"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8021,
+        "name": "Ravi Kumar T"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8022,
+        "name": "Ismail Sheikh (mining contractor)"
+      },
+      "V:Hanumantha": {
+        "type": "Victim",
+        "id": 7005,
+        "name": "Hanumantha Naik"
+      }
+    },
+    "id": "C6-CC-1",
+    "cameraLocation": "Mine site gate camera",
+    "personOrVehicle": "P2 and P3 approaching Hanumantha",
+    "timestamp": "2026-01-17T19:02:00",
+    "note": ""
+  },
+  {
+    "scenarioId": "C7",
+    "caseMasterIds": [
+      9009,
+      9010
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8023,
+        "name": "Halappa D"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8024,
+        "name": "Somesh K (truck driver)"
+      }
+    },
+    "id": "C7-CC-1",
+    "cameraLocation": "NH-206 toll camera, Shivamogga-Tumakuru road",
+    "personOrVehicle": "Truck KA-14-XX-9034 (registered to Somesh)",
+    "timestamp": "2026-07-08T02:20:00",
+    "note": ""
+  },
+  {
+    "scenarioId": "C7",
+    "caseMasterIds": [
+      9009,
+      9010
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8023,
+        "name": "Halappa D"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8024,
+        "name": "Somesh K (truck driver)"
+      }
+    },
+    "id": "C7-CC-2",
+    "cameraLocation": "Same toll camera",
+    "personOrVehicle": "Same truck KA-14-XX-9034",
+    "timestamp": "2026-07-15T01:50:00",
+    "note": "Same route, one week later, matching the second theft"
+  },
+  {
+    "scenarioId": "C8",
+    "caseMasterIds": [
+      9011
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8027,
+        "name": "Rohan Malhotra (floor manager)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8028,
+        "name": "Priya Kapoor (owner-of-record)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8029,
+        "name": "Amit Verma (agent)"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8030,
+        "name": "Sana Iyer (agent)"
+      },
+      "V:Margaret": {
+        "type": "Victim",
+        "id": 7006,
+        "name": "Margaret Fernandes"
+      },
+      "V:K.S.": {
+        "type": "Victim",
+        "id": 7007,
+        "name": "K.S. Venkataraman"
+      }
+    },
+    "id": "C8-CC-1",
+    "cameraLocation": "Office building lobby, Whitefield",
+    "personOrVehicle": "P1, P2, P3, P4 entering together",
+    "timestamp": "2026-07-28T09:15:00",
+    "note": "Morning of the last call before the raid"
+  },
+  {
+    "scenarioId": "C9",
+    "caseMasterIds": [
+      9012
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8031,
+        "name": "Srinivas Iyengar"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8032,
+        "name": "Nandish Iyengar (accused's brother)"
+      },
+      "V:Rekha": {
+        "type": "Victim",
+        "id": 7008,
+        "name": "Rekha Iyengar"
+      }
+    },
+    "id": "C9-CC-1",
+    "cameraLocation": "Kamala Rao's building entrance camera",
+    "personOrVehicle": "Nandish Iyengar entering",
+    "timestamp": "2026-03-04T09:20:00",
+    "note": "Same morning Kamala later gives a recanted statement"
+  },
+  {
+    "scenarioId": "C10",
+    "caseMasterIds": [
+      9013
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8033,
+        "name": "Sagar Bandekar"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8034,
+        "name": "Vasant Naik (garage owner)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8035,
+        "name": "Ganesh Koli"
+      }
+    },
+    "id": "C10-CC-1",
+    "cameraLocation": "Street camera near garage",
+    "personOrVehicle": "Two scooters being pushed in by hand, not ridden",
+    "timestamp": "2026-05-21T03:10:00",
+    "note": ""
+  },
+  {
+    "scenarioId": "C11",
+    "caseMasterIds": [
+      9014
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8036,
+        "name": "Altaf Pathan"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8037,
+        "name": "Kiran Bhosale"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8038,
+        "name": "Santosh Waghmare"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8039,
+        "name": "Ravi Caterer (catering staff, informant)"
+      },
+      "V:Savitri": {
+        "type": "Victim",
+        "id": 7009,
+        "name": "Savitri Deshmukh"
+      },
+      "V:Pooja": {
+        "type": "Victim",
+        "id": 7010,
+        "name": "Pooja Deshmukh"
+      }
+    },
+    "id": "C11-CC-1",
+    "cameraLocation": "Wedding hall parking area",
+    "personOrVehicle": "3 men on a bike, faces covered",
+    "timestamp": "2026-11-01T20:02:00",
+    "note": ""
+  },
+  {
+    "scenarioId": "C13",
+    "caseMasterIds": [
+      9016,
+      9017
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8043,
+        "name": "Faizal Khan (device installer)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8044,
+        "name": "Deepak Rathore (card cloner)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8045,
+        "name": "Anand M (cash-out mule)"
+      }
+    },
+    "id": "C13-CC-1",
+    "cameraLocation": "Ballari ATM camera",
+    "personOrVehicle": "Faizal Khan installing a device on the card slot",
+    "timestamp": "2026-09-20T02:10:00",
+    "note": ""
+  },
+  {
+    "scenarioId": "C13",
+    "caseMasterIds": [
+      9016,
+      9017
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8043,
+        "name": "Faizal Khan (device installer)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8044,
+        "name": "Deepak Rathore (card cloner)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8045,
+        "name": "Anand M (cash-out mule)"
+      }
+    },
+    "id": "C13-CC-2",
+    "cameraLocation": "K.G. Halli ATM camera, Bengaluru",
+    "personOrVehicle": "Unidentified man withdrawing repeatedly from different cards",
+    "timestamp": "2026-10-09T13:40:00",
+    "note": ""
+  },
+  {
+    "scenarioId": "C15",
+    "caseMasterIds": [
+      9019
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8050,
+        "name": "Zaid Khan"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8051,
+        "name": "Bharath Gowda"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8052,
+        "name": "Naveen Raju"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8053,
+        "name": "Suhail Ahmed"
+      },
+      "V:Arjun": {
+        "type": "Victim",
+        "id": 7014,
+        "name": "Arjun Reddy"
+      },
+      "V:Vikram": {
+        "type": "Victim",
+        "id": 7015,
+        "name": "Vikram Singh"
+      }
+    },
+    "id": "C15-CC-1",
+    "cameraLocation": "College main gate camera",
+    "personOrVehicle": "Both groups converging from opposite directions",
+    "timestamp": "2026-07-24T17:28:00",
+    "note": ""
+  },
+  {
+    "scenarioId": "C15",
+    "caseMasterIds": [
+      9019
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8050,
+        "name": "Zaid Khan"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8051,
+        "name": "Bharath Gowda"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8052,
+        "name": "Naveen Raju"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8053,
+        "name": "Suhail Ahmed"
+      },
+      "V:Arjun": {
+        "type": "Victim",
+        "id": 7014,
+        "name": "Arjun Reddy"
+      },
+      "V:Vikram": {
+        "type": "Victim",
+        "id": 7015,
+        "name": "Vikram Singh"
+      }
+    },
+    "id": "C15-CC-2",
+    "cameraLocation": "College main gate camera, wider angle",
+    "personOrVehicle": "Bharath Gowda throwing the first visible strike",
+    "timestamp": "2026-07-24T17:31:00",
+    "note": "Directly contradicts Zaid's group's claim that Bharath's side struck second"
+  }
+]

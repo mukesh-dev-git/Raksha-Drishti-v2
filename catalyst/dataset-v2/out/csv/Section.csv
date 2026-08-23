@@ -1,0 +1,21 @@
+ActCode,SectionCode,SectionDescription,Active
+IPC,379,Punishment for theft,true
+IPC,380,Theft in dwelling house,true
+IPC,411,Dishonestly receiving stolen property,true
+IPC,413,Habitually dealing in stolen property,true
+IPC,420,Cheating and dishonestly inducing delivery of property,true
+IPC,406,Criminal breach of trust,true
+IPC,467,Forgery of valuable security,true
+IPC,468,Forgery for purpose of cheating,true
+IPC,471,Using forged document as genuine,true
+IPC,384,Punishment for extortion,true
+IPC,323,Voluntarily causing hurt,true
+IPC,324,Causing hurt by dangerous weapon,true
+IPC,506,Criminal intimidation,true
+IPC,354,Assault on a woman with intent to outrage modesty,true
+IPC,454,House-breaking to commit an offence,true
+IPC,457,House-breaking by night,true
+IPC,120B,Criminal conspiracy,true
+IPC,34,Acts done by several persons in furtherance of common intention,true
+ITACT,66D,Cheating by personation using a computer resource,true
+ITACT,66C,Identity theft,true

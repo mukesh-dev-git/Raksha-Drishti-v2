@@ -1,0 +1,749 @@
+[
+  {
+    "scenarioId": "C1",
+    "caseMasterIds": [
+      9001,
+      9002
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8001,
+        "name": "Suresh Naik"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8002,
+        "name": "Deepak M"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8004,
+        "name": "Iqbal Sait"
+      }
+    },
+    "id": "C1-WS-1",
+    "witnessName": "Lakshmi Bai (parking attendant)",
+    "statementDate": "2026-03-15",
+    "statementText": "Saw two young men near the bikes around 8pm, one on a phone call the whole time.",
+    "relatedPerson": "P2"
+  },
+  {
+    "scenarioId": "C1",
+    "caseMasterIds": [
+      9001,
+      9002
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8001,
+        "name": "Suresh Naik"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8002,
+        "name": "Deepak M"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8004,
+        "name": "Iqbal Sait"
+      }
+    },
+    "id": "C1-WS-2",
+    "witnessName": "Suresh Naik (as accused, recorded statement)",
+    "statementDate": "2026-03-22",
+    "statementText": "I was at my sister's house in Rajajinagar, Bengaluru, from 7pm to 11pm on 19 March. I was nowhere near Tumakuru.",
+    "relatedPerson": "P1"
+  },
+  {
+    "scenarioId": "C2",
+    "caseMasterIds": [
+      9003
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8005,
+        "name": "Praveen Achari"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8006,
+        "name": "Manoj Kumar S"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8007,
+        "name": "Yusuf Ali"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8008,
+        "name": "Ravindra Naidu (fence, pawnbroker)"
+      },
+      "V:Anil": {
+        "type": "Victim",
+        "id": 7001,
+        "name": "Anil Kumar (shop assistant)"
+      }
+    },
+    "id": "C2-WS-1",
+    "witnessName": "Anil Kumar (victim, shop assistant)",
+    "statementDate": "2026-02-01",
+    "statementText": "One of them called another 'Manu' during the robbery.",
+    "relatedPerson": "P2"
+  },
+  {
+    "scenarioId": "C2",
+    "caseMasterIds": [
+      9003
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8005,
+        "name": "Praveen Achari"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8006,
+        "name": "Manoj Kumar S"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8007,
+        "name": "Yusuf Ali"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8008,
+        "name": "Ravindra Naidu (fence, pawnbroker)"
+      },
+      "V:Anil": {
+        "type": "Victim",
+        "id": 7001,
+        "name": "Anil Kumar (shop assistant)"
+      }
+    },
+    "id": "C2-WS-2",
+    "witnessName": "Ravindra Naidu (as accused)",
+    "statementDate": "2026-02-05",
+    "statementText": "I run a licensed pawn shop. I have never dealt with Praveen Achari.",
+    "relatedPerson": "P4"
+  },
+  {
+    "scenarioId": "C3",
+    "caseMasterIds": [
+      9004,
+      9005
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8009,
+        "name": "Zoya Merchant (app runs as 'QuickCash Lending')"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8010,
+        "name": "Tarun Bhatia (call-centre lead)"
+      },
+      "V:Vinayak": {
+        "type": "Victim",
+        "id": 7002,
+        "name": "Vinayak Desai"
+      },
+      "V:Farida": {
+        "type": "Victim",
+        "id": 7003,
+        "name": "Farida Banu"
+      }
+    },
+    "id": "C3-WS-1",
+    "witnessName": "Vinayak Desai (complainant)",
+    "statementDate": "2026-04-05",
+    "statementText": "The recovery agent's voice matched calls I'd received before, threatening to send my photo to my relatives.",
+    "relatedPerson": "P2"
+  },
+  {
+    "scenarioId": "C3",
+    "caseMasterIds": [
+      9004,
+      9005
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8009,
+        "name": "Zoya Merchant (app runs as 'QuickCash Lending')"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8010,
+        "name": "Tarun Bhatia (call-centre lead)"
+      },
+      "V:Vinayak": {
+        "type": "Victim",
+        "id": 7002,
+        "name": "Vinayak Desai"
+      },
+      "V:Farida": {
+        "type": "Victim",
+        "id": 7003,
+        "name": "Farida Banu"
+      }
+    },
+    "id": "C3-WS-2",
+    "witnessName": "Tarun Bhatia (as accused)",
+    "statementDate": "2026-04-12",
+    "statementText": "QuickCash and RapidFin are unrelated companies. I only ever worked for RapidFin.",
+    "relatedPerson": "P1"
+  },
+  {
+    "scenarioId": "C4",
+    "caseMasterIds": [
+      9006
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8013,
+        "name": "Mallikarjun Rao (property broker)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8014,
+        "name": "Shantaram Kulkarni (notary)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8015,
+        "name": "Prakash Jadhav (buyer)"
+      },
+      "V:Basavaraj": {
+        "type": "Victim",
+        "id": 7004,
+        "name": "Basavaraj Patil"
+      }
+    },
+    "id": "C4-WS-1",
+    "witnessName": "Shantaram Kulkarni (as accused)",
+    "statementDate": "2026-05-14",
+    "statementText": "I stamped the power-of-attorney in good faith based on documents the broker gave me. I don't know the buyer personally.",
+    "relatedPerson": "P2"
+  },
+  {
+    "scenarioId": "C4",
+    "caseMasterIds": [
+      9006
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8013,
+        "name": "Mallikarjun Rao (property broker)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8014,
+        "name": "Shantaram Kulkarni (notary)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8015,
+        "name": "Prakash Jadhav (buyer)"
+      },
+      "V:Basavaraj": {
+        "type": "Victim",
+        "id": 7004,
+        "name": "Basavaraj Patil"
+      }
+    },
+    "id": "C4-WS-2",
+    "witnessName": "Sunita Patil (owner's wife)",
+    "statementDate": "2026-05-12",
+    "statementText": "My husband was in Dubai the entire period in question and never signed any power-of-attorney.",
+    "relatedPerson": "V:Basavaraj"
+  },
+  {
+    "scenarioId": "C5",
+    "caseMasterIds": [
+      9007
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8016,
+        "name": "Vinod Poojary"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8017,
+        "name": "Naveen Kotian"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8018,
+        "name": "Rafiq Ahmed (shop owner, fence)"
+      }
+    },
+    "id": "C5-WS-1",
+    "witnessName": "Rafiq Ahmed (as accused)",
+    "statementDate": "2026-06-05",
+    "statementText": "I bought a few second-hand laptops from a regular walk-in customer. I had no idea they were stolen.",
+    "relatedPerson": "P3"
+  },
+  {
+    "scenarioId": "C6",
+    "caseMasterIds": [
+      9008
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8019,
+        "name": "Chandru M (site supervisor)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8020,
+        "name": "Basha Sab"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8021,
+        "name": "Ravi Kumar T"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8022,
+        "name": "Ismail Sheikh (mining contractor)"
+      },
+      "V:Hanumantha": {
+        "type": "Victim",
+        "id": 7005,
+        "name": "Hanumantha Naik"
+      }
+    },
+    "id": "C6-WS-1",
+    "witnessName": "Manjula K (co-worker)",
+    "statementDate": "2026-01-18",
+    "statementText": "Chandru told them to 'teach him a lesson' after the phone call with the contractor.",
+    "relatedPerson": "P1"
+  },
+  {
+    "scenarioId": "C6",
+    "caseMasterIds": [
+      9008
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8019,
+        "name": "Chandru M (site supervisor)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8020,
+        "name": "Basha Sab"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8021,
+        "name": "Ravi Kumar T"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8022,
+        "name": "Ismail Sheikh (mining contractor)"
+      },
+      "V:Hanumantha": {
+        "type": "Victim",
+        "id": 7005,
+        "name": "Hanumantha Naik"
+      }
+    },
+    "id": "C6-WS-2",
+    "witnessName": "Ismail Sheikh (as accused)",
+    "statementDate": "2026-01-20",
+    "statementText": "I never instructed anyone to harm any worker. I only called Chandru about a routine payroll matter.",
+    "relatedPerson": "P4"
+  },
+  {
+    "scenarioId": "C7",
+    "caseMasterIds": [
+      9009,
+      9010
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8023,
+        "name": "Halappa D"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8024,
+        "name": "Somesh K (truck driver)"
+      }
+    },
+    "id": "C7-WS-1",
+    "witnessName": "Somesh K (as accused, FIR 9009)",
+    "statementDate": "2026-07-10",
+    "statementText": "My truck was used without my knowledge that night; I was asleep at home.",
+    "relatedPerson": "P2"
+  },
+  {
+    "scenarioId": "C8",
+    "caseMasterIds": [
+      9011
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8027,
+        "name": "Rohan Malhotra (floor manager)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8028,
+        "name": "Priya Kapoor (owner-of-record)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8029,
+        "name": "Amit Verma (agent)"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8030,
+        "name": "Sana Iyer (agent)"
+      },
+      "V:Margaret": {
+        "type": "Victim",
+        "id": 7006,
+        "name": "Margaret Fernandes"
+      },
+      "V:K.S.": {
+        "type": "Victim",
+        "id": 7007,
+        "name": "K.S. Venkataraman"
+      }
+    },
+    "id": "C8-WS-1",
+    "witnessName": "Priya Kapoor (as accused)",
+    "statementDate": "2026-08-02",
+    "statementText": "I only lease the office space to a third party. I have no involvement in what they do inside.",
+    "relatedPerson": "P2"
+  },
+  {
+    "scenarioId": "C9",
+    "caseMasterIds": [
+      9012
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8031,
+        "name": "Srinivas Iyengar"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8032,
+        "name": "Nandish Iyengar (accused's brother)"
+      },
+      "V:Rekha": {
+        "type": "Victim",
+        "id": 7008,
+        "name": "Rekha Iyengar"
+      }
+    },
+    "id": "C9-WS-1",
+    "witnessName": "Kamala Rao (neighbor)",
+    "statementDate": "2026-02-20",
+    "statementText": "I heard shouting and a loud crash from their flat around 9pm, and saw Rekha crying outside afterward.",
+    "relatedPerson": "V:Rekha"
+  },
+  {
+    "scenarioId": "C9",
+    "caseMasterIds": [
+      9012
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8031,
+        "name": "Srinivas Iyengar"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8032,
+        "name": "Nandish Iyengar (accused's brother)"
+      },
+      "V:Rekha": {
+        "type": "Victim",
+        "id": 7008,
+        "name": "Rekha Iyengar"
+      }
+    },
+    "id": "C9-WS-2",
+    "witnessName": "Kamala Rao (neighbor, follow-up)",
+    "statementDate": "2026-03-04",
+    "statementText": "I may have been mistaken about the date and what I heard. No one visited or spoke to me about this since my first statement.",
+    "relatedPerson": "V:Rekha"
+  },
+  {
+    "scenarioId": "C10",
+    "caseMasterIds": [
+      9013
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8033,
+        "name": "Sagar Bandekar"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8034,
+        "name": "Vasant Naik (garage owner)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8035,
+        "name": "Ganesh Koli"
+      }
+    },
+    "id": "C10-WS-1",
+    "witnessName": "Vasant Naik (as accused)",
+    "statementDate": "2026-05-23",
+    "statementText": "I buy scrap parts in bulk from various sellers. I don't ask where individual bikes come from.",
+    "relatedPerson": "P2"
+  },
+  {
+    "scenarioId": "C11",
+    "caseMasterIds": [
+      9014
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8036,
+        "name": "Altaf Pathan"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8037,
+        "name": "Kiran Bhosale"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8038,
+        "name": "Santosh Waghmare"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8039,
+        "name": "Ravi Caterer (catering staff, informant)"
+      },
+      "V:Savitri": {
+        "type": "Victim",
+        "id": 7009,
+        "name": "Savitri Deshmukh"
+      },
+      "V:Pooja": {
+        "type": "Victim",
+        "id": 7010,
+        "name": "Pooja Deshmukh"
+      }
+    },
+    "id": "C11-WS-1",
+    "witnessName": "Ravi Caterer (as accused)",
+    "statementDate": "2026-11-05",
+    "statementText": "I was serving food the entire evening and never left the hall. I don't know any of the accused men.",
+    "relatedPerson": "P4"
+  },
+  {
+    "scenarioId": "C12",
+    "caseMasterIds": [
+      9015
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8040,
+        "name": "Wilfred Pinto (director)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8041,
+        "name": "Neha D'Silva (co-director)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8042,
+        "name": "Clifton Rego (local recruiter)"
+      },
+      "V:Vincent": {
+        "type": "Victim",
+        "id": 7011,
+        "name": "Vincent Lobo"
+      },
+      "V:Shwetha": {
+        "type": "Victim",
+        "id": 7012,
+        "name": "Shwetha Kamath"
+      }
+    },
+    "id": "C12-WS-1",
+    "witnessName": "Clifton Rego (as accused)",
+    "statementDate": "2026-09-12",
+    "statementText": "I invested my own money too and lost it. I recruited friends in good faith believing the returns were genuine.",
+    "relatedPerson": "P3"
+  },
+  {
+    "scenarioId": "C13",
+    "caseMasterIds": [
+      9016,
+      9017
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8043,
+        "name": "Faizal Khan (device installer)"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8044,
+        "name": "Deepak Rathore (card cloner)"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8045,
+        "name": "Anand M (cash-out mule)"
+      }
+    },
+    "id": "C13-WS-1",
+    "witnessName": "Deepak Rathore (as accused, FIR 9016)",
+    "statementDate": "2026-10-06",
+    "statementText": "I have never operated in Bengaluru. My activity was limited to Ballari.",
+    "relatedPerson": "P2"
+  },
+  {
+    "scenarioId": "C14",
+    "caseMasterIds": [
+      9018
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8047,
+        "name": "Manjappa Gowda"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8048,
+        "name": "Yallappa Naik"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8049,
+        "name": "Devaraj (forest watcher, insider)"
+      }
+    },
+    "id": "C14-WS-1",
+    "witnessName": "Devaraj (as accused)",
+    "statementDate": "2026-12-04",
+    "statementText": "I was on regular night duty as always. I noticed nothing unusual that night.",
+    "relatedPerson": "P3"
+  },
+  {
+    "scenarioId": "C15",
+    "caseMasterIds": [
+      9019
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8050,
+        "name": "Zaid Khan"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8051,
+        "name": "Bharath Gowda"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8052,
+        "name": "Naveen Raju"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8053,
+        "name": "Suhail Ahmed"
+      },
+      "V:Arjun": {
+        "type": "Victim",
+        "id": 7014,
+        "name": "Arjun Reddy"
+      },
+      "V:Vikram": {
+        "type": "Victim",
+        "id": 7015,
+        "name": "Vikram Singh"
+      }
+    },
+    "id": "C15-WS-1",
+    "witnessName": "Zaid Khan (as accused)",
+    "statementDate": "2026-07-26",
+    "statementText": "Bharath's group attacked us first without provocation. We only defended ourselves.",
+    "relatedPerson": "P1"
+  },
+  {
+    "scenarioId": "C15",
+    "caseMasterIds": [
+      9019
+    ],
+    "resolvedPersons": {
+      "A1": {
+        "type": "Accused",
+        "id": 8050,
+        "name": "Zaid Khan"
+      },
+      "A2": {
+        "type": "Accused",
+        "id": 8051,
+        "name": "Bharath Gowda"
+      },
+      "A3": {
+        "type": "Accused",
+        "id": 8052,
+        "name": "Naveen Raju"
+      },
+      "A4": {
+        "type": "Accused",
+        "id": 8053,
+        "name": "Suhail Ahmed"
+      },
+      "V:Arjun": {
+        "type": "Victim",
+        "id": 7014,
+        "name": "Arjun Reddy"
+      },
+      "V:Vikram": {
+        "type": "Victim",
+        "id": 7015,
+        "name": "Vikram Singh"
+      }
+    },
+    "id": "C15-WS-2",
+    "witnessName": "Bharath Gowda (as accused)",
+    "statementDate": "2026-07-26",
+    "statementText": "Zaid's group blocked our path and started it. We acted in self-defense.",
+    "relatedPerson": "P2"
+  }
+]
