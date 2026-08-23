@@ -48,7 +48,16 @@ export default function MapEmbed({
       })
       .then((text) => {
         if (cancelled) return;
-        objectUrl = URL.createObjectURL(new Blob([text], { type: "text/html" }));
+        // A blob: document has no real path of its own, so the map script's
+        // own fetch("/crime-map/data/...") - a root-relative path, added
+        // specifically to make srcdoc work - fails inside a blob: context:
+        // "Failed to parse URL from /crime-map/data/bangalore_crime.csv"
+        // (confirmed via console, 2026-08-24). A <base> tag makes the
+        // browser resolve every relative/root-relative URL in the document
+        // against the real origin instead, without touching the map's own
+        // fetch call.
+        const withBase = `<base href="${window.location.origin}/">` + text;
+        objectUrl = URL.createObjectURL(new Blob([withBase], { type: "text/html" }));
         setBlobUrl(objectUrl);
       })
       .catch((e) => {
