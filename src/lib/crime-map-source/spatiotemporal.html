@@ -261,7 +261,7 @@ function setAll(on) { state.types = new Set(on ? CRIME_TYPES.map(c => c.id) : []
   typesEl.querySelectorAll("input").forEach(i => i.checked = on); render(); }
 
 // ---- Load synthetic crime data ----
-fetch("data/bangalore_crime.csv").then(r => r.text()).then(text => {
+fetch("/crime-map/data/bangalore_crime.csv").then(r => r.text()).then(text => {
   const lines = text.trim().split("\n"), h = lines[0].split(","), ix = Object.fromEntries(h.map((x, i) => [x.trim(), i]));
   state.all = new Array(lines.length - 1);
   for (let i = 1; i < lines.length; i++) {

@@ -623,7 +623,7 @@ document.getElementById("legendBar").style.background =
 // ---------------------------------------------------------------------------
 // Load data
 // ---------------------------------------------------------------------------
-fetch("data/bangalore_crime.csv").then(r => r.text()).then(text => {
+fetch("/crime-map/data/bangalore_crime.csv").then(r => r.text()).then(text => {
   const lines = text.trim().split("\n");
   const h = lines[0].split(","); const ix = Object.fromEntries(h.map((x, i) => [x, i]));
   state.all = new Array(lines.length - 1);

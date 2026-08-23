@@ -7,6 +7,14 @@ import { Maximize2, Minimize2, X } from "lucide-react";
 // MapEmbed — iframe wrapper for the crime map / heatmap pages, with a toggle to
 // expand the map to the full browser viewport (over the header/nav/footer) so
 // officers can view it edge-to-edge, and collapse back into the page layout.
+//
+// Fetches the map HTML and sets it via iframe.srcdoc instead of iframe.src.
+// Slate injects X-Frame-Options: DENY on every response (confirmed via curl
+// -i and a browser-side fetch, 2026-08-24) - alongside whatever we set
+// ourselves, as a genuinely duplicated header, and that blocks a src-loaded
+// iframe regardless of a CSP frame-ancestors override too. srcdoc content is
+// inline in the parent's own response, not a separate HTTP request/response,
+// so there's nothing for Slate's edge layer to inject a header into.
 // -----------------------------------------------------------------------------
 export default function MapEmbed({
   src,
@@ -16,6 +24,19 @@ export default function MapEmbed({
   title: string;
 }) {
   const [fullWidth, setFullWidth] = useState(false);
+  const [html, setHtml] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch(src)
+      .then((r) => r.text())
+      .then((text) => {
+        if (!cancelled) setHtml(text);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [src]);
 
   // Let Escape exit full-width mode, and stop the page from scrolling behind it.
   useEffect(() => {
@@ -35,7 +56,7 @@ export default function MapEmbed({
   if (fullWidth) {
     return (
       <div className="fixed inset-0 z-50 bg-ink">
-        <iframe src={src} title={title} className="h-full w-full border-0" />
+        <iframe srcDoc={html ?? undefined} title={title} className="h-full w-full border-0" />
         <button
           type="button"
           onClick={() => setFullWidth(false)}
@@ -61,7 +82,13 @@ export default function MapEmbed({
         </button>
       </div>
       <div className="h-[80vh] w-full overflow-hidden rounded border border-line">
-        <iframe src={src} title={title} className="h-full w-full border-0" />
+        {html === null ? (
+          <div className="flex h-full w-full items-center justify-center text-sm text-muted">
+            Loading map…
+          </div>
+        ) : (
+          <iframe srcDoc={html} title={title} className="h-full w-full border-0" />
+        )}
       </div>
     </div>
   );
