@@ -110,7 +110,7 @@ and font-size modes override the same variables.
 
 | Page | File | Notes |
 |------|------|-------|
-| Dashboard | `src/app/dashboard/page.tsx` | Navy hero, summary stat tiles, 3 module cards — **live** (`/api/summary`) |
+| Dashboard | `src/app/dashboard/page.tsx` | Sidebar-shell analytics home (see below) — **live** (`/api/summary`, `/api/casetypes`) + real seeded scenario data |
 | Crime Count | `src/app/crime-count/page.tsx` | District/crime-type stats + charts — **live** (`/api/casetypes`, `/api/districts`) |
 | Crime Hotspots | `src/app/crime-hotspots/page.tsx` | MapLibre spatiotemporal heatmap, embedded via `MapEmbed.tsx` (see its comments for the Slate `X-Frame-Options` workaround) |
 | Cases | `src/app/cases/page.tsx` | Case-type cards — **live** (`/api/casetypes`) |
@@ -125,6 +125,37 @@ investigation board's seeded mock generator is in
 row above calls a Route Handler under `src/app/api/` first and only falls
 back to these on error (see `catalyst/README.md` §3/§3b for how each one
 resolves real data).
+
+### Dashboard shell (sidebar, dashboard-only)
+
+`/dashboard` runs its own persistent-sidebar shell instead of the site's
+usual emergency-bar/masthead/horizontal-nav chrome — a deliberate,
+**dashboard-only** departure (feature branch `feature/dashboard-redesign`),
+not a site-wide nav change. Structurally this is a Next.js route-group
+split: every other page lives under `src/app/(site)/` with its own
+`layout.tsx` (the original `SiteHeader`/`SiteFooter`), while
+`src/app/dashboard/layout.tsx` renders `DashboardSidebar` +
+`DashboardTopbar` instead — route groups don't affect URLs, so no page's
+path changed.
+
+Many sidebar sections (Investigation Workspace, Evidence Feed, Persons &
+Entities, Alerts & Leads, all of Reports/System) don't have a dedicated
+page yet and render disabled with a "Soon" pill — only Dashboard, Crime
+Overview, Crime Hotspots, and Cases are real links. Every number on the
+dashboard is either live (`getSummary`/`getCaseTypes`, same fallback
+pattern as elsewhere) or real seeded scenario data (Featured Investigation,
+Alerts & Leads, Verified Evidence Feed — see `src/lib/dashboardData.ts`);
+nothing is fabricated, including no invented "vs. last month" deltas (stat
+cards show a real year-over-year sparkline instead). The dashboard's
+colourful accent palette (`--dash-*` tokens in `globals.css`) is
+deliberately scoped to this one page — the rest of the site keeps the
+muted navy/saffron system unchanged.
+
+The Crime Hotspots mini-map preview depends on the same external CDN calls
+as the full `/crime-hotspots` map and can intermittently fail to load
+("Failed to fetch") independent of anything in this app — it has its own
+retry control; see `catalyst/README.md`'s open item on this map's
+reliability.
 
 ## Shared building blocks
 

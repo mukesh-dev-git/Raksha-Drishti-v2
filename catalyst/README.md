@@ -209,3 +209,11 @@ console, ensure the Catalyst web SDK is served with the client, then build with
 - Extend live data to case files / the case-file flipbook, following the
   same pattern as §3b.
 - **Stratus**: move images + case-file evidence into blob storage.
+- `spatiotemporal.html` (the Crime Hotspots map, both the full page and the
+  dashboard's mini preview) depends on several external CDN calls
+  (`basemaps.cartocdn.com` vector tiles + glyph fonts) and has been observed
+  to intermittently fail with a plain "Failed to fetch" - self-resolves on
+  retry, not something in our own code to fix, but worth either simplifying
+  to a single raster basemap (like `map.html`, which doesn't have this
+  issue) or adding automatic retry-with-backoff instead of relying on the
+  user/officer to notice and click retry.
