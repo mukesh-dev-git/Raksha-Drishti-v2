@@ -63,10 +63,10 @@ const lookupColumns = {
   State: ["StateID", "StateName", "NationalityID", "Active"],
   District: ["DistrictID", "DistrictName", "StateID", "Active"],
   UnitType: ["UnitTypeID", "UnitTypeName", "CityDistState", "Hierarchy", "Active"],
-  Unit: ["UnitID", "UnitName", "TypeID", "DistrictID", "StateID", "Active"],
+  Unit: ["UnitID", "UnitName", "TypeID", "ParentUnit", "NationalityID", "DistrictID", "StateID", "Active"],
   Rank: ["RankID", "RankName", "Hierarchy", "Active"],
   Designation: ["DesignationID", "DesignationName", "SortOrder", "Active"],
-  Employee: ["EmployeeID", "DistrictID", "UnitID", "RankID", "DesignationID", "KGID", "FirstName", "EmployeeDOB", "GenderID", "AppointmentDate"],
+  Employee: ["EmployeeID", "DistrictID", "UnitID", "RankID", "DesignationID", "KGID", "FirstName", "EmployeeDOB", "GenderID", "BloodGroupID", "PhysicallyChallenged", "AppointmentDate"],
   Court: ["CourtID", "CourtName", "DistrictID", "StateID", "Active"],
   CaseCategory: ["CaseCategoryID", "LookupValue"],
   GravityOffence: ["GravityOffenceID", "LookupValue"],
@@ -76,6 +76,19 @@ const lookupColumns = {
   Act: ["ActCode", "ActDescription", "ShortName", "Active"],
   Section: ["ActCode", "SectionCode", "SectionDescription", "Active"],
 };
+// Unit's ParentUnit/NationalityID, and Employee's BloodGroupID/
+// PhysicallyChallenged, are Mandatory in the live schema (found by checking
+// the console directly, 2026-08-24 - both imports had been silently landing
+// 0 rows because these required columns were never populated).
+for (const u of lookups.Unit) {
+  if (u.ParentUnit === undefined) u.ParentUnit = 0; // "no parent" - top-level police stations
+  if (u.NationalityID === undefined) u.NationalityID = 1; // India, same constant as State
+}
+for (const e of lookups.Employee) {
+  if (e.BloodGroupID === undefined) e.BloodGroupID = 1; // no real blood-group data authored - placeholder lookup value
+  if (e.PhysicallyChallenged === undefined) e.PhysicallyChallenged = false;
+}
+
 for (const [table, columns] of Object.entries(lookupColumns)) {
   writeCsv(table, columns, lookups[table]);
 }
