@@ -10,14 +10,17 @@ import { getSummary, getCaseTypes } from "@/lib/api";
 import { getFeaturedScenario, getRealAlerts, getRealEvidenceFeed } from "@/lib/dashboardData";
 
 // -----------------------------------------------------------------------------
-// /dashboard — redesigned as a dense analytics home behind its own sidebar
-// shell (see dashboard/layout.tsx). Every number here is either live from
-// Catalyst (via getSummary/getCaseTypes, same fallback-on-error pattern as
-// the rest of the site) or real seeded case data (Featured Investigation,
-// Alerts, Evidence Feed - see src/lib/dashboardData.ts) - nothing fabricated,
-// including no invented "vs last month" deltas the seed data can't back.
+// /dashboard — a dense analytics home behind the shared sidebar shell (see
+// (site)/layout.tsx). Distinct from the Home welcome page at "/" (outside
+// this route group) - Home is the public landing screen, this is the
+// officer-facing analytics view it links into. Every number here is either
+// live from Catalyst (via getSummary/getCaseTypes, same fallback-on-error
+// pattern as the rest of the site) or real seeded case data (Featured
+// Investigation, Alerts, Evidence Feed - see src/lib/dashboardData.ts) -
+// nothing fabricated, including no invented "vs last month" deltas the seed
+// data can't back.
 // -----------------------------------------------------------------------------
-export const metadata = { title: "Home" };
+export const metadata = { title: "Dashboard" };
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {

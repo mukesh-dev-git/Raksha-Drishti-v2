@@ -1,13 +1,15 @@
 import Link from "next/link";
 import { ReactNode } from "react";
-import { ChevronRight, Home, ArrowLeft } from "lucide-react";
+import { ChevronRight, LayoutDashboard, ArrowLeft } from "lucide-react";
 
 export type Crumb = { label: string; href: string };
 
 // -----------------------------------------------------------------------------
-// Breadcrumb — the single, consistent trail used across every page. Starts with
-// a Home icon (links to the dashboard). An optional back-navigation icon sits
-// before Home for pages that have a natural "up one level" destination.
+// Breadcrumb — the single, consistent trail used across every page. Starts
+// with a "Dashboard" crumb (the root of the sidebar-shelled app, distinct
+// from the public "/" Home welcome screen - see src/app/page.tsx). An
+// optional back-navigation icon sits before it for pages that have a
+// natural "up one level" destination.
 // -----------------------------------------------------------------------------
 export default function Breadcrumb({
   items,
@@ -39,7 +41,7 @@ export default function Breadcrumb({
         href="/dashboard"
         className="inline-flex items-center gap-1 hover:text-navy hover:underline"
       >
-        <Home size={14} aria-hidden="true" /> Home
+        <LayoutDashboard size={14} aria-hidden="true" /> Dashboard
       </Link>
 
       {items.map((c, i) => {

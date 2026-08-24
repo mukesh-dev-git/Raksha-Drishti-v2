@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Phone } from "lucide-react";
 import {
+  Home,
   LayoutDashboard,
   Radar,
   MapPin,
@@ -75,7 +76,7 @@ export default function DashboardSidebar() {
   return (
     <aside className="sticky top-0 flex h-screen w-64 shrink-0 flex-col bg-dash-sidebar text-white/85">
       {/* Brand */}
-      <Link href="/dashboard" className="flex items-center gap-2.5 px-5 py-5">
+      <Link href="/" className="flex items-center gap-2.5 px-5 py-5">
         <Image
           src={`${BASE_PATH}/karnataka-state-police.png`}
           alt=""
@@ -90,6 +91,7 @@ export default function DashboardSidebar() {
       </Link>
 
       <nav className="scrollbar-hide flex-1 overflow-y-auto px-3 pb-4">
+        <NavLink label="Home" href="/" icon={Home} active={pathname === "/"} />
         <NavLink label="Dashboard" href="/dashboard" icon={LayoutDashboard} active={pathname === "/dashboard"} />
 
         {SECTIONS.map((section) => (

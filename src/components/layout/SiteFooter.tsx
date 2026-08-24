@@ -5,10 +5,13 @@ import { BASE_PATH } from "@/lib/basePath";
 // Site footer — Government-of-India initiative strip (logos + tagline), an
 // Indian-monuments skyline silhouette band, then the dark footer columns over
 // a subtly darkened photographic backdrop.
+//
+// Used on the Home welcome page ONLY - see SiteHeader.tsx's comment for why.
 // -----------------------------------------------------------------------------
 
 const LINKS = [
-  { href: "/dashboard", label: "Home" },
+  { href: "/", label: "Home" },
+  { href: "/dashboard", label: "Dashboard" },
   { href: "/crime-count", label: "Crime Count" },
   { href: "/crime-hotspots", label: "Crime Hotspots" },
   { href: "/cases", label: "Cases" },

@@ -10,7 +10,8 @@ import { usePathname } from "next/navigation";
 // -----------------------------------------------------------------------------
 
 const NAV = [
-  { href: "/dashboard", label: "Home" },
+  { href: "/", label: "Home" },
+  { href: "/dashboard", label: "Dashboard" },
   { href: "/crime-count", label: "Crime Count" },
   { href: "/crime-hotspots", label: "Crime Hotspots" },
   { href: "/cases", label: "Cases" },
@@ -23,10 +24,7 @@ export default function SiteNav() {
     <nav aria-label="Primary" className="border-t border-line bg-surface">
       <ul className="mx-auto flex max-w-content flex-wrap px-2">
         {NAV.map((item) => {
-          const active =
-            pathname === item.href ||
-            (item.href !== "/dashboard" && pathname.startsWith(item.href)) ||
-            (item.href === "/cases" && pathname.startsWith("/cases"));
+          const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
           return (
             <li key={item.href}>
               <Link
