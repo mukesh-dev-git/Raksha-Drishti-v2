@@ -38,6 +38,10 @@ export default async function HomePage() {
         </main>
         <SiteFooter />
       </div>
+      {/* LoginPanel is lg:fixed (anchored to the viewport, not the page's
+          scroll) - this spacer reserves its width in the flex row so the
+          real, in-flow main content isn't hidden underneath it. */}
+      <div aria-hidden="true" className="hidden shrink-0 lg:block lg:w-[400px]" />
       <LoginPanel />
     </div>
   );

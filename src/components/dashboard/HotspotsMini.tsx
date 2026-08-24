@@ -20,9 +20,9 @@ const NATIVE_H = 900;
 // Compact live preview of the real spatiotemporal crime map (same blob:
 // embed technique as MapEmbed.tsx, just sized for a dashboard card instead
 // of a full page) with a link out to the full /crime-hotspots view. Used on
-// /dashboard only - the Home hero uses a purely decorative illustration
-// instead (HotspotsIllustration.tsx) to avoid this map's external-CDN
-// flakiness (catalyst/README.md §5) right on the front door of the site.
+// /dashboard only - the Home hero doesn't have a hotspots panel at all
+// (dropped per a follow-up request, along with its Crime Trend panel, to
+// keep the hero compact - see HeroLiveOverview.tsx).
 // -----------------------------------------------------------------------------
 export default function HotspotsMini() {
   const { blobUrl, fetchError, retry } = useBlobMapSrc(`${BASE_PATH}/crime-map/spatiotemporal.html`);

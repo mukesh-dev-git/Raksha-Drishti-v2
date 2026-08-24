@@ -1,7 +1,5 @@
 import { FileStack, ShieldCheck, Users, Gauge } from "lucide-react";
 import Sparkline from "@/components/dashboard/Sparkline";
-import CrimeTrendChart from "@/components/dashboard/CrimeTrendChart";
-import HotspotsIllustration from "./HotspotsIllustration";
 import type { Summary } from "@/lib/api";
 
 const TILES = (s: Summary) => [
@@ -18,58 +16,36 @@ const TILES = (s: Summary) => [
 
 // -----------------------------------------------------------------------------
 // The dark "Live Overview" glass panel embedded in the Home hero - real
-// numbers (same getSummary() everything else on the site uses) and a real
-// yearly trend chart. The Crime Hotspots panel is a purely decorative
-// illustration (HotspotsIllustration), not the live map - see that file's
-// comment for why; the actual live map is still one click away via "View
-// Full Map", and /dashboard's own Crime Hotspots card is still the real
-// live embed.
-//
-// CrimeTrendChart reads var(--line)/var(--muted) for its gridlines/axis text,
-// which resolve to the site's light-theme colours - invisible on a dark
-// panel. Rather than fork the component, the wrapping div below locally
-// overrides those two CSS custom properties (they cascade normally, so this
-// only affects the chart inside it, nothing else on the page).
+// numbers (same getSummary() everything else on the site uses). Used to
+// also carry a Crime Trend chart + a Crime Hotspots panel below the stat
+// tiles; both were dropped per a follow-up request (they were making the
+// hero - and so everything above the KPI stat strip below it - too tall).
+// The real trend chart and hotspots map are still one click away, on
+// /dashboard and /crime-hotspots respectively.
 // -----------------------------------------------------------------------------
 export default function HeroLiveOverview({ summary }: { summary: Summary }) {
   const tiles = TILES(summary);
 
   return (
-    <div className="w-full max-w-md rounded-2xl border border-white/15 bg-ink/70 p-5 shadow-2xl backdrop-blur-md">
+    <div className="w-full max-w-md rounded-2xl border border-white/15 bg-ink/70 p-4 shadow-2xl backdrop-blur-md">
       <div className="flex items-center justify-between">
         <p className="text-sm font-semibold text-white">Live Overview</p>
         <span className="text-xs text-white/50">Year to date</span>
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-3">
+      <div className="mt-3 grid grid-cols-2 gap-2.5">
         {tiles.map((t) => (
-          <div key={t.label} className="rounded-lg border border-white/10 bg-white/5 p-3">
+          <div key={t.label} className="rounded-lg border border-white/10 bg-white/5 p-2.5">
             <div className="flex items-center justify-between">
               <t.icon size={16} className="text-white/60" aria-hidden="true" />
               {t.trend && <Sparkline values={t.trend} color="#60a5fa" width={56} height={18} />}
             </div>
-            <p className="mt-1.5 text-xl font-semibold text-white">
+            <p className="mt-1 text-lg font-semibold text-white">
               {typeof t.value === "number" ? t.value.toLocaleString("en-IN") : t.value}
             </p>
             <p className="text-[11px] text-white/55">{t.label}</p>
           </div>
         ))}
-      </div>
-
-      {/* Crime Trend + Crime Hotspots side by side (not stacked) - keeps the
-          whole panel, and so the hero above the KPI stat strip, compact
-          instead of pushing that strip far down the page. */}
-      <div className="mt-4 grid grid-cols-2 gap-3">
-        <div className="rounded-lg border border-white/10 bg-white/5 p-3">
-          <p className="mb-1 text-xs font-medium text-white/70">Crime Trend</p>
-          <div style={{ ["--line" as string]: "rgba(255,255,255,0.15)", ["--muted" as string]: "rgba(255,255,255,0.65)" }}>
-            <CrimeTrendChart years={summary.years} total={summary.yearlyTrend} solved={summary.yearlySolved} compact />
-          </div>
-        </div>
-
-        <div className="rounded-lg border border-white/10 bg-white/5 p-3">
-          <HotspotsIllustration />
-        </div>
       </div>
     </div>
   );

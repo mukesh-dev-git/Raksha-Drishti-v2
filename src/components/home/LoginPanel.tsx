@@ -7,12 +7,25 @@ import { Eye, EyeOff, User, Lock, ShieldCheck, ArrowRight } from "lucide-react";
 import { AUTH_ON, LOGIN_URL } from "@/lib/auth";
 import { BASE_PATH } from "@/lib/basePath";
 
+// Same photo HomeHero.tsx uses (verified a real, resolving Unsplash photo via
+// curl - see that file's comment on why that matters) - a full backdrop
+// behind the whole panel instead of the previous bottom-anchored skyline
+// strip, per a follow-up request.
+const LOGIN_BG_IMG =
+  "https://images.unsplash.com/photo-1453873531674-2151bcd01707?auto=format&fit=crop&w=900&q=80";
+
 // -----------------------------------------------------------------------------
-// Persistent login sidebar on the Home page. The fields are real (controlled
-// inputs), but this app has no real credential-checking backend of its own -
-// only Catalyst Authentication (AuthGate.tsx), which is off by default and,
-// when on, works by redirecting to Catalyst's own hosted login page, not by
-// accepting a username/password POST here.
+// Persistent login sidebar on the Home page - `lg:fixed` (not `sticky`) so it
+// stays anchored to the viewport regardless of how tall the left column's
+// content is; HomePage reserves the matching width with a spacer so the
+// fixed panel doesn't overlap the main content. Below `lg` it's a normal
+// in-flow block (stacks under the main content on narrow screens).
+//
+// The fields are real (controlled inputs), but this app has no real
+// credential-checking backend of its own - only Catalyst Authentication
+// (AuthGate.tsx), which is off by default and, when on, works by
+// redirecting to Catalyst's own hosted login page, not by accepting a
+// username/password POST here.
 //
 // So: with auth off (the default), submitting does NOT pretend to sign
 // anyone in - it's a real dead end that says so plainly, with a clear,
@@ -39,13 +52,18 @@ export default function LoginPanel() {
   }
 
   return (
-    <aside className="relative flex w-full shrink-0 flex-col items-center overflow-y-auto overflow-x-hidden bg-navy px-8 py-12 text-center lg:sticky lg:top-0 lg:h-screen lg:w-[400px]">
-      {/* Decorative monuments skyline, bottom-anchored */}
-      <img
-        src={`${BASE_PATH}/india-skyline.jpeg`}
-        alt=""
+    <aside className="scrollbar-hide relative flex w-full shrink-0 flex-col items-center overflow-y-auto overflow-x-hidden bg-navy px-8 py-12 text-center lg:fixed lg:right-0 lg:top-0 lg:h-screen lg:w-[400px]">
+      {/* Full backdrop photo behind the whole panel, dark navy wash for
+          text legibility (same treatment as the Home hero). */}
+      <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 w-full select-none opacity-25"
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: `url(${LOGIN_BG_IMG})` }}
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0"
+        style={{ background: "linear-gradient(180deg, rgba(11,32,66,0.92) 0%, rgba(11,32,66,0.88) 100%)" }}
       />
 
       <div className="relative z-10 flex w-full max-w-[300px] flex-1 flex-col items-center">

@@ -13,14 +13,10 @@ export default function CrimeTrendChart({
   years,
   total,
   solved,
-  compact = false,
 }: {
   years: number[];
   total: number[];
   solved: number[];
-  // Drops the "Total Crimes / Solved Cases" legend row - for the Home
-  // hero's narrow side-by-side panel, where it wraps awkwardly at ~150px.
-  compact?: boolean;
 }) {
   const gradId = useId();
   const [hover, setHover] = useState<number | null>(null);
@@ -94,7 +90,7 @@ export default function CrimeTrendChart({
         </div>
       )}
 
-      <div className={`mt-2 flex items-center gap-5 text-xs text-muted ${compact ? "hidden" : ""}`}>
+      <div className="mt-2 flex items-center gap-5 text-xs text-muted">
         <span className="flex items-center gap-1.5">
           <span className="h-2 w-2 rounded-full bg-dash-blue" /> Total Crimes
         </span>

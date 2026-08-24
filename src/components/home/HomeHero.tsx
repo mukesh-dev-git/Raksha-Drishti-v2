@@ -28,27 +28,27 @@ export default function HomeHero({ summary }: { summary: Summary }) {
         }}
       />
 
-      <div className="relative mx-auto grid max-w-[1400px] gap-10 px-6 py-16 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:py-24">
+      <div className="relative mx-auto grid max-w-[1400px] gap-8 px-6 py-8 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:py-10">
         <div>
-          <h1 className="text-4xl font-bold leading-tight text-white sm:text-5xl">
+          <h1 className="text-3xl font-bold leading-tight text-white sm:text-4xl">
             Smart Policing.
             <br />
             Safer Karnataka.
           </h1>
-          <p className="mt-5 max-w-xl text-[17px] leading-relaxed text-white/80">
+          <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-white/80">
             Raksha-Drishti is the unified crime analytics and investigation platform empowering Karnataka State
             Police with real-time insights, smart maps and faster actions.
           </p>
-          <div className="mt-7 flex flex-wrap gap-3">
+          <div className="mt-5 flex flex-wrap gap-3">
             <Link
               href="/dashboard"
-              className="inline-flex items-center gap-2 rounded-lg bg-white px-5 py-3 font-semibold text-navy hover:bg-white/90"
+              className="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 font-semibold text-navy hover:bg-white/90"
             >
               Explore Dashboard <ArrowRight size={16} aria-hidden="true" />
             </Link>
             <Link
               href="/cases"
-              className="inline-flex items-center gap-2 rounded-lg border border-white/40 px-5 py-3 font-semibold text-white hover:bg-white/10"
+              className="inline-flex items-center gap-2 rounded-lg border border-white/40 px-4 py-2.5 font-semibold text-white hover:bg-white/10"
             >
               <BookOpen size={16} aria-hidden="true" /> Learn More
             </Link>
