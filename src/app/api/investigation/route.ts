@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { zcqlAll, pick, fail, serializeError, nosqlByScenarioPrefix } from "@/lib/zcql";
+import { zcqlAll, pick, fail } from "@/lib/zcql";
 import { getCaseType, getDistrict } from "@/lib/data";
 import caseScenarioMap from "@/lib/nosql-seed/caseScenarioMap.json";
+import callRecords from "@/lib/nosql-seed/CallRecords.json";
+import transactions from "@/lib/nosql-seed/Transactions.json";
+import cctvSightings from "@/lib/nosql-seed/CCTVSightings.json";
+import witnessStatements from "@/lib/nosql-seed/WitnessStatements.json";
+import timelineEvents from "@/lib/nosql-seed/TimelineEvents.json";
+import contradictionsSeed from "@/lib/nosql-seed/Contradictions.json";
 
 export const dynamic = "force-dynamic";
-// Extend the function timeout if the platform honors this Next.js route
-// segment config (Slate/OpenNext support unconfirmed - harmless if ignored).
-// This route makes up to 8 sequential/parallel Catalyst API round-trips
-// (2 ZCQL + 6 NoSQL), which may exceed a short default on cold start.
-export const maxDuration = 60;
 
 // GET /api/investigation?caseType=<slug>&district=<slug>
 // -> real seeded evidence (calls/transactions/CCTV/witness statements/
@@ -18,14 +19,25 @@ export const maxDuration = 60;
 // the frontend falls back to the mock generator in that case, same pattern
 // as every other live-data call in the app (see catalyst/README.md §3).
 //
-// Resolution is two-step because the two data stores use different keys:
-//   1. ZCQL (relational): CrimeMinorHeadID + District, via the same
-//      CaseMaster/Unit join used by /api/district-stats, to get the real
-//      CaseMasterIDs for this route.
-//   2. Static lookup (catalyst/dataset-v2/build_seed.mjs bakes this from
-//      cases.json at seed time): CaseMasterID -> scenarioId, since NoSQL
-//      only supports key_condition queries (no arbitrary field scan) - see
-//      nosqlByScenarioPrefix() in src/lib/zcql.ts.
+// scenarioId resolution: ZCQL (relational) CrimeMinorHeadID + District, via
+// the same CaseMaster/Unit join used by /api/district-stats, to get real
+// CaseMasterIDs, then a static CaseMasterID -> scenarioId lookup baked at
+// seed time (build_seed.mjs, from cases.json's FIR lists).
+//
+// The 6 evidence collections themselves are read from the bundled seed JSON
+// (src/lib/nosql-seed/*.json, filtered by each record's own scenarioId
+// field) rather than a live NoSQL queryTable() call - discovered live
+// (2026-08-24) that these tables' schema (partition key "id", no sort key)
+// only allows the EQUALS operator in a key_condition ("PartitionKey
+// operator must be equal" - queryTable rejects BEGINS_WITH here even
+// though it's a documented operator, because it needs a sort key to do a
+// prefix/range scan and these tables don't have one). The 6 NoSQL tables in
+// Catalyst remain the system of record and are seeded/verified there
+// (catalyst/README.md §2b) - exact-key operations (EQUALS-based
+// fetch/update/delete) work fine and are what a future CRUD/edit endpoint
+// would use - this read path just isn't one of those, so it uses the
+// identical bundled content instead of fighting the schema for a query
+// shape it can't do.
 export async function GET(req: NextRequest) {
   const caseTypeSlug = req.nextUrl.searchParams.get("caseType") || "";
   const districtSlug = req.nextUrl.searchParams.get("district") || "";
@@ -67,43 +79,18 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ scenario: null });
     }
 
-    // ?debug=1 short-circuits before any NoSQL calls - isolates whether a
-    // failure is in the ZCQL join/scenario-mapping step or the NoSQL step.
-    if (req.nextUrl.searchParams.get("debug") === "1") {
-      return NextResponse.json({ scenario: scenarioId, debug: "resolved scenario, skipped NoSQL" });
-    }
+    const byScenario = <T extends { scenarioId: string }>(rows: T[]) =>
+      rows.filter((r) => r.scenarioId === scenarioId);
 
-    // Promise.allSettled (not .all) + per-table try/catch inside
-    // nosqlByScenarioPrefix's caller here: one bad/slow table shouldn't take
-    // the whole response down, and a rejection reason is visible in the
-    // response instead of only in platform logs we can't easily reach.
-    const tables: [string, string][] = [
-      ["calls", "CallRecords"],
-      ["transactions", "Transactions"],
-      ["cctv", "CCTVSightings"],
-      ["witnessStatements", "WitnessStatements"],
-      ["timeline", "TimelineEvents"],
-      ["contradictions", "Contradictions"],
-    ];
-    const settled = await Promise.allSettled(
-      tables.map(([, table]) => nosqlByScenarioPrefix(req, table, scenarioId!))
-    );
-    const result: Record<string, unknown> = { scenario: scenarioId };
-    const errors: Record<string, unknown> = {};
-    settled.forEach((s, i) => {
-      const [key] = tables[i];
-      if (s.status === "fulfilled") result[key] = s.value;
-      else {
-        result[key] = [];
-        errors[key] = serializeError(s.reason);
-      }
+    return NextResponse.json({
+      scenario: scenarioId,
+      calls: byScenario(callRecords),
+      transactions: byScenario(transactions),
+      cctv: byScenario(cctvSightings),
+      witnessStatements: byScenario(witnessStatements),
+      timeline: byScenario(timelineEvents),
+      contradiction: byScenario(contradictionsSeed)[0] || null,
     });
-    const contradictions = (result.contradictions as unknown[]) || [];
-    result.contradiction = contradictions[0] || null;
-    delete result.contradictions;
-    if (Object.keys(errors).length) result.nosqlErrors = errors;
-
-    return NextResponse.json(result);
   } catch (e) {
     return fail(e);
   }
