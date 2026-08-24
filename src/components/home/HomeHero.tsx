@@ -3,8 +3,13 @@ import { ArrowRight, BookOpen } from "lucide-react";
 import HeroLiveOverview from "./HeroLiveOverview";
 import type { Summary } from "@/lib/api";
 
+// Same photo ScrollZoomHero.tsx already used for the old Home hero (police
+// response backdrop) - confirmed a real, resolving Unsplash photo via curl.
+// The original URL here was a guessed photo ID that 404'd (no image ever
+// loaded, confirmed via network inspection) - don't hand-write an Unsplash
+// URL without verifying it resolves first.
 const HERO_IMG =
-  "https://images.unsplash.com/photo-1595854341625-f33e32bc3fd6?auto=format&fit=crop&w=1920&q=80";
+  "https://images.unsplash.com/photo-1453873531674-2151bcd01707?auto=format&fit=crop&w=1920&q=80";
 
 export default function HomeHero({ summary }: { summary: Summary }) {
   return (
