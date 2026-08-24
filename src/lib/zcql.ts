@@ -62,3 +62,46 @@ export function fail(e: unknown) {
   console.error("api route error:", e);
   return NextResponse.json({ error: serializeError(e) }, { status: 500 });
 }
+
+// -----------------------------------------------------------------------------
+// NoSQL (investigation-intelligence collections, see catalyst/README.md §2b).
+// The app instance's method is `capp.nosql()` (lowercase, confirmed against
+// the SDK - `noSql()` doesn't exist), `.table(name)` gets a table handle.
+//
+// queryTable() prefix scan does NOT work on these tables: every one has
+// partition key "id" (String) and NO sort key, and a live 400 confirmed
+// (2026-08-24) that Catalyst rejects any non-EQUALS operator in a
+// key_condition on a partition-key-only table - "PartitionKey operator must
+// be equal". BEGINS_WITH (used below to fetch by scenarioId prefix, e.g.
+// "C1-") is a real, documented NoSQLOperator, but it needs a sort key to do
+// a prefix/range scan, which these tables don't have. Confirmed exact-key
+// EQUALS lookups do work fine (per the SDK's own docs); a real prefix scan
+// would need either an index or the tables recreated with a sort key.
+//
+// src/app/api/investigation/route.ts therefore reads this data from the
+// bundled seed JSON (src/lib/nosql-seed/*.json, filtered by each record's
+// own embedded scenarioId field) instead of a live query - the content is
+// identical to what's seeded in NoSQL, and NoSQL remains the system of
+// record for exact-key operations (a future edit/delete endpoint would use
+// EQUALS-based fetchItem/updateItems/deleteItems here, which do work).
+//
+// queryTable() returns a NoSQLResponse whose `.get` is Array<{ item:
+// NoSQLItem }> - NOT plain objects - so each hit needs `.item.to()` to get a
+// near-native JS object back. The condition `value` must go through
+// NoSQLMarshall.makeString() (a raw JS string is rejected), per the SDK's
+// own table.d.ts queryTable() example. Left unused for now - kept as a
+// reference for whichever future call actually uses an EQUALS key_condition.
+export async function nosqlGetByExactId(req: NextRequest, tableName: string, id: string) {
+  const capp = initCatalyst(req);
+  const { NoSQLEnum, NoSQLMarshall } = require("zcatalyst-sdk-node/lib/no-sql");
+  const table = capp.nosql().table(tableName);
+  const resp = await table.queryTable({
+    key_condition: {
+      attribute: "id",
+      operator: NoSQLEnum.NoSQLOperator.EQUALS,
+      value: NoSQLMarshall.makeString(id),
+    },
+    limit: 1,
+  });
+  return (resp.get || []).map((d: any) => d.item?.to())[0] || null;
+}

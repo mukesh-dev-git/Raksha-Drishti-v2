@@ -71,6 +71,8 @@ export default async function InvestigationWorkspacePage({
           districtName={d.name}
           base={base}
           caseFiles={realCaseFiles}
+          caseTypeSlug={caseType}
+          districtSlug={district}
         />
       </div>
     </main>
