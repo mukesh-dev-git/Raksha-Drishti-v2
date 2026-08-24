@@ -10,8 +10,14 @@ import { getSummary } from "@/lib/api";
 // -----------------------------------------------------------------------------
 export const metadata = { title: "Home" };
 
+// Always render live - getSummary() calls a Route Handler backed by ZCQL, so
+// without this the page would prerender once at build time (no live Data
+// Store context then) and serve stale/fallback numbers forever. Same issue
+// already fixed on the [caseType] pages - see those for the full story.
+export const dynamic = "force-dynamic";
+
 export default async function DashboardPage() {
-  // Live from Catalyst Data Store when configured; bundled sample otherwise.
+  // Live from Catalyst Data Store; bundled sample as fallback on any error.
   const summary = await getSummary();
 
   return (

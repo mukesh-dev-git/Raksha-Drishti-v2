@@ -1,12 +1,5 @@
 {
   "client": {
     "source": "client"
-  },
-  "functions": {
-    "targets": [
-      "rd_api"
-    ],
-    "ignore": [],
-    "source": "functions"
   }
 }

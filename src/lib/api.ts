@@ -1,12 +1,20 @@
 // -----------------------------------------------------------------------------
-// Data access layer — Catalyst Functions with graceful fallback.
+// Data access layer — same-origin Route Handlers (src/app/api/*) with
+// graceful fallback to the bundled sample data in data.ts.
 //
-// When NEXT_PUBLIC_RD_API_BASE is set (to the deployed Catalyst Function URL),
-// data is fetched live from the FIR Data Store via the rd_api Function. When it
-// is NOT set, or a request fails, we fall back to the bundled sample data in
-// data.ts — so the site always builds, hosts, and demos, and lights up with
-// live data the moment the backend is wired. Slugs/URLs never change (they come
-// from data.ts), only the numbers.
+// Previously called an external Catalyst Function (rd_api) via
+// NEXT_PUBLIC_RD_API_BASE, gated by output:"export" static hosting. Both are
+// retired - see catalyst/README.md. Now that the app runs on Slate (real
+// Next.js server, confirmed working 2026-08-23/24), the same ZCQL logic runs
+// as Route Handlers in this same deployment instead: no external URL, no
+// CORS, one deploy. Every page that calls into this file is `force-dynamic`
+// (see e.g. src/app/cases/[caseType]/district-wise/page.tsx) so these fetches
+// re-run live per request rather than being baked in at build time.
+//
+// The fallback behaviour is unchanged: if a route errors or the Data Store
+// doesn't have a table/row yet, callers silently get the bundled sample data
+// instead of a broken page. Slugs/URLs never change (they come from
+// data.ts), only the numbers.
 // -----------------------------------------------------------------------------
 import {
   caseTypes,
@@ -17,29 +25,17 @@ import {
   type District,
 } from "./data";
 
-const API_BASE = process.env.NEXT_PUBLIC_RD_API_BASE?.replace(/\/$/, "") || "";
-
 async function apiGet<T>(path: string): Promise<T | null> {
-  if (!API_BASE) return null; // backend not configured → use fallback
   try {
-    // `output: "export"` bakes every fetch's result into the HTML at build
-    // time — there's no running server to ever re-fetch at request time, so
-    // "no-store" isn't just unnecessary here, it's actively incompatible:
-    // Next treats a no-store fetch as opting the route into dynamic
-    // rendering, which a static export can't do, and throws. Default
-    // (cached) fetch is exactly "resolve once at build time".
-    const res = await fetch(`${API_BASE}${path}`, {
+    const res = await fetch(`/api${path}`, {
       headers: { Accept: "application/json" },
     });
     if (!res.ok) return null;
     return (await res.json()) as T;
   } catch {
-    return null; // network/CORS/not-deployed → fallback
+    return null; // network/Data Store error → fallback
   }
 }
-
-/** Whether live data is being served (for a "Live from Catalyst" badge). */
-export const isLiveBackend = Boolean(API_BASE);
 
 // --- Dashboard summary ------------------------------------------------------
 export type Summary = {
