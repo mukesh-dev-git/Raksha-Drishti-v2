@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import SiteHeader from "@/components/layout/SiteHeader";
-import SiteFooter from "@/components/layout/SiteFooter";
 import AuthGate from "@/components/auth/AuthGate";
 
 const inter = Inter({
@@ -40,11 +38,11 @@ export default function RootLayout({
         <a href="#main-content" className="skip-link">
           Skip to main content
         </a>
-        <SiteHeader />
-        <div id="main-content" className="flex-1">
-          <AuthGate>{children}</AuthGate>
-        </div>
-        <SiteFooter />
+        {/* Chrome (header/footer or sidebar) is owned by the nested route
+            group layout - (site)/layout.tsx for every page, dashboard's own
+            layout.tsx for /dashboard - so each can render a different shell.
+            Both nested layouts own an #main-content skip-link target. */}
+        <AuthGate>{children}</AuthGate>
       </body>
     </html>
   );
