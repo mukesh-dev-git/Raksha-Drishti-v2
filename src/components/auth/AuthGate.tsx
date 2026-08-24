@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { AUTH_ON, LOGIN_URL } from "@/lib/auth";
 
 // -----------------------------------------------------------------------------
 // AuthGate — officer sign-in gate backed by Catalyst Authentication.
@@ -16,9 +17,6 @@ import { useEffect, useState } from "react";
 // Catalyst web SDK is served with the client, then set NEXT_PUBLIC_RD_AUTH=on
 // at build time.
 // -----------------------------------------------------------------------------
-
-const AUTH_ON = process.env.NEXT_PUBLIC_RD_AUTH === "on";
-const LOGIN_URL = "/__catalyst/auth/login";
 
 declare global {
   interface Window {
