@@ -20,8 +20,13 @@ const NATIVE_H = 900;
 // Compact live preview of the real spatiotemporal crime map (same blob:
 // embed technique as MapEmbed.tsx, just sized for a dashboard card instead
 // of a full page) with a link out to the full /crime-hotspots view.
+//
+// `bare` drops the outer card chrome (border/bg/padding/shadow) for when a
+// parent already provides its own box - e.g. HeroLiveOverview's dark panel,
+// which nests this next to a "Crime Trend" panel of the same size and would
+// otherwise double up on card borders.
 // -----------------------------------------------------------------------------
-export default function HotspotsMini() {
+export default function HotspotsMini({ bare = false, title = "Crime Hotspots (Live)" }: { bare?: boolean; title?: string }) {
   const { blobUrl, fetchError, retry } = useBlobMapSrc(`${BASE_PATH}/crime-map/spatiotemporal.html`);
   const containerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0.2);
@@ -37,9 +42,9 @@ export default function HotspotsMini() {
   }, []);
 
   return (
-    <div className="h-full rounded-xl border border-line bg-surface p-5 shadow-sm">
+    <div className={bare ? "h-full" : "h-full rounded-xl border border-line bg-surface p-5 shadow-sm"}>
       <div className="flex items-center justify-between">
-        <p className="text-[15px] font-semibold text-ink">Crime Hotspots (Live)</p>
+        <p className={bare ? "text-xs font-medium text-muted" : "text-[15px] font-semibold text-ink"}>{title}</p>
         <Link href="/crime-hotspots" className="text-xs font-medium text-dash-blue hover:underline">
           View Full Map
         </Link>

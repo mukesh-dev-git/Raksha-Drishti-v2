@@ -54,15 +54,27 @@ export default function HeroLiveOverview({ summary }: { summary: Summary }) {
         ))}
       </div>
 
-      <div className="mt-4 rounded-lg border border-white/10 bg-white/5 p-3">
-        <p className="mb-1 text-xs font-medium text-white/70">Crime Trend</p>
-        <div style={{ ["--line" as string]: "rgba(255,255,255,0.15)", ["--muted" as string]: "rgba(255,255,255,0.65)" }}>
-          <CrimeTrendChart years={summary.years} total={summary.yearlyTrend} solved={summary.yearlySolved} />
+      {/* Crime Trend + Crime Hotspots side by side (not stacked) - keeps the
+          whole panel, and so the hero above the KPI stat strip, compact
+          instead of pushing that strip far down the page. */}
+      <div className="mt-4 grid grid-cols-2 gap-3">
+        <div className="rounded-lg border border-white/10 bg-white/5 p-3">
+          <p className="mb-1 text-xs font-medium text-white/70">Crime Trend</p>
+          <div style={{ ["--line" as string]: "rgba(255,255,255,0.15)", ["--muted" as string]: "rgba(255,255,255,0.65)" }}>
+            <CrimeTrendChart years={summary.years} total={summary.yearlyTrend} solved={summary.yearlySolved} compact />
+          </div>
         </div>
-      </div>
 
-      <div className="mt-4">
-        <HotspotsMini />
+        <div
+          className="rounded-lg border border-white/10 bg-white/5 p-3"
+          style={{
+            ["--ink" as string]: "#fff",
+            ["--muted" as string]: "rgba(255,255,255,0.65)",
+            ["--line" as string]: "rgba(255,255,255,0.15)",
+          }}
+        >
+          <HotspotsMini bare title="Crime Hotspots" />
+        </div>
       </div>
     </div>
   );
