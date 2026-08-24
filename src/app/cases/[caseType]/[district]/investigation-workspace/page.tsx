@@ -3,6 +3,8 @@ import Breadcrumb from "@/components/ui/Breadcrumb";
 import InvestigationWorkspaceClient from "@/components/investigation/InvestigationWorkspaceClient";
 import { caseTypes, districts, getCaseType, getDistrict } from "@/lib/data";
 import { getInvestigationData } from "@/lib/investigationData";
+import { resolveInvestigationCase, listCasesForPair } from "@/lib/investigation/caseResolver";
+import { adaptToLegacyTimelineEvents } from "@/lib/investigation/adaptToTimeline";
 
 // Always render live (see district-wise/page.tsx for why).
 export const dynamic = "force-dynamic";
@@ -31,6 +33,25 @@ export default async function InvestigationWorkspacePage({
   const base = `/cases/${caseType}/${district}`;
   const data = getInvestigationData(caseType, district);
 
+  // Step 3 (Timeline only): the rest of `data` (graph, evidence, ai,
+  // entities) is still the mock generator's output, unchanged, pending
+  // later steps. Only `timeline` is overridden here with the real,
+  // synthetic-dataset-derived timeline for this (caseType, district) pair
+  // — resolved with no caseId, the same workspace-level rule Step 2
+  // established (deterministic primary = lowest CaseMasterID among all
+  // matching FIRs). If no synthetic scenario resolves for this pair, the
+  // timeline is explicitly empty — never a fabricated substitute, and
+  // TimelinePanel (untouched) already renders an empty list gracefully.
+  const lookup = resolveInvestigationCase(caseType, district);
+  const timeline = lookup.status === "ok" && lookup.investigationCase
+    ? adaptToLegacyTimelineEvents(lookup.investigationCase)
+    : [];
+  const workspaceData = { ...data, timeline };
+  // Real case files for this pair — fixes the dead-end 404: the old fake
+  // 3-item list produced links (FIR-1001 etc.) that no longer resolve
+  // against the real, caseId-based case-files route.
+  const realCaseFiles = listCasesForPair(caseType, district);
+
   return (
     <main className="min-h-screen bg-paper px-4 py-2 sm:px-6 lg:px-8">
       <div className="w-full">
@@ -45,10 +66,11 @@ export default async function InvestigationWorkspacePage({
         />
 
         <InvestigationWorkspaceClient
-          data={data}
+          data={workspaceData}
           caseTypeName={c.name}
           districtName={d.name}
           base={base}
+          caseFiles={realCaseFiles}
         />
       </div>
     </main>

@@ -89,7 +89,9 @@ export default function CaseFilesListClient({
             {filtered.length === 0 && (
               <tr>
                 <td colSpan={4} className="px-4 py-8 text-center text-sm text-muted">
-                  No case files match &ldquo;{query}&rdquo;.
+                  {query.trim()
+                    ? <>No case files match &ldquo;{query}&rdquo;.</>
+                    : "No synthetic case files are available for this case type and district."}
                 </td>
               </tr>
             )}

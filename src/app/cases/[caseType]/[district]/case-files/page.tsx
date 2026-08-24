@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import PageShell from "@/components/PageShell";
 import CaseFilesListClient from "@/components/cases/CaseFilesListClient";
-import { caseTypes, districts, caseFiles, getCaseType, getDistrict } from "@/lib/data";
+import { caseTypes, districts, getCaseType, getDistrict } from "@/lib/data";
+import { listCasesForPair } from "@/lib/investigation/caseResolver";
 
 // Always render live (see district-wise/page.tsx for why).
 export const dynamic = "force-dynamic";
@@ -29,11 +30,17 @@ export default async function CaseFilesPage({
   if (!c || !d) notFound();
 
   const base = `/cases/${caseType}/${district}`;
+  // Real case files for this pair, resolved against the synthetic seeded
+  // dataset — never the old fake 3-item list. An empty result here means
+  // this (caseType, district) pair genuinely has no synthetic case, and
+  // CaseFilesListClient already renders a clean "no case files" state for
+  // an empty list, not a dead-end 404.
+  const files = listCasesForPair(caseType, district);
 
   return (
     <PageShell
       title="Case Files"
-      description={`${c.name} · ${d.name}. Search or browse case files, then open one to view its full booklet.`}
+      description={`${c.name} · ${d.name}. Search or browse case files, then open one to view its full case workspace.`}
       breadcrumbs={[
         { label: "Cases", href: "/cases" },
         { label: c.name, href: `/cases/${caseType}/district-wise` },
@@ -41,7 +48,7 @@ export default async function CaseFilesPage({
         { label: "Case Files", href: `${base}/case-files` },
       ]}
     >
-      <CaseFilesListClient caseFiles={caseFiles} base={base} />
+      <CaseFilesListClient caseFiles={files} base={base} />
     </PageShell>
   );
 }

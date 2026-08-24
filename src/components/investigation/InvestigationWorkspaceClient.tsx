@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import type { InvestigationData } from "@/lib/investigationData";
 import { computeHighlightSet, getEntityDetail } from "@/lib/investigationData";
-import { caseFiles } from "@/lib/data";
+import type { CaseFile } from "@/lib/data";
 import EvidenceBoard from "./EvidenceBoard";
 import TimelinePanel from "./TimelinePanel";
 import EvidencePanel from "./EvidencePanel";
@@ -36,11 +36,16 @@ export default function InvestigationWorkspaceClient({
   caseTypeName,
   districtName,
   base,
+  caseFiles,
 }: {
   data: InvestigationData;
   caseTypeName: string;
   districtName: string;
   base: string;
+  /** Real case files for this (caseType, district) pair, resolved against the
+   * synthetic seeded dataset — never the old fake 3-item list, so every link
+   * this section renders actually resolves (fixes the dead-end 404). */
+  caseFiles: CaseFile[];
 }) {
   const [activeId, setActiveId] = useState<string | null>(null);
 
@@ -272,6 +277,13 @@ export default function InvestigationWorkspaceClient({
           subtitle="Open a file to read the full digital case-file flipbook"
           accent={ACCENT}
         />
+        {caseFiles.length === 0 ? (
+          <PinnedCard pin={ACCENT}>
+            <p className="p-6 text-[15px] text-muted">
+              No synthetic case files are available for this case type and district.
+            </p>
+          </PinnedCard>
+        ) : (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {caseFiles.map((f, i) => (
             <motion.div
@@ -300,6 +312,7 @@ export default function InvestigationWorkspaceClient({
             </motion.div>
           ))}
         </div>
+        )}
       </section>
     </div>
   );
