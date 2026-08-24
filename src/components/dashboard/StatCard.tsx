@@ -35,7 +35,7 @@ export default function StatCard({
   return (
     <div className="rounded-xl border border-line bg-surface p-5 shadow-sm">
       <div className="flex items-start justify-between">
-        <span className={`flex h-10 w-10 items-center justify-center rounded-lg ${a.chip} ${a.icon}`} aria-hidden="true">
+        <span className={`flex h-11 w-11 items-center justify-center rounded-full ${a.chip} ${a.icon}`} aria-hidden="true">
           {icon}
         </span>
         {trend && trend.length > 1 && <Sparkline values={trend} color={a.line} />}

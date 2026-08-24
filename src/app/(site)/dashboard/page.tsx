@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { FileStack, ShieldCheck, Users, Gauge, Phone } from "lucide-react";
 import StatCard from "@/components/dashboard/StatCard";
 import CrimeTrendChart from "@/components/dashboard/CrimeTrendChart";
@@ -85,7 +86,12 @@ export default async function DashboardPage() {
         </div>
 
         <div className="rounded-xl border border-line bg-surface p-5 shadow-sm">
-          <p className="text-[15px] font-semibold text-ink">Crime by Category</p>
+          <div className="flex items-center justify-between">
+            <p className="text-[15px] font-semibold text-ink">Crime by Category</p>
+            <Link href="/crime-count" className="text-xs font-medium text-dash-blue hover:underline">
+              View All
+            </Link>
+          </div>
           <div className="mt-4">
             <CategoryDonut data={caseTypes.map((c) => ({ name: c.name, total: c.total }))} />
           </div>

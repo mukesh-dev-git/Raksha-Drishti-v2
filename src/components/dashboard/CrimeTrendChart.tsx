@@ -31,9 +31,29 @@ export default function CrimeTrendChart({
   const yFor = (v: number) => H - PAD_B - (v / maxV) * (H - PAD_B - PAD_T);
   const xFor = (i: number) => PAD_L + i * xStep;
 
-  const linePath = (vals: number[]) => vals.map((v, i) => `${i === 0 ? "M" : "L"}${xFor(i)},${yFor(v)}`).join(" ");
+  // Smooth cubic-bezier curve through the real points (Catmull-Rom ->
+  // Bezier conversion), instead of straight segments - reads much closer
+  // to a real trend line while still passing exactly through every real
+  // value (no smoothing that would misrepresent a data point's position).
+  const smoothPath = (vals: number[]) => {
+    const pts = vals.map((v, i) => ({ x: xFor(i), y: yFor(v) }));
+    if (pts.length < 2) return "";
+    let d = `M${pts[0].x},${pts[0].y}`;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = pts[i - 1] || pts[i];
+      const p1 = pts[i];
+      const p2 = pts[i + 1];
+      const p3 = pts[i + 2] || p2;
+      const c1x = p1.x + (p2.x - p0.x) / 6;
+      const c1y = p1.y + (p2.y - p0.y) / 6;
+      const c2x = p2.x - (p3.x - p1.x) / 6;
+      const c2y = p2.y - (p3.y - p1.y) / 6;
+      d += ` C${c1x},${c1y} ${c2x},${c2y} ${p2.x},${p2.y}`;
+    }
+    return d;
+  };
   const areaPath = (vals: number[]) =>
-    `${linePath(vals)} L${xFor(vals.length - 1)},${H - PAD_B} L${xFor(0)},${H - PAD_B} Z`;
+    `${smoothPath(vals)} L${xFor(vals.length - 1)},${H - PAD_B} L${xFor(0)},${H - PAD_B} Z`;
 
   return (
     <div className="relative">
@@ -59,8 +79,8 @@ export default function CrimeTrendChart({
         ))}
 
         <path d={areaPath(total)} fill={`url(#${gradId})`} />
-        <path d={linePath(total)} fill="none" stroke="var(--dash-blue)" strokeWidth={2.5} />
-        <path d={linePath(solved)} fill="none" stroke="var(--dash-teal)" strokeWidth={2.5} strokeDasharray="0" />
+        <path d={smoothPath(total)} fill="none" stroke="var(--dash-blue)" strokeWidth={2.5} strokeLinecap="round" />
+        <path d={smoothPath(solved)} fill="none" stroke="var(--dash-teal)" strokeWidth={2.5} strokeLinecap="round" />
 
         {years.map((y, i) => (
           <g key={y}>
