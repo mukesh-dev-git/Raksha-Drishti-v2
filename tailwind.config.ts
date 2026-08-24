@@ -28,6 +28,17 @@ const config: Config = {
         warning: { DEFAULT: "var(--warning)", bg: "var(--warning-bg)" },
         danger: { DEFAULT: "var(--danger)", bg: "var(--danger-bg)" },
         focus: "var(--focus)",
+        // Dashboard-only accent chips - see globals.css for the "why".
+        "dash-blue": { DEFAULT: "var(--dash-blue)", bg: "var(--dash-blue-bg)" },
+        "dash-purple": { DEFAULT: "var(--dash-purple)", bg: "var(--dash-purple-bg)" },
+        "dash-orange": { DEFAULT: "var(--dash-orange)", bg: "var(--dash-orange-bg)" },
+        "dash-teal": { DEFAULT: "var(--dash-teal)", bg: "var(--dash-teal-bg)" },
+        "dash-pink": { DEFAULT: "var(--dash-pink)", bg: "var(--dash-pink-bg)" },
+        "dash-sidebar": {
+          DEFAULT: "var(--dash-sidebar)",
+          hover: "var(--dash-sidebar-hover)",
+          active: "var(--dash-sidebar-active)",
+        },
       },
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],

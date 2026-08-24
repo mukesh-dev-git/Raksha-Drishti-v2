@@ -48,6 +48,27 @@
   --radius-sm: 6px;
   --shadow-sm: 0 1px 2px rgba(16, 30, 54, 0.06), 0 1px 3px rgba(16, 30, 54, 0.08);
   --shadow-md: 0 2px 6px rgba(16, 30, 54, 0.08), 0 6px 16px rgba(16, 30, 54, 0.08);
+
+  /* Dashboard accent chips ------------------------------------------------
+     Decorative categorization colour only (never the sole carrier of status
+     - always paired with an icon/label) for the /dashboard shell's stat
+     cards, chart series, and sidebar. Scoped to the dashboard by convention
+     (dash- prefix) - the rest of the site keeps the muted navy/saffron
+     system untouched, deliberately not folded into the site-wide tokens
+     above so this stays an intentional, isolated departure. */
+  --dash-blue: #2563eb;
+  --dash-blue-bg: #eaf1fe;
+  --dash-purple: #7c3aed;
+  --dash-purple-bg: #f2ebfe;
+  --dash-orange: #ea8a1f;
+  --dash-orange-bg: #fdf1e2;
+  --dash-teal: #0d9488;
+  --dash-teal-bg: #e2f5f3;
+  --dash-pink: #db2777;
+  --dash-pink-bg: #fbe7f1;
+  --dash-sidebar: #0f1b3d;
+  --dash-sidebar-hover: #182a5c;
+  --dash-sidebar-active: #2547a8;
 }
 
 /* Font-size accessibility control ---------------------------------------- */
@@ -111,6 +132,17 @@ textarea:focus-visible,
 }
 .skip-link:focus {
   left: 0;
+}
+
+/* Hide a scrollable element's scrollbar while keeping it scrollable - used
+   on the dashboard sidebar's nav list, whose native scrollbar sat awkwardly
+   against the dark sidebar background. */
+.scrollbar-hide {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* old Edge/IE */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome/Safari/new Edge */
 }
 
 /* The single tricolor divider — used at most once per screen ------------- */
