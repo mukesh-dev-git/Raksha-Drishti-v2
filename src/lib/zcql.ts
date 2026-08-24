@@ -62,3 +62,34 @@ export function fail(e: unknown) {
   console.error("api route error:", e);
   return NextResponse.json({ error: serializeError(e) }, { status: 500 });
 }
+
+// -----------------------------------------------------------------------------
+// NoSQL (investigation-intelligence collections, see catalyst/README.md §2b).
+// The app instance's method is `capp.nosql()` (lowercase, confirmed against
+// the SDK - `noSql()` doesn't exist), `.table(name)` gets a table handle, and
+// `queryTable()` only supports a key_condition on the declared primary key
+// (partition key "id" on every one of these 6 tables, no sort key) - no
+// arbitrary field scan. Every seeded record's "id" is prefixed with its
+// scenarioId (e.g. "C1-CL-1"), so BEGINS_WITH on "id" fetches exactly one
+// scenario's rows from a table without a full scan.
+//
+// queryTable() returns a NoSQLResponse whose `.get` is Array<{ item:
+// NoSQLItem }> - NOT plain objects - so each hit needs `.item.to()` to get a
+// near-native JS object back. The condition `value` must go through
+// NoSQLMarshall.makeString() (a raw JS string is rejected), per the SDK's
+// own table.d.ts queryTable() example.
+// -----------------------------------------------------------------------------
+export async function nosqlByScenarioPrefix(req: NextRequest, tableName: string, scenarioId: string) {
+  const capp = initCatalyst(req);
+  const { NoSQLEnum, NoSQLMarshall } = require("zcatalyst-sdk-node/lib/no-sql");
+  const table = capp.nosql().table(tableName);
+  const resp = await table.queryTable({
+    key_condition: {
+      attribute: "id",
+      operator: NoSQLEnum.NoSQLOperator.BEGINS_WITH,
+      value: NoSQLMarshall.makeString(`${scenarioId}-`),
+    },
+    limit: 300,
+  });
+  return (resp.get || []).map((d: any) => d.item?.to());
+}

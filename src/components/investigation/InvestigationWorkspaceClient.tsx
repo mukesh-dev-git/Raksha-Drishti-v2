@@ -20,6 +20,7 @@ import type { InvestigationData } from "@/lib/investigationData";
 import { computeHighlightSet, getEntityDetail } from "@/lib/investigationData";
 import { caseFiles } from "@/lib/data";
 import EvidenceBoard from "./EvidenceBoard";
+import RealEvidenceFeed from "./RealEvidenceFeed";
 import TimelinePanel from "./TimelinePanel";
 import EvidencePanel from "./EvidencePanel";
 import AIPanel from "./AIPanel";
@@ -36,11 +37,15 @@ export default function InvestigationWorkspaceClient({
   caseTypeName,
   districtName,
   base,
+  caseTypeSlug,
+  districtSlug,
 }: {
   data: InvestigationData;
   caseTypeName: string;
   districtName: string;
   base: string;
+  caseTypeSlug: string;
+  districtSlug: string;
 }) {
   const [activeId, setActiveId] = useState<string | null>(null);
 
@@ -124,6 +129,9 @@ export default function InvestigationWorkspaceClient({
           </div>
         </PinnedCard>
       </section>
+
+      {/* ── Section 1b · Verified Evidence Feed (real DB, when seeded) ── */}
+      <RealEvidenceFeed caseTypeSlug={caseTypeSlug} districtSlug={districtSlug} />
 
       {/* ── Section 2 · Investigation Evidence Board (hero) ───────────── */}
       <section>

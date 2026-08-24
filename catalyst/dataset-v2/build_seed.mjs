@@ -170,4 +170,21 @@ writeNoSqlCollection("Contradictions", (c) =>
   c.contradiction ? [{ id: `${c.scenarioId}-CD-1`, ...c.contradiction }] : []
 );
 
+// --- 4. CaseMasterID -> scenarioId map ------------------------------------------
+// Bridges the relational side (Data Store CaseMaster rows, resolved at
+// request time via ZCQL) to the NoSQL scenario data (partitioned by
+// scenarioId prefix, e.g. "C1-CL-1"). This is static seed-time information
+// (which FIRs belong to which authored scenario) so it's baked once here
+// rather than queried live - see src/app/api/investigation/route.ts.
+const caseScenarioMap = {};
+for (const c of dataset.cases) {
+  for (const fir of c.firs) caseScenarioMap[fir.CaseMasterID] = c.scenarioId;
+}
+writeFileSync(
+  path.join(outNoSqlDir, "caseScenarioMap.json"),
+  JSON.stringify(caseScenarioMap, null, 2),
+  "utf-8"
+);
+console.log(`\ncaseScenarioMap.json`.padEnd(30), `${Object.keys(caseScenarioMap).length} CaseMasterIDs -> ${dataset.cases.length} scenarios`);
+
 console.log(`\nDone. CSVs in ${path.relative(process.cwd(), outCsvDir)}, NoSQL JSON in ${path.relative(process.cwd(), outNoSqlDir)}.`);
