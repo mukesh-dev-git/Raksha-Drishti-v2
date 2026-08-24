@@ -54,7 +54,7 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:3000 → redirects to `/dashboard`.
+Open http://localhost:3000 → the Home welcome page.
 
 Local `npm run dev` has no real Catalyst request context, so every `/api/*`
 route's Data Store/NoSQL call fails and the site transparently falls back to
@@ -64,8 +64,8 @@ expected, not a bug. To see real data you need the deployed Slate app.
 ## Navigation flow
 
 ```
-/                                    -> redirects to /dashboard
-/dashboard                           -> hero, summary stats, 3 modules
+/                                    -> Home (public welcome screen, no sidebar)
+/dashboard                           -> analytics home (sidebar shell begins here)
    |- /crime-count
    |- /crime-hotspots
    |- /cases
@@ -87,9 +87,11 @@ trustworthy authority over flash.
   emphasis (no italics, no display fonts).
 - **Layout**: grid-based, symmetrical, generous whitespace; solid cards with
   soft shadows and 6–10px radius; barely-rounded rectangular buttons.
-- **Chrome**: a persistent first-class emergency/helpline bar (112 + Police,
-  Women, Child, Ambulance), navy masthead with the Karnataka State Police
-  emblem, and a simple click-first horizontal nav.
+- **Chrome**: two shells now (see "Dashboard shell" below) — the Home
+  welcome page (`/`) keeps the original persistent emergency/helpline bar
+  (112 + Police, Women, Child, Ambulance), navy masthead with the Karnataka
+  State Police emblem, and horizontal nav; every other page runs a
+  persistent sidebar + top bar instead. Both end in the same `SiteFooter`.
 
 ### Accessibility (WCAG 2.1 AA)
 
@@ -110,10 +112,11 @@ and font-size modes override the same variables.
 
 | Page | File | Notes |
 |------|------|-------|
-| Dashboard | `src/app/dashboard/page.tsx` | Sidebar-shell analytics home (see below) — **live** (`/api/summary`, `/api/casetypes`) + real seeded scenario data |
-| Crime Count | `src/app/crime-count/page.tsx` | District/crime-type stats + charts — **live** (`/api/casetypes`, `/api/districts`) |
-| Crime Hotspots | `src/app/crime-hotspots/page.tsx` | MapLibre spatiotemporal heatmap, embedded via `MapEmbed.tsx` (see its comments for the Slate `X-Frame-Options` workaround) |
-| Cases | `src/app/cases/page.tsx` | Case-type cards — **live** (`/api/casetypes`) |
+| Home | `src/app/page.tsx` | Public welcome screen (see below) — **live** (`/api/summary`) |
+| Dashboard | `src/app/(site)/dashboard/page.tsx` | Sidebar-shell analytics home (see below) — **live** (`/api/summary`, `/api/casetypes`) + real seeded scenario data |
+| Crime Count | `src/app/(site)/crime-count/page.tsx` | District/crime-type stats + charts — **live** (`/api/casetypes`, `/api/districts`) |
+| Crime Hotspots | `src/app/(site)/crime-hotspots/page.tsx` | MapLibre spatiotemporal heatmap, embedded via `MapEmbed.tsx` (see its comments for the Slate `X-Frame-Options` workaround) |
+| Cases | `src/app/(site)/cases/page.tsx` | Case-type cards — **live** (`/api/casetypes`) |
 | District-wise | `src/app/cases/[caseType]/district-wise/page.tsx` | Ranked district table — **live** (`/api/district-stats`) |
 | Investigation Workspace | `.../[district]/investigation-workspace/page.tsx` | Relationship graph, timeline, evidence, AI insights (mock) + a **Verified Evidence Feed** panel showing real seeded case data when available (`/api/investigation`, see `RealEvidenceFeed.tsx`) |
 | Case Files | `.../[district]/case-files/page.tsx` | Case-file list with status badges — mock data |
@@ -126,30 +129,38 @@ row above calls a Route Handler under `src/app/api/` first and only falls
 back to these on error (see `catalyst/README.md` §3/§3b for how each one
 resolves real data).
 
-### Dashboard shell (sidebar, dashboard-only)
+### Home page + sidebar shell (site-wide)
 
-`/dashboard` runs its own persistent-sidebar shell instead of the site's
-usual emergency-bar/masthead/horizontal-nav chrome — a deliberate,
-**dashboard-only** departure (feature branch `feature/dashboard-redesign`),
-not a site-wide nav change. Structurally this is a Next.js route-group
-split: every other page lives under `src/app/(site)/` with its own
-`layout.tsx` (the original `SiteHeader`/`SiteFooter`), while
-`src/app/dashboard/layout.tsx` renders `DashboardSidebar` +
-`DashboardTopbar` instead — route groups don't affect URLs, so no page's
-path changed.
+The app has two distinct shells (feature branch `feature/dashboard-redesign`):
+
+- **Home** (`/`, `src/app/page.tsx`) — a public welcome screen kept
+  deliberately *outside* the sidebar: the original government-portal
+  chrome (`SiteHeader` — emergency bar, masthead, horizontal `SiteNav` —
+  plus `SiteFooter`), the animated `ScrollZoomHero`, a real live stat row,
+  and four `LinkCard`s into Dashboard / Crime Count / Crime Hotspots /
+  Cases. The front door, not part of the internal app shell.
+- **Everything else** (Dashboard, Cases, Crime Count, Crime Hotspots, and
+  everything under them) — a persistent sidebar + top bar shell instead of
+  the horizontal nav. Structurally this is a Next.js route-group split:
+  every one of those pages lives under `src/app/(site)/`, whose
+  `layout.tsx` renders `DashboardSidebar` + `DashboardTopbar` (+ the same
+  `SiteFooter` Home uses, kept on every page). Route groups don't affect
+  URLs, so no page's path changed — this was originally a dashboard-only
+  shell, widened to site-wide by a later request; see git history on
+  `(site)/layout.tsx` for both steps.
 
 Many sidebar sections (Investigation Workspace, Evidence Feed, Persons &
 Entities, Alerts & Leads, all of Reports/System) don't have a dedicated
-page yet and render disabled with a "Soon" pill — only Dashboard, Crime
-Overview, Crime Hotspots, and Cases are real links. Every number on the
-dashboard is either live (`getSummary`/`getCaseTypes`, same fallback
+page yet and render disabled with a "Soon" pill — only Home, Dashboard,
+Crime Overview, Crime Hotspots, and Cases are real links. Every number in
+either shell is either live (`getSummary`/`getCaseTypes`, same fallback
 pattern as elsewhere) or real seeded scenario data (Featured Investigation,
 Alerts & Leads, Verified Evidence Feed — see `src/lib/dashboardData.ts`);
 nothing is fabricated, including no invented "vs. last month" deltas (stat
 cards show a real year-over-year sparkline instead). The dashboard's
 colourful accent palette (`--dash-*` tokens in `globals.css`) is
-deliberately scoped to this one page — the rest of the site keeps the
-muted navy/saffron system unchanged.
+deliberately scoped to the sidebar shell — Home keeps the muted navy/
+saffron system unchanged.
 
 The Crime Hotspots mini-map preview depends on the same external CDN calls
 as the full `/crime-hotspots` map and can intermittently fail to load
