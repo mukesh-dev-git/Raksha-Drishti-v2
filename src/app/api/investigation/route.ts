@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { zcqlAll, pick, fail, nosqlByScenarioPrefix } from "@/lib/zcql";
+import { zcqlAll, pick, fail, serializeError, nosqlByScenarioPrefix } from "@/lib/zcql";
 import { getCaseType, getDistrict } from "@/lib/data";
 import caseScenarioMap from "@/lib/nosql-seed/caseScenarioMap.json";
 
 export const dynamic = "force-dynamic";
+// Extend the function timeout if the platform honors this Next.js route
+// segment config (Slate/OpenNext support unconfirmed - harmless if ignored).
+// This route makes up to 8 sequential/parallel Catalyst API round-trips
+// (2 ZCQL + 6 NoSQL), which may exceed a short default on cold start.
+export const maxDuration = 60;
 
 // GET /api/investigation?caseType=<slug>&district=<slug>
 // -> real seeded evidence (calls/transactions/CCTV/witness statements/
@@ -62,24 +67,43 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ scenario: null });
     }
 
-    const [calls, transactions, cctv, witnessStatements, timeline, contradictions] = await Promise.all([
-      nosqlByScenarioPrefix(req, "CallRecords", scenarioId),
-      nosqlByScenarioPrefix(req, "Transactions", scenarioId),
-      nosqlByScenarioPrefix(req, "CCTVSightings", scenarioId),
-      nosqlByScenarioPrefix(req, "WitnessStatements", scenarioId),
-      nosqlByScenarioPrefix(req, "TimelineEvents", scenarioId),
-      nosqlByScenarioPrefix(req, "Contradictions", scenarioId),
-    ]);
+    // ?debug=1 short-circuits before any NoSQL calls - isolates whether a
+    // failure is in the ZCQL join/scenario-mapping step or the NoSQL step.
+    if (req.nextUrl.searchParams.get("debug") === "1") {
+      return NextResponse.json({ scenario: scenarioId, debug: "resolved scenario, skipped NoSQL" });
+    }
 
-    return NextResponse.json({
-      scenario: scenarioId,
-      calls,
-      transactions,
-      cctv,
-      witnessStatements,
-      timeline,
-      contradiction: contradictions[0] || null,
+    // Promise.allSettled (not .all) + per-table try/catch inside
+    // nosqlByScenarioPrefix's caller here: one bad/slow table shouldn't take
+    // the whole response down, and a rejection reason is visible in the
+    // response instead of only in platform logs we can't easily reach.
+    const tables: [string, string][] = [
+      ["calls", "CallRecords"],
+      ["transactions", "Transactions"],
+      ["cctv", "CCTVSightings"],
+      ["witnessStatements", "WitnessStatements"],
+      ["timeline", "TimelineEvents"],
+      ["contradictions", "Contradictions"],
+    ];
+    const settled = await Promise.allSettled(
+      tables.map(([, table]) => nosqlByScenarioPrefix(req, table, scenarioId!))
+    );
+    const result: Record<string, unknown> = { scenario: scenarioId };
+    const errors: Record<string, unknown> = {};
+    settled.forEach((s, i) => {
+      const [key] = tables[i];
+      if (s.status === "fulfilled") result[key] = s.value;
+      else {
+        result[key] = [];
+        errors[key] = serializeError(s.reason);
+      }
     });
+    const contradictions = (result.contradictions as unknown[]) || [];
+    result.contradiction = contradictions[0] || null;
+    delete result.contradictions;
+    if (Object.keys(errors).length) result.nosqlErrors = errors;
+
+    return NextResponse.json(result);
   } catch (e) {
     return fail(e);
   }
