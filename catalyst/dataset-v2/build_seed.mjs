@@ -161,6 +161,13 @@ writeNoSqlCollection("Transactions", (c) => c.transactions);
 writeNoSqlCollection("CCTVSightings", (c) => c.cctv);
 writeNoSqlCollection("WitnessStatements", (c) => c.witnessStatements);
 writeNoSqlCollection("TimelineEvents", (c) => c.timeline);
-writeNoSqlCollection("Contradictions", (c) => (c.contradiction ? [c.contradiction] : []));
+// Unlike every other collection, the source contradiction object has no id
+// field of its own (there's only ever one per scenario) - synthesize one so
+// it has the same "id" partition key every NoSQL table uses. Found via a
+// live import: every other collection's rows had a real "id" and inserted
+// fine; Contradictions failed all 15/15 with "Mandatory Key id is missing".
+writeNoSqlCollection("Contradictions", (c) =>
+  c.contradiction ? [{ id: `${c.scenarioId}-CD-1`, ...c.contradiction }] : []
+);
 
 console.log(`\nDone. CSVs in ${path.relative(process.cwd(), outCsvDir)}, NoSQL JSON in ${path.relative(process.cwd(), outNoSqlDir)}.`);

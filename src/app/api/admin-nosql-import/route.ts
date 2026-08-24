@@ -24,12 +24,11 @@ export const dynamic = "force-dynamic";
 // are small (17-75 records each, ~194 total) so this is still fast.
 //
 // DELETE this route once run successfully once - see catalyst/README.md.
+// CallRecords/Transactions/CCTVSightings/WitnessStatements/TimelineEvents
+// already imported successfully (179/179 combined, verified 2026-08-24) -
+// only Contradictions needs (re)running now that its missing-id bug is
+// fixed, so this doesn't re-insert duplicates into the other 5.
 const COLLECTIONS: Record<string, unknown[]> = {
-  CallRecords,
-  Transactions,
-  CCTVSightings,
-  WitnessStatements,
-  TimelineEvents,
   Contradictions,
 };
 

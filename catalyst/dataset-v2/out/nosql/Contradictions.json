@@ -22,6 +22,7 @@
         "name": "Iqbal Sait"
       }
     },
+    "id": "C1-CD-1",
     "description": "Suresh's alibi (WS-2: in Bengaluru until 11pm on 19 March) directly conflicts with CCTV placing his vehicle on the Tumakuru highway at 9:40pm the same night - a ~90min drive that makes both being-in-Bengaluru-until-11pm AND being-on-the-highway-at-9:40pm mutually exclusive.",
     "conflictingRecords": [
       "C1-WS-2",
@@ -61,6 +62,7 @@
         "name": "Anil Kumar (shop assistant)"
       }
     },
+    "id": "C2-CD-1",
     "description": "Ravindra's statement (WS-2) denies ever dealing with Praveen, but CCTV (CC-2) places Praveen entering his shop the morning after the robbery, and a planning call (CL-1) precedes the robbery by 4 days.",
     "conflictingRecords": [
       "C2-WS-2",
@@ -97,6 +99,7 @@
         "name": "Farida Banu"
       }
     },
+    "id": "C3-CD-1",
     "description": "Tarun's statement (WS-2) claims QuickCash and RapidFin are unrelated companies he had no connection to besides RapidFin - but both companies' payouts (TX-1, TX-2) land in the exact same Kotak account belonging to Zoya, and his own recurring call pattern to her (CL-1, CL-2, CL-3) spans both FIRs' complaint windows without a gap.",
     "conflictingRecords": [
       "C3-WS-2",
@@ -132,6 +135,7 @@
         "name": "Basavaraj Patil"
       }
     },
+    "id": "C4-CD-1",
     "description": "Notary Shantaram's statement (WS-1) claims he doesn't know the buyer personally, but a call record (CL-3) shows him speaking directly with the buyer, and he received a payment from the broker (TX-2) the day after the buyer's payment cleared - inconsistent with an arm's-length, good-faith notarization.",
     "conflictingRecords": [
       "C4-WS-1",
@@ -162,6 +166,7 @@
         "name": "Rafiq Ahmed (shop owner, fence)"
       }
     },
+    "id": "C5-CD-1",
     "description": "Rafiq's statement (WS-1) frames Vinod as a random 'regular walk-in customer', but the call record (CL-1) shows Vinod contacting Rafiq just 90 minutes after the burglary window closed, well before any normal shop-visit conversation would happen.",
     "conflictingRecords": [
       "C5-WS-1",
@@ -201,6 +206,7 @@
         "name": "Hanumantha Naik"
       }
     },
+    "id": "C6-CD-1",
     "description": "Ismail's statement (WS-2) claims his call to Chandru was a 'routine payroll matter', but it directly precedes Chandru's calls to the two men who carried out the assault (CL-2, CL-3), and a witness (WS-1) directly attributes an instruction to Chandru right after that call.",
     "conflictingRecords": [
       "C6-WS-2",
@@ -228,6 +234,7 @@
         "name": "Somesh K (truck driver)"
       }
     },
+    "id": "C7-CD-1",
     "description": "Somesh's statement (WS-1, given only after FIR 9009) claims his truck was used without his knowledge and he was asleep - but the exact same truck was flagged on the same toll camera at nearly the same hour a week later (CC-2), right after another Halappa-to-Somesh call (CL-2) matching the first night's pattern precisely, which is hard to square with a one-off unauthorized use.",
     "conflictingRecords": [
       "C7-WS-1",
@@ -274,6 +281,7 @@
         "name": "K.S. Venkataraman"
       }
     },
+    "id": "C8-CD-1",
     "description": "Priya's statement (WS-1) claims she is only a landlord with no involvement in the office's activity, but the shell company both victims paid into (TX-1, TX-2) pays out directly to her personal HDFC account (TX-3), and CCTV shows her entering the office alongside the agents (CC-1), not visiting as an occasional landlord would.",
     "conflictingRecords": [
       "C8-WS-1",
@@ -304,6 +312,7 @@
         "name": "Rekha Iyengar"
       }
     },
+    "id": "C9-CD-1",
     "description": "Kamala's recanted statement (WS-2) claims 'no one visited or spoke to me' since her first statement, but CCTV (CC-1) places the accused's brother entering her building that exact morning, less than an hour before she gave the recant - and a call from the accused to his brother (CL-1) precedes that visit.",
     "conflictingRecords": [
       "C9-WS-2",
@@ -334,6 +343,7 @@
         "name": "Ganesh Koli"
       }
     },
+    "id": "C10-CD-1",
     "description": "Vasant's statement (WS-1) frames this as routine bulk scrap buying with no questions asked, but the timing is too tight for that story - a call 30 minutes after the theft (CL-1), scooters delivered by hand rather than ridden in (CC-1, consistent with them being stolen and disabled/hidden), and same-day payment (TX-1, TX-2) to both men involved.",
     "conflictingRecords": [
       "C10-WS-1",
@@ -379,6 +389,7 @@
         "name": "Pooja Deshmukh"
       }
     },
+    "id": "C11-CD-1",
     "description": "Ravi's statement (WS-1) claims he never left the hall and doesn't know any of the accused, but a call record (CL-1) shows him contacting Altaf 90 minutes before the robbery with details matching what was stolen, and he received a payment from Altaf 3 days later (TX-1).",
     "conflictingRecords": [
       "C11-WS-1",
@@ -419,6 +430,7 @@
         "name": "Shwetha Kamath"
       }
     },
+    "id": "C12-CD-1",
     "description": "Clifton's statement (WS-1) frames himself purely as a fellow victim who recruited 'in good faith', but a call from Wilfred to him (CL-2) on 1 September - the exact day investors stopped getting answers - precedes the mass fund transfer out (TX-3) by 2 days, suggesting advance knowledge rather than innocence.",
     "conflictingRecords": [
       "C12-WS-1",
@@ -450,6 +462,7 @@
         "name": "Anand M (cash-out mule)"
       }
     },
+    "id": "C13-CD-1",
     "description": "Deepak's statement (WS-1, given in the Ballari FIR) claims he never operated in Bengaluru, but the Bengaluru cash-out (TX-2) lands in the exact same account (xx7761) as the Ballari cash-out (TX-1), and a call from him to Anand (CL-3) is timed precisely with the Bengaluru withdrawals.",
     "conflictingRecords": [
       "C13-WS-1",
@@ -481,6 +494,7 @@
         "name": "Devaraj (forest watcher, insider)"
       }
     },
+    "id": "C14-CD-1",
     "description": "Devaraj's statement (WS-1) claims he was on 'regular night duty as always' and noticed nothing, but a call from him to Manjappa the night before (CL-1) and a payment from Manjappa to him the day after the timber sale (TX-2) both point to prior coordination, not routine duty.",
     "conflictingRecords": [
       "C14-WS-1",
@@ -526,6 +540,7 @@
         "name": "Vikram Singh"
       }
     },
+    "id": "C15-CD-1",
     "description": "Both sides claim self-defense (WS-1 says Bharath's group struck first, WS-2 says Zaid's group struck first) - but wide-angle CCTV (CC-2) directly shows Bharath throwing the first visible strike, which contradicts WS-2's account but is worth weighing against the earlier coordination call on Bharath's side (CL-2, 2 hours before) versus the later, more reactive-looking call on Zaid's side (CL-1, 40 min before).",
     "conflictingRecords": [
       "C15-WS-1",
