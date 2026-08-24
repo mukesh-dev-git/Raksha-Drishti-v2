@@ -18,12 +18,34 @@ Same split on the backend: **two Zoho Catalyst projects** exist —
 `RakshaDrishti` (original, frozen, only 4 Data Store tables) and
 `Raksha-Dhrishti-v2` (active, all continued work). **Always confirm the
 active project** (`catalyst.cmd project:list`) before running `deploy` or
-any `ds:import`/`ds:export`. Full detail, current schema-build status, and
-what's still missing vs. the organizer's ER diagram:
-[`catalyst/README.md`](catalyst/README.md) and
-[`catalyst/DATA_STORE_SCHEMA.md`](catalyst/DATA_STORE_SCHEMA.md) — **read
-those before adding or changing any Data Store table**, rather than
-re-deriving the schema from `Police_FIR_ER_Diagram.pdf` by hand.
+any `ds:import`/`ds:export`. The app is hosted on **Catalyst Slate**
+(git-push-based auto-deploy, not the old Web Client Hosting path) at
+`https://raksha-drishti-v2-byahjtre.onslate.in/`.
+
+**[`catalyst/README.md`](catalyst/README.md) is the source of truth for
+everything backend** — Slate hosting/deploy gotchas, the full 21-table Data
+Store schema build status, the 6 seeded NoSQL investigation-intelligence
+collections, and every live API route. **Read it before touching the Data
+Store, NoSQL, or deploy config** — don't re-derive the schema from
+`Police_FIR_ER_Diagram.pdf` by hand, and don't assume a Slate quirk is a
+platform bug before checking there (several "bugs" turned out to be our own
+code — see that file's notes on `dynamicParams`/`force-dynamic` and
+`X-Frame-Options`). Column-level schema reference:
+[`catalyst/DATA_STORE_SCHEMA.md`](catalyst/DATA_STORE_SCHEMA.md).
+
+**Live data status:** Dashboard summary, Cases list, District-wise stats,
+and Crime Count/Crime Hotspots' underlying stats all pull real data through
+`/api/*` Route Handlers. The Investigation Workspace additionally shows a
+"Verified Evidence Feed" panel of real seeded case data for the 15 (of 32)
+caseType/district combinations that have an authored scenario behind them —
+see
+[`catalyst/README.md` §3](catalyst/README.md#3-api--️-route-handlers-rd_api-function-retired).
+Everything else (case files, the case-file flipbook, and any
+caseType/district combo without a seeded scenario) still runs on the
+bundled mock generators in `src/lib/data.ts` /
+`src/lib/investigationData.ts` — every live call falls back to that mock
+data automatically on any API error, so the site never breaks from a Data
+Store hiccup.
 
 ## Getting started
 
@@ -33,6 +55,11 @@ npm run dev
 ```
 
 Open http://localhost:3000 → redirects to `/dashboard`.
+
+Local `npm run dev` has no real Catalyst request context, so every `/api/*`
+route's Data Store/NoSQL call fails and the site transparently falls back to
+the bundled mock data in `src/lib/data.ts` / `investigationData.ts` — this is
+expected, not a bug. To see real data you need the deployed Slate app.
 
 ## Navigation flow
 
@@ -83,19 +110,21 @@ and font-size modes override the same variables.
 
 | Page | File | Notes |
 |------|------|-------|
-| Dashboard | `src/app/dashboard/page.tsx` | Navy hero, summary stat tiles, 3 module cards |
-| Crime Count | `src/app/crime-count/page.tsx` | Stats + charts placeholders |
-| Crime Hotspots | `src/app/crime-hotspots/page.tsx` | Map / heatmap placeholder |
-| Cases | `src/app/cases/page.tsx` | Case-type cards |
-| District-wise | `src/app/cases/[caseType]/district-wise/page.tsx` | Ranked district table |
-| Investigation Workspace | `.../[district]/investigation-workspace/page.tsx` | Relationship graph, timeline, evidence, AI insights |
-| Case Files | `.../[district]/case-files/page.tsx` | Case-file list with status badges |
-| Case File (booklet) | `.../case-files/[caseId]/page.tsx` | Page-turning digital case-file flipbook |
+| Dashboard | `src/app/dashboard/page.tsx` | Navy hero, summary stat tiles, 3 module cards — **live** (`/api/summary`) |
+| Crime Count | `src/app/crime-count/page.tsx` | District/crime-type stats + charts — **live** (`/api/casetypes`, `/api/districts`) |
+| Crime Hotspots | `src/app/crime-hotspots/page.tsx` | MapLibre spatiotemporal heatmap, embedded via `MapEmbed.tsx` (see its comments for the Slate `X-Frame-Options` workaround) |
+| Cases | `src/app/cases/page.tsx` | Case-type cards — **live** (`/api/casetypes`) |
+| District-wise | `src/app/cases/[caseType]/district-wise/page.tsx` | Ranked district table — **live** (`/api/district-stats`) |
+| Investigation Workspace | `.../[district]/investigation-workspace/page.tsx` | Relationship graph, timeline, evidence, AI insights (mock) + a **Verified Evidence Feed** panel showing real seeded case data when available (`/api/investigation`, see `RealEvidenceFeed.tsx`) |
+| Case Files | `.../[district]/case-files/page.tsx` | Case-file list with status badges — mock data |
+| Case File (booklet) | `.../case-files/[caseId]/page.tsx` | Page-turning digital case-file flipbook — mock data |
 
-Placeholder boxes marked **"Pending — feature to be added"** show teammates
-where data features slot in. Sample data lives in
-[`src/lib/data.ts`](src/lib/data.ts); the investigation board's seeded mock data
-is in [`src/lib/investigationData.ts`](src/lib/investigationData.ts).
+Sample/fallback data lives in [`src/lib/data.ts`](src/lib/data.ts); the
+investigation board's seeded mock generator is in
+[`src/lib/investigationData.ts`](src/lib/investigationData.ts) — every "live"
+row above calls a Route Handler under `src/app/api/` first and only falls
+back to these on error (see `catalyst/README.md` §3/§3b for how each one
+resolves real data).
 
 ## Shared building blocks
 
@@ -105,6 +134,9 @@ is in [`src/lib/investigationData.ts`](src/lib/investigationData.ts).
 - `src/components/` — `PageShell`, `LinkCard`, `Placeholder`
 - `src/components/investigation/` and `src/components/flipbook/` — the
   investigation board and case-file flipbook
+- `src/lib/api.ts` — same-origin `fetch("/api/...")` helpers with automatic
+  fallback to `data.ts`; `src/lib/zcql.ts` — shared ZCQL/NoSQL helpers used
+  by every Route Handler under `src/app/api/`
 
 ## Assets
 
