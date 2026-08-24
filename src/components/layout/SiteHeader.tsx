@@ -11,6 +11,10 @@ import { BASE_PATH } from "@/lib/basePath";
 //   2. Utility row: government identity + accessibility controls
 //   3. Masthead: emblem + department identity, then the primary nav
 // A single tricolor rule sits between the masthead and the navigation.
+//
+// Used on the Home welcome page ONLY (src/app/page.tsx) - every other page
+// runs the sidebar shell instead (src/app/(site)/layout.tsx). Home is a
+// deliberate pre-shell landing screen, not part of that route group.
 // -----------------------------------------------------------------------------
 export default function SiteHeader() {
   return (
@@ -31,7 +35,7 @@ export default function SiteHeader() {
       {/* 3. Masthead */}
       <div className="bg-surface">
         <div className="mx-auto flex max-w-content items-center gap-4 px-4 py-4">
-          <Link href="/dashboard" className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-3">
             <Image
               src={`${BASE_PATH}/karnataka-state-police.png`}
               alt="Karnataka State Police emblem"

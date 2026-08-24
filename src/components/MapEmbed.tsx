@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Maximize2, Minimize2, X } from "lucide-react";
+import { Maximize2, X } from "lucide-react";
+import { useBlobMapSrc } from "@/lib/useBlobMapSrc";
 
 // -----------------------------------------------------------------------------
 // MapEmbed — iframe wrapper for the crime map / heatmap pages, with a toggle to
@@ -33,41 +34,7 @@ export default function MapEmbed({
   title: string;
 }) {
   const [fullWidth, setFullWidth] = useState(false);
-  const [blobUrl, setBlobUrl] = useState<string | null>(null);
-  const [fetchError, setFetchError] = useState<string | null>(null);
-  const [retryKey, setRetryKey] = useState(0);
-
-  useEffect(() => {
-    let cancelled = false;
-    let objectUrl: string | null = null;
-    setFetchError(null);
-    fetch(src)
-      .then((r) => {
-        if (!r.ok) throw new Error(`${r.status} ${r.statusText}`);
-        return r.text();
-      })
-      .then((text) => {
-        if (cancelled) return;
-        // A blob: document has no real path of its own, so the map script's
-        // own fetch("/crime-map/data/...") - a root-relative path, added
-        // specifically to make srcdoc work - fails inside a blob: context:
-        // "Failed to parse URL from /crime-map/data/bangalore_crime.csv"
-        // (confirmed via console, 2026-08-24). A <base> tag makes the
-        // browser resolve every relative/root-relative URL in the document
-        // against the real origin instead, without touching the map's own
-        // fetch call.
-        const withBase = `<base href="${window.location.origin}/">` + text;
-        objectUrl = URL.createObjectURL(new Blob([withBase], { type: "text/html" }));
-        setBlobUrl(objectUrl);
-      })
-      .catch((e) => {
-        if (!cancelled) setFetchError(e instanceof Error ? e.message : String(e));
-      });
-    return () => {
-      cancelled = true;
-      if (objectUrl) URL.revokeObjectURL(objectUrl);
-    };
-  }, [src, retryKey]);
+  const { blobUrl, fetchError, retry } = useBlobMapSrc(src);
 
   // Let Escape exit full-width mode, and stop the page from scrolling behind it.
   useEffect(() => {
@@ -118,7 +85,7 @@ export default function MapEmbed({
             <p>Couldn&apos;t load the map ({fetchError}).</p>
             <button
               type="button"
-              onClick={() => setRetryKey((k) => k + 1)}
+              onClick={retry}
               className="rounded-sm border border-line bg-surface px-3 py-1.5 text-xs font-medium text-navy hover:border-navy"
             >
               Retry

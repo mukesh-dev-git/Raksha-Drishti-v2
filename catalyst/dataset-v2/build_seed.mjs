@@ -187,4 +187,28 @@ writeFileSync(
 );
 console.log(`\ncaseScenarioMap.json`.padEnd(30), `${Object.keys(caseScenarioMap).length} CaseMasterIDs -> ${dataset.cases.length} scenarios`);
 
+// --- 5. Scenario metadata (title/summary/crimeType/district for cards) ---------
+// Lets a Route Handler or server component show a real "featured scenario"
+// card (dashboard, alerts, etc.) without re-deriving it from cases.json,
+// which isn't bundled into the app (only the generated JSON under out/ is).
+// caseTypeSlug/districtSlug aren't resolved here - build_seed.mjs doesn't
+// have data.ts's slug tables - callers resolve dbId -> slug via data.ts.
+const scenarioMeta = {};
+for (const c of dataset.cases) {
+  const firstFir = c.firs[0];
+  scenarioMeta[c.scenarioId] = {
+    title: c.title,
+    summary: c.summary,
+    crimeMinorHeadID: firstFir.CrimeMinorHeadID,
+    districtId: (c.districts && c.districts[0]) || null,
+    caseMasterIds: c.firs.map((f) => f.CaseMasterID),
+  };
+}
+writeFileSync(
+  path.join(outNoSqlDir, "scenarioMeta.json"),
+  JSON.stringify(scenarioMeta, null, 2),
+  "utf-8"
+);
+console.log(`scenarioMeta.json`.padEnd(30), `${Object.keys(scenarioMeta).length} scenarios`);
+
 console.log(`\nDone. CSVs in ${path.relative(process.cwd(), outCsvDir)}, NoSQL JSON in ${path.relative(process.cwd(), outNoSqlDir)}.`);
