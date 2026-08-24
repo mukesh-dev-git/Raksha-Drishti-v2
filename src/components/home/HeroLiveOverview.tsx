@@ -1,7 +1,7 @@
 import { FileStack, ShieldCheck, Users, Gauge } from "lucide-react";
 import Sparkline from "@/components/dashboard/Sparkline";
 import CrimeTrendChart from "@/components/dashboard/CrimeTrendChart";
-import HotspotsMini from "@/components/dashboard/HotspotsMini";
+import HotspotsIllustration from "./HotspotsIllustration";
 import type { Summary } from "@/lib/api";
 
 const TILES = (s: Summary) => [
@@ -18,10 +18,12 @@ const TILES = (s: Summary) => [
 
 // -----------------------------------------------------------------------------
 // The dark "Live Overview" glass panel embedded in the Home hero - real
-// numbers (same getSummary() everything else on the site uses), a real
-// yearly trend chart, and the actual live Crime Hotspots mini-map
-// (HotspotsMini, reused as-is - its white card look nested inside this dark
-// panel matches the reference design's own treatment of that sub-panel).
+// numbers (same getSummary() everything else on the site uses) and a real
+// yearly trend chart. The Crime Hotspots panel is a purely decorative
+// illustration (HotspotsIllustration), not the live map - see that file's
+// comment for why; the actual live map is still one click away via "View
+// Full Map", and /dashboard's own Crime Hotspots card is still the real
+// live embed.
 //
 // CrimeTrendChart reads var(--line)/var(--muted) for its gridlines/axis text,
 // which resolve to the site's light-theme colours - invisible on a dark
@@ -65,15 +67,8 @@ export default function HeroLiveOverview({ summary }: { summary: Summary }) {
           </div>
         </div>
 
-        <div
-          className="rounded-lg border border-white/10 bg-white/5 p-3"
-          style={{
-            ["--ink" as string]: "#fff",
-            ["--muted" as string]: "rgba(255,255,255,0.65)",
-            ["--line" as string]: "rgba(255,255,255,0.15)",
-          }}
-        >
-          <HotspotsMini bare title="Crime Hotspots" />
+        <div className="rounded-lg border border-white/10 bg-white/5 p-3">
+          <HotspotsIllustration />
         </div>
       </div>
     </div>
