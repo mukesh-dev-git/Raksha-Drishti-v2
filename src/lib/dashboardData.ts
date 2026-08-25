@@ -7,6 +7,7 @@
 // not fabricated - no invented deltas, alert counts, or call volumes.
 // -----------------------------------------------------------------------------
 import { caseTypes, districts } from "./data";
+import type { ViewScope } from "./viewScope";
 import scenarioMeta from "./nosql-seed/scenarioMeta.json";
 import callRecords from "./nosql-seed/CallRecords.json";
 import transactions from "./nosql-seed/Transactions.json";
@@ -19,9 +20,30 @@ type ScenarioMeta = {
   summary: string;
   crimeMinorHeadID: number;
   districtId: number | null;
+  districtIds: number[];
+  handlingLevel: "District" | "State CID";
   caseMasterIds: number[];
 };
-const META: Record<string, ScenarioMeta> = scenarioMeta;
+// JSON module imports widen string-literal fields (handlingLevel) to plain
+// `string` - this file's own build_seed.mjs only ever writes "District" or
+// "State CID" into it, so the cast is safe, not a type-safety hole.
+const META: Record<string, ScenarioMeta> = scenarioMeta as Record<string, ScenarioMeta>;
+
+// A scenario is in scope for a District Officer only if their district is
+// one of the (possibly several - see build_seed.mjs) real districts the
+// scenario's FIRs touch. A State/CID Officer sees everything.
+export function scenarioInScope(scenarioId: string, scope: ViewScope): boolean {
+  if (scope.role === "state") return true;
+  const meta = META[scenarioId];
+  return !!meta && meta.districtIds.includes(scope.districtId);
+}
+
+// The real districts a State/CID-scoped viewer would need to pick from,
+// and the label a district officer's own scope resolves to - both derived
+// from data.ts's real district table, not hand-maintained here.
+export function districtLabel(districtId: number): string {
+  return districts.find((d) => d.dbId === districtId)?.name ?? `District ${districtId}`;
+}
 
 // scenarioId -> real /cases/[caseType]/[district]/investigation-workspace URL,
 // resolved via the same dbId tables every other live route already uses.
@@ -34,9 +56,23 @@ function scenarioLink(scenarioId: string): string | null {
   return `/cases/${c.slug}/${d.slug}/investigation-workspace`;
 }
 
-export function getFeaturedScenario(scenarioId = "C1") {
+// Picks which scenario to feature for a given scope: for a District
+// Officer, the first in-scope scenario handled at their own district (never
+// a State-CID one - those are exactly the cases outside a single district's
+// jurisdiction); for a State/CID Officer, prefer a State-CID scenario (the
+// more relevant case at that level) and fall back to any scenario.
+function pickFeaturedScenarioId(scope: ViewScope): string | null {
+  const ids = Object.keys(META);
+  if (scope.role === "district") {
+    return ids.find((id) => META[id].handlingLevel === "District" && scenarioInScope(id, scope)) ?? null;
+  }
+  return ids.find((id) => META[id].handlingLevel === "State CID") ?? ids[0] ?? null;
+}
+
+export function getFeaturedScenario(scope: ViewScope = { role: "state" }) {
+  const scenarioId = pickFeaturedScenarioId(scope);
+  if (!scenarioId) return null;
   const meta = META[scenarioId];
-  if (!meta) return null;
   const link = scenarioLink(scenarioId);
   if (!link) return null;
 
@@ -62,6 +98,8 @@ export function getFeaturedScenario(scenarioId = "C1") {
     summary: meta.summary,
     caseTypeName: c.name,
     districtName: d.name,
+    districtNames: meta.districtIds.map(districtLabel),
+    handlingLevel: meta.handlingLevel,
     caseMasterIds: meta.caseMasterIds,
     link,
     hasContradiction: !!contradiction,
@@ -83,12 +121,14 @@ export type Alert = {
   title: string;
   detail: string;
   link: string | null;
+  handlingLevel: "District" | "State CID" | null;
 };
 
 // Real evidence contradictions only - no fabricated "crime spike" style
 // alerts, since there's no real anomaly-detection signal behind them.
-export function getRealAlerts(limit = 3): Alert[] {
+export function getRealAlerts(limit = 3, scope: ViewScope = { role: "state" }): Alert[] {
   return (contradictions as { id: string; scenarioId: string; description: string }[])
+    .filter((c) => scenarioInScope(c.scenarioId, scope))
     .slice(0, limit)
     .map((c) => {
       const meta = META[c.scenarioId];
@@ -98,6 +138,7 @@ export function getRealAlerts(limit = 3): Alert[] {
         title: `Evidence contradiction — ${meta?.title || c.scenarioId}`,
         detail: c.description,
         link: scenarioLink(c.scenarioId),
+        handlingLevel: meta?.handlingLevel ?? null,
       };
     });
 }
@@ -112,7 +153,7 @@ export type EvidenceFeedItem = {
 };
 
 // Most recent real evidence items across every seeded scenario, newest first.
-export function getRealEvidenceFeed(limit = 6): EvidenceFeedItem[] {
+export function getRealEvidenceFeed(limit = 6, scope: ViewScope = { role: "state" }): EvidenceFeedItem[] {
   const items: EvidenceFeedItem[] = [
     ...(callRecords as any[]).map((r) => ({
       id: r.id,
@@ -146,7 +187,7 @@ export function getRealEvidenceFeed(limit = 6): EvidenceFeedItem[] {
       timestamp: `${r.statementDate}T00:00:00`,
       link: scenarioLink(r.scenarioId),
     })),
-  ];
+  ].filter((item) => scenarioInScope(item.scenarioId, scope));
   items.sort((a, b) => (a.timestamp < b.timestamp ? 1 : -1));
   return items.slice(0, limit);
 }

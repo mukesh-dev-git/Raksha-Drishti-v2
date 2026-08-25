@@ -4,6 +4,11 @@
     "summary": "A motorcycle theft ring in Bengaluru launders stolen bikes through fake registration transfers sold as 'used vehicles' in Tumakuru. One accused (Suresh) is named inconsistently across the two FIRs - the entity-fusion target. CCTV places him in Tumakuru at a time his own witness statement says he was elsewhere in Bengaluru.",
     "crimeMinorHeadID": 1,
     "districtId": 4401,
+    "districtIds": [
+      4401,
+      4406
+    ],
+    "handlingLevel": "State CID",
     "caseMasterIds": [
       9001,
       9002
@@ -14,6 +19,10 @@
     "summary": "An organized gang robs a jewellery shop near K.R. Market, Mysuru, fencing the goods through an unlicensed pawnbroker. A shop assistant (victim) is grabbed and injured during the robbery.",
     "crimeMinorHeadID": 1,
     "districtId": 4402,
+    "districtIds": [
+      4402
+    ],
+    "handlingLevel": "District",
     "caseMasterIds": [
       9003
     ]
@@ -23,6 +32,11 @@
     "summary": "An illegal instant-loan app harasses and extorts borrowers across two districts, using leaked contact lists to threaten victims' families. Same operator (Zoya) runs both district-level complaints under different registered-agent names.",
     "crimeMinorHeadID": 3,
     "districtId": 4403,
+    "districtIds": [
+      4403,
+      4401
+    ],
+    "handlingLevel": "State CID",
     "caseMasterIds": [
       9004,
       9005
@@ -33,6 +47,10 @@
     "summary": "A property broker, a complicit notary, and a buyer conspire to forge land title documents for an agricultural plot, defrauding the actual owner.",
     "crimeMinorHeadID": 3,
     "districtId": 4404,
+    "districtIds": [
+      4404
+    ],
+    "handlingLevel": "District",
     "caseMasterIds": [
       9006
     ]
@@ -42,6 +60,10 @@
     "summary": "A string of electronics-warehouse burglaries in Mangaluru feeds a secondhand electronics shop that resells the goods within days.",
     "crimeMinorHeadID": 4,
     "districtId": 4405,
+    "districtIds": [
+      4405
+    ],
+    "handlingLevel": "District",
     "caseMasterIds": [
       9007
     ]
@@ -51,6 +73,10 @@
     "summary": "A labor payment dispute at a mining site escalates into a group assault on a worker who raised the issue, allegedly ordered by the contractor.",
     "crimeMinorHeadID": 2,
     "districtId": 4407,
+    "districtIds": [
+      4407
+    ],
+    "handlingLevel": "District",
     "caseMasterIds": [
       9008
     ]
@@ -60,6 +86,11 @@
     "summary": "A rural cattle theft ring moves stolen livestock across a district border overnight to avoid recognition, using a common transporter's truck for both districts' thefts.",
     "crimeMinorHeadID": 1,
     "districtId": 4408,
+    "districtIds": [
+      4408,
+      4406
+    ],
+    "handlingLevel": "State CID",
     "caseMasterIds": [
       9009,
       9010
@@ -70,6 +101,10 @@
     "summary": "An illegal call centre in Whitefield runs a fake tech-support scam targeting elderly victims across multiple cities, extracting remote-access payments.",
     "crimeMinorHeadID": 3,
     "districtId": 4401,
+    "districtIds": [
+      4401
+    ],
+    "handlingLevel": "District",
     "caseMasterIds": [
       9011
     ]
@@ -79,6 +114,10 @@
     "summary": "A domestic assault complaint is followed by witness intimidation - a neighbor who gave an initial statement recants weeks later, but a CCTV timestamp on the intimidation visit conflicts with the accused's claimed whereabouts.",
     "crimeMinorHeadID": 2,
     "districtId": 4402,
+    "districtIds": [
+      4402
+    ],
+    "handlingLevel": "District",
     "caseMasterIds": [
       9012
     ]
@@ -88,6 +127,10 @@
     "summary": "Stolen two-wheelers are stripped for parts at an unlicensed garage and the parts resold separately, making the vehicles themselves untraceable.",
     "crimeMinorHeadID": 4,
     "districtId": 4403,
+    "districtIds": [
+      4403
+    ],
+    "handlingLevel": "District",
     "caseMasterIds": [
       9013
     ]
@@ -97,6 +140,10 @@
     "summary": "A gang cases wedding venues via an inside informant (a catering staff member) and robs guests of jewellery during the event.",
     "crimeMinorHeadID": 1,
     "districtId": 4404,
+    "districtIds": [
+      4404
+    ],
+    "handlingLevel": "District",
     "caseMasterIds": [
       9014
     ]
@@ -106,6 +153,10 @@
     "summary": "A fake 'guaranteed returns' investment scheme collects money from dozens of small investors before the operators vanish; two early investors act as unwitting local recruiters.",
     "crimeMinorHeadID": 3,
     "districtId": 4405,
+    "districtIds": [
+      4405
+    ],
+    "handlingLevel": "District",
     "caseMasterIds": [
       9015
     ]
@@ -115,6 +166,11 @@
     "summary": "A skimming device installer, a card-data cloner, and a network of cash-out mules operate across two cities, with the same mule appearing under different first names in each district's FIR.",
     "crimeMinorHeadID": 3,
     "districtId": 4407,
+    "districtIds": [
+      4407,
+      4401
+    ],
+    "handlingLevel": "State CID",
     "caseMasterIds": [
       9016,
       9017
@@ -125,6 +181,10 @@
     "summary": "A sandalwood theft ring operates with an inside tip-off from a forest department watcher, felling trees inside a reserve and moving timber out via an unmonitored route.",
     "crimeMinorHeadID": 4,
     "districtId": 4408,
+    "districtIds": [
+      4408
+    ],
+    "handlingLevel": "District",
     "caseMasterIds": [
       9018
     ]
@@ -134,6 +194,10 @@
     "summary": "A street-gang turf dispute erupts into a multi-person assault outside a college, with dense CCTV coverage typical of an urban setting and conflicting accounts of who struck first.",
     "crimeMinorHeadID": 2,
     "districtId": 4401,
+    "districtIds": [
+      4401
+    ],
+    "handlingLevel": "District",
     "caseMasterIds": [
       9019
     ]

@@ -50,8 +50,12 @@ export type Summary = {
   yearlySolved: number[];
 };
 
-export async function getSummary(): Promise<Summary> {
-  const live = await apiGet<Summary>("/summary");
+// `districtId` scopes every number to one real district ("Viewing as:
+// District Officer" mode - see viewScope.ts) via the API route's own
+// CaseMaster/Unit join; omit for the statewide ("State/CID Officer") view.
+export async function getSummary(districtId?: number): Promise<Summary> {
+  const qs = districtId ? `?district=${districtId}` : "";
+  const live = await apiGet<Summary>(`/summary${qs}`);
   if (live) return live;
 
   // Fallback (local dev / Data Store error): approximate from the bundled
@@ -59,15 +63,16 @@ export async function getSummary(): Promise<Summary> {
   // real yearly "solved" breakdown, so yearlySolved here is a clearanceRate-
   // weighted estimate, not a real count. Only ever shown when the live API
   // is unavailable (see catalyst/README.md).
-  const totalCases = caseTypes.reduce((s, c) => s + c.total, 0);
-  const yearlyTrend = trendYears.map((_, i) => districts.reduce((s, d) => s + d.trend[i], 0));
-  const solvedCases = Math.round(
-    districts.reduce((s, d) => s + d.count * (d.clearanceRate / 100), 0)
-  );
+  const scoped = districtId ? districts.filter((d) => d.dbId === districtId) : districts;
+  const totalCases = districtId
+    ? scoped.reduce((s, d) => s + d.count, 0)
+    : caseTypes.reduce((s, c) => s + c.total, 0);
+  const yearlyTrend = trendYears.map((_, i) => scoped.reduce((s, d) => s + d.trend[i], 0));
+  const solvedCases = Math.round(scoped.reduce((s, d) => s + d.count * (d.clearanceRate / 100), 0));
   return {
     totalCases,
     crimeCategories: caseTypes.length,
-    districtsCovered: districts.length,
+    districtsCovered: districtId ? 1 : districts.length,
     solvedCases,
     activeInvestigations: totalCases - solvedCases,
     detectionRate: totalCases ? Math.round((solvedCases / totalCases) * 1000) / 10 : 0,
@@ -78,8 +83,13 @@ export async function getSummary(): Promise<Summary> {
 }
 
 // --- Case types (crime sub-heads) ------------------------------------------
-export async function getCaseTypes(): Promise<CaseType[]> {
-  const live = await apiGet<CaseType[]>("/casetypes");
+// See getSummary() - same `districtId` scoping. The bundled fallback sample
+// data has no real per-district-per-category breakdown, so the fallback
+// path (local dev only) returns the unscoped list rather than a fabricated
+// split - never shown once the live API is available.
+export async function getCaseTypes(districtId?: number): Promise<CaseType[]> {
+  const qs = districtId ? `?district=${districtId}` : "";
+  const live = await apiGet<CaseType[]>(`/casetypes${qs}`);
   if (live && live.length) return live;
   return caseTypes;
 }

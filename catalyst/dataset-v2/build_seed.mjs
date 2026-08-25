@@ -193,14 +193,24 @@ console.log(`\ncaseScenarioMap.json`.padEnd(30), `${Object.keys(caseScenarioMap)
 // which isn't bundled into the app (only the generated JSON under out/ is).
 // caseTypeSlug/districtSlug aren't resolved here - build_seed.mjs doesn't
 // have data.ts's slug tables - callers resolve dbId -> slug via data.ts.
+// handlingLevel is derived, not hand-authored: a scenario whose FIRs span
+// more than one district ("districts" already tracks every real district
+// involved, e.g. C1's motorcycle-fencing ring spans Bengaluru + Tumakuru)
+// is exactly the case a State CID would take over in practice - a single
+// district SP has no jurisdiction across district lines. This is a real
+// signal already latent in the authored data, not a fabricated judgment
+// call per scenario - see README's note on why (State/District scoping).
 const scenarioMeta = {};
 for (const c of dataset.cases) {
   const firstFir = c.firs[0];
+  const districtIds = c.districts || [];
   scenarioMeta[c.scenarioId] = {
     title: c.title,
     summary: c.summary,
     crimeMinorHeadID: firstFir.CrimeMinorHeadID,
-    districtId: (c.districts && c.districts[0]) || null,
+    districtId: districtIds[0] || null,
+    districtIds,
+    handlingLevel: districtIds.length > 1 ? "State CID" : "District",
     caseMasterIds: c.firs.map((f) => f.CaseMasterID),
   };
 }

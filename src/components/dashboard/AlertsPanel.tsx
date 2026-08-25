@@ -20,7 +20,14 @@ export default function AlertsPanel({ alerts }: { alerts: Alert[] }) {
                 <AlertTriangle size={14} aria-hidden="true" />
               </span>
               <div className="min-w-0">
-                <p className="text-[13px] font-semibold text-ink">{a.title}</p>
+                <p className="flex flex-wrap items-center gap-1.5 text-[13px] font-semibold text-ink">
+                  {a.title}
+                  {a.handlingLevel === "State CID" && (
+                    <span className="rounded-full bg-dash-purple-bg px-1.5 py-0.5 text-[10px] font-semibold text-dash-purple">
+                      State CID
+                    </span>
+                  )}
+                </p>
                 <p className="mt-0.5 line-clamp-2 text-xs text-muted">{a.detail}</p>
               </div>
             </div>

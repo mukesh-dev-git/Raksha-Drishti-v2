@@ -24,6 +24,8 @@ import {
   Settings,
 } from "lucide-react";
 import { BASE_PATH } from "@/lib/basePath";
+import { districtLabel } from "@/lib/dashboardData";
+import type { ViewScope } from "@/lib/viewScope";
 
 type Item = {
   label: string;
@@ -70,8 +72,9 @@ const SECTIONS: { heading: string; items: Item[] }[] = [
   },
 ];
 
-export default function DashboardSidebar() {
+export default function DashboardSidebar({ scope }: { scope: ViewScope }) {
   const pathname = usePathname();
+  const scopeLabel = scope.role === "state" ? "State / CID · Statewide" : `District · ${districtLabel(scope.districtId)}`;
 
   return (
     <aside className="sticky top-0 flex h-screen w-64 shrink-0 flex-col bg-dash-sidebar text-white/85">
@@ -89,6 +92,9 @@ export default function DashboardSidebar() {
           <span className="block text-[11px] text-white/55">Crime Analytics &amp; Investigation Portal</span>
         </span>
       </Link>
+      <p className="-mt-2 px-5 pb-3 text-[10px] font-medium uppercase tracking-[0.1em] text-white/40">
+        Viewing: {scopeLabel}
+      </p>
 
       <nav className="scrollbar-hide flex-1 overflow-y-auto px-3 pb-4">
         <NavLink label="Home" href="/" icon={Home} active={pathname === "/"} />

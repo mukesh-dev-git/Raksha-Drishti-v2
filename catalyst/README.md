@@ -198,7 +198,49 @@ unset) so hosting is never blocked. To turn it on: enable Authentication in the
 console, ensure the Catalyst web SDK is served with the client, then build with
 `NEXT_PUBLIC_RD_AUTH=on`.
 
+## 4b. State vs. District scoping — ✅ demo-scoped, not real access control
+
+The Dashboard has a "Viewing as" switcher (State/CID Officer, statewide, vs.
+District Officer, scoped to one real district) —
+[`src/lib/viewScope.ts`](../src/lib/viewScope.ts) /
+[`viewScope.server.ts`](../src/lib/viewScope.server.ts). It's a genuine
+scoping feature (real numbers, real Featured Investigation, real Alerts/
+Evidence Feed, all actually filtered per-scope, not just relabelled) but
+explicitly **not real access control** - there's no signed-in identity
+behind it (§4's Auth is off by default), and the scope is a plain,
+client-writable cookie (`rd-view-scope`) anyone can flip. Real backend-
+enforced RBAC (a signed-in officer's role/district determining what they're
+*allowed* to see) would need Catalyst Authentication configured with real
+roles - not built.
+
+`handlingLevel` ("District" vs. "State CID") is **derived, not hand-
+authored**: `build_seed.mjs` marks a scenario "State CID" exactly when its
+FIRs span more than one real district (`districts.length > 1`) - a single
+district SP has no jurisdiction across district lines, so a genuinely
+cross-district scenario is exactly the case a state CID would take over in
+practice. 4 of the 15 scenarios are cross-district today (C1, C3, C7, C13).
+
+Two different scoping rules, both server-side (`src/lib/dashboardData.ts`):
+- **Featured Investigation** ("this is my own case to run"): a District
+  view only ever features a "District"-level scenario for that district -
+  never a State-CID one, even if the district is physically involved.
+  Districts with no pure-district scenario of their own (e.g. Tumakuru,
+  which only appears in cross-district C1/C7) get an honest empty state
+  instead of nothing/an error.
+- **Alerts & Leads / Verified Evidence Feed** ("does my district have a
+  stake in this"): broader - any scenario whose `districtIds` includes the
+  officer's district, State-CID or not, tagged with a "State CID" badge
+  when it's not this district's own case.
+
+`/api/summary` and `/api/casetypes` both take an optional `?district=` that
+does the same `CaseMaster`/`Unit` join every other district-scoped route
+already uses (§3).
+
 ## 5. Next
+- Real backend-enforced RBAC behind §4b's "Viewing as" switcher - a signed-
+  in officer's role/district actually restricting what they can see/do,
+  once §4's Auth is turned on with real roles, rather than a client-
+  writable cookie anyone can flip.
 - Convert Data Store FK `Number` columns to `Lookup` columns now that parent
   rows actually exist.
 - CRUD (create/edit/delete) endpoints + auth-gated writes, per the
