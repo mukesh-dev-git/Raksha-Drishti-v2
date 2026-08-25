@@ -71,14 +71,21 @@ yet (still plain numbers, not enforced relationships) — that's still open.
 6 more tables (arrest tracking + demographic lookups) are spec'd but not
 built — see `DATA_STORE_SCHEMA.md`'s "Extended tables" section.
 
-⚠️ **The live `Accused` table is one schema change behind.** P1.1 changed
-`Accused.PersonID` from scenario-local labels (`A1`…`A4`, which made 17
-different people share an ID) to a global person register (`KA-P0001`…
-`KA-P0047`). That's landed in the generator and the regenerated CSVs, but
-**not re-imported** — P1.6 does the wipe-and-reimport once, after the rest of
-P1. Nothing in the app reads `PersonID` today, so the drift is inert; just
-don't build against the live column until P1.6. Details:
-`DATA_STORE_SCHEMA.md` → "Accused.PersonID — the person register".
+⚠️ **The live tables are behind the generated CSVs in two places.** Both are
+landed in `catalyst/dataset-v2/` and in the regenerated CSVs under
+`out/csv/`, but **not re-imported** — P1.6 does the wipe-and-reimport once,
+after the rest of P1, so it happens exactly once rather than per change:
+
+| Table · column | Live holds | CSVs hold | From |
+|---|---|---|---|
+| `Accused.PersonID` | `A1`…`A4` (one ID covered 17 people) | `KA-P0001`…`KA-P0047` | P1.1 |
+| `CaseMaster.latitude/longitude` | 14 points across 19 rows | 19 distinct, per-incident | P1.3 |
+
+Neither column is read by the app today — nothing in `src/` touches
+`PersonID` or `latitude`/`longitude` — so the drift is inert. Just don't
+build a person-spine or hotspot feature against the **live** tables until
+P1.6 has run. Details: `DATA_STORE_SCHEMA.md` → "Accused.PersonID — the
+person register", and `dataset-v2/geo_time.mjs` for the coordinates.
 
 ## 2b. NoSQL (investigation-intelligence collections) — ✅ created and seeded
 

@@ -256,6 +256,51 @@ context for Data Store access, which is a different mechanism and does not
 obviously yield a QuickML token. Resolving how the token is minted on Slate
 is the remaining piece of P5.1.
 
+#### What we've ruled out so far (2026-08-25)
+
+Two rounds of live calls, both **inconclusive on the scheme** — the token was
+rejected before the scheme mattered, so neither round is evidence either way:
+
+| Probe | Result |
+|---|---|
+| `/glm/chat` + `Zoho-oauthtoken` | 401, **empty body** |
+| `/glm/chat` + `Bearer` | 401, **empty body** |
+| `/glm/chat` without `CATALYST-ORG` | 401, empty body |
+| `baas/v1/project` (plain Catalyst, same token) | 401, empty body |
+
+That last row is the informative one. The token fails against **plain
+Catalyst BaaS too**, not just QuickML — so it isn't a scope or a
+QuickML-specific header problem. A missing scope on BaaS would return a scope
+error, not a bare 401. The token simply isn't recognised. Repeated with a
+freshly generated token; identical result.
+
+**Most likely cause: the grant token is being used as the access token.**
+Zoho's Self Client is a two-step flow and *both* values have the same
+`1000.xxx.yyy` shape, which makes them trivial to confuse:
+
+1. **Generate Code** → a **grant token**, valid ~10 minutes, not an API
+   credential.
+2. Exchange it at `accounts.zoho.in/oauth/v2/token` (`grant_type=
+   authorization_code`) → the actual `access_token`.
+
+Skipping step 2 produces exactly this signature: 401 on every endpoint, every
+scheme. Two other candidates worth eliminating at the same time — the token
+must be minted in the **India** DC (`accounts.zoho.in` /
+`api-console.zoho.in`) to match the `api.catalyst.zoho.**in**` host, and the
+scope must include `QuickML.deployment.READ` at code-generation time.
+
+**Confirmed regardless of how this resolves:** the 401 body is **empty**, not
+the documented `{code, message, details}` error shape. So `llm.ts` cannot
+assume an error response is parseable JSON — it must handle an empty body and
+fall back to the status code. That's a real finding from these calls even
+though the auth question is still open.
+
+**Silver lining for P5.1:** working through the Self Client exchange yields
+the `client_id` / `client_secret` / `refresh_token` triple, which is exactly
+what the deployed Slate build needs to mint its own access tokens. That turns
+the OAuth dance into one-time setup rather than an hourly chore, and answers
+P5.1's "how does the deployed build get a token" question as a side effect.
+
 **Never commit the token.** The org id, project id and endpoint URLs above
 are identifiers, not secrets, and are fine in this doc. The access token (and
 any client secret / refresh token used to mint it) belongs in `.env.local`,

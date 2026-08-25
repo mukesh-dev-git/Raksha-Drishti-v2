@@ -47,6 +47,55 @@ bundled mock generators in `src/lib/data.ts` /
 data automatically on any API error, so the site never breaks from a Data
 Store hiccup.
 
+## Where the work stands
+
+**[`PLAN.md`](PLAN.md) is the tracker** — it holds the live checkbox state
+and is the source of truth for what's done and what's next.
+[`RESEARCH_AND_PLAN.md`](RESEARCH_AND_PLAN.md) holds the *why*: the KSP
+domain research, the AI capability survey, and the Data Store audit. This
+section is just the orientation summary; when the two disagree, PLAN.md wins.
+
+*Last swept 2026-08-25.*
+
+**Done**
+
+- **P0 — credibility.** Removed 11 login-bypass links from Home (plus 4 more
+  in the shared footer), deleted 12 dead "Soon" nav items, made the maps
+  responsive, reframed the state scope as **SCRB**, and demoted district from
+  a login-time role to a URL filter. Every visible nav item now goes
+  somewhere real.
+- **P1.1 — one person identity.** `Accused.PersonID` went from scenario-local
+  labels (where a single ID covered 17 different people) to a global register,
+  `KA-P0001`–`KA-P0047`. Fixed alongside it: the evidence layer's person
+  citations resolved **0 of 47** — the two ID spaces never met — now 107/107.
+- **P1.3 — per-incident coordinates.** 19 FIRs shared 14 points because five
+  station centroids each served two cases. Now 19/19 distinct, each anchored
+  on its authored location so scenarios stay in the neighbourhood their
+  narrative names.
+- **P5.0 — the LLM Serving API contract**, read out of the Catalyst console
+  since it isn't in public docs. Recorded in `RESEARCH_AND_PLAN.md` §2.2.
+
+**Next up**
+
+**P1.2 — merge the two seeds** into one generator that is both broad and
+deep. This is the highest-value unblocked item: `P4` (four of the problem
+statement's six capabilities) is waiting on case volume, not on AI and not on
+anyone's decision. 19 cases across 8 districts cannot show a hotspot, a
+trend, or a time-of-day distribution.
+
+Also unblocked and needing nothing from anyone: **P3** (the person spine —
+`/persons` profiles and cross-case entity fusion, which P1.1 cleared the way
+for), plus the two cross-cutting items X1 and X2.
+
+**Blocked on a decision, not on effort**
+
+| Blocked | Waiting on |
+|---|---|
+| All of **P2** (route restructure) | PR #1 — merge or close |
+| All of **P5** (AI) | A working OAuth access token |
+| All of **P6** (Zia) | Whether we generate case-document images at all |
+| **P1.5** / **P4.5** | Agreeing the caste/religion presentation first |
+
 ## Getting started
 
 ```bash

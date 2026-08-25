@@ -13,16 +13,57 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 
 ---
 
+## Where the work stands
+
+*Last swept 2026-08-25.*
+
+| Track | State | Where it's at |
+|---|---|---|
+| **P0** Credibility | ✅ **done** | All 5. App no longer promises what it can't do. |
+| **P1** Data foundation | 🔵 **in progress** | P1.1 ✅ · P1.3 ✅ · P1.4 `[~]` built, not applied · **P1.2 is next** · P1.5 needs a decision · P1.6 last |
+| **P2** Route restructure | 🚧 **blocked** | PR #1 unresolved. Nothing here can start. |
+| **P3** Person spine | ⚪ **ready** | Unblocked by P1.1. Nothing else in its way. |
+| **P4** Real analytics | ⚪ **waiting on P1.2** | Needs case volume before a hotspot or a trend means anything. |
+| **P5** AI | 🚧 **blocked** | Contract known (P5.0 ✅). Blocked on a working OAuth access token. |
+| **P6** Zia | 🚧 **gated** | Needs the P6.0 yes/no on generating images. |
+| **X** Cross-cutting | 🔵 | X3 ✅ · X1, X2 open |
+
+**Done so far:** P0.1–P0.5 · P1.1 · P1.3 · P5.0 · X3
+
+**Ready to pick up right now, no decisions needed:** **P1.2** (then P1.6) ·
+P3.1–P3.3 · X1 · X2
+
+**Blocked on someone, not on effort:**
+
+| Blocked | Needs |
+|---|---|
+| All of P2 | **PR #1 — merge or close** |
+| All of P5 | **A working access token** (see P5.0's auth note) |
+| All of P6 | **P6.0 — do we generate images at all?** "No" closes the track cleanly |
+| P1.5, P4.5 | **Agreement on the caste/religion framing** before anything is built |
+
+**The honest read on P4:** it's the biggest remaining prize — 4 of the PS's 6
+capabilities — and it is *not* blocked on AI or on anyone's decision. It is
+blocked on **P1.2**, because 19 cases across 8 districts cannot show a
+hotspot, a trend, or a time-of-day distribution. P1.2 is the highest-value
+unblocked work in the plan. Note also that P4.1 is larger than "plot the
+coords": the map today is 16 hardcoded Bengaluru localities with crime types
+that don't exist in the 4-type schema, and **nothing in `src/` reads
+`latitude`/`longitude` at all** — so it's a rewrite to read the Data Store,
+not a data swap.
+
+---
+
 ## Ordering, and why
 
 ```
-P0  Credibility        no deps        ── start here, half a day
-P1  Data foundation    no deps        ── unblocks P3, P4, P5
+P0  Credibility        ✅ done
+P1  Data foundation    🔵 P1.1/P1.3 done ── P1.2 is the next real unlock
 P2  Route restructure  🚧 PR #1       ── highest risk, needs PR #1 resolved
-P3  Person spine       needs P1.1     ── the missing entity
-P4  Real analytics     needs P1.3/1.4 ── 4 of 6 PS asks land here
-P5  AI features        🚧 API + P3    ── the differentiator
-P6  Zia                gated on C1    ── only if we get images
+P3  Person spine       ⚪ ready       ── P1.1 unblocked it
+P4  Real analytics     ⚪ needs P1.2  ── 4 of 6 PS asks land here
+P5  AI features        🚧 OAuth token ── the differentiator
+P6  Zia                🚧 gated on P6.0 ── only if we get images
 ```
 
 P0 and P1 can run in parallel — different files, different people.
@@ -33,11 +74,17 @@ P0 and P1 can run in parallel — different files, different people.
 
 *Half a day. Biggest credibility gain per hour available. No dependencies.*
 
-- [x] **P0.1** Remove the 10 login-bypass links from Home (5 in
-      `HomeHeader.tsx`, 5 in `FeatureGrid.tsx`). Sign-in + scope becomes the
+- [x] **P0.1** Remove the login-bypass links from Home. Sign-in becomes the
       only way in.
       *Done when:* `/` offers exactly one forward action, and the feature grid
       either describes capabilities without linking or is cut.
+      *Actually removed:* **11 on Home** — 4 in `HomeHeader`'s nav, 5
+      `FeatureGrid` cards, 2 `HomeHero` CTAs — **plus 4 more** found during
+      in-browser verification in `SiteFooter`'s Quick links, which renders on
+      Home *and* every `(site)` page (so it took a `quickLinks` prop rather
+      than losing the column everywhere). This item originally said "10 (5 in
+      `HomeHeader`, 5 in `FeatureGrid`)"; that was an estimate written before
+      the work and never corrected. See `c349d48`.
 - [x] **P0.2** Delete the 12 dead sidebar items in `DashboardSidebar.tsx`
       rather than labelling them "Soon". A 5-item sidebar where everything
       works reads finished; a 15-item one where 3 work reads abandoned.
@@ -160,6 +207,10 @@ reasons over it.*
       ⚠️ One thing still unresolved, carried into P5.1: the console says
       `Authorization: Zoho-oauthtoken <token>`, both code samples say
       `Bearer`. **Verify with one real call rather than guessing.**
+      Two attempts so far, both inconclusive — **not** because the schemes
+      are equivalent but because the token was rejected first. See §2.2's
+      "what we've ruled out" for what those calls established, and the
+      grant-token-vs-access-token trap that is the most likely cause.
 - [ ] **P5.1** `src/lib/llm.ts` — server-side-only GLM client. Typed, timeout,
       graceful fallback, every call logged with prompt + response (log
       `message.reasoning` too, but never render it — §2.2).
