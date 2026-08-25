@@ -129,7 +129,17 @@ const state = { all: [], hourStart: 0, hourEnd: 23, day: "all",
 // ---- Base style: satellite + 3D buildings + place/road labels (labels sit BELOW the heatmap) ----
 const style = {
   version: 8,
-  glyphs: "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/{fontstack}/{range}.pbf",
+  // Real root cause of this map's "flaky CDN" failures, found live: this
+  // was pointing at an outdated Carto glyphs path that 404s on every
+  // request (verified via curl, unconditionally, regardless of origin -
+  // not actually CORS/flakiness at all, just a wrong URL; the browser
+  // reports a CORS-headers-missing 404 as "blocked by CORS policy",
+  // which is what made it look like network flakiness in the console).
+  // The correct, current path (confirmed working via curl) is what
+  // Carto's own dark-matter-gl-style/style.json itself declares -
+  // map.html gets this right automatically by fetching that style.json
+  // directly instead of hand-rolling a style object with a hardcoded URL.
+  glyphs: "https://tiles.basemaps.cartocdn.com/fonts/{fontstack}/{range}.pbf",
   sources: {
     sat: { type: "raster", tileSize: 256,
       tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"],
@@ -215,6 +225,7 @@ map.on("load", () => {
   addHeatmap();
   document.getElementById("loading").style.display = "none";
   clearTimeout(loadWatchdog);
+  try { sessionStorage.removeItem(RETRY_KEY); } catch (e) {}
   render();
 });
 
@@ -224,9 +235,33 @@ map.on("error", (e) => {
   showLoadFailure(msg);
 });
 
+// Auto-retry a transient load failure a couple of times before falling back
+// to asking the officer to click Retry - the external tile/glyph CDN this
+// map depends on (basemaps.cartocdn.com, see catalyst/README.md §5) blips
+// intermittently and usually clears up within a few seconds on its own.
+// Tracked in sessionStorage, not a plain variable, since location.reload()
+// resets all in-memory state; keyed per map file so map.html and this file
+// retry independently of each other.
+const RETRY_KEY = "rd-map-retry-spatiotemporal";
+const MAX_AUTO_RETRIES = 2;
+
 function showLoadFailure(reason) {
   clearTimeout(loadWatchdog);
   const el = document.getElementById("loading");
+  let attempt = 0;
+  try { attempt = Number(sessionStorage.getItem(RETRY_KEY) || "0"); } catch (e) {}
+
+  if (attempt < MAX_AUTO_RETRIES) {
+    try { sessionStorage.setItem(RETRY_KEY, String(attempt + 1)); } catch (e) {}
+    el.innerHTML = "";
+    const text = document.createElement("div");
+    text.textContent = "Map failed to load" + (reason ? " (" + reason + ")" : "") + " — retrying…";
+    el.appendChild(text);
+    setTimeout(() => location.reload(), 2000);
+    return;
+  }
+
+  try { sessionStorage.removeItem(RETRY_KEY); } catch (e) {}
   el.innerHTML = "";
   const text = document.createElement("div");
   text.textContent = "Map failed to load" + (reason ? " (" + reason + ")" : "") + ".";
@@ -234,7 +269,7 @@ function showLoadFailure(reason) {
   const btn = document.createElement("button");
   btn.textContent = "Retry";
   btn.style.cssText = "padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:var(--panel);color:var(--ink);cursor:pointer;font-size:13px;";
-  btn.onclick = () => location.reload();
+  btn.onclick = () => { try { sessionStorage.removeItem(RETRY_KEY); } catch (e) {} location.reload(); };
   const wrap = document.createElement("div");
   wrap.style.cssText = "display:flex;flex-direction:column;align-items:center;";
   wrap.appendChild(text);

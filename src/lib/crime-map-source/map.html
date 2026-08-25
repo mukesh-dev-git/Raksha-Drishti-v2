@@ -248,7 +248,11 @@ const STYLES = {
 function satelliteStyle(glyphs) {
   return {
     version: 8,
-    glyphs: glyphs || "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/{fontstack}/{range}.pbf",
+    // Fallback only (normally `glyphs` is already the correct URL, captured
+    // from the real cartocdn style.json after the initial style loads) -
+    // was pointing at an outdated, always-404ing Carto path; see
+    // spatiotemporal.html's comment on the same bug for the full story.
+    glyphs: glyphs || "https://tiles.basemaps.cartocdn.com/fonts/{fontstack}/{range}.pbf",
     sources: {
       sat: { type: "raster", tileSize: 256,
         tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"],
@@ -372,6 +376,7 @@ map.on("load", () => {
   addLayers();
   document.getElementById("loading").style.display = "none";
   clearTimeout(loadWatchdog);
+  try { sessionStorage.removeItem(RETRY_KEY); } catch (e) {}
   render();
 });
 
@@ -385,9 +390,30 @@ map.on("error", (e) => {
   showLoadFailure(msg);
 });
 
+// Auto-retry a transient load failure a couple of times before falling back
+// to asking the officer to click Retry - see spatiotemporal.html's comment
+// on the same pattern (kept identical between the two files on purpose) and
+// catalyst/README.md §5 for the external CDN this depends on.
+const RETRY_KEY = "rd-map-retry-map";
+const MAX_AUTO_RETRIES = 2;
+
 function showLoadFailure(reason) {
   clearTimeout(loadWatchdog);
   const el = document.getElementById("loading");
+  let attempt = 0;
+  try { attempt = Number(sessionStorage.getItem(RETRY_KEY) || "0"); } catch (e) {}
+
+  if (attempt < MAX_AUTO_RETRIES) {
+    try { sessionStorage.setItem(RETRY_KEY, String(attempt + 1)); } catch (e) {}
+    el.innerHTML = "";
+    const text = document.createElement("div");
+    text.textContent = "Map failed to load" + (reason ? " (" + reason + ")" : "") + " — retrying…";
+    el.appendChild(text);
+    setTimeout(() => location.reload(), 2000);
+    return;
+  }
+
+  try { sessionStorage.removeItem(RETRY_KEY); } catch (e) {}
   el.innerHTML = "";
   const text = document.createElement("div");
   text.textContent = "Map failed to load" + (reason ? " (" + reason + ")" : "") + ".";
@@ -395,7 +421,7 @@ function showLoadFailure(reason) {
   const btn = document.createElement("button");
   btn.textContent = "Retry";
   btn.style.cssText = "padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:var(--panel);color:var(--ink);cursor:pointer;font-size:13px;";
-  btn.onclick = () => location.reload();
+  btn.onclick = () => { try { sessionStorage.removeItem(RETRY_KEY); } catch (e) {} location.reload(); };
   const wrap = document.createElement("div");
   wrap.style.cssText = "display:flex;flex-direction:column;align-items:center;";
   wrap.appendChild(text);

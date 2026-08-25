@@ -162,11 +162,13 @@ colourful accent palette (`--dash-*` tokens in `globals.css`) is
 deliberately scoped to the sidebar shell — Home keeps the muted navy/
 saffron system unchanged.
 
-The Crime Hotspots mini-map preview depends on the same external CDN calls
-as the full `/crime-hotspots` map and can intermittently fail to load
-("Failed to fetch") independent of anything in this app — it has its own
-retry control; see `catalyst/README.md`'s open item on this map's
-reliability.
+The Crime Hotspots mini-map preview shares its source with the full
+`/crime-hotspots` map. That map's "flaky CDN" failures turned out to be a
+real bug in our own code (a hardcoded, outdated glyphs URL that 404'd
+unconditionally) rather than actual network flakiness — fixed, see
+`catalyst/README.md` §5 for the full story. Both map files also gained
+automatic retry-with-backoff as a defensive measure for genuine transient
+failures.
 
 ## Shared building blocks
 

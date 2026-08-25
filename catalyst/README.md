@@ -251,11 +251,22 @@ already uses (§3).
 - Extend live data to case files / the case-file flipbook, following the
   same pattern as §3b.
 - **Stratus**: move images + case-file evidence into blob storage.
-- `spatiotemporal.html` (the Crime Hotspots map, both the full page and the
-  dashboard's mini preview) depends on several external CDN calls
-  (`basemaps.cartocdn.com` vector tiles + glyph fonts) and has been observed
-  to intermittently fail with a plain "Failed to fetch" - self-resolves on
-  retry, not something in our own code to fix, but worth either simplifying
-  to a single raster basemap (like `map.html`, which doesn't have this
-  issue) or adding automatic retry-with-backoff instead of relying on the
-  user/officer to notice and click retry.
+- ~~`spatiotemporal.html` Crime Hotspots map "flaky CDN"~~ **fixed** (was
+  never actually flaky): `spatiotemporal.html` hand-rolled its own style
+  object with a hardcoded glyphs URL,
+  `https://basemaps.cartocdn.com/gl/dark-matter-gl-style/{fontstack}/{range}.pbf`
+  - an outdated Carto path that 404s on every single request, unconditionally
+  (confirmed via curl with no origin header at all, not something retrying
+  could ever fix). The browser reports a 404 response with no
+  `Access-Control-Allow-Origin` header as "blocked by CORS policy" rather
+  than a plain 404, which is what made this look like intermittent network/
+  CDN flakiness in the console for most of this project's history.
+  `map.html` never hit this because it fetches Carto's real
+  `dark-matter-gl-style/style.json` directly instead of hand-rolling a style
+  object, so it always had the *current* glyphs URL Carto's own style
+  declares. Fixed both files to use the correct, curl-verified path,
+  `https://tiles.basemaps.cartocdn.com/fonts/{fontstack}/{range}.pbf`. Also
+  added automatic retry-with-backoff (2 attempts, sessionStorage-tracked
+  since `location.reload()` clears in-memory state) to both map files as a
+  defensive measure for genuine transient failures - the underlying bug is
+  fixed, but a real network blip is still possible.
