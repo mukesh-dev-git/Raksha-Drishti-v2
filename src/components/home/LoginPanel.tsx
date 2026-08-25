@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link";
-import { Eye, EyeOff, User, Lock, ShieldCheck, ArrowRight } from "lucide-react";
+import { Eye, EyeOff, User, Lock, ShieldCheck, ArrowRight, Landmark } from "lucide-react";
 import { AUTH_ON, LOGIN_URL } from "@/lib/auth";
 import { BASE_PATH } from "@/lib/basePath";
+import { districts } from "@/lib/data";
+import { VIEW_SCOPE_COOKIE, parseViewScope } from "@/lib/viewScope";
 
 // Same photo HomeHero.tsx uses (verified a real, resolving Unsplash photo via
 // curl - see that file's comment on why that matters) - a full backdrop
@@ -21,29 +23,67 @@ const LOGIN_BG_IMG =
 // fixed panel doesn't overlap the main content. Below `lg` it's a normal
 // in-flow block (stacks under the main content on narrow screens).
 //
-// The fields are real (controlled inputs), but this app has no real
-// credential-checking backend of its own - only Catalyst Authentication
-// (AuthGate.tsx), which is off by default and, when on, works by
-// redirecting to Catalyst's own hosted login page, not by accepting a
-// username/password POST here.
+// Two genuinely different things happen on this screen now, and they're
+// kept visually separate on purpose:
 //
-// So: with auth off (the default), submitting does NOT pretend to sign
-// anyone in - it's a real dead end that says so plainly, with a clear,
-// honest way past it (continue to the dashboard unauthenticated, same as
-// every other page today). With auth on, submitting sends the officer to
-// the real Catalyst login flow (same LOGIN_URL AuthGate.tsx uses) instead
-// of silently accepting whatever was typed - a username/password field
-// that LOOKS functional but actually accepts anything would be a real
-// problem for a police portal.
+//  1. "Viewing Scope" (State/CID vs. a real district) - REAL and functional.
+//     This used to live only in the Dashboard topbar's ViewScopeSwitcher;
+//     moved here as the primary action too, since an officer choosing their
+//     scope belongs at sign-in time, not something they stumble on later.
+//     "Continue to Dashboard" sets the same rd-view-scope cookie that
+//     switcher writes and navigates - the topbar switcher still works
+//     afterward for changing scope mid-session.
+//
+//  2. Officer sign-in (username/password/SSO) - honestly NOT functional.
+//     This app has no real credential-checking backend of its own - only
+//     Catalyst Authentication (AuthGate.tsx), off by default, which works
+//     by redirecting to Catalyst's own hosted login page, not by accepting
+//     a POST here. With auth off (the default), submitting doesn't pretend
+//     to sign anyone in - a password field that LOOKS functional but
+//     actually accepts anything would be a real problem for a police
+//     portal. With auth on, it redirects to the real Catalyst flow instead.
 // -----------------------------------------------------------------------------
 export default function LoginPanel() {
+  const router = useRouter();
+
+  // Uncontrolled select, read via ref at the moment of action - not React
+  // state kept in sync with onChange. Confirmed the state-tracking version
+  // has a real gotcha: some ways of setting a <select>'s value (browser
+  // automation included, but not only that) update the DOM element without
+  // going through React's onChange, leaving a `useState` mirror silently
+  // stale - "Continue to Dashboard" would apply whatever scope was selected
+  // when the component first mounted, not what's actually showing on
+  // screen. Reading scopeRef.current.value at click time always reflects
+  // the real DOM value, so this class of bug can't happen.
+  const scopeRef = useRef<HTMLSelectElement>(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showNotConfigured, setShowNotConfigured] = useState(false);
 
+  // Default the picker to whatever scope is already active (e.g. an officer
+  // who set it from the Dashboard topbar earlier), not always back to state.
+  useEffect(() => {
+    const match = /(?:^|;\s*)rd-view-scope=([^;]+)/.exec(document.cookie);
+    const scope = parseViewScope(match?.[1] ? decodeURIComponent(match[1]) : null);
+    if (scopeRef.current) {
+      scopeRef.current.value = scope.role === "state" ? "state" : `district:${scope.districtId}`;
+    }
+  }, []);
+
+  function applyScope() {
+    const value = scopeRef.current?.value ?? "state";
+    document.cookie = `${VIEW_SCOPE_COOKIE}=${value}; path=/; max-age=${60 * 60 * 24 * 30}`;
+  }
+
+  function continueToDashboard() {
+    applyScope();
+    router.push("/dashboard");
+  }
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    applyScope();
     if (AUTH_ON) {
       window.location.href = LOGIN_URL;
       return;
@@ -78,27 +118,59 @@ export default function LoginPanel() {
         <p className="mt-1 text-sm text-white/70">Crime Analytics &amp; Investigation Portal</p>
         <p className="text-sm text-white/70">Karnataka State Police</p>
 
+        {/* 1. Viewing Scope - real, functional, the primary action here */}
         <div className="mt-8 w-full rounded-xl bg-white p-6 text-left shadow-lg">
-          <h2 className="text-lg font-semibold text-ink">Welcome Back</h2>
-          <p className="text-sm text-muted">Login to access the portal</p>
+          <h2 className="flex items-center gap-2 text-lg font-semibold text-ink">
+            <Landmark size={18} className="text-dash-blue" aria-hidden="true" /> Viewing Scope
+          </h2>
+          <p className="text-sm text-muted">Choose what you&apos;ll see on the Dashboard</p>
+
+          <label className="mt-4 block text-xs font-medium text-ink" htmlFor="scope-select">
+            I am signing in as
+          </label>
+          <select
+            id="scope-select"
+            ref={scopeRef}
+            defaultValue="state"
+            className="mt-1.5 w-full rounded-lg border border-line bg-surface py-2.5 px-3 text-sm text-ink focus-visible:border-navy"
+          >
+            <option value="state">State / CID Officer — Statewide</option>
+            {districts.map((d) => (
+              <option key={d.dbId} value={`district:${d.dbId}`}>
+                District Officer — {d.name}
+              </option>
+            ))}
+          </select>
+
+          <button
+            type="button"
+            onClick={continueToDashboard}
+            className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-dash-blue py-2.5 text-sm font-semibold text-white hover:opacity-90"
+          >
+            Continue to Dashboard <ArrowRight size={14} aria-hidden="true" />
+          </button>
+          <p className="mt-2 text-[11px] leading-relaxed text-muted">
+            This sets what the Dashboard shows you — real numbers and cases scoped to your choice. It is not a
+            security boundary; anyone can change it from the Dashboard later. See below for officer sign-in.
+          </p>
+        </div>
+
+        {/* 2. Officer sign-in - honestly not functional yet */}
+        <div className="mt-4 w-full rounded-xl bg-white p-6 text-left shadow-lg">
+          <h2 className="text-base font-semibold text-ink">Officer Sign-In</h2>
+          <p className="text-sm text-muted">Optional — verifies who you are</p>
 
           {showNotConfigured ? (
-            <div className="mt-5 rounded-lg border border-line bg-surface-2 p-4 text-sm text-ink">
+            <div className="mt-4 rounded-lg border border-line bg-surface-2 p-4 text-sm text-ink">
               <p className="font-medium">Officer sign-in isn&apos;t configured yet</p>
               <p className="mt-1.5 text-muted">
                 This deployment doesn&apos;t have Catalyst Authentication turned on, so there&apos;s no real account
-                to sign in to yet — see <code className="text-xs">catalyst/README.md</code> §4. You can still
-                explore every page.
+                to sign in to yet — see <code className="text-xs">catalyst/README.md</code> §4. Your viewing scope
+                above still applies.
               </p>
-              <Link
-                href="/dashboard"
-                className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-navy hover:underline"
-              >
-                Continue to Dashboard <ArrowRight size={14} aria-hidden="true" />
-              </Link>
             </div>
           ) : (
-            <form className="mt-5 space-y-4" onSubmit={handleSubmit}>
+            <form className="mt-4 space-y-4" onSubmit={handleSubmit}>
               <div>
                 <label htmlFor="login-username" className="mb-1.5 block text-xs font-medium text-ink">
                   Username / Employee ID
