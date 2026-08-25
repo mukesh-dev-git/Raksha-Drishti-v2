@@ -61,11 +61,18 @@ P0 and P1 can run in parallel — different files, different people.
 *The seed generator is the problem, not the rows. Fix the generator, verify
 locally, then wipe + re-import **once**. See `RESEARCH_AND_PLAN.md` §5.*
 
-- [ ] **P1.1** Make `Accused.PersonID` globally unique and stable — the same
-      human keeps the same ID across scenarios. Currently `A1` covers 17
-      different people.
-      *Done when:* no `PersonID` maps to more than one real person, and at
-      least one person deliberately spans 2+ cases.
+- [x] **P1.1** ~~Make `Accused.PersonID` globally unique and stable~~ — done.
+      `A1`…`A4` (which made 17 different people share one ID) are now the
+      global register handles `KA-P0001`…`KA-P0047`: 47 people across 53
+      `Accused` rows, 6 of them spanning 2+ cases with their alias spellings
+      kept intact. Scope grew once in flight: the evidence layer's
+      `resolvedPersons` map was keyed `A1`…`A4` while every call/CCTV/
+      statement/timeline record cites `P1`…`P4`, so **0 of 47 person
+      citations resolved** — the citation-grounding P5.6 depends on was dead.
+      Each scenario now carries a `personIndex` bridging token → global ID;
+      **107/107 citations resolve.** See `RESEARCH_AND_PLAN.md` §5.3(a)+(a2).
+      ⚠️ The live Data Store still holds the old `A1`-style values — the
+      re-import is deliberately deferred to **P1.6** so the wipe happens once.
 - [ ] **P1.2** Merge the two seeds into one generator: broad (hundreds of
       cases, so statistics mean something) **and** deep (the 15 authored
       scenarios with full evidence). Port `ChargesheetDetails` from

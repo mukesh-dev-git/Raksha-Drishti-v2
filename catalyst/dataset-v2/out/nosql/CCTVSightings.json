@@ -6,20 +6,53 @@
       9002
     ],
     "resolvedPersons": {
-      "A1": {
+      "P1": {
         "type": "Accused",
-        "id": 8001,
-        "name": "Suresh Naik"
+        "personId": "KA-P0001",
+        "name": "Suresh Naik",
+        "aliases": [
+          "Suresh Naik",
+          "Suresh N."
+        ],
+        "accusedMasterIds": [
+          8001,
+          8003
+        ],
+        "caseMasterIds": [
+          9001,
+          9002
+        ],
+        "id": 8001
       },
-      "A2": {
+      "P2": {
         "type": "Accused",
-        "id": 8002,
-        "name": "Deepak M"
+        "personId": "KA-P0002",
+        "name": "Deepak M",
+        "aliases": [
+          "Deepak M"
+        ],
+        "accusedMasterIds": [
+          8002
+        ],
+        "caseMasterIds": [
+          9001
+        ],
+        "id": 8002
       },
-      "A3": {
+      "P3": {
         "type": "Accused",
-        "id": 8004,
-        "name": "Iqbal Sait"
+        "personId": "KA-P0003",
+        "name": "Iqbal Sait",
+        "aliases": [
+          "Iqbal Sait"
+        ],
+        "accusedMasterIds": [
+          8004
+        ],
+        "caseMasterIds": [
+          9002
+        ],
+        "id": 8004
       }
     },
     "id": "C1-CC-1",
@@ -35,20 +68,53 @@
       9002
     ],
     "resolvedPersons": {
-      "A1": {
+      "P1": {
         "type": "Accused",
-        "id": 8001,
-        "name": "Suresh Naik"
+        "personId": "KA-P0001",
+        "name": "Suresh Naik",
+        "aliases": [
+          "Suresh Naik",
+          "Suresh N."
+        ],
+        "accusedMasterIds": [
+          8001,
+          8003
+        ],
+        "caseMasterIds": [
+          9001,
+          9002
+        ],
+        "id": 8001
       },
-      "A2": {
+      "P2": {
         "type": "Accused",
-        "id": 8002,
-        "name": "Deepak M"
+        "personId": "KA-P0002",
+        "name": "Deepak M",
+        "aliases": [
+          "Deepak M"
+        ],
+        "accusedMasterIds": [
+          8002
+        ],
+        "caseMasterIds": [
+          9001
+        ],
+        "id": 8002
       },
-      "A3": {
+      "P3": {
         "type": "Accused",
-        "id": 8004,
-        "name": "Iqbal Sait"
+        "personId": "KA-P0003",
+        "name": "Iqbal Sait",
+        "aliases": [
+          "Iqbal Sait"
+        ],
+        "accusedMasterIds": [
+          8004
+        ],
+        "caseMasterIds": [
+          9002
+        ],
+        "id": 8004
       }
     },
     "id": "C1-CC-2",
@@ -63,25 +129,65 @@
       9003
     ],
     "resolvedPersons": {
-      "A1": {
+      "P1": {
         "type": "Accused",
-        "id": 8005,
-        "name": "Praveen Achari"
+        "personId": "KA-P0004",
+        "name": "Praveen Achari",
+        "aliases": [
+          "Praveen Achari"
+        ],
+        "accusedMasterIds": [
+          8005
+        ],
+        "caseMasterIds": [
+          9003
+        ],
+        "id": 8005
       },
-      "A2": {
+      "P2": {
         "type": "Accused",
-        "id": 8006,
-        "name": "Manoj Kumar S"
+        "personId": "KA-P0005",
+        "name": "Manoj Kumar S",
+        "aliases": [
+          "Manoj Kumar S"
+        ],
+        "accusedMasterIds": [
+          8006
+        ],
+        "caseMasterIds": [
+          9003
+        ],
+        "id": 8006
       },
-      "A3": {
+      "P3": {
         "type": "Accused",
-        "id": 8007,
-        "name": "Yusuf Ali"
+        "personId": "KA-P0006",
+        "name": "Yusuf Ali",
+        "aliases": [
+          "Yusuf Ali"
+        ],
+        "accusedMasterIds": [
+          8007
+        ],
+        "caseMasterIds": [
+          9003
+        ],
+        "id": 8007
       },
-      "A4": {
+      "P4": {
         "type": "Accused",
-        "id": 8008,
-        "name": "Ravindra Naidu (fence, pawnbroker)"
+        "personId": "KA-P0007",
+        "name": "Ravindra Naidu (fence, pawnbroker)",
+        "aliases": [
+          "Ravindra Naidu (fence, pawnbroker)"
+        ],
+        "accusedMasterIds": [
+          8008
+        ],
+        "caseMasterIds": [
+          9003
+        ],
+        "id": 8008
       },
       "V:Anil": {
         "type": "Victim",
@@ -101,25 +207,65 @@
       9003
     ],
     "resolvedPersons": {
-      "A1": {
+      "P1": {
         "type": "Accused",
-        "id": 8005,
-        "name": "Praveen Achari"
+        "personId": "KA-P0004",
+        "name": "Praveen Achari",
+        "aliases": [
+          "Praveen Achari"
+        ],
+        "accusedMasterIds": [
+          8005
+        ],
+        "caseMasterIds": [
+          9003
+        ],
+        "id": 8005
       },
-      "A2": {
+      "P2": {
         "type": "Accused",
-        "id": 8006,
-        "name": "Manoj Kumar S"
+        "personId": "KA-P0005",
+        "name": "Manoj Kumar S",
+        "aliases": [
+          "Manoj Kumar S"
+        ],
+        "accusedMasterIds": [
+          8006
+        ],
+        "caseMasterIds": [
+          9003
+        ],
+        "id": 8006
       },
-      "A3": {
+      "P3": {
         "type": "Accused",
-        "id": 8007,
-        "name": "Yusuf Ali"
+        "personId": "KA-P0006",
+        "name": "Yusuf Ali",
+        "aliases": [
+          "Yusuf Ali"
+        ],
+        "accusedMasterIds": [
+          8007
+        ],
+        "caseMasterIds": [
+          9003
+        ],
+        "id": 8007
       },
-      "A4": {
+      "P4": {
         "type": "Accused",
-        "id": 8008,
-        "name": "Ravindra Naidu (fence, pawnbroker)"
+        "personId": "KA-P0007",
+        "name": "Ravindra Naidu (fence, pawnbroker)",
+        "aliases": [
+          "Ravindra Naidu (fence, pawnbroker)"
+        ],
+        "accusedMasterIds": [
+          8008
+        ],
+        "caseMasterIds": [
+          9003
+        ],
+        "id": 8008
       },
       "V:Anil": {
         "type": "Victim",
@@ -139,20 +285,50 @@
       9007
     ],
     "resolvedPersons": {
-      "A1": {
+      "P1": {
         "type": "Accused",
-        "id": 8016,
-        "name": "Vinod Poojary"
+        "personId": "KA-P0013",
+        "name": "Vinod Poojary",
+        "aliases": [
+          "Vinod Poojary"
+        ],
+        "accusedMasterIds": [
+          8016
+        ],
+        "caseMasterIds": [
+          9007
+        ],
+        "id": 8016
       },
-      "A2": {
+      "P2": {
         "type": "Accused",
-        "id": 8017,
-        "name": "Naveen Kotian"
+        "personId": "KA-P0014",
+        "name": "Naveen Kotian",
+        "aliases": [
+          "Naveen Kotian"
+        ],
+        "accusedMasterIds": [
+          8017
+        ],
+        "caseMasterIds": [
+          9007
+        ],
+        "id": 8017
       },
-      "A3": {
+      "P3": {
         "type": "Accused",
-        "id": 8018,
-        "name": "Rafiq Ahmed (shop owner, fence)"
+        "personId": "KA-P0015",
+        "name": "Rafiq Ahmed (shop owner, fence)",
+        "aliases": [
+          "Rafiq Ahmed (shop owner, fence)"
+        ],
+        "accusedMasterIds": [
+          8018
+        ],
+        "caseMasterIds": [
+          9007
+        ],
+        "id": 8018
       }
     },
     "id": "C5-CC-1",
@@ -167,20 +343,50 @@
       9007
     ],
     "resolvedPersons": {
-      "A1": {
+      "P1": {
         "type": "Accused",
-        "id": 8016,
-        "name": "Vinod Poojary"
+        "personId": "KA-P0013",
+        "name": "Vinod Poojary",
+        "aliases": [
+          "Vinod Poojary"
+        ],
+        "accusedMasterIds": [
+          8016
+        ],
+        "caseMasterIds": [
+          9007
+        ],
+        "id": 8016
       },
-      "A2": {
+      "P2": {
         "type": "Accused",
-        "id": 8017,
-        "name": "Naveen Kotian"
+        "personId": "KA-P0014",
+        "name": "Naveen Kotian",
+        "aliases": [
+          "Naveen Kotian"
+        ],
+        "accusedMasterIds": [
+          8017
+        ],
+        "caseMasterIds": [
+          9007
+        ],
+        "id": 8017
       },
-      "A3": {
+      "P3": {
         "type": "Accused",
-        "id": 8018,
-        "name": "Rafiq Ahmed (shop owner, fence)"
+        "personId": "KA-P0015",
+        "name": "Rafiq Ahmed (shop owner, fence)",
+        "aliases": [
+          "Rafiq Ahmed (shop owner, fence)"
+        ],
+        "accusedMasterIds": [
+          8018
+        ],
+        "caseMasterIds": [
+          9007
+        ],
+        "id": 8018
       }
     },
     "id": "C5-CC-2",
@@ -195,25 +401,65 @@
       9008
     ],
     "resolvedPersons": {
-      "A1": {
+      "P1": {
         "type": "Accused",
-        "id": 8019,
-        "name": "Chandru M (site supervisor)"
+        "personId": "KA-P0016",
+        "name": "Chandru M (site supervisor)",
+        "aliases": [
+          "Chandru M (site supervisor)"
+        ],
+        "accusedMasterIds": [
+          8019
+        ],
+        "caseMasterIds": [
+          9008
+        ],
+        "id": 8019
       },
-      "A2": {
+      "P2": {
         "type": "Accused",
-        "id": 8020,
-        "name": "Basha Sab"
+        "personId": "KA-P0017",
+        "name": "Basha Sab",
+        "aliases": [
+          "Basha Sab"
+        ],
+        "accusedMasterIds": [
+          8020
+        ],
+        "caseMasterIds": [
+          9008
+        ],
+        "id": 8020
       },
-      "A3": {
+      "P3": {
         "type": "Accused",
-        "id": 8021,
-        "name": "Ravi Kumar T"
+        "personId": "KA-P0018",
+        "name": "Ravi Kumar T",
+        "aliases": [
+          "Ravi Kumar T"
+        ],
+        "accusedMasterIds": [
+          8021
+        ],
+        "caseMasterIds": [
+          9008
+        ],
+        "id": 8021
       },
-      "A4": {
+      "P4": {
         "type": "Accused",
-        "id": 8022,
-        "name": "Ismail Sheikh (mining contractor)"
+        "personId": "KA-P0019",
+        "name": "Ismail Sheikh (mining contractor)",
+        "aliases": [
+          "Ismail Sheikh (mining contractor)"
+        ],
+        "accusedMasterIds": [
+          8022
+        ],
+        "caseMasterIds": [
+          9008
+        ],
+        "id": 8022
       },
       "V:Hanumantha": {
         "type": "Victim",
@@ -234,15 +480,40 @@
       9010
     ],
     "resolvedPersons": {
-      "A1": {
+      "P1": {
         "type": "Accused",
-        "id": 8023,
-        "name": "Halappa D"
+        "personId": "KA-P0020",
+        "name": "Halappa D",
+        "aliases": [
+          "Halappa D"
+        ],
+        "accusedMasterIds": [
+          8023,
+          8025
+        ],
+        "caseMasterIds": [
+          9009,
+          9010
+        ],
+        "id": 8023
       },
-      "A2": {
+      "P2": {
         "type": "Accused",
-        "id": 8024,
-        "name": "Somesh K (truck driver)"
+        "personId": "KA-P0021",
+        "name": "Somesh K (truck driver)",
+        "aliases": [
+          "Somesh K (truck driver)",
+          "Somesh Kumar"
+        ],
+        "accusedMasterIds": [
+          8024,
+          8026
+        ],
+        "caseMasterIds": [
+          9009,
+          9010
+        ],
+        "id": 8024
       }
     },
     "id": "C7-CC-1",
@@ -258,15 +529,40 @@
       9010
     ],
     "resolvedPersons": {
-      "A1": {
+      "P1": {
         "type": "Accused",
-        "id": 8023,
-        "name": "Halappa D"
+        "personId": "KA-P0020",
+        "name": "Halappa D",
+        "aliases": [
+          "Halappa D"
+        ],
+        "accusedMasterIds": [
+          8023,
+          8025
+        ],
+        "caseMasterIds": [
+          9009,
+          9010
+        ],
+        "id": 8023
       },
-      "A2": {
+      "P2": {
         "type": "Accused",
-        "id": 8024,
-        "name": "Somesh K (truck driver)"
+        "personId": "KA-P0021",
+        "name": "Somesh K (truck driver)",
+        "aliases": [
+          "Somesh K (truck driver)",
+          "Somesh Kumar"
+        ],
+        "accusedMasterIds": [
+          8024,
+          8026
+        ],
+        "caseMasterIds": [
+          9009,
+          9010
+        ],
+        "id": 8024
       }
     },
     "id": "C7-CC-2",
@@ -281,25 +577,65 @@
       9011
     ],
     "resolvedPersons": {
-      "A1": {
+      "P1": {
         "type": "Accused",
-        "id": 8027,
-        "name": "Rohan Malhotra (floor manager)"
+        "personId": "KA-P0022",
+        "name": "Rohan Malhotra (floor manager)",
+        "aliases": [
+          "Rohan Malhotra (floor manager)"
+        ],
+        "accusedMasterIds": [
+          8027
+        ],
+        "caseMasterIds": [
+          9011
+        ],
+        "id": 8027
       },
-      "A2": {
+      "P2": {
         "type": "Accused",
-        "id": 8028,
-        "name": "Priya Kapoor (owner-of-record)"
+        "personId": "KA-P0023",
+        "name": "Priya Kapoor (owner-of-record)",
+        "aliases": [
+          "Priya Kapoor (owner-of-record)"
+        ],
+        "accusedMasterIds": [
+          8028
+        ],
+        "caseMasterIds": [
+          9011
+        ],
+        "id": 8028
       },
-      "A3": {
+      "P3": {
         "type": "Accused",
-        "id": 8029,
-        "name": "Amit Verma (agent)"
+        "personId": "KA-P0024",
+        "name": "Amit Verma (agent)",
+        "aliases": [
+          "Amit Verma (agent)"
+        ],
+        "accusedMasterIds": [
+          8029
+        ],
+        "caseMasterIds": [
+          9011
+        ],
+        "id": 8029
       },
-      "A4": {
+      "P4": {
         "type": "Accused",
-        "id": 8030,
-        "name": "Sana Iyer (agent)"
+        "personId": "KA-P0025",
+        "name": "Sana Iyer (agent)",
+        "aliases": [
+          "Sana Iyer (agent)"
+        ],
+        "accusedMasterIds": [
+          8030
+        ],
+        "caseMasterIds": [
+          9011
+        ],
+        "id": 8030
       },
       "V:Margaret": {
         "type": "Victim",
@@ -324,15 +660,35 @@
       9012
     ],
     "resolvedPersons": {
-      "A1": {
+      "P1": {
         "type": "Accused",
-        "id": 8031,
-        "name": "Srinivas Iyengar"
+        "personId": "KA-P0026",
+        "name": "Srinivas Iyengar",
+        "aliases": [
+          "Srinivas Iyengar"
+        ],
+        "accusedMasterIds": [
+          8031
+        ],
+        "caseMasterIds": [
+          9012
+        ],
+        "id": 8031
       },
-      "A2": {
+      "P2": {
         "type": "Accused",
-        "id": 8032,
-        "name": "Nandish Iyengar (accused's brother)"
+        "personId": "KA-P0027",
+        "name": "Nandish Iyengar (accused's brother)",
+        "aliases": [
+          "Nandish Iyengar (accused's brother)"
+        ],
+        "accusedMasterIds": [
+          8032
+        ],
+        "caseMasterIds": [
+          9012
+        ],
+        "id": 8032
       },
       "V:Rekha": {
         "type": "Victim",
@@ -352,20 +708,50 @@
       9013
     ],
     "resolvedPersons": {
-      "A1": {
+      "P1": {
         "type": "Accused",
-        "id": 8033,
-        "name": "Sagar Bandekar"
+        "personId": "KA-P0028",
+        "name": "Sagar Bandekar",
+        "aliases": [
+          "Sagar Bandekar"
+        ],
+        "accusedMasterIds": [
+          8033
+        ],
+        "caseMasterIds": [
+          9013
+        ],
+        "id": 8033
       },
-      "A2": {
+      "P2": {
         "type": "Accused",
-        "id": 8034,
-        "name": "Vasant Naik (garage owner)"
+        "personId": "KA-P0029",
+        "name": "Vasant Naik (garage owner)",
+        "aliases": [
+          "Vasant Naik (garage owner)"
+        ],
+        "accusedMasterIds": [
+          8034
+        ],
+        "caseMasterIds": [
+          9013
+        ],
+        "id": 8034
       },
-      "A3": {
+      "P3": {
         "type": "Accused",
-        "id": 8035,
-        "name": "Ganesh Koli"
+        "personId": "KA-P0030",
+        "name": "Ganesh Koli",
+        "aliases": [
+          "Ganesh Koli"
+        ],
+        "accusedMasterIds": [
+          8035
+        ],
+        "caseMasterIds": [
+          9013
+        ],
+        "id": 8035
       }
     },
     "id": "C10-CC-1",
@@ -380,25 +766,65 @@
       9014
     ],
     "resolvedPersons": {
-      "A1": {
+      "P1": {
         "type": "Accused",
-        "id": 8036,
-        "name": "Altaf Pathan"
+        "personId": "KA-P0031",
+        "name": "Altaf Pathan",
+        "aliases": [
+          "Altaf Pathan"
+        ],
+        "accusedMasterIds": [
+          8036
+        ],
+        "caseMasterIds": [
+          9014
+        ],
+        "id": 8036
       },
-      "A2": {
+      "P2": {
         "type": "Accused",
-        "id": 8037,
-        "name": "Kiran Bhosale"
+        "personId": "KA-P0032",
+        "name": "Kiran Bhosale",
+        "aliases": [
+          "Kiran Bhosale"
+        ],
+        "accusedMasterIds": [
+          8037
+        ],
+        "caseMasterIds": [
+          9014
+        ],
+        "id": 8037
       },
-      "A3": {
+      "P3": {
         "type": "Accused",
-        "id": 8038,
-        "name": "Santosh Waghmare"
+        "personId": "KA-P0033",
+        "name": "Santosh Waghmare",
+        "aliases": [
+          "Santosh Waghmare"
+        ],
+        "accusedMasterIds": [
+          8038
+        ],
+        "caseMasterIds": [
+          9014
+        ],
+        "id": 8038
       },
-      "A4": {
+      "P4": {
         "type": "Accused",
-        "id": 8039,
-        "name": "Ravi Caterer (catering staff, informant)"
+        "personId": "KA-P0034",
+        "name": "Ravi Caterer (catering staff, informant)",
+        "aliases": [
+          "Ravi Caterer (catering staff, informant)"
+        ],
+        "accusedMasterIds": [
+          8039
+        ],
+        "caseMasterIds": [
+          9014
+        ],
+        "id": 8039
       },
       "V:Savitri": {
         "type": "Victim",
@@ -424,20 +850,53 @@
       9017
     ],
     "resolvedPersons": {
-      "A1": {
+      "P1": {
         "type": "Accused",
-        "id": 8043,
-        "name": "Faizal Khan (device installer)"
+        "personId": "KA-P0038",
+        "name": "Faizal Khan (device installer)",
+        "aliases": [
+          "Faizal Khan (device installer)"
+        ],
+        "accusedMasterIds": [
+          8043
+        ],
+        "caseMasterIds": [
+          9016
+        ],
+        "id": 8043
       },
-      "A2": {
+      "P2": {
         "type": "Accused",
-        "id": 8044,
-        "name": "Deepak Rathore (card cloner)"
+        "personId": "KA-P0039",
+        "name": "Deepak Rathore (card cloner)",
+        "aliases": [
+          "Deepak Rathore (card cloner)",
+          "Deepak Rathore"
+        ],
+        "accusedMasterIds": [
+          8044,
+          8046
+        ],
+        "caseMasterIds": [
+          9016,
+          9017
+        ],
+        "id": 8044
       },
-      "A3": {
+      "P3": {
         "type": "Accused",
-        "id": 8045,
-        "name": "Anand M (cash-out mule)"
+        "personId": "KA-P0040",
+        "name": "Anand M (cash-out mule)",
+        "aliases": [
+          "Anand M (cash-out mule)"
+        ],
+        "accusedMasterIds": [
+          8045
+        ],
+        "caseMasterIds": [
+          9016
+        ],
+        "id": 8045
       }
     },
     "id": "C13-CC-1",
@@ -453,20 +912,53 @@
       9017
     ],
     "resolvedPersons": {
-      "A1": {
+      "P1": {
         "type": "Accused",
-        "id": 8043,
-        "name": "Faizal Khan (device installer)"
+        "personId": "KA-P0038",
+        "name": "Faizal Khan (device installer)",
+        "aliases": [
+          "Faizal Khan (device installer)"
+        ],
+        "accusedMasterIds": [
+          8043
+        ],
+        "caseMasterIds": [
+          9016
+        ],
+        "id": 8043
       },
-      "A2": {
+      "P2": {
         "type": "Accused",
-        "id": 8044,
-        "name": "Deepak Rathore (card cloner)"
+        "personId": "KA-P0039",
+        "name": "Deepak Rathore (card cloner)",
+        "aliases": [
+          "Deepak Rathore (card cloner)",
+          "Deepak Rathore"
+        ],
+        "accusedMasterIds": [
+          8044,
+          8046
+        ],
+        "caseMasterIds": [
+          9016,
+          9017
+        ],
+        "id": 8044
       },
-      "A3": {
+      "P3": {
         "type": "Accused",
-        "id": 8045,
-        "name": "Anand M (cash-out mule)"
+        "personId": "KA-P0040",
+        "name": "Anand M (cash-out mule)",
+        "aliases": [
+          "Anand M (cash-out mule)"
+        ],
+        "accusedMasterIds": [
+          8045
+        ],
+        "caseMasterIds": [
+          9016
+        ],
+        "id": 8045
       }
     },
     "id": "C13-CC-2",
@@ -481,25 +973,65 @@
       9019
     ],
     "resolvedPersons": {
-      "A1": {
+      "P1": {
         "type": "Accused",
-        "id": 8050,
-        "name": "Zaid Khan"
+        "personId": "KA-P0044",
+        "name": "Zaid Khan",
+        "aliases": [
+          "Zaid Khan"
+        ],
+        "accusedMasterIds": [
+          8050
+        ],
+        "caseMasterIds": [
+          9019
+        ],
+        "id": 8050
       },
-      "A2": {
+      "P2": {
         "type": "Accused",
-        "id": 8051,
-        "name": "Bharath Gowda"
+        "personId": "KA-P0045",
+        "name": "Bharath Gowda",
+        "aliases": [
+          "Bharath Gowda"
+        ],
+        "accusedMasterIds": [
+          8051
+        ],
+        "caseMasterIds": [
+          9019
+        ],
+        "id": 8051
       },
-      "A3": {
+      "P3": {
         "type": "Accused",
-        "id": 8052,
-        "name": "Naveen Raju"
+        "personId": "KA-P0046",
+        "name": "Naveen Raju",
+        "aliases": [
+          "Naveen Raju"
+        ],
+        "accusedMasterIds": [
+          8052
+        ],
+        "caseMasterIds": [
+          9019
+        ],
+        "id": 8052
       },
-      "A4": {
+      "P4": {
         "type": "Accused",
-        "id": 8053,
-        "name": "Suhail Ahmed"
+        "personId": "KA-P0047",
+        "name": "Suhail Ahmed",
+        "aliases": [
+          "Suhail Ahmed"
+        ],
+        "accusedMasterIds": [
+          8053
+        ],
+        "caseMasterIds": [
+          9019
+        ],
+        "id": 8053
       },
       "V:Arjun": {
         "type": "Victim",
@@ -524,25 +1056,65 @@
       9019
     ],
     "resolvedPersons": {
-      "A1": {
+      "P1": {
         "type": "Accused",
-        "id": 8050,
-        "name": "Zaid Khan"
+        "personId": "KA-P0044",
+        "name": "Zaid Khan",
+        "aliases": [
+          "Zaid Khan"
+        ],
+        "accusedMasterIds": [
+          8050
+        ],
+        "caseMasterIds": [
+          9019
+        ],
+        "id": 8050
       },
-      "A2": {
+      "P2": {
         "type": "Accused",
-        "id": 8051,
-        "name": "Bharath Gowda"
+        "personId": "KA-P0045",
+        "name": "Bharath Gowda",
+        "aliases": [
+          "Bharath Gowda"
+        ],
+        "accusedMasterIds": [
+          8051
+        ],
+        "caseMasterIds": [
+          9019
+        ],
+        "id": 8051
       },
-      "A3": {
+      "P3": {
         "type": "Accused",
-        "id": 8052,
-        "name": "Naveen Raju"
+        "personId": "KA-P0046",
+        "name": "Naveen Raju",
+        "aliases": [
+          "Naveen Raju"
+        ],
+        "accusedMasterIds": [
+          8052
+        ],
+        "caseMasterIds": [
+          9019
+        ],
+        "id": 8052
       },
-      "A4": {
+      "P4": {
         "type": "Accused",
-        "id": 8053,
-        "name": "Suhail Ahmed"
+        "personId": "KA-P0047",
+        "name": "Suhail Ahmed",
+        "aliases": [
+          "Suhail Ahmed"
+        ],
+        "accusedMasterIds": [
+          8053
+        ],
+        "caseMasterIds": [
+          9019
+        ],
+        "id": 8053
       },
       "V:Arjun": {
         "type": "Victim",

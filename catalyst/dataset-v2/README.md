@@ -22,6 +22,38 @@ interconnected, multi-source data to render, per
   data, destined for Catalyst NoSQL per the earlier decision — no
   Data Store table exists for these yet).
 
+### How people are identified (P1.1)
+
+Three things that are easy to confuse, because they look alike and mean
+different things:
+
+| | What it is | Scope |
+|---|---|---|
+| `Accused.PersonID` | `KA-P0001`…`KA-P0047` — the **global person register**. One ID per human. | Whole dataset |
+| `personIndex` | `{"P1": "KA-P0001", …}` — resolves a scenario's narrative tokens to global IDs. **Machine-readable, this is the join.** | Per scenario |
+| `personRefs` | `{"P1": "Suresh Naik / Suresh N. (… entity-fusion target)"}` — the hand-authored glossary. | Per scenario, humans only |
+
+Evidence records (`calls`, `cctv`, `witnessStatements`, `timeline`) cite
+people by the narrative token — `"from": "P1"` — never by the global ID
+directly. `build_seed.mjs` uses `personIndex` to attach a `resolvedPersons`
+map to every emitted record, keyed by those tokens.
+
+Two rules that matter when editing this file:
+
+- **`P<n>` is positional** — `P1` is the 1st distinct accused of that
+  scenario, `P2` the 2nd, and so on. Reordering a scenario's `accused` array
+  silently re-points every evidence citation in it. Regenerate and re-verify
+  after any such edit.
+- **Not every token is a person.** `personRefs` also holds non-person refs —
+  C1's `V4` is an unregistered SIM, C9's `W1` is a witness with no `Accused`
+  row. These deliberately have no `personIndex` entry, and readers must fall
+  back to the raw token rather than assuming resolution.
+
+Aliases are load-bearing. `KA-P0001` appears as both "Suresh Naik" and
+"Suresh N."; `KA-P0008` as "Zoya Merchant" and "Z. Merchant". Do **not**
+normalise these to one spelling — that discrepancy is exactly what P3.1's
+entity fusion has to detect, and flattening it deletes the test case.
+
 Both validated: JSON parses cleanly, zero duplicate IDs within any table,
 every FK in `cases.json` resolves to a real row in `lookups.json`.
 
@@ -52,26 +84,36 @@ deliberately feature #5-compliant from the start: nothing here is a vague
 suspicion, every claim traces to a specific `call`/`transaction`/`cctv`/
 `statement` record ID.
 
-## What this does NOT include yet
-- **Actual Catalyst-importable CSVs/NoSQL JSON.** This is source data, not
-  yet transformed into the exact shapes `ds:import` or a NoSQL collection
-  write needs.
-- **Import into the Data Store.** `Raksha-Dhrishti-v2`'s tables are still
-  empty — this data hasn't been pushed there yet.
-- **Wiring `api.ts`/`investigationData.ts`** to read any of this instead of
-  the seeded RNG mock generator.
+## Build
 
-## Next steps (not yet done)
-1. Write a build script (`build_seed.py`/`.mjs`, same pattern as
-   `catalyst/gen_seed.py`) that reads `lookups.json` + `cases.json` and
-   emits: (a) one CSV per Data Store table with exact column headers, (b)
-   one JSON document set per new NoSQL collection (`CallRecords`,
-   `Transactions`, `CCTVSightings`, `WitnessStatements`).
-2. `catalyst ds:import` each Data Store CSV into `Raksha-Dhrishti-v2`.
-3. Create the NoSQL collections in the console and seed them.
-4. Convert `CaseMaster`'s FK `Number` columns to real `Lookup` columns now
-   that the parent rows they'd point to actually exist.
-5. Extend `src/lib/api.ts` (new endpoints in `rd_api`) and replace
-   `investigationData.ts`'s mock generator with real reads — this is where
-   features.md's #1 (entity fusion) and #6 (shared timeline) actually get
-   built, using this data as the fixture.
+```
+node catalyst/dataset-v2/build_seed.mjs
+```
+
+Reads `lookups.json` + `cases.json`, writes `out/csv/<Table>.csv` (one per
+Data Store table) and `out/nosql/<Collection>.json` (the 6 evidence
+collections, plus `caseScenarioMap.json` and `scenarioMeta.json`). The NoSQL
+JSON is also **bundled into the app** at `src/lib/nosql-seed/` — copy it
+across after regenerating, or `/api/investigation` and the Dashboard keep
+serving the previous content:
+
+```
+cp catalyst/dataset-v2/out/nosql/*.json src/lib/nosql-seed/
+```
+
+## Status
+
+Done: build script, `ds:import` into `Raksha-Dhrishti-v2`, the 6 NoSQL
+collections seeded, and `/api/investigation` + the Dashboard reading real
+records. See [`../README.md`](../README.md) for live row counts and the
+Slate deploy notes.
+
+⚠️ **The live Data Store's `Accused.PersonID` is still the pre-P1.1
+`A1`-style value.** Re-importing is deliberately deferred to **P1.6** so the
+wipe-and-reimport happens exactly once, after the rest of P1 lands. Nothing
+in the app reads `PersonID` today, so the staleness is inert — but don't
+build a person-spine feature against the live table until P1.6 is done.
+
+Still open (tracked in [`../../PLAN.md`](../../PLAN.md)): converting
+`CaseMaster`'s FK `Number` columns to real `Lookup` columns, and the P1.2
+merge of this deep 15-scenario set with a broad statistical one.

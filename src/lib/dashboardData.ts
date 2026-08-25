@@ -156,6 +156,16 @@ export type EvidenceFeedItem = {
   link: string | null;
 };
 
+// Evidence records cite people by a scenario-local narrative token ("P1",
+// "P2", ...); each record carries its own resolvedPersons map keyed by those
+// same tokens (see build_seed.mjs). Render the person's name where the token
+// resolves, and fall back to the raw value where it doesn't - `from`/`to`
+// aren't always people (C1's "V4" is an unregistered SIM, and some records
+// name a number outright), so this must degrade rather than blank out.
+function personLabel(rec: { resolvedPersons?: Record<string, { name?: string }> }, ref: string): string {
+  return rec.resolvedPersons?.[ref]?.name ?? ref;
+}
+
 // Most recent real evidence items across every seeded scenario, newest first.
 export function getRealEvidenceFeed(limit = 6, districtId?: number): EvidenceFeedItem[] {
   const items: EvidenceFeedItem[] = [
@@ -163,7 +173,7 @@ export function getRealEvidenceFeed(limit = 6, districtId?: number): EvidenceFee
       id: r.id,
       scenarioId: r.scenarioId,
       kind: "call" as const,
-      label: `${r.from} → ${r.to}`,
+      label: `${personLabel(r, r.from)} → ${personLabel(r, r.to)}`,
       timestamp: r.timestamp,
       link: scenarioLink(r.scenarioId),
     })),

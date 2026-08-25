@@ -375,10 +375,10 @@ for is reachable from columns already sitting in the Data Store.
 
 ## 5.3 Two bugs found during the audit
 
-### (a) `Accused.PersonID` is unusable as a person key
+### (a) `Accused.PersonID` was unusable as a person key — ✅ fixed (P1.1)
 The organizers put a `PersonID` Text column on `Accused` — the natural
 cross-case person identifier. Our seed populated it with **scenario-local
-labels** (`A1`, `A2`, `A3`, `A4`) that collide across scenarios:
+labels** (`A1`, `A2`, `A3`, `A4`) that collided across scenarios:
 
 ```
 A1 -> 17 distinct names: Suresh Naik / Suresh N. / Praveen Achari / Zoya Merchant ...
@@ -386,10 +386,44 @@ A2 -> 18 distinct names: Deepak M / Manoj Kumar S / Tarun Bhatia ...
 A3 -> 12 distinct names   A4 -> 5 distinct names
 ```
 
-The one column designed for repeat-offender tracking currently makes 17
-different people look like the same person. **Must be globally unique before
-any entity-fusion or person-spine work** (Track B2 / the `/persons/[id]`
-route). This is a seed bug, not a schema bug.
+The one column designed for repeat-offender tracking made 17 different people
+look like the same person. This was a seed bug, not a schema bug.
+
+**Fixed:** `PersonID` is now a global register handle, `KA-P0001`…`KA-P0047` —
+47 distinct people across 53 `Accused` rows, one ID per human, stable dataset-
+wide. The 6 people who appear in more than one FIR keep a single ID across
+them, and their different name spellings are preserved rather than normalised
+away, because that alias pair *is* the entity-fusion signal P3.1 has to catch:
+
+```
+KA-P0001  cases 9001+9002  Suresh Naik / Suresh N.
+KA-P0008  cases 9004+9005  Zoya Merchant (QuickCash) / Z. Merchant (RapidFin)
+KA-P0009  cases 9004+9005  Tarun Bhatia (call-centre lead) / Tarun Bhatia
+KA-P0020  cases 9009+9010  Halappa D
+KA-P0021  cases 9009+9010  Somesh K (truck driver) / Somesh Kumar
+KA-P0039  cases 9016+9017  Deepak Rathore (card cloner) / Deepak Rathore
+```
+
+### (a2) The evidence layer's person citations resolved 0 of 47 — ✅ fixed (P1.1)
+Found while fixing (a). Every NoSQL evidence record ships a `resolvedPersons`
+map whose stated purpose is citation-grounding — giving a later entity-fusion
+pass real record IDs to merge rather than narrative labels. It was keyed by the
+scenario-local `Accused.PersonID` (`A1`…`A4`), while every call, CCTV sighting,
+witness statement and timeline event cites people by a *different* token
+(`P1`…`P4`). The two ID spaces never met, so **not one of the 47 person
+citations in the dataset resolved.**
+
+It went unnoticed because the only consumer, `dashboardData.ts`, reads
+`Object.values(resolvedPersons)` — values only, never keys — so the person
+counts looked right while the join underneath was dead.
+
+**Fixed:** each scenario in `cases.json` now carries a machine-readable
+`personIndex` (`{"P1": "KA-P0001", …}`) bridging narrative token → global
+`PersonID`; `resolvePersonRefs()` in `build_seed.mjs` keys the map by the token
+the records actually cite. **107/107 citation occurrences now resolve.** The
+hand-authored `personRefs` prose glossary is untouched and stays the human-
+readable note. This is what P5.6's citation guardrail ("no finding renders
+without a real record ID") depends on to be enforceable at all.
 
 ### (b) We swapped a 406-case dataset for a 19-case one
 Two seeds exist and only one is live:
@@ -426,9 +460,10 @@ Wiping now just reproduces the same 15%-of-schema dataset. Correct order:
 
 Runs alongside Tracks A and B; it is the true unblocker for most of B and C.
 
-- [ ] **D1.** Make `Accused.PersonID` globally unique and stable, and reuse
-      the same ID for the same human across scenarios — this is what makes
-      repeat-offender tracking real rather than claimed.
+- [x] **D1.** ~~Make `Accused.PersonID` globally unique and stable, and reuse
+      the same ID for the same human across scenarios~~ — done, §5.3(a).
+      `KA-P0001`…`KA-P0047`. Also fixed the evidence layer's 0/47 citation
+      join found alongside it, §5.3(a2).
 - [ ] **D2.** **Merge the two seeds.** One dataset that is both broad
       (hundreds of cases, for statistics to mean anything) and deep (the 15
       authored scenarios with full evidence). Generate the bulk cases

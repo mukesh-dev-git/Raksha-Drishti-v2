@@ -1,6 +1,22 @@
 #!/usr/bin/env python3
 """Generate Catalyst Data Store seed CSVs for the Police FIR schema.
 
+SUPERSEDED — NOT the live seed. The Data Store is loaded from
+catalyst/dataset-v2/ (build_seed.mjs), the 15 hand-authored scenarios. This
+script's broad 406-case output is kept because P1.2 merges the two: broad
+enough for statistics to mean something, deep enough for the evidence layer.
+
+Two things here are wrong against the current schema and must be fixed as part
+of that merge rather than copied forward:
+
+  * PersonID emits scenario-local labels ("A1".."A4") that collide across
+    cases. It is now a GLOBAL person register handle ("KA-Pnnnn") — one ID per
+    human, stable dataset-wide, reused when the same person recurs. Re-running
+    this script as-is would undo P1.1. See catalyst/DATA_STORE_SCHEMA.md
+    ("Accused.PersonID — the person register").
+  * GenderID emits "M"/"F"; the schema wants the numeric code (1=Male,
+    2=Female, 3=Other).
+
 Deterministic (fixed seed) so re-runs are stable. Emits one CSV per table into
 catalyst/seed/. FK columns hold the parent's numeric ID — after CSV import in the
 Catalyst console, convert those *ID columns to Lookup columns.

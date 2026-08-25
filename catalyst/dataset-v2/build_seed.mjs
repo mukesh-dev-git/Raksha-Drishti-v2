@@ -135,10 +135,56 @@ writeCsv("ActSectionAssociation", actSectionCols, actSectionRows);
 // merge, not just narrative labels.
 console.log("\nNoSQL collections:");
 
+// Keyed by the token the evidence records ACTUALLY cite. Until P1.1 this map
+// was keyed by the scenario-local Accused.PersonID ("A1".."A4") while every
+// call/CCTV/statement/timeline record cites the narrative token ("P1".."P4") -
+// so resolvedPersons resolved 0 of the 47 person citations in the dataset and
+// the citation-grounding this map exists to provide was never actually wired
+// up. cases.json's per-scenario "personIndex" is the bridge: token -> global
+// Accused.PersonID ("KA-Pnnnn", unique and stable dataset-wide).
+//
+// One entry per distinct person (NOT one per key alias) - dashboardData.ts
+// counts suspects with Object.values(resolvedPersons), so keying the same
+// person under both its token and its global ID would double every count.
 function resolvePersonRefs(c) {
   const map = {};
-  for (const x of c.accused || []) if (!map[x.PersonID]) map[x.PersonID] = { type: "Accused", id: x.AccusedMasterID, name: x.AccusedName };
-  for (const x of c.victims || []) map["V:" + x.VictimName.split(" ")[0]] = { type: "Victim", id: x.VictimMasterID, name: x.VictimName };
+
+  // Group this scenario's accused rows by global PersonID. A person spanning
+  // two FIRs has two rows under one ID, deliberately under different name
+  // spellings (e.g. "Suresh Naik" / "Suresh N.") - that alias pair is the
+  // entity-fusion signal P3.1 exists to catch, so keep every spelling and
+  // treat the fullest one as canonical rather than silently taking the first.
+  const byPersonId = {};
+  for (const x of c.accused || []) {
+    const p = (byPersonId[x.PersonID] ||= {
+      type: "Accused",
+      personId: x.PersonID,
+      name: x.AccusedName,
+      aliases: [],
+      accusedMasterIds: [],
+      caseMasterIds: [],
+    });
+    if (!p.aliases.includes(x.AccusedName)) p.aliases.push(x.AccusedName);
+    if (x.AccusedName.length > p.name.length) p.name = x.AccusedName;
+    p.accusedMasterIds.push(x.AccusedMasterID);
+    if (!p.caseMasterIds.includes(x.CaseMasterID)) p.caseMasterIds.push(x.CaseMasterID);
+  }
+  // `id` kept for backwards compatibility with readers written against the old
+  // shape; it's the person's first AccusedMasterID.
+  for (const p of Object.values(byPersonId)) p.id = p.accusedMasterIds[0];
+
+  for (const [token, personId] of Object.entries(c.personIndex || {})) {
+    const p = byPersonId[personId];
+    if (!p) throw new Error(`${c.scenarioId}: personIndex ${token} -> ${personId} has no matching accused row`);
+    map[token] = p;
+  }
+
+  // Victims have no PersonID column in the FIR schema, so they can't join to
+  // the global register - they're keyed by name and carried for the person
+  // counts in dashboardData.ts. No evidence record cites a victim token today.
+  for (const x of c.victims || []) {
+    map["V:" + x.VictimName.split(" ")[0]] = { type: "Victim", id: x.VictimMasterID, name: x.VictimName };
+  }
   return map;
 }
 

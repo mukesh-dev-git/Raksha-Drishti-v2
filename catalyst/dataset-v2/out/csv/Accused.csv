@@ -1,54 +1,54 @@
 AccusedMasterID,CaseMasterID,AccusedName,AgeYear,GenderID,PersonID
-8001,9001,Suresh Naik,29,1,A1
-8002,9001,Deepak M,24,1,A2
-8003,9002,Suresh N.,29,1,A1
-8004,9002,Iqbal Sait,38,1,A3
-8005,9003,Praveen Achari,31,1,A1
-8006,9003,Manoj Kumar S,27,1,A2
-8007,9003,Yusuf Ali,33,1,A3
-8008,9003,"Ravindra Naidu (fence, pawnbroker)",47,1,A4
-8009,9004,Zoya Merchant (app runs as 'QuickCash Lending'),33,2,A1
-8010,9004,Tarun Bhatia (call-centre lead),28,1,A2
-8011,9005,Z. Merchant (app registered as 'RapidFin Solutions'),33,2,A1
-8012,9005,Tarun Bhatia,28,1,A2
-8013,9006,Mallikarjun Rao (property broker),44,1,A1
-8014,9006,Shantaram Kulkarni (notary),58,1,A2
-8015,9006,Prakash Jadhav (buyer),39,1,A3
-8016,9007,Vinod Poojary,26,1,A1
-8017,9007,Naveen Kotian,23,1,A2
-8018,9007,"Rafiq Ahmed (shop owner, fence)",45,1,A3
-8019,9008,Chandru M (site supervisor),40,1,A1
-8020,9008,Basha Sab,29,1,A2
-8021,9008,Ravi Kumar T,27,1,A3
-8022,9008,Ismail Sheikh (mining contractor),51,1,A4
-8023,9009,Halappa D,36,1,A1
-8024,9009,Somesh K (truck driver),31,1,A2
-8025,9010,Halappa D,36,1,A1
-8026,9010,Somesh Kumar,31,1,A2
-8027,9011,Rohan Malhotra (floor manager),26,1,A1
-8028,9011,Priya Kapoor (owner-of-record),34,2,A2
-8029,9011,Amit Verma (agent),23,1,A3
-8030,9011,Sana Iyer (agent),22,2,A4
-8031,9012,Srinivas Iyengar,35,1,A1
-8032,9012,Nandish Iyengar (accused's brother),29,1,A2
-8033,9013,Sagar Bandekar,25,1,A1
-8034,9013,Vasant Naik (garage owner),43,1,A2
-8035,9013,Ganesh Koli,22,1,A3
-8036,9014,Altaf Pathan,28,1,A1
-8037,9014,Kiran Bhosale,25,1,A2
-8038,9014,Santosh Waghmare,30,1,A3
-8039,9014,"Ravi Caterer (catering staff, informant)",33,1,A4
-8040,9015,Wilfred Pinto (director),46,1,A1
-8041,9015,Neha D'Silva (co-director),39,2,A2
-8042,9015,Clifton Rego (local recruiter),42,1,A3
-8043,9016,Faizal Khan (device installer),30,1,A1
-8044,9016,Deepak Rathore (card cloner),33,1,A2
-8045,9016,Anand M (cash-out mule),24,1,A3
-8046,9017,Deepak Rathore,33,1,A2
-8047,9018,Manjappa Gowda,39,1,A1
-8048,9018,Yallappa Naik,34,1,A2
-8049,9018,"Devaraj (forest watcher, insider)",41,1,A3
-8050,9019,Zaid Khan,22,1,A1
-8051,9019,Bharath Gowda,21,1,A2
-8052,9019,Naveen Raju,23,1,A3
-8053,9019,Suhail Ahmed,20,1,A4
+8001,9001,Suresh Naik,29,1,KA-P0001
+8002,9001,Deepak M,24,1,KA-P0002
+8003,9002,Suresh N.,29,1,KA-P0001
+8004,9002,Iqbal Sait,38,1,KA-P0003
+8005,9003,Praveen Achari,31,1,KA-P0004
+8006,9003,Manoj Kumar S,27,1,KA-P0005
+8007,9003,Yusuf Ali,33,1,KA-P0006
+8008,9003,"Ravindra Naidu (fence, pawnbroker)",47,1,KA-P0007
+8009,9004,Zoya Merchant (app runs as 'QuickCash Lending'),33,2,KA-P0008
+8010,9004,Tarun Bhatia (call-centre lead),28,1,KA-P0009
+8011,9005,Z. Merchant (app registered as 'RapidFin Solutions'),33,2,KA-P0008
+8012,9005,Tarun Bhatia,28,1,KA-P0009
+8013,9006,Mallikarjun Rao (property broker),44,1,KA-P0010
+8014,9006,Shantaram Kulkarni (notary),58,1,KA-P0011
+8015,9006,Prakash Jadhav (buyer),39,1,KA-P0012
+8016,9007,Vinod Poojary,26,1,KA-P0013
+8017,9007,Naveen Kotian,23,1,KA-P0014
+8018,9007,"Rafiq Ahmed (shop owner, fence)",45,1,KA-P0015
+8019,9008,Chandru M (site supervisor),40,1,KA-P0016
+8020,9008,Basha Sab,29,1,KA-P0017
+8021,9008,Ravi Kumar T,27,1,KA-P0018
+8022,9008,Ismail Sheikh (mining contractor),51,1,KA-P0019
+8023,9009,Halappa D,36,1,KA-P0020
+8024,9009,Somesh K (truck driver),31,1,KA-P0021
+8025,9010,Halappa D,36,1,KA-P0020
+8026,9010,Somesh Kumar,31,1,KA-P0021
+8027,9011,Rohan Malhotra (floor manager),26,1,KA-P0022
+8028,9011,Priya Kapoor (owner-of-record),34,2,KA-P0023
+8029,9011,Amit Verma (agent),23,1,KA-P0024
+8030,9011,Sana Iyer (agent),22,2,KA-P0025
+8031,9012,Srinivas Iyengar,35,1,KA-P0026
+8032,9012,Nandish Iyengar (accused's brother),29,1,KA-P0027
+8033,9013,Sagar Bandekar,25,1,KA-P0028
+8034,9013,Vasant Naik (garage owner),43,1,KA-P0029
+8035,9013,Ganesh Koli,22,1,KA-P0030
+8036,9014,Altaf Pathan,28,1,KA-P0031
+8037,9014,Kiran Bhosale,25,1,KA-P0032
+8038,9014,Santosh Waghmare,30,1,KA-P0033
+8039,9014,"Ravi Caterer (catering staff, informant)",33,1,KA-P0034
+8040,9015,Wilfred Pinto (director),46,1,KA-P0035
+8041,9015,Neha D'Silva (co-director),39,2,KA-P0036
+8042,9015,Clifton Rego (local recruiter),42,1,KA-P0037
+8043,9016,Faizal Khan (device installer),30,1,KA-P0038
+8044,9016,Deepak Rathore (card cloner),33,1,KA-P0039
+8045,9016,Anand M (cash-out mule),24,1,KA-P0040
+8046,9017,Deepak Rathore,33,1,KA-P0039
+8047,9018,Manjappa Gowda,39,1,KA-P0041
+8048,9018,Yallappa Naik,34,1,KA-P0042
+8049,9018,"Devaraj (forest watcher, insider)",41,1,KA-P0043
+8050,9019,Zaid Khan,22,1,KA-P0044
+8051,9019,Bharath Gowda,21,1,KA-P0045
+8052,9019,Naveen Raju,23,1,KA-P0046
+8053,9019,Suhail Ahmed,20,1,KA-P0047

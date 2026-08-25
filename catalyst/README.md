@@ -71,6 +71,15 @@ yet (still plain numbers, not enforced relationships) — that's still open.
 6 more tables (arrest tracking + demographic lookups) are spec'd but not
 built — see `DATA_STORE_SCHEMA.md`'s "Extended tables" section.
 
+⚠️ **The live `Accused` table is one schema change behind.** P1.1 changed
+`Accused.PersonID` from scenario-local labels (`A1`…`A4`, which made 17
+different people share an ID) to a global person register (`KA-P0001`…
+`KA-P0047`). That's landed in the generator and the regenerated CSVs, but
+**not re-imported** — P1.6 does the wipe-and-reimport once, after the rest of
+P1. Nothing in the app reads `PersonID` today, so the drift is inert; just
+don't build against the live column until P1.6. Details:
+`DATA_STORE_SCHEMA.md` → "Accused.PersonID — the person register".
+
 ## 2b. NoSQL (investigation-intelligence collections) — ✅ created and seeded
 
 The 6 new NoSQL collections for `features.md` (entity fusion, suspicion
@@ -163,6 +172,25 @@ filtered from the bundled `src/lib/nosql-seed/*.json` by each record's own
 live NoSQL query). Only 15 of the 32 `caseType` × `district` combinations
 have a seeded scenario behind them; everything else returns
 `{ "scenario": null }`.
+
+**`src/lib/nosql-seed/` is a copy, and nothing keeps it in sync.**
+`build_seed.mjs` writes to `catalyst/dataset-v2/out/nosql/`; the app imports
+from `src/lib/nosql-seed/`. Regenerating without copying across leaves both
+this route and the Dashboard serving the previous content, with no error to
+notice:
+
+```
+node catalyst/dataset-v2/build_seed.mjs
+cp catalyst/dataset-v2/out/nosql/*.json src/lib/nosql-seed/
+```
+
+Each record carries a `resolvedPersons` map so a citation like a call's
+`"from": "P1"` resolves to the person it names. That map is keyed by the
+scenario-local narrative token (`P1`, `P2`, …) — **not** by the global
+`Accused.PersonID`, and not by every alias of both, because
+`dashboardData.ts` counts suspects with `Object.values(resolvedPersons)` and
+double-keying would double every count. Non-person refs (C1's `V4` is a SIM)
+don't resolve by design, so readers must fall back to the raw token.
 
 `RealEvidenceFeed.tsx` (client component) fetches this route from the
 Investigation Workspace and renders a "Verified Evidence Feed" section

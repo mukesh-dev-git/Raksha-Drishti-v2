@@ -4,7 +4,7 @@
     "GenderID": "1=Male, 2=Female, 3=Other",
     "OccupationID": "1=Business/Shop Owner, 2=Farmer, 3=Government Employee, 4=Private Employee, 5=Driver, 6=Homemaker, 7=Student, 8=Daily Wage Worker, 9=Self-employed/Professional, 10=Retired (no OccupationMaster table yet - see DATA_STORE_SCHEMA.md Extended tables)",
     "ReligionID_CasteID": "0 = Not specified for all records in this dataset - CasteMaster/ReligionMaster tables aren't built (deferred, see DATA_STORE_SCHEMA.md), and we deliberately don't assign specific values to fictional people for a demo dataset",
-    "cross_entity_ids": "person/vehicle/account/phone reference IDs used by calls/transactions/cctv/witnessStatements/timeline are local string IDs scoped to each scenario (e.g. 'P1'=first person mentioned in that scenario's accused/victim/complainant lists) - see each scenario's 'personRefs' map"
+    "cross_entity_ids": "Evidence records (calls/transactions/cctv/witnessStatements/timeline) cite people by a scenario-local narrative token 'P1','P2',... = 1st, 2nd, ... distinct accused of that scenario. Each scenario's 'personIndex' resolves those tokens to the GLOBAL Accused.PersonID ('KA-Pnnnn'), which is unique and stable across the whole dataset - the same human keeps one ID across every FIR and scenario. 'personRefs' is the human-readable glossary of the same tokens; non-person tokens (e.g. C1 'V4' a SIM, C9 'W1' a witness) appear only there. Vehicle/account/phone refs remain scenario-local strings."
   },
   "cases": [
     {
@@ -40,10 +40,10 @@
       ],
       "victims": [],
       "accused": [
-        { "AccusedMasterID": 8001, "CaseMasterID": 9001, "AccusedName": "Suresh Naik", "AgeYear": 29, "GenderID": 1, "PersonID": "A1" },
-        { "AccusedMasterID": 8002, "CaseMasterID": 9001, "AccusedName": "Deepak M", "AgeYear": 24, "GenderID": 1, "PersonID": "A2" },
-        { "AccusedMasterID": 8003, "CaseMasterID": 9002, "AccusedName": "Suresh N.", "AgeYear": 29, "GenderID": 1, "PersonID": "A1" },
-        { "AccusedMasterID": 8004, "CaseMasterID": 9002, "AccusedName": "Iqbal Sait", "AgeYear": 38, "GenderID": 1, "PersonID": "A3" }
+        { "AccusedMasterID": 8001, "CaseMasterID": 9001, "AccusedName": "Suresh Naik", "AgeYear": 29, "GenderID": 1, "PersonID": "KA-P0001" },
+        { "AccusedMasterID": 8002, "CaseMasterID": 9001, "AccusedName": "Deepak M", "AgeYear": 24, "GenderID": 1, "PersonID": "KA-P0002" },
+        { "AccusedMasterID": 8003, "CaseMasterID": 9002, "AccusedName": "Suresh N.", "AgeYear": 29, "GenderID": 1, "PersonID": "KA-P0001" },
+        { "AccusedMasterID": 8004, "CaseMasterID": 9002, "AccusedName": "Iqbal Sait", "AgeYear": 38, "GenderID": 1, "PersonID": "KA-P0003" }
       ],
       "actSections": [
         { "CaseMasterID": 9001, "ActID": "IPC", "SectionID": "379", "ActOrderID": 1, "SectionOrderID": 1 },
@@ -52,6 +52,7 @@
         { "CaseMasterID": 9002, "ActID": "IPC", "SectionID": "468", "ActOrderID": 1, "SectionOrderID": 2 },
         { "CaseMasterID": 9002, "ActID": "IPC", "SectionID": "471", "ActOrderID": 1, "SectionOrderID": 3 }
       ],
+      "personIndex": { "P1": "KA-P0001", "P2": "KA-P0002", "P3": "KA-P0003" },
       "personRefs": {
         "P1": "Suresh Naik / Suresh N. (AccusedMasterID 8001 & 8003 - SAME PERSON, entity-fusion target)",
         "P2": "Deepak M (AccusedMasterID 8002 - getaway driver)",
@@ -117,10 +118,10 @@
         { "VictimMasterID": 7001, "CaseMasterID": 9003, "VictimName": "Anil Kumar (shop assistant)", "AgeYear": 22, "GenderID": 1, "VictimPolice": "No" }
       ],
       "accused": [
-        { "AccusedMasterID": 8005, "CaseMasterID": 9003, "AccusedName": "Praveen Achari", "AgeYear": 31, "GenderID": 1, "PersonID": "A1" },
-        { "AccusedMasterID": 8006, "CaseMasterID": 9003, "AccusedName": "Manoj Kumar S", "AgeYear": 27, "GenderID": 1, "PersonID": "A2" },
-        { "AccusedMasterID": 8007, "CaseMasterID": 9003, "AccusedName": "Yusuf Ali", "AgeYear": 33, "GenderID": 1, "PersonID": "A3" },
-        { "AccusedMasterID": 8008, "CaseMasterID": 9003, "AccusedName": "Ravindra Naidu (fence, pawnbroker)", "AgeYear": 47, "GenderID": 1, "PersonID": "A4" }
+        { "AccusedMasterID": 8005, "CaseMasterID": 9003, "AccusedName": "Praveen Achari", "AgeYear": 31, "GenderID": 1, "PersonID": "KA-P0004" },
+        { "AccusedMasterID": 8006, "CaseMasterID": 9003, "AccusedName": "Manoj Kumar S", "AgeYear": 27, "GenderID": 1, "PersonID": "KA-P0005" },
+        { "AccusedMasterID": 8007, "CaseMasterID": 9003, "AccusedName": "Yusuf Ali", "AgeYear": 33, "GenderID": 1, "PersonID": "KA-P0006" },
+        { "AccusedMasterID": 8008, "CaseMasterID": 9003, "AccusedName": "Ravindra Naidu (fence, pawnbroker)", "AgeYear": 47, "GenderID": 1, "PersonID": "KA-P0007" }
       ],
       "actSections": [
         { "CaseMasterID": 9003, "ActID": "IPC", "SectionID": "384", "ActOrderID": 1, "SectionOrderID": 1 },
@@ -128,6 +129,7 @@
         { "CaseMasterID": 9003, "ActID": "IPC", "SectionID": "411", "ActOrderID": 1, "SectionOrderID": 3 },
         { "CaseMasterID": 9003, "ActID": "IPC", "SectionID": "120B", "ActOrderID": 1, "SectionOrderID": 4 }
       ],
+      "personIndex": { "P1": "KA-P0004", "P2": "KA-P0005", "P3": "KA-P0006", "P4": "KA-P0007" },
       "personRefs": {
         "P1": "Praveen Achari (lead)", "P2": "Manoj Kumar S", "P3": "Yusuf Ali (getaway driver)", "P4": "Ravindra Naidu (fence)"
       },
@@ -198,10 +200,10 @@
         { "VictimMasterID": 7003, "CaseMasterID": 9005, "VictimName": "Farida Banu", "AgeYear": 26, "GenderID": 2, "VictimPolice": "No" }
       ],
       "accused": [
-        { "AccusedMasterID": 8009, "CaseMasterID": 9004, "AccusedName": "Zoya Merchant (app runs as 'QuickCash Lending')", "AgeYear": 33, "GenderID": 2, "PersonID": "A1" },
-        { "AccusedMasterID": 8010, "CaseMasterID": 9004, "AccusedName": "Tarun Bhatia (call-centre lead)", "AgeYear": 28, "GenderID": 1, "PersonID": "A2" },
-        { "AccusedMasterID": 8011, "CaseMasterID": 9005, "AccusedName": "Z. Merchant (app registered as 'RapidFin Solutions')", "AgeYear": 33, "GenderID": 2, "PersonID": "A1" },
-        { "AccusedMasterID": 8012, "CaseMasterID": 9005, "AccusedName": "Tarun Bhatia", "AgeYear": 28, "GenderID": 1, "PersonID": "A2" }
+        { "AccusedMasterID": 8009, "CaseMasterID": 9004, "AccusedName": "Zoya Merchant (app runs as 'QuickCash Lending')", "AgeYear": 33, "GenderID": 2, "PersonID": "KA-P0008" },
+        { "AccusedMasterID": 8010, "CaseMasterID": 9004, "AccusedName": "Tarun Bhatia (call-centre lead)", "AgeYear": 28, "GenderID": 1, "PersonID": "KA-P0009" },
+        { "AccusedMasterID": 8011, "CaseMasterID": 9005, "AccusedName": "Z. Merchant (app registered as 'RapidFin Solutions')", "AgeYear": 33, "GenderID": 2, "PersonID": "KA-P0008" },
+        { "AccusedMasterID": 8012, "CaseMasterID": 9005, "AccusedName": "Tarun Bhatia", "AgeYear": 28, "GenderID": 1, "PersonID": "KA-P0009" }
       ],
       "actSections": [
         { "CaseMasterID": 9004, "ActID": "IPC", "SectionID": "384", "ActOrderID": 1, "SectionOrderID": 1 },
@@ -210,6 +212,7 @@
         { "CaseMasterID": 9005, "ActID": "ITACT", "SectionID": "66D", "ActOrderID": 1, "SectionOrderID": 2 },
         { "CaseMasterID": 9005, "ActID": "IPC", "SectionID": "506", "ActOrderID": 1, "SectionOrderID": 3 }
       ],
+      "personIndex": { "P1": "KA-P0008", "P2": "KA-P0009" },
       "personRefs": {
         "P1": "Zoya Merchant / Z. Merchant (AccusedMasterID 8009 & 8011 - SAME PERSON, entity-fusion target, registers under two front company names)",
         "P2": "Tarun Bhatia (AccusedMasterID 8010 & 8012, call-centre lead, same name both FIRs but worth confirming same person)"
@@ -271,9 +274,9 @@
         { "VictimMasterID": 7004, "CaseMasterID": 9006, "VictimName": "Basavaraj Patil", "AgeYear": 55, "GenderID": 1, "VictimPolice": "No" }
       ],
       "accused": [
-        { "AccusedMasterID": 8013, "CaseMasterID": 9006, "AccusedName": "Mallikarjun Rao (property broker)", "AgeYear": 44, "GenderID": 1, "PersonID": "A1" },
-        { "AccusedMasterID": 8014, "CaseMasterID": 9006, "AccusedName": "Shantaram Kulkarni (notary)", "AgeYear": 58, "GenderID": 1, "PersonID": "A2" },
-        { "AccusedMasterID": 8015, "CaseMasterID": 9006, "AccusedName": "Prakash Jadhav (buyer)", "AgeYear": 39, "GenderID": 1, "PersonID": "A3" }
+        { "AccusedMasterID": 8013, "CaseMasterID": 9006, "AccusedName": "Mallikarjun Rao (property broker)", "AgeYear": 44, "GenderID": 1, "PersonID": "KA-P0010" },
+        { "AccusedMasterID": 8014, "CaseMasterID": 9006, "AccusedName": "Shantaram Kulkarni (notary)", "AgeYear": 58, "GenderID": 1, "PersonID": "KA-P0011" },
+        { "AccusedMasterID": 8015, "CaseMasterID": 9006, "AccusedName": "Prakash Jadhav (buyer)", "AgeYear": 39, "GenderID": 1, "PersonID": "KA-P0012" }
       ],
       "actSections": [
         { "CaseMasterID": 9006, "ActID": "IPC", "SectionID": "467", "ActOrderID": 1, "SectionOrderID": 1 },
@@ -282,6 +285,7 @@
         { "CaseMasterID": 9006, "ActID": "IPC", "SectionID": "420", "ActOrderID": 1, "SectionOrderID": 4 },
         { "CaseMasterID": 9006, "ActID": "IPC", "SectionID": "120B", "ActOrderID": 1, "SectionOrderID": 5 }
       ],
+      "personIndex": { "P1": "KA-P0010", "P2": "KA-P0011", "P3": "KA-P0012" },
       "personRefs": { "P1": "Mallikarjun Rao (broker)", "P2": "Shantaram Kulkarni (notary)", "P3": "Prakash Jadhav (buyer)" },
       "calls": [
         { "id": "C4-CL-1", "from": "P1", "to": "P2", "timestamp": "2026-03-25T11:00:00", "durationSec": 610, "note": "" },
@@ -334,15 +338,16 @@
       ],
       "victims": [],
       "accused": [
-        { "AccusedMasterID": 8016, "CaseMasterID": 9007, "AccusedName": "Vinod Poojary", "AgeYear": 26, "GenderID": 1, "PersonID": "A1" },
-        { "AccusedMasterID": 8017, "CaseMasterID": 9007, "AccusedName": "Naveen Kotian", "AgeYear": 23, "GenderID": 1, "PersonID": "A2" },
-        { "AccusedMasterID": 8018, "CaseMasterID": 9007, "AccusedName": "Rafiq Ahmed (shop owner, fence)", "AgeYear": 45, "GenderID": 1, "PersonID": "A3" }
+        { "AccusedMasterID": 8016, "CaseMasterID": 9007, "AccusedName": "Vinod Poojary", "AgeYear": 26, "GenderID": 1, "PersonID": "KA-P0013" },
+        { "AccusedMasterID": 8017, "CaseMasterID": 9007, "AccusedName": "Naveen Kotian", "AgeYear": 23, "GenderID": 1, "PersonID": "KA-P0014" },
+        { "AccusedMasterID": 8018, "CaseMasterID": 9007, "AccusedName": "Rafiq Ahmed (shop owner, fence)", "AgeYear": 45, "GenderID": 1, "PersonID": "KA-P0015" }
       ],
       "actSections": [
         { "CaseMasterID": 9007, "ActID": "IPC", "SectionID": "457", "ActOrderID": 1, "SectionOrderID": 1 },
         { "CaseMasterID": 9007, "ActID": "IPC", "SectionID": "380", "ActOrderID": 1, "SectionOrderID": 2 },
         { "CaseMasterID": 9007, "ActID": "IPC", "SectionID": "411", "ActOrderID": 1, "SectionOrderID": 3 }
       ],
+      "personIndex": { "P1": "KA-P0013", "P2": "KA-P0014", "P3": "KA-P0015" },
       "personRefs": { "P1": "Vinod Poojary", "P2": "Naveen Kotian", "P3": "Rafiq Ahmed (fence)" },
       "calls": [
         { "id": "C5-CL-1", "from": "P1", "to": "P3", "timestamp": "2026-06-02T04:10:00", "durationSec": 65, "note": "90 minutes after the break-in" },
@@ -396,16 +401,17 @@
         { "VictimMasterID": 7005, "CaseMasterID": 9008, "VictimName": "Hanumantha Naik", "AgeYear": 34, "GenderID": 1, "VictimPolice": "No" }
       ],
       "accused": [
-        { "AccusedMasterID": 8019, "CaseMasterID": 9008, "AccusedName": "Chandru M (site supervisor)", "AgeYear": 40, "GenderID": 1, "PersonID": "A1" },
-        { "AccusedMasterID": 8020, "CaseMasterID": 9008, "AccusedName": "Basha Sab", "AgeYear": 29, "GenderID": 1, "PersonID": "A2" },
-        { "AccusedMasterID": 8021, "CaseMasterID": 9008, "AccusedName": "Ravi Kumar T", "AgeYear": 27, "GenderID": 1, "PersonID": "A3" },
-        { "AccusedMasterID": 8022, "CaseMasterID": 9008, "AccusedName": "Ismail Sheikh (mining contractor)", "AgeYear": 51, "GenderID": 1, "PersonID": "A4" }
+        { "AccusedMasterID": 8019, "CaseMasterID": 9008, "AccusedName": "Chandru M (site supervisor)", "AgeYear": 40, "GenderID": 1, "PersonID": "KA-P0016" },
+        { "AccusedMasterID": 8020, "CaseMasterID": 9008, "AccusedName": "Basha Sab", "AgeYear": 29, "GenderID": 1, "PersonID": "KA-P0017" },
+        { "AccusedMasterID": 8021, "CaseMasterID": 9008, "AccusedName": "Ravi Kumar T", "AgeYear": 27, "GenderID": 1, "PersonID": "KA-P0018" },
+        { "AccusedMasterID": 8022, "CaseMasterID": 9008, "AccusedName": "Ismail Sheikh (mining contractor)", "AgeYear": 51, "GenderID": 1, "PersonID": "KA-P0019" }
       ],
       "actSections": [
         { "CaseMasterID": 9008, "ActID": "IPC", "SectionID": "324", "ActOrderID": 1, "SectionOrderID": 1 },
         { "CaseMasterID": 9008, "ActID": "IPC", "SectionID": "506", "ActOrderID": 1, "SectionOrderID": 2 },
         { "CaseMasterID": 9008, "ActID": "IPC", "SectionID": "34", "ActOrderID": 1, "SectionOrderID": 3 }
       ],
+      "personIndex": { "P1": "KA-P0016", "P2": "KA-P0017", "P3": "KA-P0018", "P4": "KA-P0019" },
       "personRefs": { "P1": "Chandru (supervisor)", "P2": "Basha Sab", "P3": "Ravi Kumar T", "P4": "Ismail Sheikh (contractor)" },
       "calls": [
         { "id": "C6-CL-1", "from": "P4", "to": "P1", "timestamp": "2026-01-17T17:30:00", "durationSec": 210, "note": "1.5 hours before the assault" },
@@ -468,16 +474,17 @@
       ],
       "victims": [],
       "accused": [
-        { "AccusedMasterID": 8023, "CaseMasterID": 9009, "AccusedName": "Halappa D", "AgeYear": 36, "GenderID": 1, "PersonID": "A1" },
-        { "AccusedMasterID": 8024, "CaseMasterID": 9009, "AccusedName": "Somesh K (truck driver)", "AgeYear": 31, "GenderID": 1, "PersonID": "A2" },
-        { "AccusedMasterID": 8025, "CaseMasterID": 9010, "AccusedName": "Halappa D", "AgeYear": 36, "GenderID": 1, "PersonID": "A1" },
-        { "AccusedMasterID": 8026, "CaseMasterID": 9010, "AccusedName": "Somesh Kumar", "AgeYear": 31, "GenderID": 1, "PersonID": "A2" }
+        { "AccusedMasterID": 8023, "CaseMasterID": 9009, "AccusedName": "Halappa D", "AgeYear": 36, "GenderID": 1, "PersonID": "KA-P0020" },
+        { "AccusedMasterID": 8024, "CaseMasterID": 9009, "AccusedName": "Somesh K (truck driver)", "AgeYear": 31, "GenderID": 1, "PersonID": "KA-P0021" },
+        { "AccusedMasterID": 8025, "CaseMasterID": 9010, "AccusedName": "Halappa D", "AgeYear": 36, "GenderID": 1, "PersonID": "KA-P0020" },
+        { "AccusedMasterID": 8026, "CaseMasterID": 9010, "AccusedName": "Somesh Kumar", "AgeYear": 31, "GenderID": 1, "PersonID": "KA-P0021" }
       ],
       "actSections": [
         { "CaseMasterID": 9009, "ActID": "IPC", "SectionID": "379", "ActOrderID": 1, "SectionOrderID": 1 },
         { "CaseMasterID": 9010, "ActID": "IPC", "SectionID": "379", "ActOrderID": 1, "SectionOrderID": 1 },
         { "CaseMasterID": 9010, "ActID": "IPC", "SectionID": "411", "ActOrderID": 1, "SectionOrderID": 2 }
       ],
+      "personIndex": { "P1": "KA-P0020", "P2": "KA-P0021" },
       "personRefs": { "P1": "Halappa D (same person both FIRs)", "P2": "Somesh K / Somesh Kumar (AccusedMasterID 8024 & 8026 - SAME PERSON, truck driver, entity-fusion target on spelling)" },
       "calls": [
         { "id": "C7-CL-1", "from": "P1", "to": "P2", "timestamp": "2026-07-07T20:15:00", "durationSec": 90, "note": "Before the first theft" },
@@ -536,10 +543,10 @@
         { "VictimMasterID": 7007, "CaseMasterID": 9011, "VictimName": "K.S. Venkataraman", "AgeYear": 71, "GenderID": 1, "VictimPolice": "No" }
       ],
       "accused": [
-        { "AccusedMasterID": 8027, "CaseMasterID": 9011, "AccusedName": "Rohan Malhotra (floor manager)", "AgeYear": 26, "GenderID": 1, "PersonID": "A1" },
-        { "AccusedMasterID": 8028, "CaseMasterID": 9011, "AccusedName": "Priya Kapoor (owner-of-record)", "AgeYear": 34, "GenderID": 2, "PersonID": "A2" },
-        { "AccusedMasterID": 8029, "CaseMasterID": 9011, "AccusedName": "Amit Verma (agent)", "AgeYear": 23, "GenderID": 1, "PersonID": "A3" },
-        { "AccusedMasterID": 8030, "CaseMasterID": 9011, "AccusedName": "Sana Iyer (agent)", "AgeYear": 22, "GenderID": 2, "PersonID": "A4" }
+        { "AccusedMasterID": 8027, "CaseMasterID": 9011, "AccusedName": "Rohan Malhotra (floor manager)", "AgeYear": 26, "GenderID": 1, "PersonID": "KA-P0022" },
+        { "AccusedMasterID": 8028, "CaseMasterID": 9011, "AccusedName": "Priya Kapoor (owner-of-record)", "AgeYear": 34, "GenderID": 2, "PersonID": "KA-P0023" },
+        { "AccusedMasterID": 8029, "CaseMasterID": 9011, "AccusedName": "Amit Verma (agent)", "AgeYear": 23, "GenderID": 1, "PersonID": "KA-P0024" },
+        { "AccusedMasterID": 8030, "CaseMasterID": 9011, "AccusedName": "Sana Iyer (agent)", "AgeYear": 22, "GenderID": 2, "PersonID": "KA-P0025" }
       ],
       "actSections": [
         { "CaseMasterID": 9011, "ActID": "IPC", "SectionID": "420", "ActOrderID": 1, "SectionOrderID": 1 },
@@ -547,6 +554,7 @@
         { "CaseMasterID": 9011, "ActID": "ITACT", "SectionID": "66C", "ActOrderID": 1, "SectionOrderID": 3 },
         { "CaseMasterID": 9011, "ActID": "IPC", "SectionID": "120B", "ActOrderID": 1, "SectionOrderID": 4 }
       ],
+      "personIndex": { "P1": "KA-P0022", "P2": "KA-P0023", "P3": "KA-P0024", "P4": "KA-P0025" },
       "personRefs": { "P1": "Rohan Malhotra (floor manager)", "P2": "Priya Kapoor (owner-of-record)", "P3": "Amit Verma (agent)", "P4": "Sana Iyer (agent)" },
       "calls": [
         { "id": "C8-CL-1", "from": "P3", "to": "V:Margaret", "timestamp": "2026-06-20T11:00:00", "durationSec": 1840, "note": "Fraudulent tech-support call, cited in complaint" },
@@ -604,13 +612,14 @@
         { "VictimMasterID": 7008, "CaseMasterID": 9012, "VictimName": "Rekha Iyengar", "AgeYear": 31, "GenderID": 2, "VictimPolice": "No" }
       ],
       "accused": [
-        { "AccusedMasterID": 8031, "CaseMasterID": 9012, "AccusedName": "Srinivas Iyengar", "AgeYear": 35, "GenderID": 1, "PersonID": "A1" },
-        { "AccusedMasterID": 8032, "CaseMasterID": 9012, "AccusedName": "Nandish Iyengar (accused's brother)", "AgeYear": 29, "GenderID": 1, "PersonID": "A2" }
+        { "AccusedMasterID": 8031, "CaseMasterID": 9012, "AccusedName": "Srinivas Iyengar", "AgeYear": 35, "GenderID": 1, "PersonID": "KA-P0026" },
+        { "AccusedMasterID": 8032, "CaseMasterID": 9012, "AccusedName": "Nandish Iyengar (accused's brother)", "AgeYear": 29, "GenderID": 1, "PersonID": "KA-P0027" }
       ],
       "actSections": [
         { "CaseMasterID": 9012, "ActID": "IPC", "SectionID": "323", "ActOrderID": 1, "SectionOrderID": 1 },
         { "CaseMasterID": 9012, "ActID": "IPC", "SectionID": "506", "ActOrderID": 1, "SectionOrderID": 2 }
       ],
+      "personIndex": { "P1": "KA-P0026", "P2": "KA-P0027" },
       "personRefs": { "P1": "Srinivas Iyengar", "P2": "Nandish Iyengar (brother)", "W1": "Kamala Rao (neighbor, witness)" },
       "calls": [
         { "id": "C9-CL-1", "from": "P1", "to": "P2", "timestamp": "2026-03-04T08:10:00", "durationSec": 150, "note": "Morning of the witness's recant visit" }
@@ -660,15 +669,16 @@
       ],
       "victims": [],
       "accused": [
-        { "AccusedMasterID": 8033, "CaseMasterID": 9013, "AccusedName": "Sagar Bandekar", "AgeYear": 25, "GenderID": 1, "PersonID": "A1" },
-        { "AccusedMasterID": 8034, "CaseMasterID": 9013, "AccusedName": "Vasant Naik (garage owner)", "AgeYear": 43, "GenderID": 1, "PersonID": "A2" },
-        { "AccusedMasterID": 8035, "CaseMasterID": 9013, "AccusedName": "Ganesh Koli", "AgeYear": 22, "GenderID": 1, "PersonID": "A3" }
+        { "AccusedMasterID": 8033, "CaseMasterID": 9013, "AccusedName": "Sagar Bandekar", "AgeYear": 25, "GenderID": 1, "PersonID": "KA-P0028" },
+        { "AccusedMasterID": 8034, "CaseMasterID": 9013, "AccusedName": "Vasant Naik (garage owner)", "AgeYear": 43, "GenderID": 1, "PersonID": "KA-P0029" },
+        { "AccusedMasterID": 8035, "CaseMasterID": 9013, "AccusedName": "Ganesh Koli", "AgeYear": 22, "GenderID": 1, "PersonID": "KA-P0030" }
       ],
       "actSections": [
         { "CaseMasterID": 9013, "ActID": "IPC", "SectionID": "457", "ActOrderID": 1, "SectionOrderID": 1 },
         { "CaseMasterID": 9013, "ActID": "IPC", "SectionID": "379", "ActOrderID": 1, "SectionOrderID": 2 },
         { "CaseMasterID": 9013, "ActID": "IPC", "SectionID": "413", "ActOrderID": 1, "SectionOrderID": 3 }
       ],
+      "personIndex": { "P1": "KA-P0028", "P2": "KA-P0029", "P3": "KA-P0030" },
       "personRefs": { "P1": "Sagar Bandekar", "P2": "Vasant Naik (garage owner)", "P3": "Ganesh Koli" },
       "calls": [
         { "id": "C10-CL-1", "from": "P1", "to": "P2", "timestamp": "2026-05-21T02:30:00", "durationSec": 50, "note": "30 minutes after the theft window" }
@@ -722,16 +732,17 @@
         { "VictimMasterID": 7010, "CaseMasterID": 9014, "VictimName": "Pooja Deshmukh", "AgeYear": 24, "GenderID": 2, "VictimPolice": "No" }
       ],
       "accused": [
-        { "AccusedMasterID": 8036, "CaseMasterID": 9014, "AccusedName": "Altaf Pathan", "AgeYear": 28, "GenderID": 1, "PersonID": "A1" },
-        { "AccusedMasterID": 8037, "CaseMasterID": 9014, "AccusedName": "Kiran Bhosale", "AgeYear": 25, "GenderID": 1, "PersonID": "A2" },
-        { "AccusedMasterID": 8038, "CaseMasterID": 9014, "AccusedName": "Santosh Waghmare", "AgeYear": 30, "GenderID": 1, "PersonID": "A3" },
-        { "AccusedMasterID": 8039, "CaseMasterID": 9014, "AccusedName": "Ravi Caterer (catering staff, informant)", "AgeYear": 33, "GenderID": 1, "PersonID": "A4" }
+        { "AccusedMasterID": 8036, "CaseMasterID": 9014, "AccusedName": "Altaf Pathan", "AgeYear": 28, "GenderID": 1, "PersonID": "KA-P0031" },
+        { "AccusedMasterID": 8037, "CaseMasterID": 9014, "AccusedName": "Kiran Bhosale", "AgeYear": 25, "GenderID": 1, "PersonID": "KA-P0032" },
+        { "AccusedMasterID": 8038, "CaseMasterID": 9014, "AccusedName": "Santosh Waghmare", "AgeYear": 30, "GenderID": 1, "PersonID": "KA-P0033" },
+        { "AccusedMasterID": 8039, "CaseMasterID": 9014, "AccusedName": "Ravi Caterer (catering staff, informant)", "AgeYear": 33, "GenderID": 1, "PersonID": "KA-P0034" }
       ],
       "actSections": [
         { "CaseMasterID": 9014, "ActID": "IPC", "SectionID": "379", "ActOrderID": 1, "SectionOrderID": 1 },
         { "CaseMasterID": 9014, "ActID": "IPC", "SectionID": "354", "ActOrderID": 1, "SectionOrderID": 2 },
         { "CaseMasterID": 9014, "ActID": "IPC", "SectionID": "120B", "ActOrderID": 1, "SectionOrderID": 3 }
       ],
+      "personIndex": { "P1": "KA-P0031", "P2": "KA-P0032", "P3": "KA-P0033", "P4": "KA-P0034" },
       "personRefs": { "P1": "Altaf Pathan", "P2": "Kiran Bhosale", "P3": "Santosh Waghmare", "P4": "Ravi Caterer (informant)" },
       "calls": [
         { "id": "C11-CL-1", "from": "P4", "to": "P1", "timestamp": "2026-11-01T18:30:00", "durationSec": 95, "note": "90 min before the robbery, describing which guests had the most jewellery" },
@@ -787,15 +798,16 @@
         { "VictimMasterID": 7012, "CaseMasterID": 9015, "VictimName": "Shwetha Kamath", "AgeYear": 37, "GenderID": 2, "VictimPolice": "No" }
       ],
       "accused": [
-        { "AccusedMasterID": 8040, "CaseMasterID": 9015, "AccusedName": "Wilfred Pinto (director)", "AgeYear": 46, "GenderID": 1, "PersonID": "A1" },
-        { "AccusedMasterID": 8041, "CaseMasterID": 9015, "AccusedName": "Neha D'Silva (co-director)", "AgeYear": 39, "GenderID": 2, "PersonID": "A2" },
-        { "AccusedMasterID": 8042, "CaseMasterID": 9015, "AccusedName": "Clifton Rego (local recruiter)", "AgeYear": 42, "GenderID": 1, "PersonID": "A3" }
+        { "AccusedMasterID": 8040, "CaseMasterID": 9015, "AccusedName": "Wilfred Pinto (director)", "AgeYear": 46, "GenderID": 1, "PersonID": "KA-P0035" },
+        { "AccusedMasterID": 8041, "CaseMasterID": 9015, "AccusedName": "Neha D'Silva (co-director)", "AgeYear": 39, "GenderID": 2, "PersonID": "KA-P0036" },
+        { "AccusedMasterID": 8042, "CaseMasterID": 9015, "AccusedName": "Clifton Rego (local recruiter)", "AgeYear": 42, "GenderID": 1, "PersonID": "KA-P0037" }
       ],
       "actSections": [
         { "CaseMasterID": 9015, "ActID": "IPC", "SectionID": "420", "ActOrderID": 1, "SectionOrderID": 1 },
         { "CaseMasterID": 9015, "ActID": "IPC", "SectionID": "406", "ActOrderID": 1, "SectionOrderID": 2 },
         { "CaseMasterID": 9015, "ActID": "IPC", "SectionID": "120B", "ActOrderID": 1, "SectionOrderID": 3 }
       ],
+      "personIndex": { "P1": "KA-P0035", "P2": "KA-P0036", "P3": "KA-P0037" },
       "personRefs": { "P1": "Wilfred Pinto (director)", "P2": "Neha D'Silva (co-director)", "P3": "Clifton Rego (recruiter)" },
       "calls": [
         { "id": "C12-CL-1", "from": "P1", "to": "P2", "timestamp": "2026-08-28T14:00:00", "durationSec": 900, "note": "Long call, days before the office shut" },
@@ -858,10 +870,10 @@
       ],
       "victims": [],
       "accused": [
-        { "AccusedMasterID": 8043, "CaseMasterID": 9016, "AccusedName": "Faizal Khan (device installer)", "AgeYear": 30, "GenderID": 1, "PersonID": "A1" },
-        { "AccusedMasterID": 8044, "CaseMasterID": 9016, "AccusedName": "Deepak Rathore (card cloner)", "AgeYear": 33, "GenderID": 1, "PersonID": "A2" },
-        { "AccusedMasterID": 8045, "CaseMasterID": 9016, "AccusedName": "Anand M (cash-out mule)", "AgeYear": 24, "GenderID": 1, "PersonID": "A3" },
-        { "AccusedMasterID": 8046, "CaseMasterID": 9017, "AccusedName": "Deepak Rathore", "AgeYear": 33, "GenderID": 1, "PersonID": "A2" }
+        { "AccusedMasterID": 8043, "CaseMasterID": 9016, "AccusedName": "Faizal Khan (device installer)", "AgeYear": 30, "GenderID": 1, "PersonID": "KA-P0038" },
+        { "AccusedMasterID": 8044, "CaseMasterID": 9016, "AccusedName": "Deepak Rathore (card cloner)", "AgeYear": 33, "GenderID": 1, "PersonID": "KA-P0039" },
+        { "AccusedMasterID": 8045, "CaseMasterID": 9016, "AccusedName": "Anand M (cash-out mule)", "AgeYear": 24, "GenderID": 1, "PersonID": "KA-P0040" },
+        { "AccusedMasterID": 8046, "CaseMasterID": 9017, "AccusedName": "Deepak Rathore", "AgeYear": 33, "GenderID": 1, "PersonID": "KA-P0039" }
       ],
       "actSections": [
         { "CaseMasterID": 9016, "ActID": "ITACT", "SectionID": "66C", "ActOrderID": 1, "SectionOrderID": 1 },
@@ -869,6 +881,7 @@
         { "CaseMasterID": 9017, "ActID": "ITACT", "SectionID": "66C", "ActOrderID": 1, "SectionOrderID": 1 },
         { "CaseMasterID": 9017, "ActID": "IPC", "SectionID": "420", "ActOrderID": 1, "SectionOrderID": 2 }
       ],
+      "personIndex": { "P1": "KA-P0038", "P2": "KA-P0039", "P3": "KA-P0040" },
       "personRefs": { "P1": "Faizal Khan (installer)", "P2": "Deepak Rathore (cloner, both FIRs)", "P3": "Anand M / A. Manjunath (mule - AccusedMasterID 8045, and a second mule in FIR 9017's data not yet named as accused - entity-fusion angle: cloned-card cash-out pattern at Bengaluru ATMs traces to an unregistered relative account of Anand's, per the transaction below)" },
       "calls": [
         { "id": "C13-CL-1", "from": "P1", "to": "P2", "timestamp": "2026-09-19T20:00:00", "durationSec": 130, "note": "Night before device installation, Ballari" },
@@ -924,14 +937,15 @@
       ],
       "victims": [],
       "accused": [
-        { "AccusedMasterID": 8047, "CaseMasterID": 9018, "AccusedName": "Manjappa Gowda", "AgeYear": 39, "GenderID": 1, "PersonID": "A1" },
-        { "AccusedMasterID": 8048, "CaseMasterID": 9018, "AccusedName": "Yallappa Naik", "AgeYear": 34, "GenderID": 1, "PersonID": "A2" },
-        { "AccusedMasterID": 8049, "CaseMasterID": 9018, "AccusedName": "Devaraj (forest watcher, insider)", "AgeYear": 41, "GenderID": 1, "PersonID": "A3" }
+        { "AccusedMasterID": 8047, "CaseMasterID": 9018, "AccusedName": "Manjappa Gowda", "AgeYear": 39, "GenderID": 1, "PersonID": "KA-P0041" },
+        { "AccusedMasterID": 8048, "CaseMasterID": 9018, "AccusedName": "Yallappa Naik", "AgeYear": 34, "GenderID": 1, "PersonID": "KA-P0042" },
+        { "AccusedMasterID": 8049, "CaseMasterID": 9018, "AccusedName": "Devaraj (forest watcher, insider)", "AgeYear": 41, "GenderID": 1, "PersonID": "KA-P0043" }
       ],
       "actSections": [
         { "CaseMasterID": 9018, "ActID": "IPC", "SectionID": "379", "ActOrderID": 1, "SectionOrderID": 1 },
         { "CaseMasterID": 9018, "ActID": "IPC", "SectionID": "120B", "ActOrderID": 1, "SectionOrderID": 2 }
       ],
+      "personIndex": { "P1": "KA-P0041", "P2": "KA-P0042", "P3": "KA-P0043" },
       "personRefs": { "P1": "Manjappa Gowda", "P2": "Yallappa Naik", "P3": "Devaraj (watcher, insider)" },
       "calls": [
         { "id": "C14-CL-1", "from": "P3", "to": "P1", "timestamp": "2026-11-28T21:00:00", "durationSec": 70, "note": "Night before, confirming the watcher's off-duty shift" },
@@ -984,16 +998,17 @@
         { "VictimMasterID": 7015, "CaseMasterID": 9019, "VictimName": "Vikram Singh", "AgeYear": 21, "GenderID": 1, "VictimPolice": "No" }
       ],
       "accused": [
-        { "AccusedMasterID": 8050, "CaseMasterID": 9019, "AccusedName": "Zaid Khan", "AgeYear": 22, "GenderID": 1, "PersonID": "A1" },
-        { "AccusedMasterID": 8051, "CaseMasterID": 9019, "AccusedName": "Bharath Gowda", "AgeYear": 21, "GenderID": 1, "PersonID": "A2" },
-        { "AccusedMasterID": 8052, "CaseMasterID": 9019, "AccusedName": "Naveen Raju", "AgeYear": 23, "GenderID": 1, "PersonID": "A3" },
-        { "AccusedMasterID": 8053, "CaseMasterID": 9019, "AccusedName": "Suhail Ahmed", "AgeYear": 20, "GenderID": 1, "PersonID": "A4" }
+        { "AccusedMasterID": 8050, "CaseMasterID": 9019, "AccusedName": "Zaid Khan", "AgeYear": 22, "GenderID": 1, "PersonID": "KA-P0044" },
+        { "AccusedMasterID": 8051, "CaseMasterID": 9019, "AccusedName": "Bharath Gowda", "AgeYear": 21, "GenderID": 1, "PersonID": "KA-P0045" },
+        { "AccusedMasterID": 8052, "CaseMasterID": 9019, "AccusedName": "Naveen Raju", "AgeYear": 23, "GenderID": 1, "PersonID": "KA-P0046" },
+        { "AccusedMasterID": 8053, "CaseMasterID": 9019, "AccusedName": "Suhail Ahmed", "AgeYear": 20, "GenderID": 1, "PersonID": "KA-P0047" }
       ],
       "actSections": [
         { "CaseMasterID": 9019, "ActID": "IPC", "SectionID": "324", "ActOrderID": 1, "SectionOrderID": 1 },
         { "CaseMasterID": 9019, "ActID": "IPC", "SectionID": "34", "ActOrderID": 1, "SectionOrderID": 2 },
         { "CaseMasterID": 9019, "ActID": "IPC", "SectionID": "506", "ActOrderID": 1, "SectionOrderID": 3 }
       ],
+      "personIndex": { "P1": "KA-P0044", "P2": "KA-P0045", "P3": "KA-P0046", "P4": "KA-P0047" },
       "personRefs": { "P1": "Zaid Khan", "P2": "Bharath Gowda", "P3": "Naveen Raju", "P4": "Suhail Ahmed" },
       "calls": [
         { "id": "C15-CL-1", "from": "P1", "to": "P4", "timestamp": "2026-07-24T16:50:00", "durationSec": 200, "note": "40 min before the clash" },
