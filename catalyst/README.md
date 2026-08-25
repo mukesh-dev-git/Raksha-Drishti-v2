@@ -198,20 +198,34 @@ unset) so hosting is never blocked. To turn it on: enable Authentication in the
 console, ensure the Catalyst web SDK is served with the client, then build with
 `NEXT_PUBLIC_RD_AUTH=on`.
 
-## 4b. State vs. District scoping — ✅ demo-scoped, not real access control
+## 4b. District drill-down — ✅ a filter, not a role
 
-The Dashboard has a "Viewing as" switcher (State/CID Officer, statewide, vs.
-District Officer, scoped to one real district) —
-[`src/lib/viewScope.ts`](../src/lib/viewScope.ts) /
-[`viewScope.server.ts`](../src/lib/viewScope.server.ts). It's a genuine
-scoping feature (real numbers, real Featured Investigation, real Alerts/
-Evidence Feed, all actually filtered per-scope, not just relabelled) but
-explicitly **not real access control** - there's no signed-in identity
-behind it (§4's Auth is off by default), and the scope is a plain,
-client-writable cookie (`rd-view-scope`) anyone can flip. Real backend-
-enforced RBAC (a signed-in officer's role/district determining what they're
-*allowed* to see) would need Catalyst Authentication configured with real
-roles - not built.
+The app is built for the **SCRB** (see
+[`RESEARCH_AND_PLAN.md`](../RESEARCH_AND_PLAN.md) §1.2), so the statewide
+view is the default and the product. `/dashboard?district=<DistrictID>`
+narrows every figure, the Featured Investigation, Alerts and the Evidence
+Feed to one district — the PS's "District-Level Drill-down" ask. The control
+is [`DistrictFilter.tsx`](../src/components/dashboard/DistrictFilter.tsx);
+the filter state lives in the URL, so a filtered view is shareable and
+bookmarkable.
+
+> ~~Earlier this was a login-time **role**: a "Viewing as" switcher
+> (State/CID Officer vs. District Officer) writing an `rd-view-scope`
+> cookie, read in `(site)/layout.tsx` and threaded through the sidebar,
+> topbar and every page below (`viewScope.ts` / `viewScope.server.ts` /
+> `ViewScopeSwitcher.tsx`, all now deleted).~~ **Wrong shape.** The PS asks
+> for SCRB to drill into districts, not for district officers to get
+> restricted logins; and with §4's Auth off there is no signed-in identity,
+> so the officer picked their own jurisdiction from a dropdown — the one
+> thing real authentication would decide. Looking like access control while
+> being a display preference is worse than not having it. It also forced a
+> two-branch Featured Investigation rule and an empty state for districts
+> with no "own" case. Removed in `db5b1bd` (net −77 lines).
+
+**There is no access control here at all, by design.** Nothing in the app
+restricts what anyone can see. If per-officer views are ever wanted they
+need real Catalyst Authentication first (§4), with the district coming from
+the signed-in identity rather than a query param.
 
 `assignedTo` ("District" vs. "CID") is **hand-authored per scenario in
 `cases.json`**, with an `assignmentReason` string alongside it.
@@ -234,28 +248,28 @@ roles - not built.
 
 5 of the 15 scenarios are CID-assigned today: C3, C4, C8, C12, C13.
 
-Two different scoping rules, both server-side (`src/lib/dashboardData.ts`):
-- **Featured Investigation** ("this is my own case to run"): a District
-  view only ever features a `"District"`-assigned scenario for that
-  district - never a CID one, even when the CID case sits squarely in that
-  district (C8 is Bengaluru-only but belongs to the Cyber Crimes Wing).
-  Districts with no district-assigned scenario of their own (e.g. Tumakuru,
-  which only appears in C1/C7) get an honest empty state instead of
-  nothing/an error.
-- **Alerts & Leads / Verified Evidence Feed** ("does my district have a
-  stake in this"): broader - any scenario whose `districtIds` includes the
-  officer's district, CID-assigned or not, tagged with a "CID" badge
-  carrying its `assignmentReason` when it's not this district's own case.
+Filtering is one rule, server-side in `src/lib/dashboardData.ts`:
+`scenarioInDistrict(scenarioId, districtId?)` — a scenario is in view if the
+filtered district is one of the real districts its FIRs touch (undefined =
+statewide). Featured Investigation, Alerts and the Evidence Feed all use it.
+CID-assigned scenarios are **included** when drilling into a district: an
+SCRB viewer looking at Tumakuru wants that district's whole picture, not
+just what its own unit runs. The "CID" badge (carrying its
+`assignmentReason`) marks them rather than hiding them.
 
 `/api/summary` and `/api/casetypes` both take an optional `?district=` that
 does the same `CaseMaster`/`Unit` join every other district-scoped route
 already uses (§3).
 
 ## 5. Next
-- Real backend-enforced RBAC behind §4b's "Viewing as" switcher - a signed-
-  in officer's role/district actually restricting what they can see/do,
-  once §4's Auth is turned on with real roles, rather than a client-
-  writable cookie anyone can flip.
+- Real backend-enforced RBAC - a signed-in officer's role/district actually
+  restricting what they can see/do, once §4's Auth is turned on with real
+  roles. Note §4b: the app currently has no access control of any kind, and
+  the district drill-down is deliberately a filter, not a permission.
+- **See [`PLAN.md`](../PLAN.md)** for the sequenced execution plan (data
+  foundation, route restructure, person spine, analytics, AI) and
+  [`RESEARCH_AND_PLAN.md`](../RESEARCH_AND_PLAN.md) for the KSP domain
+  research and Data Store audit behind it.
 - Convert Data Store FK `Number` columns to `Lookup` columns now that parent
   rows actually exist.
 - CRUD (create/edit/delete) endpoints + auth-gated writes, per the

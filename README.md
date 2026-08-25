@@ -87,11 +87,11 @@ trustworthy authority over flash.
   emphasis (no italics, no display fonts).
 - **Layout**: grid-based, symmetrical, generous whitespace; solid cards with
   soft shadows and 6–10px radius; barely-rounded rectangular buttons.
-- **Chrome**: two shells now (see "Dashboard shell" below) — the Home
-  welcome page (`/`) keeps the original persistent emergency/helpline bar
-  (112 + Police, Women, Child, Ambulance), navy masthead with the Karnataka
-  State Police emblem, and horizontal nav; every other page runs a
-  persistent sidebar + top bar instead. Both end in the same `SiteFooter`.
+- **Chrome**: two shells (see "Home + sidebar shell" below) — the Home
+  sign-in page (`/`) has a minimal header (emblem + Emergency 112) and
+  deliberately **no navigation**; every other page runs a persistent
+  sidebar + top bar. Both end in the same `SiteFooter`, which hides its
+  "Quick links" column on Home for the same reason.
 
 ### Accessibility (WCAG 2.1 AA)
 
@@ -129,16 +129,19 @@ row above calls a Route Handler under `src/app/api/` first and only falls
 back to these on error (see `catalyst/README.md` §3/§3b for how each one
 resolves real data).
 
-### Home page + sidebar shell (site-wide)
+### Home + sidebar shell (site-wide)
 
-The app has two distinct shells (feature branch `feature/dashboard-redesign`):
+The app has two distinct shells:
 
-- **Home** (`/`, `src/app/page.tsx`) — a public welcome screen kept
-  deliberately *outside* the sidebar: the original government-portal
-  chrome (`SiteHeader` — emergency bar, masthead, horizontal `SiteNav` —
-  plus `SiteFooter`), the animated `ScrollZoomHero`, a real live stat row,
-  and four `LinkCard`s into Dashboard / Crime Count / Crime Hotspots /
-  Cases. The front door, not part of the internal app shell.
+- **Home** (`/`, `src/app/page.tsx`) — the **sign-in screen**, kept
+  deliberately *outside* the sidebar: `HomeHeader` (emblem + Emergency
+  112, no nav), `HomeHero` with a live stat overview, a descriptive
+  `FeatureGrid`, `MissionStrip`, `SiteFooter`, and the `LoginPanel`
+  sidebar. **Nothing here links past the sign-in** — the header nav, the
+  five feature-card links, the two hero CTAs and the footer quick links
+  were all removed, because a landing page that routes around its own
+  sign-in makes signing in decorative. The one forward action is
+  "Continue to Dashboard".
 - **Everything else** (Dashboard, Cases, Crime Count, Crime Hotspots, and
   everything under them) — a persistent sidebar + top bar shell instead of
   the horizontal nav. Structurally this is a Next.js route-group split:
@@ -149,11 +152,15 @@ The app has two distinct shells (feature branch `feature/dashboard-redesign`):
   shell, widened to site-wide by a later request; see git history on
   `(site)/layout.tsx` for both steps.
 
-Many sidebar sections (Investigation Workspace, Evidence Feed, Persons &
-Entities, Alerts & Leads, all of Reports/System) don't have a dedicated
-page yet and render disabled with a "Soon" pill — only Home, Dashboard,
-Crime Overview, Crime Hotspots, and Cases are real links. Every number in
-either shell is either live (`getSummary`/`getCaseTypes`, same fallback
+**Every sidebar item navigates somewhere real** — Home, Dashboard, Crime
+Overview, Crime Hotspots, Cases. Twelve further entries (Investigation
+Workspace, Evidence Feed, Persons & Entities, Alerts & Leads, all of
+Reports and System) used to render disabled with a "Soon" pill; against
+three that worked they advertised a product four times the size of the
+real one, so they were removed. `Item.href` is required, so a dead entry
+is now a type error rather than a grey row. `PLAN.md` P2/P3 bring several
+back as real pages — add each one back to the sidebar only once its page
+exists. Every number in either shell is either live (`getSummary`/`getCaseTypes`, same fallback
 pattern as elsewhere) or real seeded scenario data (Featured Investigation,
 Alerts & Leads, Verified Evidence Feed — see `src/lib/dashboardData.ts`);
 nothing is fabricated, including no invented "vs. last month" deltas (stat

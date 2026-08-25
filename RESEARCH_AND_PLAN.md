@@ -7,7 +7,12 @@ Two things in one doc, because they constrain each other:
 2. **What AI we can actually build now** on the Zoho Catalyst capabilities
    available to us (2 served LLMs + Zia microservices), and in what order.
 
-Status: **draft for planning.** Nothing here is committed to. Companion docs:
+> **This doc is the *why*.** The sequenced *what and when* now lives in
+> [`PLAN.md`](PLAN.md) — check there for current task status before acting on
+> any checklist here; several items below have been superseded or already
+> done, and are marked inline where so.
+
+Status: research + rationale. Companion docs:
 [`features.md`](features.md) (the 6 proposed investigation-intelligence
 features, still valid), [`catalyst/README.md`](catalyst/README.md) (backend
 source of truth), [`catalyst/DATA_STORE_SCHEMA.md`](catalyst/DATA_STORE_SCHEMA.md).
@@ -83,7 +88,7 @@ incident happened. We should stop presenting the two as symmetric options.
 |---|---|---|---|
 | **SCRB / State HQ** | All districts + commissionerates | Cross-district correlation, overlays, predictive risk, trend discovery | Statewide dashboard ✅ · all AI ❌ |
 | **Range (IGP)** | 3–6 districts | Compare districts in a region; catch a pattern crossing 2–3 neighbours before it reaches state level | **Missing tier** ❌ |
-| **District (SP)** | One district, all its stations | Own cases, hotspots, repeat offenders; drill into any station | ✅ `rd-view-scope=district:NNN` |
+| **District (SP)** | One district, all its stations | Own cases, hotspots, repeat offenders; drill into any station | ✅ as a **filter** — `/dashboard?district=NNN`, not a login role (see below) |
 | **Commissionerate (CP/DCP)** | One city, its DCP divisions | Same shape of need as a District SP, different unit type | **Not modeled** ❌ |
 | **CID** | Only cases assigned to it | Track its caseload — a *list*, not a geography | **Wrong model** ⚠️ (see 1.4) |
 | **Station / IO** | Their own case | Timeline, evidence, network graph, MO | ✅ Investigation Workspace |
@@ -91,11 +96,17 @@ incident happened. We should stop presenting the two as symmetric options.
 ## 1.4 Three corrections the current build needs
 
 ### (a) Add the Range tier — small, mechanical
-`src/lib/viewScope.ts` — `ViewScope` is a two-way union today. Add
-`{ role: "range"; rangeId }`. The cookie, the API `?district=` params and
-`scenarioInScope()` all generalise cleanly from "exactly one district" to
-"one of N districts." This is the cheapest of the three fixes and makes the
-scope feature match a real rank.
+**Reframed since this was written.** District turned out not to belong as a
+login *role* at all — the PS asks for SCRB to drill into districts, not for
+district officers to get restricted logins, and with no real auth a
+self-selected jurisdiction implied an access boundary the app doesn't have.
+`viewScope.ts` / `viewScope.server.ts` / `ViewScopeSwitcher.tsx` are deleted;
+district is now a URL filter (`/dashboard?district=`, `DistrictFilter.tsx`).
+
+So the Range tier is no longer "a third role" — it's a **coarser filter
+option**: one entry per Range in the same drill-down control, resolving to
+that Range's 3–6 districts. `scenarioInDistrict(id, districtId?)` generalises
+to a district-*set* test. Tracked as X1 in [`PLAN.md`](PLAN.md).
 
 ### (b) Stop deriving CID from geography — this one is actually wrong
 `catalyst/dataset-v2/build_seed.mjs` currently does:
@@ -220,19 +231,18 @@ C is gated behind having images at all.
 
 Small, safe, mostly mechanical. Good for whoever isn't on the AI track.
 
-- [ ] **A1.** Replace derived `handlingLevel` with seeded `assignedTo` +
-      `assignmentReason` in `build_seed.mjs`; regenerate `scenarioMeta.json`
-      (both copies). Update the "State CID" badge to show the reason on hover.
-- [ ] **A2.** Add `{ role: "range"; rangeId }` to `ViewScope`; add a Range
-      option to the login scope picker and the topbar switcher; generalise
-      `scenarioInScope()` to a district-set test.
+- [x] **A1.** ~~Replace derived `handlingLevel` with seeded `assignedTo` +
+      `assignmentReason`~~ — **done**, commit `38853d5`.
+- [ ] **A2.** Add Range options to the district drill-down filter (see §1.4a
+      as reframed); generalise `scenarioInDistrict()` to a district-set test.
+      Now tracked as **X1** in [`PLAN.md`](PLAN.md).
 - [ ] **A3.** Document the commissionerate-vs-district modeling shortcut in
       `DATA_STORE_SCHEMA.md`.
-- [ ] **A4.** Reframe the Dashboard copy so statewide reads as the SCRB
-      intelligence view, not as "the other option next to district."
-- [ ] **A5.** Decide the fate of `feature/state-district-scope` — it's 3
-      commits ahead of `main` and unmerged. A1/A2 land on top of it, so
-      **merge it first or rebase onto it**, don't fork a third line.
+- [x] **A4.** ~~Reframe the Dashboard copy so statewide reads as the SCRB
+      intelligence view~~ — **done** (P0.4/P0.5, `c349d48` / `db5b1bd`).
+- [x] **A5.** ~~Decide the fate of `feature/state-district-scope`~~ — merged
+      to `main` and the branch deleted. The Crime Hotspots fix it carried is
+      now live; the scope model it carried was reworked (P0.5).
 
 ## Track B — AI, on GLM-4.7-Flash (the real differentiator)
 

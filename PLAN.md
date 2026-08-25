@@ -157,8 +157,11 @@ policing signal), face recognition, barcode scanning.
 
 ## Cross-cutting
 
-- [ ] **X1** Add the Range tier — `{ role: "range"; rangeId }` in
-      `viewScope.ts`. Real rank, cheap to add. (`RESEARCH_AND_PLAN.md` §1.4a)
+- [ ] **X1** Add the 7 Ranges as coarser options in the district drill-down
+      filter (`DistrictFilter.tsx`), each resolving to its 3–6 districts;
+      generalise `scenarioInDistrict()` to a district-**set** test. A Range
+      IGP is a real rank, and this is a filter option now, not a third role.
+      (`RESEARCH_AND_PLAN.md` §1.4a)
 - [ ] **X2** Document the commissionerate-vs-district modeling shortcut in
       `DATA_STORE_SCHEMA.md`. (§1.4c)
 - [x] **X3** ~~CID assignment derived from district count~~ — fixed, commit
