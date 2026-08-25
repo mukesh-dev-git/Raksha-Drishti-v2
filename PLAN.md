@@ -130,12 +130,26 @@ reasons over it.*
 
 *Blocked on P5.0. Model: GLM-4.7-Flash (200K ctx, native tool calling).*
 
-- [ ] **P5.0** 🚧 **Get the real LLM Serving API contract** from the Catalyst
-      console (Generative AI → LLM Serving → Model Details → API Details) and
-      paste endpoint + headers + request/response schema into
-      `RESEARCH_AND_PLAN.md` §2.2. **Nobody writes client code before this.**
+- [x] **P5.0** ~~Get the real LLM Serving API contract~~ — done, recorded in
+      `RESEARCH_AND_PLAN.md` §2.2. Three things it changed: the `"model"`
+      string is **not** the console's display name (`crm-di-glm47b_30b_it`,
+      `VL-Qwen3.6-35B-A3B`); GLM and the VLM are **different APIs**, not one
+      API with two models (OpenAI chat-completions vs. a flat
+      `prompt`+`images[]` shape); and there's a queue — 8.9s total for 256
+      tokens in the vendor's own sample.
+      ⚠️ One thing still unresolved, carried into P5.1: the console says
+      `Authorization: Zoho-oauthtoken <token>`, both code samples say
+      `Bearer`. **Verify with one real call rather than guessing.**
 - [ ] **P5.1** `src/lib/llm.ts` — server-side-only GLM client. Typed, timeout,
-      graceful fallback, every call logged with prompt + response.
+      graceful fallback, every call logged with prompt + response (log
+      `message.reasoning` too, but never render it — §2.2).
+      Bigger than it first looked: auth is **OAuth with a short-lived token**,
+      not a static API key, so this needs token minting + caching + refresh.
+      No OAuth handling exists in the repo today, and `initCatalyst()` in
+      `zcql.ts` is a different mechanism (Slate-injected request context for
+      the Data Store) that may not yield a QuickML token at all. **Settle how
+      the token is minted on Slate first** — that, plus the `Zoho-oauthtoken`
+      vs `Bearer` question from P5.0, is the whole risk in this item.
 - [ ] **P5.2** Contradiction detector over a fused person's timeline, via tool
       calling, returning `{claim, conflictingClaim, sourceRecordIds[],
       confidence}`.

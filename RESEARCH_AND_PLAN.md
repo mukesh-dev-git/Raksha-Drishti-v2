@@ -168,20 +168,99 @@ Moderation, Object Recognition, Barcode Scanner.
 **Also present in the console, not yet evaluated:** RAG, Knowledge Base,
 Trained NLP Models, Pipelines, Endpoints.
 
-## 2.2 The one blocker to resolve first
+## 2.2 The LLM Serving API contract — ✅ read from the console (P5.0)
 
-**The LLM Serving API endpoint format is not in the public docs.** The docs say
-to get it from the console: *Generative AI → LLM Serving → model → Model
-Details → API Details*. Auth is OAuth-based; the ML-endpoint pattern documented
-nearby uses `Authorization: Zoho-oauthtoken <token>` +
-`X-QUICKML-ENDPOINT-KEY` + `CATALYST-ORG` headers with scope
-`QuickML.deployment.READ`, but **do not assume LLM Serving is identical** —
-read the actual API Details panel and paste the real contract here before
-anyone writes client code against a guess.
+Taken from *Generative AI → LLM Serving → model → Model Details → API
+Details* + the Sample Request and Response tab, 2026-08-25. **Not from public
+docs — they don't document this.** Both models are POST, OAuth, scope
+`QuickML.deployment.READ`.
 
-**Task 0 for whoever starts this: open the console, copy the exact endpoint +
-headers + request/response schema into this doc.** Everything in Part 3 is
-blocked on that one screenshot's worth of information.
+Common to both: org `60079393411`, project `56806000000070001`.
+
+### The single most important gotcha: display name ≠ model id
+
+The string you put in `"model"` is **not** the name shown in the console.
+Getting this wrong is the most likely first failure:
+
+| Console shows | `"model"` must be | Endpoint path |
+|---|---|---|
+| GLM-4.7-Flash | `crm-di-glm47b_30b_it` | `/glm/chat` |
+| Qwen 3.6 - 35B Vision Language | `VL-Qwen3.6-35B-A3B` | `/vlm/chat` |
+
+### The two endpoints are NOT the same API
+
+This is the second thing that will bite. GLM is OpenAI-compatible; the VLM is
+a bespoke flat-prompt shape. Do not write one client for both.
+
+```
+POST https://api.catalyst.zoho.in/quickml/v1/project/56806000000070001/glm/chat
+POST https://api.catalyst.zoho.in/quickml/v1/project/56806000000070001/vlm/chat
+```
+
+**GLM — OpenAI chat-completions shape.** Request takes `messages[]`
+(role/content), `max_tokens`, `temperature`, `stream`, `tools[]`,
+`tool_choice`, plus a Zoho extension `chat_template_kwargs:
+{enable_thinking: bool}`. Response is a standard `chat.completion`:
+`choices[0].message` with `content`, `tool_calls[]`, `finish_reason`, and a
+top-level `usage`.
+
+Two details that matter for P5.2/P5.6:
+- `tool_calls[].function.arguments` is a **JSON-encoded string**, not an
+  object. Parse it, and parse it defensively.
+- With `enable_thinking: true` the message carries a non-standard
+  **`reasoning`** field alongside `content`. It is the model's scratchpad.
+  Log it for the audit trail; **never render it as a finding** — it contains
+  hedging and discarded hypotheses, exactly the "vague suspicion" the
+  citation guardrail exists to keep out of the UI.
+
+**VLM — flat prompt, no tool calling.** Request is `{prompt, model, images[],
+system_prompt, top_k, top_p, temperature, max_tokens}` where `images[]` are
+base64 strings. Response is `{request_id, model, response, metrics}` — and
+`response` is a **raw string**, which in the vendor's own sample arrives
+wrapped in a ` ```json ` markdown fence. Strip the fence before parsing; do
+not assume valid JSON. No `tools` support, so structured output here is
+prompt-discipline plus validation, not a schema guarantee.
+
+### Errors and latency
+
+Error responses use a completely different shape from success —
+`{code, message, details: {reason}}` — so branch on the shape, not on a
+status code alone. Note the vendor's own sample has `details.reason: ""`,
+so assume error detail may be empty and log the raw body.
+
+The VLM sample reports `queue_wait_time` 2.4s and `total_time_taken` 8.9s for
+256 output tokens. **There is a queue.** Timeouts must be generous and every
+call needs a fallback path — see P5.1.
+
+### ⚠️ Unresolved: which `Authorization` scheme actually works
+
+The console and the code samples disagree, and this is not a detail we can
+guess at:
+
+| Source | Header |
+|---|---|
+| Console "Headers" box | `"Authorization": "Zoho-oauthtoken <access-token>"` |
+| Both code samples (python + fetch) | `"Authorization": "Bearer YOUR_TOKEN"` |
+
+`Zoho-oauthtoken` is the Zoho-wide convention and matches the
+`QuickML.deployment.READ` OAuth scope; `Bearer` looks like a generic
+template that may not have been updated. **Verify with one real call before
+writing the client** — whichever works, record it here.
+
+Also note what "OAuth" implies and a static API key does not: **the access
+token is short-lived** (Zoho's are typically ~1 hour). `src/lib/llm.ts`
+therefore needs token acquisition + caching + refresh, not a constant read
+once from the environment. There is no existing OAuth handling anywhere in
+this repo — `initCatalyst()` in `zcql.ts` relies on Slate injecting request
+context for Data Store access, which is a different mechanism and does not
+obviously yield a QuickML token. Resolving how the token is minted on Slate
+is the remaining piece of P5.1.
+
+**Never commit the token.** The org id, project id and endpoint URLs above
+are identifiers, not secrets, and are fine in this doc. The access token (and
+any client secret / refresh token used to mint it) belongs in `.env.local`,
+already covered by `.gitignore`'s `.env*.local`, and in Catalyst's own
+environment config for the deployed build.
 
 ## 2.3 What our data can actually feed
 
