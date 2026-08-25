@@ -2,32 +2,30 @@
 
 import { Search, Bell, Mail, UserCircle } from "lucide-react";
 import AccessibilityControls from "@/components/layout/AccessibilityControls";
-import ViewScopeSwitcher from "./ViewScopeSwitcher";
-import { districtLabel } from "@/lib/dashboardData";
-import type { ViewScope } from "@/lib/viewScope";
+
 
 // -----------------------------------------------------------------------------
 // Dashboard top bar - greeting, search (visual only, not wired to anything
-// yet), the "Viewing as" scope switcher, and notification/mail/profile
+// yet), and notification/mail/profile
 // chrome. No fabricated officer name or photo: auth is off by default
 // (AuthGate) so there's no real signed-in identity to show, and inventing
 // one would misrepresent a real person. alertCount is the one real number
-// here - the same Alerts & Leads count shown lower on the page (already
-// scoped to the current view - see (site)/layout.tsx).
+// here - the same Alerts & Leads count shown lower on the page.
+//
+// The district drill-down control lives on /dashboard (the page that owns
+// the ?district= filter), not up here - it is a filter on one view, not a
+// global mode. See PLAN.md.
 // -----------------------------------------------------------------------------
-export default function DashboardTopbar({ alertCount, scope }: { alertCount: number; scope: ViewScope }) {
+export default function DashboardTopbar({ alertCount }: { alertCount: number }) {
   const hour = new Date().getHours();
   const timeGreeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
-  const areaLabel = scope.role === "state" ? "across Karnataka" : `in ${districtLabel(scope.districtId)}`;
 
   return (
     <header className="flex items-center gap-4 border-b border-line bg-surface px-6 py-3.5">
       <div className="min-w-0 flex-1">
         <h1 className="truncate text-[17px] font-semibold text-ink">{timeGreeting}, Officer</h1>
-        <p className="truncate text-xs text-muted">Here&apos;s what&apos;s happening {areaLabel}</p>
+        <p className="truncate text-xs text-muted">Here&apos;s what&apos;s happening across Karnataka</p>
       </div>
-
-      <ViewScopeSwitcher scope={scope} />
 
       <label className="relative hidden w-full max-w-sm sm:block">
         <Search size={16} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" aria-hidden="true" />

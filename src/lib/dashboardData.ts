@@ -7,7 +7,6 @@
 // not fabricated - no invented deltas, alert counts, or call volumes.
 // -----------------------------------------------------------------------------
 import { caseTypes, districts } from "./data";
-import type { ViewScope } from "./viewScope";
 import scenarioMeta from "./nosql-seed/scenarioMeta.json";
 import callRecords from "./nosql-seed/CallRecords.json";
 import transactions from "./nosql-seed/Transactions.json";
@@ -30,17 +29,20 @@ type ScenarioMeta = {
 // "CID" into it, so the cast is safe, not a type-safety hole.
 const META: Record<string, ScenarioMeta> = scenarioMeta as Record<string, ScenarioMeta>;
 
-// A scenario is in scope for a District Officer only if their district is
-// one of the (possibly several - see build_seed.mjs) real districts the
-// scenario's FIRs touch. An SCRB / State HQ viewer sees everything.
-export function scenarioInScope(scenarioId: string, scope: ViewScope): boolean {
-  if (scope.role === "state") return true;
+// District here is a DRILL-DOWN FILTER, not a role. The PS asks for SCRB to
+// "visualize crime patterns across districts and specific police stations" -
+// i.e. one statewide viewer narrowing the view, not a district officer with
+// a restricted login. `districtId` undefined = statewide, the default.
+// A scenario passes the filter if that district is one of the (possibly
+// several - see build_seed.mjs) real districts its FIRs touch.
+export function scenarioInDistrict(scenarioId: string, districtId?: number): boolean {
+  if (districtId === undefined) return true;
   const meta = META[scenarioId];
-  return !!meta && meta.districtIds.includes(scope.districtId);
+  return !!meta && meta.districtIds.includes(districtId);
 }
 
-// The real districts an SCRB-scoped viewer would need to pick from,
-// and the label a district officer's own scope resolves to - both derived
+// The real districts the drill-down filter offers,
+// and the label a filtered district resolves to - both derived
 // from data.ts's real district table, not hand-maintained here.
 export function districtLabel(districtId: number): string {
   return districts.find((d) => d.dbId === districtId)?.name ?? `District ${districtId}`;
@@ -57,21 +59,19 @@ function scenarioLink(scenarioId: string): string | null {
   return `/cases/${c.slug}/${d.slug}/investigation-workspace`;
 }
 
-// Picks which scenario to feature for a given scope. A District Officer's
-// featured case is one their own unit is actually investigating, so
-// CID-assigned scenarios are skipped even when they sit in that district
-// (C8 is Bengaluru-only but assigned to the Cyber Crimes Wing). An SCRB
-// viewer sees everything, so prefer a CID case and fall back to any.
-function pickFeaturedScenarioId(scope: ViewScope): string | null {
-  const ids = Object.keys(META);
-  if (scope.role === "district") {
-    return ids.find((id) => META[id].assignedTo === "District" && scenarioInScope(id, scope)) ?? null;
-  }
+// Picks which scenario to feature. Filtered to a district, feature any
+// scenario touching it - CID-assigned included, since an SCRB viewer
+// drilling into a district wants that district's whole picture, not just
+// what its own unit runs. Unfiltered, prefer a CID case as the more
+// state-level-relevant one, falling back to any.
+function pickFeaturedScenarioId(districtId?: number): string | null {
+  const ids = Object.keys(META).filter((id) => scenarioInDistrict(id, districtId));
+  if (districtId !== undefined) return ids[0] ?? null;
   return ids.find((id) => META[id].assignedTo === "CID") ?? ids[0] ?? null;
 }
 
-export function getFeaturedScenario(scope: ViewScope = { role: "state" }) {
-  const scenarioId = pickFeaturedScenarioId(scope);
+export function getFeaturedScenario(districtId?: number) {
+  const scenarioId = pickFeaturedScenarioId(districtId);
   if (!scenarioId) return null;
   const meta = META[scenarioId];
   const link = scenarioLink(scenarioId);
@@ -129,9 +129,9 @@ export type Alert = {
 
 // Real evidence contradictions only - no fabricated "crime spike" style
 // alerts, since there's no real anomaly-detection signal behind them.
-export function getRealAlerts(limit = 3, scope: ViewScope = { role: "state" }): Alert[] {
+export function getRealAlerts(limit = 3, districtId?: number): Alert[] {
   return (contradictions as { id: string; scenarioId: string; description: string }[])
-    .filter((c) => scenarioInScope(c.scenarioId, scope))
+    .filter((c) => scenarioInDistrict(c.scenarioId, districtId))
     .slice(0, limit)
     .map((c) => {
       const meta = META[c.scenarioId];
@@ -157,7 +157,7 @@ export type EvidenceFeedItem = {
 };
 
 // Most recent real evidence items across every seeded scenario, newest first.
-export function getRealEvidenceFeed(limit = 6, scope: ViewScope = { role: "state" }): EvidenceFeedItem[] {
+export function getRealEvidenceFeed(limit = 6, districtId?: number): EvidenceFeedItem[] {
   const items: EvidenceFeedItem[] = [
     ...(callRecords as any[]).map((r) => ({
       id: r.id,
@@ -191,7 +191,7 @@ export function getRealEvidenceFeed(limit = 6, scope: ViewScope = { role: "state
       timestamp: `${r.statementDate}T00:00:00`,
       link: scenarioLink(r.scenarioId),
     })),
-  ].filter((item) => scenarioInScope(item.scenarioId, scope));
+  ].filter((item) => scenarioInDistrict(item.scenarioId, districtId));
   items.sort((a, b) => (a.timestamp < b.timestamp ? 1 : -1));
   return items.slice(0, limit);
 }

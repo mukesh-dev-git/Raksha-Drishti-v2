@@ -2,7 +2,6 @@ import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import DashboardTopbar from "@/components/dashboard/DashboardTopbar";
 import SiteFooter from "@/components/layout/SiteFooter";
 import { getRealAlerts } from "@/lib/dashboardData";
-import { getViewScope } from "@/lib/viewScope.server";
 
 // -----------------------------------------------------------------------------
 // (site) route group — every page EXCEPT the Home welcome screen (see
@@ -14,22 +13,24 @@ import { getViewScope } from "@/lib/viewScope.server";
 // applied site-wide per an explicit follow-up request, with Home carved out
 // as a distinct pre-shell landing page instead of folding it in here too.
 //
-// Also reads the "Viewing as" scope (viewScope.ts) once here and passes it
-// down - the topbar's switcher, the sidebar's district label, and every
-// page under this layout all need the same scope for one consistent view.
+// This shell is scope-free on purpose. District used to be a login-time
+// role read from a cookie here and threaded through the sidebar, topbar and
+// every page below. It is now a drill-down FILTER owned by the page that
+// uses it (?district= on /dashboard), because that is what the PS actually
+// asks for - SCRB narrowing a statewide view, not a district officer with a
+// restricted login. See PLAN.md and RESEARCH_AND_PLAN.md 1.2.
 //
 // Route groups are purely organizational and don't affect URLs - moving
 // pages in/out of this group never changes any page's path.
 // -----------------------------------------------------------------------------
-export default async function ShellLayout({ children }: { children: React.ReactNode }) {
-  const scope = await getViewScope();
-  const alertCount = getRealAlerts(3, scope).length;
+export default function ShellLayout({ children }: { children: React.ReactNode }) {
+  const alertCount = getRealAlerts(3).length;
 
   return (
     <div className="flex min-h-screen flex-1">
-      <DashboardSidebar scope={scope} />
+      <DashboardSidebar />
       <div className="flex min-w-0 flex-1 flex-col">
-        <DashboardTopbar alertCount={alertCount} scope={scope} />
+        <DashboardTopbar alertCount={alertCount} />
         <div id="main-content" className="flex-1 bg-paper">
           {children}
         </div>

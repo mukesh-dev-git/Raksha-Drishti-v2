@@ -6,8 +6,6 @@ import Image from "next/image";
 import { Eye, EyeOff, User, Lock, ShieldCheck, ArrowRight, Landmark } from "lucide-react";
 import { AUTH_ON, LOGIN_URL } from "@/lib/auth";
 import { BASE_PATH } from "@/lib/basePath";
-import { districts } from "@/lib/data";
-import { VIEW_SCOPE_COOKIE, parseViewScope } from "@/lib/viewScope";
 
 // Same photo HomeHero.tsx uses (verified a real, resolving Unsplash photo via
 // curl - see that file's comment on why that matters) - a full backdrop
@@ -23,16 +21,13 @@ const LOGIN_BG_IMG =
 // fixed panel doesn't overlap the main content. Below `lg` it's a normal
 // in-flow block (stacks under the main content on narrow screens).
 //
-// Two genuinely different things happen on this screen now, and they're
-// kept visually separate on purpose:
+// Two actions here, kept visually separate on purpose:
 //
-//  1. "Viewing Scope" (State/CID vs. a real district) - REAL and functional.
-//     This used to live only in the Dashboard topbar's ViewScopeSwitcher;
-//     moved here as the primary action too, since an officer choosing their
-//     scope belongs at sign-in time, not something they stumble on later.
-//     "Continue to Dashboard" sets the same rd-view-scope cookie that
-//     switcher writes and navigates - the topbar switcher still works
-//     afterward for changing scope mid-session.
+//  1. "Continue to Dashboard" - the real primary action. It just navigates;
+//     there is nothing to configure first. This used to be a "Viewing Scope"
+//     picker (SCRB vs. a district) that wrote an rd-view-scope cookie, but
+//     district is a drill-down FILTER on the dashboard now, not a login role
+//     - see dashboard/page.tsx and DistrictFilter.tsx for why.
 //
 //  2. Officer sign-in (username/password/SSO) - honestly NOT functional.
 //     This app has no real credential-checking backend of its own - only
@@ -46,44 +41,17 @@ const LOGIN_BG_IMG =
 export default function LoginPanel() {
   const router = useRouter();
 
-  // Uncontrolled select, read via ref at the moment of action - not React
-  // state kept in sync with onChange. Confirmed the state-tracking version
-  // has a real gotcha: some ways of setting a <select>'s value (browser
-  // automation included, but not only that) update the DOM element without
-  // going through React's onChange, leaving a `useState` mirror silently
-  // stale - "Continue to Dashboard" would apply whatever scope was selected
-  // when the component first mounted, not what's actually showing on
-  // screen. Reading scopeRef.current.value at click time always reflects
-  // the real DOM value, so this class of bug can't happen.
-  const scopeRef = useRef<HTMLSelectElement>(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showNotConfigured, setShowNotConfigured] = useState(false);
 
-  // Default the picker to whatever scope is already active (e.g. an officer
-  // who set it from the Dashboard topbar earlier), not always back to state.
-  useEffect(() => {
-    const match = /(?:^|;\s*)rd-view-scope=([^;]+)/.exec(document.cookie);
-    const scope = parseViewScope(match?.[1] ? decodeURIComponent(match[1]) : null);
-    if (scopeRef.current) {
-      scopeRef.current.value = scope.role === "state" ? "state" : `district:${scope.districtId}`;
-    }
-  }, []);
-
-  function applyScope() {
-    const value = scopeRef.current?.value ?? "state";
-    document.cookie = `${VIEW_SCOPE_COOKIE}=${value}; path=/; max-age=${60 * 60 * 24 * 30}`;
-  }
-
   function continueToDashboard() {
-    applyScope();
     router.push("/dashboard");
   }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    applyScope();
     if (AUTH_ON) {
       window.location.href = LOGIN_URL;
       return;
@@ -121,29 +89,14 @@ export default function LoginPanel() {
         <p className="mt-1 text-sm text-white/70">Crime Analytics &amp; Investigation Portal</p>
         <p className="text-sm text-white/70">Karnataka State Police</p>
 
-        {/* 1. Viewing Scope - real, functional, the primary action here */}
+        {/* 1. Continue - the real primary action */}
         <div className="mt-8 w-full rounded-xl bg-white p-6 text-left shadow-lg">
           <h2 className="flex items-center gap-2 text-lg font-semibold text-ink">
-            <Landmark size={18} className="text-dash-blue" aria-hidden="true" /> Viewing Scope
+            <Landmark size={18} className="text-dash-blue" aria-hidden="true" /> State Crime Records Bureau
           </h2>
-          <p className="text-sm text-muted">Choose what you&apos;ll see on the Dashboard</p>
-
-          <label className="mt-4 block text-xs font-medium text-ink" htmlFor="scope-select">
-            I am signing in as
-          </label>
-          <select
-            id="scope-select"
-            ref={scopeRef}
-            defaultValue="state"
-            className="mt-1.5 w-full rounded-lg border border-line bg-surface py-2.5 px-3 text-sm text-ink focus-visible:border-navy"
-          >
-            <option value="state">SCRB — Statewide (State HQ)</option>
-            {districts.map((d) => (
-              <option key={d.dbId} value={`district:${d.dbId}`}>
-                District Officer — {d.name}
-              </option>
-            ))}
-          </select>
+          <p className="mt-1 text-sm text-muted">
+            Statewide crime intelligence across all districts and police stations.
+          </p>
 
           <button
             type="button"
@@ -153,8 +106,7 @@ export default function LoginPanel() {
             Continue to Dashboard <ArrowRight size={14} aria-hidden="true" />
           </button>
           <p className="mt-2 text-[11px] leading-relaxed text-muted">
-            This sets what the Dashboard shows you — real numbers and cases scoped to your choice. It is not a
-            security boundary; anyone can change it from the Dashboard later. See below for officer sign-in.
+            Opens the statewide view. Drill down to any single district from the Dashboard itself.
           </p>
         </div>
 
@@ -168,8 +120,8 @@ export default function LoginPanel() {
               <p className="font-medium">Officer sign-in isn&apos;t configured yet</p>
               <p className="mt-1.5 text-muted">
                 This deployment doesn&apos;t have Catalyst Authentication turned on, so there&apos;s no real account
-                to sign in to yet — see <code className="text-xs">catalyst/README.md</code> §4. Your viewing scope
-                above still applies.
+                to sign in to yet — see <code className="text-xs">catalyst/README.md</code> §4. Use
+                &ldquo;Continue to Dashboard&rdquo; above.
               </p>
             </div>
           ) : (

@@ -9,7 +9,7 @@ import AlertsPanel from "@/components/dashboard/AlertsPanel";
 import EvidenceFeedStrip from "@/components/dashboard/EvidenceFeedStrip";
 import { getSummary, getCaseTypes } from "@/lib/api";
 import { getFeaturedScenario, getRealAlerts, getRealEvidenceFeed, districtLabel } from "@/lib/dashboardData";
-import { getViewScope } from "@/lib/viewScope.server";
+import DistrictFilter from "@/components/dashboard/DistrictFilter";
 
 // -----------------------------------------------------------------------------
 // /dashboard — a dense analytics home behind the shared sidebar shell (see
@@ -22,39 +22,46 @@ import { getViewScope } from "@/lib/viewScope.server";
 // nothing fabricated, including no invented "vs last month" deltas the seed
 // data can't back.
 //
-// Everything here is scoped by the "Viewing as" cookie (viewScope.ts): a
-// District Officer's numbers, featured case, alerts, and evidence feed are
-// all filtered to their own district; a State/CID Officer sees the
-// statewide picture, including cross-district State-CID cases a single
-// district has no jurisdiction over.
+// The default view is statewide - this is SCRB's screen (see
+// RESEARCH_AND_PLAN.md 1.2). `?district=<DistrictID>` narrows every number,
+// the featured case, alerts and the evidence feed to one district, which is
+// the PS's "District-Level Drill-down" ask.
+//
+// District is a FILTER in the URL, not a role in a cookie. It used to be a
+// login-time scope, which implied an access boundary this app does not have
+// (there is no signed-in identity - AuthGate is off) and which nobody asked
+// for: the PS wants SCRB to drill into districts, not district officers to
+// get restricted logins. A URL filter is also shareable and bookmarkable,
+// which a cookie mode is not.
 // -----------------------------------------------------------------------------
 export const metadata = { title: "Dashboard" };
 export const dynamic = "force-dynamic";
 
-export default async function DashboardPage() {
-  const scope = await getViewScope();
-  const districtId = scope.role === "district" ? scope.districtId : undefined;
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ district?: string }>;
+}) {
+  const { district } = await searchParams;
+  const parsed = Number(district);
+  const districtId = Number.isFinite(parsed) && parsed > 0 ? parsed : undefined;
 
   const [summary, caseTypes] = await Promise.all([getSummary(districtId), getCaseTypes(districtId)]);
 
-  // pickFeaturedScenarioId (inside getFeaturedScenario) only ever features a
-  // "District"-level case for a District-scoped view - a State-CID case
-  // isn't this district's own investigation to run, even if the district
-  // has a physical stake in it (crime scene, evidence). Alerts/Evidence
-  // Feed below use the broader "does my district touch this case at all"
-  // scoping instead, since those are about visibility, not ownership.
-  const featured = getFeaturedScenario(scope);
-  const alerts = getRealAlerts(3, scope);
-  const evidenceFeed = getRealEvidenceFeed(8, scope);
+  const featured = getFeaturedScenario(districtId);
+  const alerts = getRealAlerts(3, districtId);
+  const evidenceFeed = getRealEvidenceFeed(8, districtId);
 
   return (
     <div className="mx-auto max-w-[1400px] space-y-6 p-6">
+      <DistrictFilter districtId={districtId} />
+
       {/* Stat cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
         <StatCard
           label="Total FIRs"
           value={summary.totalCases.toLocaleString("en-IN")}
-          hint={scope.role === "district" ? districtLabel(scope.districtId) : "Across all categories"}
+          hint={districtId !== undefined ? districtLabel(districtId) : "Across all categories"}
           icon={<FileStack size={20} aria-hidden="true" />}
           accent="blue"
           trend={summary.yearlyTrend}
