@@ -78,10 +78,30 @@ locally, then wipe + re-import **once**. See `RESEARCH_AND_PLAN.md` §5.*
       scenarios with full evidence). Port `ChargesheetDetails` from
       `catalyst/seed/`.
       *Done when:* `CaseMaster` ≳ 400 rows, the 15 scenarios still resolve.
-- [ ] **P1.3** Populate `latitude`/`longitude` with real per-incident coords
-      inside the correct district.
-- [ ] **P1.4** Give `IncidentFromDate` a realistic **time-of-day**
-      distribution per crime type. Unlocks the PS's spatiotemporal ask.
+- [x] **P1.3** ~~Populate `latitude`/`longitude` with real per-incident coords
+      inside the correct district~~ — done. The defect was narrower than
+      "no real coords": the coords were real, but **reused** — 5 station
+      centroids each served 2 cases, so 19 FIRs occupied 14 points, and
+      identical points are indistinguishable on a map at any zoom. Now 19/19
+      distinct, each anchored on its authored location (max drift 1.0km) so
+      C1 stays in Yeshwanthpur and C8 in Whitefield. New
+      `catalyst/dataset-v2/geo_time.mjs` holds real locality tables for all
+      13 stations; `placeIncident()` is the reusable generator P1.2 calls for
+      bulk cases.
+- [~] **P1.4** Time-of-day. **Profiles built and calibrated**
+      (`incidentHour()` in `geo_time.mjs`, per crime type) — but there was
+      nothing to fill on the authored 15: of 19 FIRs, 11 already have
+      realistic hand-authored times (9 fit the profiles), 7 are **period
+      offences** that correctly carry no time of day, and the last one is
+      date-only *on purpose* — its timing lives in the evidence layer.
+      Auto-filling it put C1's Tumakuru sale at 14:14, hours **before** the
+      21:40 CCTV of the accused driving there — so a `00:00:00` here is
+      load-bearing, not a gap. **Remains open only for P1.2's generated bulk
+      cases**, which is where a distribution can actually show up; 19 cases
+      can't display one.
+      ⚠️ **P4.2 must exclude period offences** rather than read their
+      `00:00` as midnight — see `isPeriodOffence()`. Counting them would
+      manufacture a midnight spike that is purely a storage artefact.
 - [ ] **P1.5** Populate `OccupationID`/`ReligionID`/`CasteID` + build the 3
       lookup tables. **Framing agreed first** — victim/complainant
       demographics with explicit denominators, never offender propensity.

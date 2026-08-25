@@ -21,7 +21,7 @@
           "CaseCategoryID": 1, "GravityOffenceID": 2, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 1,
           "CaseStatusID": 4, "CourtID": 3001,
           "IncidentFromDate": "2026-03-14T20:15:00", "IncidentToDate": "2026-03-14T20:30:00",
-          "InfoReceivedPSDate": "2026-03-14T21:00:00", "latitude": 13.0281, "longitude": 77.5540,
+          "InfoReceivedPSDate": "2026-03-14T21:00:00", "latitude": 13.032433, "longitude": 77.557783,
           "BriefFacts": "Complainant reports 3 motorcycles stolen from a paid parking lot near Yeshwanthpur station between 8:15-8:30pm."
         },
         {
@@ -30,7 +30,7 @@
           "CaseCategoryID": 1, "GravityOffenceID": 2, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 3,
           "CaseStatusID": 4, "CourtID": 3006,
           "IncidentFromDate": "2026-03-19T00:00:00", "IncidentToDate": "2026-03-19T00:00:00",
-          "InfoReceivedPSDate": "2026-03-20T11:30:00", "latitude": 13.3379, "longitude": 77.1173,
+          "InfoReceivedPSDate": "2026-03-20T11:30:00", "latitude": 13.340396, "longitude": 77.11964,
           "BriefFacts": "4 buyers report being sold motorcycles with forged registration transfer papers by a man identifying himself as a used-vehicle dealer."
         }
       ],
@@ -107,7 +107,7 @@
           "CaseCategoryID": 1, "GravityOffenceID": 1, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 1,
           "CaseStatusID": 4, "CourtID": 3002,
           "IncidentFromDate": "2026-02-01T18:40:00", "IncidentToDate": "2026-02-01T18:50:00",
-          "InfoReceivedPSDate": "2026-02-01T19:10:00", "latitude": 12.3050, "longitude": 76.6550,
+          "InfoReceivedPSDate": "2026-02-01T19:10:00", "latitude": 12.302372, "longitude": 76.650969,
           "BriefFacts": "4-5 men enter a jewellery shop near K.R. Market at closing time, threaten staff, and flee with gold ornaments worth approx. Rs 32 lakh."
         }
       ],
@@ -177,7 +177,7 @@
           "CaseCategoryID": 1, "GravityOffenceID": 2, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 3,
           "CaseStatusID": 4, "CourtID": 3003,
           "IncidentFromDate": "2026-03-01T00:00:00", "IncidentToDate": "2026-04-04T00:00:00",
-          "InfoReceivedPSDate": "2026-04-05T14:00:00", "latitude": 15.8497, "longitude": 74.4977,
+          "InfoReceivedPSDate": "2026-04-05T14:00:00", "latitude": 15.844547, "longitude": 74.502883,
           "BriefFacts": "Complainant took a small loan via a mobile app, was charged hidden fees far exceeding the loan, and received threatening calls to his contacts."
         },
         {
@@ -186,7 +186,7 @@
           "CaseCategoryID": 1, "GravityOffenceID": 2, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 3,
           "CaseStatusID": 4, "CourtID": 3001,
           "IncidentFromDate": "2026-03-10T00:00:00", "IncidentToDate": "2026-04-09T00:00:00",
-          "InfoReceivedPSDate": "2026-04-10T16:20:00", "latitude": 12.9698, "longitude": 77.7500,
+          "InfoReceivedPSDate": "2026-04-10T16:20:00", "latitude": 12.962151, "longitude": 77.747892,
           "BriefFacts": "3 separate complainants in Whitefield report the same app pattern - hidden charges, morphed photos sent to family, threats."
         }
       ],
@@ -263,7 +263,7 @@
           "CaseCategoryID": 1, "GravityOffenceID": 2, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 3,
           "CaseStatusID": 4, "CourtID": 3004,
           "IncidentFromDate": "2026-04-01T00:00:00", "IncidentToDate": "2026-05-10T00:00:00",
-          "InfoReceivedPSDate": "2026-05-12T10:00:00", "latitude": 17.3297, "longitude": 76.8343,
+          "InfoReceivedPSDate": "2026-05-12T10:00:00", "latitude": 17.33438, "longitude": 76.836996,
           "BriefFacts": "Owner discovers his agricultural land was 'sold' via forged power-of-attorney while he was working abroad; documents bear a notary stamp he never visited."
         }
       ],
@@ -329,7 +329,7 @@
           "CaseCategoryID": 1, "GravityOffenceID": 2, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 4,
           "CaseStatusID": 4, "CourtID": 3005,
           "IncidentFromDate": "2026-06-02T02:00:00", "IncidentToDate": "2026-06-02T03:30:00",
-          "InfoReceivedPSDate": "2026-06-02T08:00:00", "latitude": 12.9141, "longitude": 74.8560,
+          "InfoReceivedPSDate": "2026-06-02T08:00:00", "latitude": 12.907762, "longitude": 74.849484,
           "BriefFacts": "Warehouse storing imported electronics broken into overnight; approx 40 laptops and mobile phones stolen, lock forced."
         }
       ],
@@ -390,7 +390,7 @@
           "CaseCategoryID": 1, "GravityOffenceID": 1, "CrimeMajorHeadID": 2, "CrimeMinorHeadID": 2,
           "CaseStatusID": 4, "CourtID": 3007,
           "IncidentFromDate": "2026-01-17T19:00:00", "IncidentToDate": "2026-01-17T19:20:00",
-          "InfoReceivedPSDate": "2026-01-17T20:00:00", "latitude": 15.1394, "longitude": 76.9214,
+          "InfoReceivedPSDate": "2026-01-17T20:00:00", "latitude": 15.133152, "longitude": 76.927674,
           "BriefFacts": "Worker who publicly demanded overdue wages is beaten by 3 men near the mine site gate; sustains a fractured arm."
         }
       ],
@@ -455,7 +455,7 @@
           "CaseCategoryID": 1, "GravityOffenceID": 2, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 1,
           "CaseStatusID": 4, "CourtID": 3008,
           "IncidentFromDate": "2026-07-07T23:00:00", "IncidentToDate": "2026-07-08T01:00:00",
-          "InfoReceivedPSDate": "2026-07-08T07:00:00", "latitude": 14.1667, "longitude": 75.0333,
+          "InfoReceivedPSDate": "2026-07-08T07:00:00", "latitude": 14.161451, "longitude": 75.02643,
           "BriefFacts": "6 cattle stolen from a farm shed near Sagar overnight; fence cut, tyre tracks leading to the main road."
         },
         {
@@ -464,7 +464,7 @@
           "CaseCategoryID": 1, "GravityOffenceID": 2, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 1,
           "CaseStatusID": 4, "CourtID": 3006,
           "IncidentFromDate": "2026-07-14T22:30:00", "IncidentToDate": "2026-07-15T00:30:00",
-          "InfoReceivedPSDate": "2026-07-15T06:30:00", "latitude": 13.7411, "longitude": 76.9046,
+          "InfoReceivedPSDate": "2026-07-15T06:30:00", "latitude": 13.745379, "longitude": 76.901858,
           "BriefFacts": "5 cattle stolen from a farm near Sira overnight, same pattern as a prior Shivamogga complaint."
         }
       ],
@@ -530,7 +530,7 @@
           "CaseCategoryID": 1, "GravityOffenceID": 2, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 3,
           "CaseStatusID": 4, "CourtID": 3001,
           "IncidentFromDate": "2026-06-15T00:00:00", "IncidentToDate": "2026-07-30T00:00:00",
-          "InfoReceivedPSDate": "2026-08-01T09:00:00", "latitude": 12.9698, "longitude": 77.7500,
+          "InfoReceivedPSDate": "2026-08-01T09:00:00", "latitude": 12.971845, "longitude": 77.758155,
           "BriefFacts": "Raid on a Whitefield office space following multiple victim complaints of fraudulent 'Microsoft support' calls resulting in remote-access bank fraud."
         }
       ],
@@ -601,7 +601,7 @@
           "CaseCategoryID": 1, "GravityOffenceID": 2, "CrimeMajorHeadID": 2, "CrimeMinorHeadID": 2,
           "CaseStatusID": 4, "CourtID": 3002,
           "IncidentFromDate": "2026-02-19T21:00:00", "IncidentToDate": "2026-02-19T21:30:00",
-          "InfoReceivedPSDate": "2026-02-19T22:15:00", "latitude": 12.3200, "longitude": 76.6200,
+          "InfoReceivedPSDate": "2026-02-19T22:15:00", "latitude": 12.326085, "longitude": 76.615557,
           "BriefFacts": "Complainant reports being assaulted by her husband after a dispute; visible injuries noted by attending officer."
         }
       ],
@@ -660,7 +660,7 @@
           "CaseCategoryID": 1, "GravityOffenceID": 2, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 4,
           "CaseStatusID": 4, "CourtID": 3003,
           "IncidentFromDate": "2026-05-21T01:00:00", "IncidentToDate": "2026-05-21T02:00:00",
-          "InfoReceivedPSDate": "2026-05-21T07:30:00", "latitude": 15.8497, "longitude": 74.4977,
+          "InfoReceivedPSDate": "2026-05-21T07:30:00", "latitude": 15.854785, "longitude": 74.490934,
           "BriefFacts": "Locked residential garage broken into overnight, 2 scooters stolen; recovered a week later stripped of engine and body parts at an unrelated site."
         }
       ],
@@ -720,7 +720,7 @@
           "CaseCategoryID": 1, "GravityOffenceID": 1, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 1,
           "CaseStatusID": 4, "CourtID": 3004,
           "IncidentFromDate": "2026-11-01T20:00:00", "IncidentToDate": "2026-11-01T20:15:00",
-          "InfoReceivedPSDate": "2026-11-01T21:00:00", "latitude": 17.3297, "longitude": 76.8343,
+          "InfoReceivedPSDate": "2026-11-01T21:00:00", "latitude": 17.325265, "longitude": 76.835555,
           "BriefFacts": "During a wedding reception, 3 masked men snatch jewellery from 2 female guests in the parking area and flee on a bike."
         }
       ],
@@ -785,7 +785,7 @@
           "CaseCategoryID": 1, "GravityOffenceID": 2, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 3,
           "CaseStatusID": 4, "CourtID": 3005,
           "IncidentFromDate": "2026-04-01T00:00:00", "IncidentToDate": "2026-09-05T00:00:00",
-          "InfoReceivedPSDate": "2026-09-10T10:30:00", "latitude": 12.9141, "longitude": 74.8560,
+          "InfoReceivedPSDate": "2026-09-10T10:30:00", "latitude": 12.906588, "longitude": 74.855412,
           "BriefFacts": "Firm 'CoastalGrow Investments' collected deposits promising 5% monthly returns from an estimated 60+ investors before its office shut and operators became unreachable."
         }
       ],
@@ -851,7 +851,7 @@
           "CaseCategoryID": 1, "GravityOffenceID": 2, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 3,
           "CaseStatusID": 4, "CourtID": 3007,
           "IncidentFromDate": "2026-09-20T00:00:00", "IncidentToDate": "2026-10-04T00:00:00",
-          "InfoReceivedPSDate": "2026-10-05T11:00:00", "latitude": 15.1394, "longitude": 76.9214,
+          "InfoReceivedPSDate": "2026-10-05T11:00:00", "latitude": 15.138779, "longitude": 76.918172,
           "BriefFacts": "Bank reports a skimming device found on an ATM; 12 customers report unauthorized withdrawals totaling over Rs 6 lakh."
         },
         {
@@ -860,7 +860,7 @@
           "CaseCategoryID": 1, "GravityOffenceID": 2, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 3,
           "CaseStatusID": 4, "CourtID": 3001,
           "IncidentFromDate": "2026-10-08T00:00:00", "IncidentToDate": "2026-10-17T00:00:00",
-          "InfoReceivedPSDate": "2026-10-18T09:45:00", "latitude": 12.9950, "longitude": 77.6200,
+          "InfoReceivedPSDate": "2026-10-18T09:45:00", "latitude": 13.000423, "longitude": 77.616753,
           "BriefFacts": "Similar skimming pattern identified at a Bengaluru ATM, same bank's device model; 8 customers affected."
         }
       ],
@@ -928,7 +928,7 @@
           "CaseCategoryID": 1, "GravityOffenceID": 1, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 4,
           "CaseStatusID": 4, "CourtID": 3008,
           "IncidentFromDate": "2026-11-29T02:00:00", "IncidentToDate": "2026-11-29T05:00:00",
-          "InfoReceivedPSDate": "2026-11-29T09:00:00", "latitude": 13.9299, "longitude": 75.5681,
+          "InfoReceivedPSDate": "2026-11-29T09:00:00", "latitude": 13.926738, "longitude": 75.569864,
           "BriefFacts": "Forest range officer discovers 6 sandalwood trees felled overnight inside the reserve boundary; drag marks lead to an unmanned forest road exit."
         }
       ],
@@ -986,7 +986,7 @@
           "CaseCategoryID": 1, "GravityOffenceID": 1, "CrimeMajorHeadID": 2, "CrimeMinorHeadID": 2,
           "CaseStatusID": 4, "CourtID": 3001,
           "IncidentFromDate": "2026-07-24T17:30:00", "IncidentToDate": "2026-07-24T17:45:00",
-          "InfoReceivedPSDate": "2026-07-24T18:10:00", "latitude": 13.0100, "longitude": 77.5600,
+          "InfoReceivedPSDate": "2026-07-24T18:10:00", "latitude": 13.010818, "longitude": 77.554789,
           "BriefFacts": "Group clash outside a college gate involving 6+ young men, resulting in 2 hospitalized with head injuries; both sides claim the other started it."
         }
       ],

@@ -547,12 +547,17 @@ Runs alongside Tracks A and B; it is the true unblocker for most of B and C.
       (hundreds of cases, for statistics to mean anything) and deep (the 15
       authored scenarios with full evidence). Generate the bulk cases
       statistically, keep the 15 hand-authored ones as the rich subset.
-- [ ] **D3.** Populate `latitude`/`longitude` with real per-incident
-      coordinates inside the right district, so the hotspot map plots
-      genuine data instead of synthetic points.
-- [ ] **D4.** Give `IncidentFromDate` a realistic **time-of-day**
-      distribution per crime type (burglary skews night, pickpocketing to
-      market hours). Unlocks the PS's spatiotemporal ask directly.
+- [x] **D3.** ~~Populate `latitude`/`longitude` with real per-incident
+      coordinates inside the right district~~ — done. The coordinates were
+      already real and in the right district; the defect was that they were
+      **reused** (19 FIRs over 14 points, 5 station centroids serving 2 cases
+      each). Now 19/19 distinct, anchored on their authored location.
+      `catalyst/dataset-v2/geo_time.mjs`.
+- [~] **D4.** Time-of-day profiles built and calibrated, but **nothing to
+      apply them to yet** — the authored 15 already carry realistic times, or
+      correctly carry none (period offences). Real target is P1.2's bulk
+      cases. See PLAN.md P1.4 for why one apparent gap turned out to be
+      load-bearing, and the `isPeriodOffence()` warning that P4.2 depends on.
 - [ ] **D5.** Seed `ChargesheetDetails` (it exists in the original seed —
       port it) to unlock chargesheet rate and time-to-chargesheet.
 - [ ] **D6.** Populate `OccupationID` / `ReligionID` / `CasteID` and build

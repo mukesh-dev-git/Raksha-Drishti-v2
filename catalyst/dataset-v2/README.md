@@ -8,6 +8,17 @@ interconnected, multi-source data to render, per
 [`features.md`](../../features.md)'s "data model first" recommendation.
 
 ## Files
+- **`geo_time.mjs`** — where and when an incident happened (P1.3/P1.4).
+  Real locality tables for all 13 police stations, so a generated coordinate
+  lands on a place that exists in the right district rather than in a lake or
+  across a district line. `placeIncident()` scatters within a station's
+  jurisdiction — pass an existing coordinate as the anchor to keep an
+  authored location put; omit it for generated cases. `incidentHour()` gives
+  a crime type a realistic hour. Both deterministic in a seed (use
+  `CaseMasterID`) so regenerating never relocates an existing case.
+  `isPeriodOffence()` marks the crimes that legitimately have no time of day
+  — **P4.2 must exclude those**, or their stored `00:00` becomes a fake
+  midnight spike.
 - **`lookups.json`** — fresh reference/taxonomy data for all 15 Data Store
   lookup tables (State, District, UnitType, Unit, Rank, Designation,
   Employee, Court, CaseCategory, GravityOffence, CaseStatusMaster,
