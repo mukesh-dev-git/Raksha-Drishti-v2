@@ -29,24 +29,24 @@ P0 and P1 can run in parallel — different files, different people.
 
 ---
 
-## P0 — Stop over-promising
+## P0 — Stop over-promising  ✅ done (`c349d48`)
 
 *Half a day. Biggest credibility gain per hour available. No dependencies.*
 
-- [ ] **P0.1** Remove the 10 login-bypass links from Home (5 in
+- [x] **P0.1** Remove the 10 login-bypass links from Home (5 in
       `HomeHeader.tsx`, 5 in `FeatureGrid.tsx`). Sign-in + scope becomes the
       only way in.
       *Done when:* `/` offers exactly one forward action, and the feature grid
       either describes capabilities without linking or is cut.
-- [ ] **P0.2** Delete the 12 dead sidebar items in `DashboardSidebar.tsx`
+- [x] **P0.2** Delete the 12 dead sidebar items in `DashboardSidebar.tsx`
       rather than labelling them "Soon". A 5-item sidebar where everything
       works reads finished; a 15-item one where 3 work reads abandoned.
       *Done when:* every visible nav item navigates somewhere real.
-- [ ] **P0.3** Make the maps responsive — replace `h-[80vh]` in
+- [x] **P0.3** Make the maps responsive — replace `h-[80vh]` in
       `MapEmbed.tsx` with an aspect-ratio box, and give the in-iframe controls
       a compact layout under 768px.
       *Done when:* usable at 375px wide without horizontal scroll.
-- [ ] **P0.4** Reframe Dashboard copy so statewide reads as the SCRB
+- [x] **P0.4** Reframe Dashboard copy so statewide reads as the SCRB
       intelligence view, not "the other option next to district."
 
 ## P1 — Data foundation (Track D)
