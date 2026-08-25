@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { ArrowRight, BookOpen } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import HeroLiveOverview from "./HeroLiveOverview";
 import type { Summary } from "@/lib/api";
 
@@ -39,19 +38,16 @@ export default function HomeHero({ summary }: { summary: Summary }) {
             Raksha-Drishti is the unified crime analytics and investigation platform empowering Karnataka State
             Police with real-time insights, smart maps and faster actions.
           </p>
+          {/* Points at the sign-in panel rather than deep-linking past it -
+              "/" is the sign-in screen and the scope picker there is the only
+              way in. See PLAN.md P0.1. */}
           <div className="mt-5 flex flex-wrap gap-3">
-            <Link
-              href="/dashboard"
+            <a
+              href="#officer-sign-in"
               className="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 font-semibold text-navy hover:bg-white/90"
             >
-              Explore Dashboard <ArrowRight size={16} aria-hidden="true" />
-            </Link>
-            <Link
-              href="/cases"
-              className="inline-flex items-center gap-2 rounded-lg border border-white/40 px-4 py-2.5 font-semibold text-white hover:bg-white/10"
-            >
-              <BookOpen size={16} aria-hidden="true" /> Learn More
-            </Link>
+              Sign in to continue <ArrowRight size={16} aria-hidden="true" />
+            </a>
           </div>
         </div>
 

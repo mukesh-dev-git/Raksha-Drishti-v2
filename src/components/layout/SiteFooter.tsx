@@ -33,7 +33,7 @@ function SkylineBand() {
   );
 }
 
-export default function SiteFooter() {
+export default function SiteFooter({ quickLinks = true }: { quickLinks?: boolean }) {
   return (
     <footer className="mt-16">
       {/* Monuments skyline silhouette */}
@@ -61,18 +61,25 @@ export default function SiteFooter() {
             </p>
           </div>
 
-          <nav aria-label="Footer">
-            <h2 className="text-sm font-semibold text-white">Quick links</h2>
-            <ul className="mt-2 space-y-1.5 text-sm">
-              {LINKS.map((l) => (
-                <li key={l.href}>
-                  <Link href={l.href} className="text-white/80 hover:text-white hover:underline">
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
+          {/* Suppressed on "/" (quickLinks={false}) - that page is the
+              sign-in screen, and a footer nav there routes straight past it.
+              See PLAN.md P0.1. */}
+          {quickLinks ? (
+            <nav aria-label="Footer">
+              <h2 className="text-sm font-semibold text-white">Quick links</h2>
+              <ul className="mt-2 space-y-1.5 text-sm">
+                {LINKS.map((l) => (
+                  <li key={l.href}>
+                    <Link href={l.href} className="text-white/80 hover:text-white hover:underline">
+                      {l.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          ) : (
+            <div />
+          )}
 
           <div>
             <h2 className="text-sm font-semibold text-white">In an emergency</h2>

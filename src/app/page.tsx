@@ -36,7 +36,7 @@ export default async function HomePage() {
           <FeatureGrid />
           <MissionStrip />
         </main>
-        <SiteFooter />
+        <SiteFooter quickLinks={false} />
       </div>
       {/* LoginPanel is lg:fixed (anchored to the viewport, not the page's
           scroll) - this spacer reserves its width in the flex row so the

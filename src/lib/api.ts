@@ -52,7 +52,7 @@ export type Summary = {
 
 // `districtId` scopes every number to one real district ("Viewing as:
 // District Officer" mode - see viewScope.ts) via the API route's own
-// CaseMaster/Unit join; omit for the statewide ("State/CID Officer") view.
+// CaseMaster/Unit join; omit for the statewide (SCRB / State HQ) view.
 export async function getSummary(districtId?: number): Promise<Summary> {
   const qs = districtId ? `?district=${districtId}` : "";
   const live = await apiGet<Summary>(`/summary${qs}`);

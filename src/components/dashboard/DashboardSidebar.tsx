@@ -4,77 +4,47 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Phone } from "lucide-react";
-import {
-  Home,
-  LayoutDashboard,
-  Radar,
-  MapPin,
-  BarChart3,
-  TrendingUp,
-  FolderKanban,
-  Network,
-  Activity,
-  Users,
-  Flag,
-  ClipboardList,
-  ScrollText,
-  FileText,
-  UserCircle,
-  ShieldCheck,
-  Settings,
-} from "lucide-react";
+import { Home, LayoutDashboard, MapPin, BarChart3, FolderKanban } from "lucide-react";
 import { BASE_PATH } from "@/lib/basePath";
 import { districtLabel } from "@/lib/dashboardData";
 import type { ViewScope } from "@/lib/viewScope";
 
 type Item = {
   label: string;
-  href?: string; // omit -> disabled / coming soon
+  href: string;
   icon: typeof LayoutDashboard;
   badge?: "New";
 };
 
+// -----------------------------------------------------------------------------
+// Every item here navigates somewhere real. This list used to carry 12 more
+// entries rendered disabled with a "Soon" pill (District Performance, Trend
+// Analysis, Investigation Workspace, Evidence Feed, Persons & Entities,
+// Alerts & Leads, all of Reports and all of System) against 3 that worked -
+// so the sidebar advertised a product four times the size of the one that
+// existed, and read as abandoned rather than in progress.
+//
+// The route restructure in PLAN.md P2/P3 brings several of them back as real
+// pages (/persons, /cases/[caseId], /trends). Add each one back HERE only
+// once its page actually exists - not ahead of it. See PLAN.md P0.2.
+// -----------------------------------------------------------------------------
 const SECTIONS: { heading: string; items: Item[] }[] = [
   {
     heading: "Analytics",
     items: [
       { label: "Crime Overview", href: "/crime-count", icon: BarChart3 },
       { label: "Crime Hotspots", href: "/crime-hotspots", icon: MapPin },
-      { label: "District Performance", icon: Radar },
-      { label: "Trend Analysis", icon: TrendingUp },
     ],
   },
   {
     heading: "Investigation",
-    items: [
-      { label: "Cases", href: "/cases", icon: FolderKanban },
-      { label: "Investigation Workspace", icon: Network },
-      { label: "Evidence Feed", icon: Activity, badge: "New" },
-      { label: "Persons & Entities", icon: Users },
-      { label: "Alerts & Leads", icon: Flag },
-    ],
-  },
-  {
-    heading: "Reports",
-    items: [
-      { label: "Custom Reports", icon: ClipboardList },
-      { label: "Scheduled Reports", icon: ScrollText },
-      { label: "Data Exports", icon: FileText },
-    ],
-  },
-  {
-    heading: "System",
-    items: [
-      { label: "Users & Roles", icon: UserCircle },
-      { label: "Audit Logs", icon: ShieldCheck },
-      { label: "Settings", icon: Settings },
-    ],
+    items: [{ label: "Cases", href: "/cases", icon: FolderKanban }],
   },
 ];
 
 export default function DashboardSidebar({ scope }: { scope: ViewScope }) {
   const pathname = usePathname();
-  const scopeLabel = scope.role === "state" ? "State / CID · Statewide" : `District · ${districtLabel(scope.districtId)}`;
+  const scopeLabel = scope.role === "state" ? "SCRB · Statewide" : `District · ${districtLabel(scope.districtId)}`;
 
   return (
     <aside className="sticky top-0 flex h-screen w-64 shrink-0 flex-col bg-dash-sidebar text-white/85">
@@ -113,7 +83,7 @@ export default function DashboardSidebar({ scope }: { scope: ViewScope }) {
                   href={item.href}
                   icon={item.icon}
                   badge={item.badge}
-                  active={!!item.href && pathname.startsWith(item.href)}
+                  active={pathname.startsWith(item.href)}
                 />
               ))}
             </div>
@@ -143,46 +113,28 @@ function NavLink({
   badge,
 }: {
   label: string;
-  href?: string;
+  href: string;
   icon: typeof LayoutDashboard;
   active?: boolean;
   badge?: "New";
 }) {
-  const content = (
-    <span
-      className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] transition ${
-        active
-          ? "bg-dash-sidebar-active font-medium text-white"
-          : href
-            ? "text-white/70 hover:bg-dash-sidebar-hover hover:text-white"
-            : "text-white/30"
-      }`}
-    >
-      <Icon size={17} aria-hidden="true" className="shrink-0" />
-      <span className="flex-1">{label}</span>
-      {badge && (
-        <span className="rounded-full bg-dash-teal/25 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-dash-teal">
-          New
-        </span>
-      )}
-      {!href && !badge && (
-        <span className="rounded-full bg-white/10 px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wide text-white/40">
-          Soon
-        </span>
-      )}
-    </span>
-  );
-
-  if (!href) {
-    return (
-      <span aria-disabled="true" className="block cursor-not-allowed">
-        {content}
-      </span>
-    );
-  }
   return (
     <Link href={href} aria-current={active ? "page" : undefined}>
-      {content}
+      <span
+        className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] transition ${
+          active
+            ? "bg-dash-sidebar-active font-medium text-white"
+            : "text-white/70 hover:bg-dash-sidebar-hover hover:text-white"
+        }`}
+      >
+        <Icon size={17} aria-hidden="true" className="shrink-0" />
+        <span className="flex-1">{label}</span>
+        {badge && (
+          <span className="rounded-full bg-dash-teal/25 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-dash-teal">
+            New
+          </span>
+        )}
+      </span>
     </Link>
   );
 }

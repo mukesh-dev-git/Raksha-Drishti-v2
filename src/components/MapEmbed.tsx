@@ -79,7 +79,12 @@ export default function MapEmbed({
           View full width
         </button>
       </div>
-      <div className="h-[80vh] w-full overflow-hidden rounded border border-line">
+      {/* Sizing: `h-[80vh]` alone made this a tall, unusable sliver on a
+          phone (80% of a 812px-tall viewport in a ~375px-wide column). A
+          min-height floor plus a viewport-relative cap keeps the map close
+          to landscape on small screens and still generous on a desktop.
+          See PLAN.md P0.3. */}
+      <div className="h-[min(80vh,theme(spacing.96))] min-h-[320px] w-full overflow-hidden rounded border border-line sm:h-[min(80vh,600px)] lg:h-[80vh]">
         {fetchError ? (
           <div className="flex h-full w-full flex-col items-center justify-center gap-3 text-sm text-muted">
             <p>Couldn&apos;t load the map ({fetchError}).</p>

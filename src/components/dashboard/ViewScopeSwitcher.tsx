@@ -36,7 +36,7 @@ export default function ViewScopeSwitcher({ scope }: { scope: ViewScope }) {
         onChange={(e) => onChange(e.target.value)}
         className="rounded-md border border-line bg-surface-2/50 py-1.5 pl-2 pr-6 text-xs font-medium text-ink"
       >
-        <option value="state">State / CID Officer — Statewide</option>
+        <option value="state">SCRB — Statewide (State HQ)</option>
         {districts.map((d) => (
           <option key={d.dbId} value={`district:${d.dbId}`}>
             District Officer — {d.name}

@@ -311,3 +311,137 @@ Track C                                    ────> gated on C1 (do images 
 6. **Do we ever wire real Catalyst Authentication?** Everything scope-related
    today is a client-writable cookie — a display preference, not access
    control. Fine for a demo; needs saying out loud, not discovering.
+
+---
+
+# Part 5 — Data Store audit (added 2026-08-25)
+
+Triggered by the right question: *"are we using all the tables they gave us?"*
+The organizers' ER diagram is not documentation — **it is a specification of
+the features they expect.** Every column they defined and we ignore is an
+unmet requirement.
+
+## 5.1 The headline numbers
+
+| | Count |
+|---|---|
+| Tables in the organizers' ER diagram | **27** (21 backbone + 6 extended) |
+| Tables built + seeded in Catalyst | 20 |
+| **Tables the app ever reads** | **4** |
+| Tables seeded but never read once | 16 |
+| Backbone tables never even seeded | 1 (`ChargesheetDetails`) |
+| Extended tables never built | 6 |
+
+The four we read: `CaseMaster`, `CrimeSubHead`, `District`, `Unit`.
+That is **15% of the schema we were handed.**
+
+It's worse one level down. `CaseMaster` has 18 columns; we read **5** —
+`CaseMasterID`, `CrimeRegisteredDate`, `CaseStatusID`, `PoliceStationID`,
+`CrimeMinorHeadID`. Confirmed by grep: **nothing in `src/` reads**
+`latitude`, `longitude`, `IncidentFromDate`, `IncidentToDate`, `BriefFacts`,
+`GravityOffenceID`, `CaseCategoryID`, `CourtID`, or `PolicePersonID`.
+
+## 5.2 The unused columns ARE the unbuilt PS capabilities
+
+This is the part that matters. Line up what we ignore against what the
+problem statement asks for:
+
+| Unused table / column | PS capability it directly unlocks |
+|---|---|
+| `CaseMaster.latitude` / `longitude` | Hotspot map on **real incident coordinates** — the map's headline feature |
+| `CaseMaster.IncidentFromDate` (time of day) | *"Spatiotemporal Clusters: layering **time of day** with location"* — **named verbatim in the PS**, and the column is already seeded |
+| `Accused.PersonID` | **Repeat-offender tracking across jurisdictions** — the organizers gave us a person key on purpose |
+| `GravityOffenceID` (Heinous / Non-Heinous) | The primary NCRB/SCRB severity split; every state crime report leads with it |
+| `ChargesheetDetails` | Chargesheet rate + **time-to-chargesheet** — a core SCRB performance metric |
+| `Act` / `Section` / `ActSectionAssociation` | MO by legal section; "same sections charged" is a real case-linkage signal |
+| `Employee` / `Rank` / `Designation` | IO workload, clearance rate by officer and unit |
+| `Court` | Disposal and prosecution tracking |
+| `CasteMaster` / `ReligionMaster` / `OccupationMaster` | *"Socio-Economic Correlation... urbanization, population, socio-economic indicators"* — **also named in the PS.** `ComplainantDetails` already has all three FK columns |
+| `CaseCategory` (FIR / UDR / **Zero FIR** / PAR) | Zero FIR = registered outside jurisdiction then transferred — inherently an SCRB-level view |
+
+**Conclusion: we do not have an "AI features missing" problem so much as a
+"we are using 15% of the given schema" problem.** Most of what the PS asks
+for is reachable from columns already sitting in the Data Store.
+
+## 5.3 Two bugs found during the audit
+
+### (a) `Accused.PersonID` is unusable as a person key
+The organizers put a `PersonID` Text column on `Accused` — the natural
+cross-case person identifier. Our seed populated it with **scenario-local
+labels** (`A1`, `A2`, `A3`, `A4`) that collide across scenarios:
+
+```
+A1 -> 17 distinct names: Suresh Naik / Suresh N. / Praveen Achari / Zoya Merchant ...
+A2 -> 18 distinct names: Deepak M / Manoj Kumar S / Tarun Bhatia ...
+A3 -> 12 distinct names   A4 -> 5 distinct names
+```
+
+The one column designed for repeat-offender tracking currently makes 17
+different people look like the same person. **Must be globally unique before
+any entity-fusion or person-spine work** (Track B2 / the `/persons/[id]`
+route). This is a seed bug, not a schema bug.
+
+### (b) We swapped a 406-case dataset for a 19-case one
+Two seeds exist and only one is live:
+
+| | `catalyst/seed/` (original) | `catalyst/dataset-v2/` (**live**) |
+|---|---|---|
+| `CaseMaster` | **406** | **19** |
+| `Victim` / `Accused` / `Complainant` | 406 / 406 / 406 | 14 / 53 / 22 |
+| `ChargesheetDetails` | **233** | **absent** |
+| Authored scenarios + evidence | none | **15, with NoSQL evidence** |
+
+dataset-v2 is far richer *per case* but **21× smaller**. Across 8 districts
+and 5 years, 19 cases is roughly **half a case per district per year** —
+you cannot do trend analysis, hotspot clustering, anomaly detection or
+predictive risk on that, and those are four of the PS's six asks.
+
+Note the local dashboard shows ~2,880 FIRs; that is the **mock fallback** in
+`data.ts` (local dev has no Catalyst context). The deployed app's real
+number is 19. Worth being clear-eyed about before any demo.
+
+## 5.4 On wiping the Data Store
+
+Wiping is safe and cheap — every table is regenerated deterministically from
+`cases.json` via `build_seed.mjs`, and re-imported with `catalyst ds:import`.
+
+**But do not wipe first.** The rows aren't the problem; the *generator* is.
+Wiping now just reproduces the same 15%-of-schema dataset. Correct order:
+
+1. Fix the generator (Track D below).
+2. Regenerate locally and verify the CSVs.
+3. **Then** wipe and re-import once, cleanly.
+
+## 5.5 Track D — make the seed match the schema
+
+Runs alongside Tracks A and B; it is the true unblocker for most of B and C.
+
+- [ ] **D1.** Make `Accused.PersonID` globally unique and stable, and reuse
+      the same ID for the same human across scenarios — this is what makes
+      repeat-offender tracking real rather than claimed.
+- [ ] **D2.** **Merge the two seeds.** One dataset that is both broad
+      (hundreds of cases, for statistics to mean anything) and deep (the 15
+      authored scenarios with full evidence). Generate the bulk cases
+      statistically, keep the 15 hand-authored ones as the rich subset.
+- [ ] **D3.** Populate `latitude`/`longitude` with real per-incident
+      coordinates inside the right district, so the hotspot map plots
+      genuine data instead of synthetic points.
+- [ ] **D4.** Give `IncidentFromDate` a realistic **time-of-day**
+      distribution per crime type (burglary skews night, pickpocketing to
+      market hours). Unlocks the PS's spatiotemporal ask directly.
+- [ ] **D5.** Seed `ChargesheetDetails` (it exists in the original seed —
+      port it) to unlock chargesheet rate and time-to-chargesheet.
+- [ ] **D6.** Populate `OccupationID` / `ReligionID` / `CasteID` and build
+      the three lookup tables, for the socio-economic correlation the PS
+      names. **Handle with care** — caste/religion breakdowns of crime data
+      are legitimate NCRB reporting practice but trivially misread; present
+      them as victim/complainant demographics with explicit denominators,
+      never as an offender-propensity signal.
+- [ ] **D7.** Then wipe + re-import, and record row counts here.
+
+## 5.6 Revised priority
+
+Track D outranks most of Track B. Contradiction detection over 15 scenarios
+is a nice demo; **hotspots, trends, anomaly detection and predictive risk
+are four of the six PS asks and all four are blocked on D2/D3/D4**, not on
+any LLM. Sequence: **D1–D4 → Phase 1/2 UI work → B2 person spine → B4 AI.**

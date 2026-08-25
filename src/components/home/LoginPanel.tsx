@@ -92,7 +92,10 @@ export default function LoginPanel() {
   }
 
   return (
-    <aside className="scrollbar-hide relative flex w-full shrink-0 flex-col items-center overflow-y-auto overflow-x-hidden bg-navy px-8 py-12 text-center lg:fixed lg:right-0 lg:top-0 lg:h-screen lg:w-[400px]">
+    <aside
+      id="officer-sign-in"
+      className="scrollbar-hide relative flex w-full shrink-0 scroll-mt-4 flex-col items-center overflow-y-auto overflow-x-hidden bg-navy px-8 py-12 text-center lg:fixed lg:right-0 lg:top-0 lg:h-screen lg:w-[400px]"
+    >
       {/* Full backdrop photo behind the whole panel, dark navy wash for
           text legibility (same treatment as the Home hero). */}
       <div
@@ -134,7 +137,7 @@ export default function LoginPanel() {
             defaultValue="state"
             className="mt-1.5 w-full rounded-lg border border-line bg-surface py-2.5 px-3 text-sm text-ink focus-visible:border-navy"
           >
-            <option value="state">State / CID Officer — Statewide</option>
+            <option value="state">SCRB — Statewide (State HQ)</option>
             {districts.map((d) => (
               <option key={d.dbId} value={`district:${d.dbId}`}>
                 District Officer — {d.name}

@@ -1,29 +1,22 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { Phone } from "lucide-react";
 import { BASE_PATH } from "@/lib/basePath";
 
-const NAV = [
-  { href: "/", label: "Home" },
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/crime-count", label: "Crime Overview" },
-  { href: "/crime-hotspots", label: "Hotspots" },
-  { href: "/cases", label: "Cases" },
-];
-
 // -----------------------------------------------------------------------------
-// Home page's own compact single-row header - logo, horizontal nav, and a
-// primary Emergency 112 badge. Distinct from SiteHeader (the old 3-band
-// emergency-bar/utility-row/masthead header) which is now unused - see git
-// history if that fuller helpline treatment (all 4 numbers, not just 112)
-// is ever wanted back; SiteFooter's "In an emergency" block still lists it.
+// Home page's own compact single-row header - logo and a primary Emergency
+// 112 badge. Distinct from SiteHeader (the old 3-band emergency-bar/utility-
+// row/masthead header) which is now unused - see git history if that fuller
+// helpline treatment (all 4 numbers, not just 112) is ever wanted back;
+// SiteFooter's "In an emergency" block still lists it.
+//
+// Deliberately carries NO navigation. "/" is the sign-in screen: the only
+// way into the portal is through the scope picker in LoginPanel. A nav bar
+// here would route around the very thing this page exists to do (it used to
+// - four links, plus five more in FeatureGrid and two in HomeHero). Nav
+// begins at (site)/layout.tsx, past the sign-in. See PLAN.md P0.1.
 // -----------------------------------------------------------------------------
 export default function HomeHeader() {
-  const pathname = usePathname();
-
   return (
     <header className="sticky top-0 z-20 flex items-center gap-6 border-b border-line bg-surface px-6 py-3">
       <Link href="/" className="flex shrink-0 items-center gap-3">
@@ -40,25 +33,6 @@ export default function HomeHeader() {
           <span className="block text-xs text-muted">Karnataka State Police</span>
         </span>
       </Link>
-
-      <nav aria-label="Primary" className="hidden flex-1 items-center justify-center gap-1 md:flex">
-        {NAV.map((item) => {
-          const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              aria-current={active ? "page" : undefined}
-              className={`rounded-md px-3.5 py-2 text-sm font-medium transition ${
-                active ? "text-navy" : "text-ink hover:bg-surface-2"
-              }`}
-            >
-              {item.label}
-              {active && <span className="mx-auto mt-1 block h-0.5 w-4 rounded-full bg-navy" />}
-            </Link>
-          );
-        })}
-      </nav>
 
       <a
         href="tel:112"

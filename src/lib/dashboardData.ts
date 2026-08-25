@@ -32,14 +32,14 @@ const META: Record<string, ScenarioMeta> = scenarioMeta as Record<string, Scenar
 
 // A scenario is in scope for a District Officer only if their district is
 // one of the (possibly several - see build_seed.mjs) real districts the
-// scenario's FIRs touch. A State/CID Officer sees everything.
+// scenario's FIRs touch. An SCRB / State HQ viewer sees everything.
 export function scenarioInScope(scenarioId: string, scope: ViewScope): boolean {
   if (scope.role === "state") return true;
   const meta = META[scenarioId];
   return !!meta && meta.districtIds.includes(scope.districtId);
 }
 
-// The real districts a State/CID-scoped viewer would need to pick from,
+// The real districts an SCRB-scoped viewer would need to pick from,
 // and the label a district officer's own scope resolves to - both derived
 // from data.ts's real district table, not hand-maintained here.
 export function districtLabel(districtId: number): string {
@@ -60,7 +60,7 @@ function scenarioLink(scenarioId: string): string | null {
 // Picks which scenario to feature for a given scope. A District Officer's
 // featured case is one their own unit is actually investigating, so
 // CID-assigned scenarios are skipped even when they sit in that district
-// (C8 is Bengaluru-only but assigned to the Cyber Crimes Wing). A State/CID
+// (C8 is Bengaluru-only but assigned to the Cyber Crimes Wing). An SCRB
 // viewer sees everything, so prefer a CID case and fall back to any.
 function pickFeaturedScenarioId(scope: ViewScope): string | null {
   const ids = Object.keys(META);
