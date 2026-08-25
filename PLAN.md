@@ -29,7 +29,7 @@ P0 and P1 can run in parallel — different files, different people.
 
 ---
 
-## P0 — Stop over-promising  ✅ done (`c349d48`)
+## P0 — Stop over-promising  ✅ done (`c349d48`, `db5b1bd`)
 
 *Half a day. Biggest credibility gain per hour available. No dependencies.*
 
@@ -48,6 +48,13 @@ P0 and P1 can run in parallel — different files, different people.
       *Done when:* usable at 375px wide without horizontal scroll.
 - [x] **P0.4** Reframe Dashboard copy so statewide reads as the SCRB
       intelligence view, not "the other option next to district."
+- [x] **P0.5** Demote district from a login-time **role** to a drill-down
+      **filter** (`/dashboard?district=`). The PS asks for SCRB to drill into
+      districts, not for district officers to get restricted logins — and
+      with no real auth, a self-selected jurisdiction implied an access
+      boundary we don't have. Deleted `viewScope.ts`, `viewScope.server.ts`,
+      `ViewScopeSwitcher.tsx` and the login scope picker; added
+      `DistrictFilter.tsx`. Net −77 lines. (`db5b1bd`)
 
 ## P1 — Data foundation (Track D)
 
@@ -167,5 +174,7 @@ policing signal), face recognition, barcode scanning.
 4. **Show the P5.3 eval in the UI?** "Found 11 of 15, here are the 4 it
    missed" is a far stronger claim to a panel than a silent AI panel.
       *Recommend yes.*
-5. **Real Catalyst Auth?** Scope is a client-writable cookie today — a display
-   preference, not access control. Fine for a demo; needs saying out loud.
+5. **Real Catalyst Auth?** Resolved in part by P0.5 — there is no scope cookie
+   any more, so nothing pretends to be access control. If per-officer views are
+   ever wanted, they need real Catalyst Authentication first, and the district
+   would come from the signed-in identity rather than a dropdown.
