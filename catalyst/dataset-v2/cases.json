@@ -12,6 +12,8 @@
       "title": "The Yeshwanthpur Fencing Ring",
       "summary": "A motorcycle theft ring in Bengaluru launders stolen bikes through fake registration transfers sold as 'used vehicles' in Tumakuru. One accused (Suresh) is named inconsistently across the two FIRs - the entity-fusion target. CCTV places him in Tumakuru at a time his own witness statement says he was elsewhere in Bengaluru.",
       "districts": [4401, 4406],
+      "assignedTo": "District",
+      "assignmentReason": "Vehicle theft and forged transfers - ordinary property crime. Spans two districts, but Bengaluru City and Tumakuru SPs coordinate directly; no CID trigger.",
       "firs": [
         {
           "CaseMasterID": 9001, "CrimeNo": "144010101202600001", "CaseNo": "202600001",
@@ -95,6 +97,8 @@
       "title": "K.R. Market Jewellery Heist",
       "summary": "An organized gang robs a jewellery shop near K.R. Market, Mysuru, fencing the goods through an unlicensed pawnbroker. A shop assistant (victim) is grabbed and injured during the robbery.",
       "districts": [4402],
+      "assignedTo": "District",
+      "assignmentReason": "Single-jurisdiction robbery, no organised-crime or economic-offence trigger.",
       "firs": [
         {
           "CaseMasterID": 9003, "CrimeNo": "144020201202600001", "CaseNo": "202600001",
@@ -162,6 +166,8 @@
       "title": "QuickCash Loan-App Extortion",
       "summary": "An illegal instant-loan app harasses and extorts borrowers across two districts, using leaked contact lists to threaten victims' families. Same operator (Zoya) runs both district-level complaints under different registered-agent names.",
       "districts": [4403, 4401],
+      "assignedTo": "CID",
+      "assignmentReason": "Cyber Crimes and Narcotics Wing - extortion run through a loan application is a cybercrime.",
       "firs": [
         {
           "CaseMasterID": 9004, "CrimeNo": "144030301202600001", "CaseNo": "202600001",
@@ -245,6 +251,8 @@
       "title": "Kalaburagi Land Title Forgery",
       "summary": "A property broker, a complicit notary, and a buyer conspire to forge land title documents for an agricultural plot, defrauding the actual owner.",
       "districts": [4404],
+      "assignedTo": "CID",
+      "assignmentReason": "Economic Offences Wing - land-title forgery with consideration above Rs.1 crore.",
       "firs": [
         {
           "CaseMasterID": 9006, "CrimeNo": "144040401202600001", "CaseNo": "202600001",
@@ -308,6 +316,8 @@
       "title": "Mangaluru Warehouse Burglary-Resale Ring",
       "summary": "A string of electronics-warehouse burglaries in Mangaluru feeds a secondhand electronics shop that resells the goods within days.",
       "districts": [4405],
+      "assignedTo": "District",
+      "assignmentReason": "Burglary and resale; investigated by the district unit.",
       "firs": [
         {
           "CaseMasterID": 9007, "CrimeNo": "144050501202600001", "CaseNo": "202600001",
@@ -366,6 +376,8 @@
       "title": "Ballari Mining Contract Assault",
       "summary": "A labor payment dispute at a mining site escalates into a group assault on a worker who raised the issue, allegedly ordered by the contractor.",
       "districts": [4407],
+      "assignedTo": "District",
+      "assignmentReason": "Assault arising from a contract dispute; no CID trigger.",
       "firs": [
         {
           "CaseMasterID": 9008, "CrimeNo": "144070701202600001", "CaseNo": "202600001",
@@ -428,6 +440,8 @@
       "title": "Shivamogga-Tumakuru Cattle Theft Corridor",
       "summary": "A rural cattle theft ring moves stolen livestock across a district border overnight to avoid recognition, using a common transporter's truck for both districts' thefts.",
       "districts": [4408, 4406],
+      "assignedTo": "District",
+      "assignmentReason": "Cattle theft across a district boundary. Shivamogga and Tumakuru SPs run a joint investigation - cross-district does not by itself mean CID.",
       "firs": [
         {
           "CaseMasterID": 9009, "CrimeNo": "144080802202600001", "CaseNo": "202600001",
@@ -500,6 +514,8 @@
       "title": "Whitefield Fake Tech-Support Call Centre",
       "summary": "An illegal call centre in Whitefield runs a fake tech-support scam targeting elderly victims across multiple cities, extracting remote-access payments.",
       "districts": [4401],
+      "assignedTo": "CID",
+      "assignmentReason": "Cyber Crimes and Narcotics Wing - fraudulent tech-support call centre defrauding victims online.",
       "firs": [
         {
           "CaseMasterID": 9011, "CrimeNo": "144010102202600003", "CaseNo": "202600003",
@@ -568,6 +584,8 @@
       "title": "Mysuru Domestic Dispute Escalation",
       "summary": "A domestic assault complaint is followed by witness intimidation - a neighbor who gave an initial statement recants weeks later, but a CCTV timestamp on the intimidation visit conflicts with the accused's claimed whereabouts.",
       "districts": [4402],
+      "assignedTo": "District",
+      "assignmentReason": "Domestic dispute; district unit retains the case.",
       "firs": [
         {
           "CaseMasterID": 9012, "CrimeNo": "144020202202600004", "CaseNo": "202600004",
@@ -624,6 +642,8 @@
       "title": "Belagavi Auto Chop-Shop",
       "summary": "Stolen two-wheelers are stripped for parts at an unlicensed garage and the parts resold separately, making the vehicles themselves untraceable.",
       "districts": [4403],
+      "assignedTo": "District",
+      "assignmentReason": "Vehicle dismantling and resale; ordinary district property crime.",
       "firs": [
         {
           "CaseMasterID": 9013, "CrimeNo": "144030301202600002", "CaseNo": "202600002",
@@ -681,6 +701,8 @@
       "title": "Kalaburagi Wedding Jewellery Robbery Gang",
       "summary": "A gang cases wedding venues via an inside informant (a catering staff member) and robs guests of jewellery during the event.",
       "districts": [4404],
+      "assignedTo": "District",
+      "assignmentReason": "Robbery gang, but confined to one district and not yet invoked under KCOCA.",
       "firs": [
         {
           "CaseMasterID": 9014, "CrimeNo": "144040401202600002", "CaseNo": "202600002",
@@ -743,6 +765,8 @@
       "title": "Mangaluru Coastal Investment Ponzi",
       "summary": "A fake 'guaranteed returns' investment scheme collects money from dozens of small investors before the operators vanish; two early investors act as unwitting local recruiters.",
       "districts": [4405],
+      "assignedTo": "CID",
+      "assignmentReason": "Economic Offences Wing - collective investment fraud well above the Rs.1 crore threshold.",
       "firs": [
         {
           "CaseMasterID": 9015, "CrimeNo": "144050501202600002", "CaseNo": "202600002",
@@ -806,6 +830,8 @@
       "title": "Ballari-Bengaluru ATM Skimming Ring",
       "summary": "A skimming device installer, a card-data cloner, and a network of cash-out mules operate across two cities, with the same mule appearing under different first names in each district's FIR.",
       "districts": [4407, 4401],
+      "assignedTo": "CID",
+      "assignmentReason": "Cyber Crimes and Narcotics Wing - card skimming is a cyber-enabled financial offence.",
       "firs": [
         {
           "CaseMasterID": 9016, "CrimeNo": "144070701202600002", "CaseNo": "202600002",
@@ -880,6 +906,8 @@
       "title": "Shivamogga Forest Produce Theft",
       "summary": "A sandalwood theft ring operates with an inside tip-off from a forest department watcher, felling trees inside a reserve and moving timber out via an unmonitored route.",
       "districts": [4408],
+      "assignedTo": "District",
+      "assignmentReason": "Forest produce theft. Would move to the CID Forest Cell only on a specific order; none issued here.",
       "firs": [
         {
           "CaseMasterID": 9018, "CrimeNo": "144080801202600001", "CaseNo": "202600001",
@@ -935,6 +963,8 @@
       "title": "Bengaluru Turf Assault",
       "summary": "A street-gang turf dispute erupts into a multi-person assault outside a college, with dense CCTV coverage typical of an urban setting and conflicting accounts of who struck first.",
       "districts": [4401],
+      "assignedTo": "District",
+      "assignmentReason": "Assault; district unit investigation.",
       "firs": [
         {
           "CaseMasterID": 9019, "CrimeNo": "144010101202600002", "CaseNo": "202600002",

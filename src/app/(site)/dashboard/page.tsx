@@ -124,8 +124,8 @@ export default async function DashboardPage() {
           ) : (
             <div className="flex items-center justify-center rounded-xl border border-dashed border-line bg-surface p-8 text-center text-sm text-muted">
               No case currently on record as this district&apos;s own investigation in the seeded dataset — cases
-              touching {districtId ? districtLabel(districtId) : "this district"} may still be handled by State CID
-              (see Alerts).
+              touching {districtId ? districtLabel(districtId) : "this district"} may be assigned to CID, or run
+              jointly with a neighbouring district (see Alerts).
             </div>
           )}
           <AlertsPanel alerts={alerts} />

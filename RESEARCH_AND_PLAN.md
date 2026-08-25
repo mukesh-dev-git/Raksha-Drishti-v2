@@ -1,0 +1,313 @@
+# Domain research + AI build plan
+
+Two things in one doc, because they constrain each other:
+
+1. **Who Karnataka State Police actually is**, and what that means for how this
+   app should be scoped — research done 2026-08-25 against KSP's own org pages.
+2. **What AI we can actually build now** on the Zoho Catalyst capabilities
+   available to us (2 served LLMs + Zia microservices), and in what order.
+
+Status: **draft for planning.** Nothing here is committed to. Companion docs:
+[`features.md`](features.md) (the 6 proposed investigation-intelligence
+features, still valid), [`catalyst/README.md`](catalyst/README.md) (backend
+source of truth), [`catalyst/DATA_STORE_SCHEMA.md`](catalyst/DATA_STORE_SCHEMA.md).
+
+---
+
+# Part 1 — How Karnataka State Police actually works
+
+## 1.1 The command chain is five tiers, not two
+
+We built `state` vs `district` as a binary. The real structure has more levels,
+and two of them matter for this app.
+
+```
+                    DGP & IGP (State Police HQ)
+                              |
+        +---------------------+---------------------+------------------+
+        |                     |                     |                  |
+  ADGP Law & Order     ADGP Crime & Tech        CID (DGP-rank)    6 City
+        |                     |                  state-wide,      Commissionerates
+   7 RANGES (IGP)          **SCRB**              by assignment          |
+   3-6 districts each   statewide crime data                      DCP Divisions
+        |                 & statistics                                 |
+   31 DISTRICTS (SP)      (since 1977)                            City Police
+        |                                                           Stations
+   91 Sub-Divisions (SDPO) / 230 Circles
+        |
+   906 POLICE STATIONS  <- FIRs are registered here
+```
+
+Key facts (sources at the bottom of Part 1):
+
+- **7 Ranges**, each headed by an IGP, each covering **3–6 districts**.
+  e.g. Southern Range = Mysuru + Kodagu + Mandya + Hassan + Chamarajanagara.
+- **31 District Police Offices**, headed by an SP ("unit officers"),
+  **91 SDPOs**, **230 circles**, **906 police stations**.
+- **6 City Commissionerates** run *in parallel* to the district structure —
+  Bengaluru's CP is ADGP-rank, the rest DIG-rank. Bengaluru City alone is
+  **11 law-and-order DCP divisions + 4 traffic divisions**. A commissionerate
+  is **not** a district.
+- **SCRB** sits under the ADGP (Crime & Technical Services) via the Police
+  Computer Wing. Since 1977 its statutory job is to compile crime/criminal
+  information statewide and feed NCRB.
+- **CID** is DGP-rank with four wings — CID proper (homicide/burglary/special
+  inquiries), Economic Offences, Cyber Crimes & Narcotics, and the Forest Cell.
+
+## 1.2 The single most important finding: SCRB is the customer
+
+Re-read the problem statement with the org chart in hand:
+
+> *"The State Crime Records Bureau currently receives limited, fragmented
+> information, hindering its ability to perform comprehensive state-wide
+> analysis."*
+
+That is not a general grievance about policing. It **names one specific desk**,
+and it describes exactly that desk's statutory function failing. SCRB's whole
+purpose is to be the point where every district's and every commissionerate's
+crime returns converge into one state picture. Today that convergence happens
+on paper and in Excel.
+
+Every one of the six capabilities the PS asks for — hotspot maps, link
+analysis, socio-economic overlays, predictive risk, trend discovery, ML
+intelligence — is only possible *after* that convergence exists.
+
+**Implication for us:** the statewide Dashboard is not a peer view sitting
+alongside the District view. It **is the product**. District and station views
+exist so the data SCRB depends on gets entered once, correctly, where the
+incident happened. We should stop presenting the two as symmetric options.
+
+## 1.3 What each tier needs from this app
+
+| Tier | Sees | Job in this app | Current build |
+|---|---|---|---|
+| **SCRB / State HQ** | All districts + commissionerates | Cross-district correlation, overlays, predictive risk, trend discovery | Statewide dashboard ✅ · all AI ❌ |
+| **Range (IGP)** | 3–6 districts | Compare districts in a region; catch a pattern crossing 2–3 neighbours before it reaches state level | **Missing tier** ❌ |
+| **District (SP)** | One district, all its stations | Own cases, hotspots, repeat offenders; drill into any station | ✅ `rd-view-scope=district:NNN` |
+| **Commissionerate (CP/DCP)** | One city, its DCP divisions | Same shape of need as a District SP, different unit type | **Not modeled** ❌ |
+| **CID** | Only cases assigned to it | Track its caseload — a *list*, not a geography | **Wrong model** ⚠️ (see 1.4) |
+| **Station / IO** | Their own case | Timeline, evidence, network graph, MO | ✅ Investigation Workspace |
+
+## 1.4 Three corrections the current build needs
+
+### (a) Add the Range tier — small, mechanical
+`src/lib/viewScope.ts` — `ViewScope` is a two-way union today. Add
+`{ role: "range"; rangeId }`. The cookie, the API `?district=` params and
+`scenarioInScope()` all generalise cleanly from "exactly one district" to
+"one of N districts." This is the cheapest of the three fixes and makes the
+scope feature match a real rank.
+
+### (b) Stop deriving CID from geography — this one is actually wrong
+`catalyst/dataset-v2/build_seed.mjs` currently does:
+
+```js
+handlingLevel = districtIds.length > 1 ? "State CID" : "District"
+```
+
+Real CID intake has nothing to do with how many districts a case touches. Per
+CID's own org page, cases reach CID by **explicit assignment**: order of the
+Government of Karnataka, order of the DGP, or Supreme Court / High Court
+referral — plus category-based intake (economic offences above ₹1 crore,
+cybercrime, human trafficking) and one automatic trigger: **police custodial
+death is always taken up by CID.** Organized-crime cases run under KCOCA 2000.
+
+Cross-district ≠ CID. Two district SPs coordinating directly, or the Range IGP
+coordinating them, is the *normal* path.
+
+**Fix:** replace the derived field with a seeded, explicit
+`assignedTo: "District" | "CID"` plus a stated `assignmentReason` (e.g.
+`"EOW — fraud > ₹1cr"`, `"DGP order"`, `"custodial death — automatic"`). Then
+the "State CID" badge in the UI means something real.
+
+### (c) Commissionerates aren't districts
+If the seed folds Bengaluru/Mysuru/etc. into `DistrictID` alongside revenue
+districts, that's a modeling shortcut. Even if the UI keeps treating them
+identically for now, it needs to be **stated explicitly** in
+`DATA_STORE_SCHEMA.md` rather than left implicit — otherwise the next person
+reads district counts as revenue districts and is wrong.
+
+## 1.5 Sources
+
+- [KSP — Organization](https://ksp.karnataka.gov.in/page/About+Us/Organization/en) — ranges, districts, SCRB under Police Computer Wing, hierarchy
+- [Karnataka CID — Organisation](https://cid.karnataka.gov.in/2/organisation/en) — four wings, case categories, escalation/assignment rules
+- [Wikipedia — Karnataka State Police](https://en.wikipedia.org/wiki/Karnataka_State_Police) — station/circle/SDPO/DPO counts
+- [Wikipedia — Bengaluru City Police](https://en.wikipedia.org/wiki/Bengaluru_City_Police) — DCP division structure
+
+> Treat exact commissionerate city lists and rank details as approximate —
+> verify against ksp.karnataka.gov.in before quoting externally.
+
+---
+
+# Part 2 — What AI we actually have available
+
+## 2.1 Inventory
+
+**QuickML → Generative AI → LLM Serving** (2 models deployed in our project):
+
+| Model | Shape | Notes |
+|---|---|---|
+| **GLM-4.7-Flash** | MoE text LLM | 200K input context, up to 128K output cap (4,096 max_tokens per response, default 500), temperature 0.0–1.0 (default 0.7), **native tool calling**, "Enable Thinking" step-reasoning mode, custom system Instructions. Available in the IN data centre. |
+| **Qwen 3.6 – 35B Vision Language** | 35B MoE, 3B active, multimodal | Image + text in. |
+
+**Zia microservices** (ready-made, no training):
+Text Analytics (sentiment + NER + keyword extraction, **1500 char limit per
+request**), OCR (beta), Face Analytics, Identity Scanner (beta), Image
+Moderation, Object Recognition, Barcode Scanner.
+
+**Also present in the console, not yet evaluated:** RAG, Knowledge Base,
+Trained NLP Models, Pipelines, Endpoints.
+
+## 2.2 The one blocker to resolve first
+
+**The LLM Serving API endpoint format is not in the public docs.** The docs say
+to get it from the console: *Generative AI → LLM Serving → model → Model
+Details → API Details*. Auth is OAuth-based; the ML-endpoint pattern documented
+nearby uses `Authorization: Zoho-oauthtoken <token>` +
+`X-QUICKML-ENDPOINT-KEY` + `CATALYST-ORG` headers with scope
+`QuickML.deployment.READ`, but **do not assume LLM Serving is identical** —
+read the actual API Details panel and paste the real contract here before
+anyone writes client code against a guess.
+
+**Task 0 for whoever starts this: open the console, copy the exact endpoint +
+headers + request/response schema into this doc.** Everything in Part 3 is
+blocked on that one screenshot's worth of information.
+
+## 2.3 What our data can actually feed
+
+This is the part that determines what's buildable *now* vs. what needs new data.
+
+**Real free text we already have (this is the good news):**
+- `CaseMaster.BriefFacts` (Text) — a narrative per case, **populated in the seed**
+- `WitnessStatements.json` — 22 statements, real `statementText` prose
+- `scenarioMeta.json` — 15 scenarios with `title` + `summary` prose
+- `Contradictions.json` — **15 hand-authored contradiction descriptions**
+- `CallRecords`, `Transactions`, `CCTVSightings`, `TimelineEvents` — structured
+
+**The critical observation about `Contradictions.json`:** those 15
+contradictions are *pre-authored by us*, not detected. Right now the app
+"finds" contradictions it was told about. That's the honest gap — and it's also
+a gift: **those 15 become the ground-truth eval set.** If a detector we build
+independently rediscovers them from `WitnessStatements` + `CCTVSightings` +
+`CallRecords`, we have a real, measurable claim. If it doesn't, we know.
+
+**What we do NOT have:** any images. So Qwen-VL, OCR, Face Analytics, Identity
+Scanner, Image Moderation, Object Recognition and Barcode Scanner have **no
+input** unless we generate or source case-document scans / CCTV stills. This is
+why Zia goes last — agreed.
+
+## 2.4 Honest fit assessment per capability
+
+| Capability | Tool | Verdict |
+|---|---|---|
+| Contradiction detection across sources | GLM-4.7-Flash (tool calling + 200K ctx) | ✅ **Best fit.** Whole scenario fits in context; tool calling gives us structured, citable output |
+| "Next question to ask" agent | GLM-4.7-Flash | ✅ Same engine, different phrasing step |
+| Entity fusion / repeat-offender linking | **Deterministic code, not LLM** | ✅ Union-find over name variants + IDs. Don't reach for an LLM here — it's a correctness problem, not a language problem |
+| Suspicion score + explainability | Weighted signals in code; LLM only writes the explanation | ✅ Keep the number deterministic and auditable |
+| FIR narrative → structured entities | Zia NER, or GLM | ⚠️ Zia caps at 1500 chars; GLM has no such limit and gives citations. **Prefer GLM**, keep Zia as a cheap cross-check |
+| Sentiment on complainant statements | Zia Text Analytics | ❌ **Skip.** Sentiment on a crime complaint is not a meaningful policing signal — it would be analytics theatre |
+| Case-document OCR, CCTV image analysis | Zia OCR / Qwen-VL | ⏸️ Blocked on having images at all |
+| Predictive risk scoring / hotspot forecast | QuickML Pipelines (classical ML) | ⏸️ Needs a real historical baseline the seed doesn't carry yet |
+| Socio-economic overlays | — | ⏸️ Needs an external census/urbanization dataset we have no source for |
+
+---
+
+# Part 3 — Things to be done
+
+Three tracks. **A and B run in parallel** (different people, no shared files).
+C is gated behind having images at all.
+
+## Track A — Domain correctness (no AI, unblocks nothing else)
+
+Small, safe, mostly mechanical. Good for whoever isn't on the AI track.
+
+- [ ] **A1.** Replace derived `handlingLevel` with seeded `assignedTo` +
+      `assignmentReason` in `build_seed.mjs`; regenerate `scenarioMeta.json`
+      (both copies). Update the "State CID" badge to show the reason on hover.
+- [ ] **A2.** Add `{ role: "range"; rangeId }` to `ViewScope`; add a Range
+      option to the login scope picker and the topbar switcher; generalise
+      `scenarioInScope()` to a district-set test.
+- [ ] **A3.** Document the commissionerate-vs-district modeling shortcut in
+      `DATA_STORE_SCHEMA.md`.
+- [ ] **A4.** Reframe the Dashboard copy so statewide reads as the SCRB
+      intelligence view, not as "the other option next to district."
+- [ ] **A5.** Decide the fate of `feature/state-district-scope` — it's 3
+      commits ahead of `main` and unmerged. A1/A2 land on top of it, so
+      **merge it first or rebase onto it**, don't fork a third line.
+
+## Track B — AI, on GLM-4.7-Flash (the real differentiator)
+
+- [ ] **B0. 🚧 BLOCKER — get the real LLM Serving API contract** from the
+      console (2.2) and paste endpoint + headers + request/response schema
+      into this doc. Nobody writes client code before this.
+- [ ] **B1.** `src/lib/llm.ts` — a thin server-side GLM client. Route
+      Handler-only (credentials never reach the browser), typed request/
+      response, timeout + graceful fallback, and **every call logged with its
+      prompt + response** so we can show the working.
+- [ ] **B2.** **Entity fusion (deterministic).** Union-find over
+      `Accused`/`Victim`/`ComplainantDetails` + NoSQL persons. Canonical person
+      ID stable across cases. **No LLM.** This is `features.md` #1 and it is
+      still the foundation — B3/B4/B5 are all reasoning over it.
+- [ ] **B3.** **Cross-source timeline merge** (`features.md` #6) — one ordered
+      timeline per person, each event tagged with which source reported it.
+- [ ] **B4.** **Contradiction detector.** GLM + tool calling over a fused
+      person's timeline, returning structured `{claim, conflictingClaim,
+      sourceRecordIds[], confidence}`. **Evaluate against the 15 authored
+      contradictions in `Contradictions.json`** — report the real hit rate,
+      including misses.
+- [ ] **B5.** **"Next question to ask"** — phrasing layer on B4's output.
+      Same engine, different prompt.
+- [ ] **B6.** **Suspicion score** — deterministic weighted signals feeding the
+      existing `RiskGauge` in `AIPanel.tsx`; GLM only writes the prose
+      explanation, never the number.
+- [ ] **B7.** **Citation guardrail** (`features.md` #5) — enforce in the tool
+      schema itself: no finding is renderable without at least one real record
+      ID. Build this into B4's contract from day one, not after.
+- [ ] **B8.** **Repeat-offender view** — the cross-case surface B2 unlocks.
+      This is the PS's "impossible in Excel" claim made literal, and it's
+      SCRB/CID-facing, not IO-facing.
+
+## Track C — Zia (last, and only if we get images)
+
+- [ ] **C1.** Decide: do we generate synthetic case-document scans / CCTV
+      stills at all? If no, Track C is closed — say so and stop.
+- [ ] **C2.** If yes: OCR on a scanned FIR → extracted text → GLM structuring.
+      A genuinely good demo of "paper record → queryable intelligence," which
+      is exactly the PS's framing.
+- [ ] **C3.** Qwen-VL on a CCTV still → description cross-checked against the
+      `CCTVSightings` record. Only meaningful *after* B4 exists to check against.
+- [ ] **C4.** Zia NER on `BriefFacts` as a cheap cross-check on B2's entity
+      extraction. Cap-aware (1500 chars) — chunk or skip long narratives.
+- [ ] **Explicitly not doing:** sentiment analysis on complaints, face
+      recognition on synthetic faces, barcode scanning. No policing value here;
+      including them would be feature theatre. (Face recognition on real police
+      data would also be a serious civil-liberties question we should not
+      hand-wave in a demo.)
+
+## Sequencing at a glance
+
+```
+Track A  ──────────────────────────────────>  (independent, any time)
+
+Track B  B0 ──> B1 ──> B2 ──> B3 ──┬──> B4 ──> B5
+  blocker      client   fusion   timeline │      B6, B7, B8
+                                          └── eval vs. the 15 authored contradictions
+
+Track C                                    ────> gated on C1 (do images exist?)
+```
+
+---
+
+# Part 4 — Open decisions (for the planning session)
+
+1. **Merge or rebase `feature/state-district-scope`?** It's unmerged and Track
+   A builds on it. Decide before A1.
+2. **Who takes which track?** A and B genuinely don't collide — different files.
+3. **Do we invest in images at all** (C1)? A yes/no now saves arguing later.
+4. **Does the 15-contradiction eval get shown in the UI?** Reporting "our
+   detector found 11 of 15, and here are the 4 it missed" is a much stronger
+   claim to a judging panel than a silent AI panel. Recommend yes.
+5. **Is the Range tier worth the effort**, or is it academically correct but
+   demo-irrelevant? It's cheap (A2), but it's not zero.
+6. **Do we ever wire real Catalyst Authentication?** Everything scope-related
+   today is a client-writable cookie — a display preference, not access
+   control. Fine for a demo; needs saying out loud, not discovering.

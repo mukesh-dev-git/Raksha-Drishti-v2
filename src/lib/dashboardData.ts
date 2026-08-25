@@ -21,12 +21,13 @@ type ScenarioMeta = {
   crimeMinorHeadID: number;
   districtId: number | null;
   districtIds: number[];
-  handlingLevel: "District" | "State CID";
+  assignedTo: "District" | "CID";
+  assignmentReason: string;
   caseMasterIds: number[];
 };
-// JSON module imports widen string-literal fields (handlingLevel) to plain
+// JSON module imports widen string-literal fields (assignedTo) to plain
 // `string` - this file's own build_seed.mjs only ever writes "District" or
-// "State CID" into it, so the cast is safe, not a type-safety hole.
+// "CID" into it, so the cast is safe, not a type-safety hole.
 const META: Record<string, ScenarioMeta> = scenarioMeta as Record<string, ScenarioMeta>;
 
 // A scenario is in scope for a District Officer only if their district is
@@ -56,17 +57,17 @@ function scenarioLink(scenarioId: string): string | null {
   return `/cases/${c.slug}/${d.slug}/investigation-workspace`;
 }
 
-// Picks which scenario to feature for a given scope: for a District
-// Officer, the first in-scope scenario handled at their own district (never
-// a State-CID one - those are exactly the cases outside a single district's
-// jurisdiction); for a State/CID Officer, prefer a State-CID scenario (the
-// more relevant case at that level) and fall back to any scenario.
+// Picks which scenario to feature for a given scope. A District Officer's
+// featured case is one their own unit is actually investigating, so
+// CID-assigned scenarios are skipped even when they sit in that district
+// (C8 is Bengaluru-only but assigned to the Cyber Crimes Wing). A State/CID
+// viewer sees everything, so prefer a CID case and fall back to any.
 function pickFeaturedScenarioId(scope: ViewScope): string | null {
   const ids = Object.keys(META);
   if (scope.role === "district") {
-    return ids.find((id) => META[id].handlingLevel === "District" && scenarioInScope(id, scope)) ?? null;
+    return ids.find((id) => META[id].assignedTo === "District" && scenarioInScope(id, scope)) ?? null;
   }
-  return ids.find((id) => META[id].handlingLevel === "State CID") ?? ids[0] ?? null;
+  return ids.find((id) => META[id].assignedTo === "CID") ?? ids[0] ?? null;
 }
 
 export function getFeaturedScenario(scope: ViewScope = { role: "state" }) {
@@ -99,7 +100,8 @@ export function getFeaturedScenario(scope: ViewScope = { role: "state" }) {
     caseTypeName: c.name,
     districtName: d.name,
     districtNames: meta.districtIds.map(districtLabel),
-    handlingLevel: meta.handlingLevel,
+    assignedTo: meta.assignedTo,
+    assignmentReason: meta.assignmentReason,
     caseMasterIds: meta.caseMasterIds,
     link,
     hasContradiction: !!contradiction,
@@ -121,7 +123,8 @@ export type Alert = {
   title: string;
   detail: string;
   link: string | null;
-  handlingLevel: "District" | "State CID" | null;
+  assignedTo: "District" | "CID" | null;
+  assignmentReason: string | null;
 };
 
 // Real evidence contradictions only - no fabricated "crime spike" style
@@ -138,7 +141,8 @@ export function getRealAlerts(limit = 3, scope: ViewScope = { role: "state" }): 
         title: `Evidence contradiction — ${meta?.title || c.scenarioId}`,
         detail: c.description,
         link: scenarioLink(c.scenarioId),
-        handlingLevel: meta?.handlingLevel ?? null,
+        assignedTo: meta?.assignedTo ?? null,
+        assignmentReason: meta?.assignmentReason ?? null,
       };
     });
 }

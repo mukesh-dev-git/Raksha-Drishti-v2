@@ -213,24 +213,39 @@ enforced RBAC (a signed-in officer's role/district determining what they're
 *allowed* to see) would need Catalyst Authentication configured with real
 roles - not built.
 
-`handlingLevel` ("District" vs. "State CID") is **derived, not hand-
-authored**: `build_seed.mjs` marks a scenario "State CID" exactly when its
-FIRs span more than one real district (`districts.length > 1`) - a single
-district SP has no jurisdiction across district lines, so a genuinely
-cross-district scenario is exactly the case a state CID would take over in
-practice. 4 of the 15 scenarios are cross-district today (C1, C3, C7, C13).
+`assignedTo` ("District" vs. "CID") is **hand-authored per scenario in
+`cases.json`**, with an `assignmentReason` string alongside it.
+
+> ~~Earlier this was *derived*: `build_seed.mjs` marked a scenario "State
+> CID" exactly when its FIRs spanned more than one district
+> (`districts.length > 1`), on the reasoning that a single district SP has
+> no jurisdiction across district lines.~~ **That was wrong.** Karnataka
+> CID takes a case by *explicit assignment* — order of the State
+> Government, the DGP, or the High Court/Supreme Court — plus category
+> triggers (Economic Offences Wing above ₹1 crore, the Cyber Crimes and
+> Narcotics Wing, the Forest Cell, human trafficking) and one automatic
+> trigger, custodial death. Two district SPs coordinating across a
+> boundary, or their Range IGP coordinating them, is the *ordinary* path.
+> The old rule wrongly flagged C1 and C7 (routine cross-district property
+> crime) as CID, and wrongly missed C4, C8 and C12 (single-district
+> economic/cyber offences that genuinely are CID cases). Ref:
+> [CID — Organisation](https://cid.karnataka.gov.in/2/organisation/en);
+> see also [`RESEARCH_AND_PLAN.md`](../RESEARCH_AND_PLAN.md) §1.4.
+
+5 of the 15 scenarios are CID-assigned today: C3, C4, C8, C12, C13.
 
 Two different scoping rules, both server-side (`src/lib/dashboardData.ts`):
 - **Featured Investigation** ("this is my own case to run"): a District
-  view only ever features a "District"-level scenario for that district -
-  never a State-CID one, even if the district is physically involved.
-  Districts with no pure-district scenario of their own (e.g. Tumakuru,
-  which only appears in cross-district C1/C7) get an honest empty state
-  instead of nothing/an error.
+  view only ever features a `"District"`-assigned scenario for that
+  district - never a CID one, even when the CID case sits squarely in that
+  district (C8 is Bengaluru-only but belongs to the Cyber Crimes Wing).
+  Districts with no district-assigned scenario of their own (e.g. Tumakuru,
+  which only appears in C1/C7) get an honest empty state instead of
+  nothing/an error.
 - **Alerts & Leads / Verified Evidence Feed** ("does my district have a
   stake in this"): broader - any scenario whose `districtIds` includes the
-  officer's district, State-CID or not, tagged with a "State CID" badge
-  when it's not this district's own case.
+  officer's district, CID-assigned or not, tagged with a "CID" badge
+  carrying its `assignmentReason` when it's not this district's own case.
 
 `/api/summary` and `/api/casetypes` both take an optional `?district=` that
 does the same `CaseMaster`/`Unit` join every other district-scoped route

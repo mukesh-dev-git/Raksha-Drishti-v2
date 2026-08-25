@@ -12,9 +12,12 @@ export default function FeaturedInvestigationCard({ scenario }: { scenario: Scen
         <div className="flex items-center justify-between gap-2">
           <p className="text-[15px] font-semibold text-ink">Featured Investigation</p>
           <div className="flex items-center gap-2">
-            {scenario.handlingLevel === "State CID" && (
-              <span className="flex items-center gap-1 rounded-full bg-dash-purple-bg px-2.5 py-1 text-[11px] font-semibold text-dash-purple">
-                <Landmark size={12} aria-hidden="true" /> State CID
+            {scenario.assignedTo === "CID" && (
+              <span
+                className="flex items-center gap-1 rounded-full bg-dash-purple-bg px-2.5 py-1 text-[11px] font-semibold text-dash-purple"
+                title={scenario.assignmentReason}
+              >
+                <Landmark size={12} aria-hidden="true" /> CID
               </span>
             )}
             {scenario.hasContradiction && (
@@ -31,6 +34,12 @@ export default function FeaturedInvestigationCard({ scenario }: { scenario: Scen
           {scenario.caseMasterIds.length > 1 ? "s" : ""}
         </p>
         <p className="mt-3 line-clamp-3 text-[13px] leading-relaxed text-muted">{scenario.summary}</p>
+
+        {scenario.assignedTo === "CID" && (
+          <p className="mt-2 text-[12px] leading-relaxed text-dash-purple">
+            <span className="font-semibold">Why CID:</span> {scenario.assignmentReason}
+          </p>
+        )}
 
         <Link
           href={scenario.link}

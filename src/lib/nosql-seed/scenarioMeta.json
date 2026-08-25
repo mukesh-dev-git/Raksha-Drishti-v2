@@ -8,7 +8,8 @@
       4401,
       4406
     ],
-    "handlingLevel": "State CID",
+    "assignedTo": "District",
+    "assignmentReason": "Vehicle theft and forged transfers - ordinary property crime. Spans two districts, but Bengaluru City and Tumakuru SPs coordinate directly; no CID trigger.",
     "caseMasterIds": [
       9001,
       9002
@@ -22,7 +23,8 @@
     "districtIds": [
       4402
     ],
-    "handlingLevel": "District",
+    "assignedTo": "District",
+    "assignmentReason": "Single-jurisdiction robbery, no organised-crime or economic-offence trigger.",
     "caseMasterIds": [
       9003
     ]
@@ -36,7 +38,8 @@
       4403,
       4401
     ],
-    "handlingLevel": "State CID",
+    "assignedTo": "CID",
+    "assignmentReason": "Cyber Crimes and Narcotics Wing - extortion run through a loan application is a cybercrime.",
     "caseMasterIds": [
       9004,
       9005
@@ -50,7 +53,8 @@
     "districtIds": [
       4404
     ],
-    "handlingLevel": "District",
+    "assignedTo": "CID",
+    "assignmentReason": "Economic Offences Wing - land-title forgery with consideration above Rs.1 crore.",
     "caseMasterIds": [
       9006
     ]
@@ -63,7 +67,8 @@
     "districtIds": [
       4405
     ],
-    "handlingLevel": "District",
+    "assignedTo": "District",
+    "assignmentReason": "Burglary and resale; investigated by the district unit.",
     "caseMasterIds": [
       9007
     ]
@@ -76,7 +81,8 @@
     "districtIds": [
       4407
     ],
-    "handlingLevel": "District",
+    "assignedTo": "District",
+    "assignmentReason": "Assault arising from a contract dispute; no CID trigger.",
     "caseMasterIds": [
       9008
     ]
@@ -90,7 +96,8 @@
       4408,
       4406
     ],
-    "handlingLevel": "State CID",
+    "assignedTo": "District",
+    "assignmentReason": "Cattle theft across a district boundary. Shivamogga and Tumakuru SPs run a joint investigation - cross-district does not by itself mean CID.",
     "caseMasterIds": [
       9009,
       9010
@@ -104,7 +111,8 @@
     "districtIds": [
       4401
     ],
-    "handlingLevel": "District",
+    "assignedTo": "CID",
+    "assignmentReason": "Cyber Crimes and Narcotics Wing - fraudulent tech-support call centre defrauding victims online.",
     "caseMasterIds": [
       9011
     ]
@@ -117,7 +125,8 @@
     "districtIds": [
       4402
     ],
-    "handlingLevel": "District",
+    "assignedTo": "District",
+    "assignmentReason": "Domestic dispute; district unit retains the case.",
     "caseMasterIds": [
       9012
     ]
@@ -130,7 +139,8 @@
     "districtIds": [
       4403
     ],
-    "handlingLevel": "District",
+    "assignedTo": "District",
+    "assignmentReason": "Vehicle dismantling and resale; ordinary district property crime.",
     "caseMasterIds": [
       9013
     ]
@@ -143,7 +153,8 @@
     "districtIds": [
       4404
     ],
-    "handlingLevel": "District",
+    "assignedTo": "District",
+    "assignmentReason": "Robbery gang, but confined to one district and not yet invoked under KCOCA.",
     "caseMasterIds": [
       9014
     ]
@@ -156,7 +167,8 @@
     "districtIds": [
       4405
     ],
-    "handlingLevel": "District",
+    "assignedTo": "CID",
+    "assignmentReason": "Economic Offences Wing - collective investment fraud well above the Rs.1 crore threshold.",
     "caseMasterIds": [
       9015
     ]
@@ -170,7 +182,8 @@
       4407,
       4401
     ],
-    "handlingLevel": "State CID",
+    "assignedTo": "CID",
+    "assignmentReason": "Cyber Crimes and Narcotics Wing - card skimming is a cyber-enabled financial offence.",
     "caseMasterIds": [
       9016,
       9017
@@ -184,7 +197,8 @@
     "districtIds": [
       4408
     ],
-    "handlingLevel": "District",
+    "assignedTo": "District",
+    "assignmentReason": "Forest produce theft. Would move to the CID Forest Cell only on a specific order; none issued here.",
     "caseMasterIds": [
       9018
     ]
@@ -197,7 +211,8 @@
     "districtIds": [
       4401
     ],
-    "handlingLevel": "District",
+    "assignedTo": "District",
+    "assignmentReason": "Assault; district unit investigation.",
     "caseMasterIds": [
       9019
     ]

@@ -193,13 +193,17 @@ console.log(`\ncaseScenarioMap.json`.padEnd(30), `${Object.keys(caseScenarioMap)
 // which isn't bundled into the app (only the generated JSON under out/ is).
 // caseTypeSlug/districtSlug aren't resolved here - build_seed.mjs doesn't
 // have data.ts's slug tables - callers resolve dbId -> slug via data.ts.
-// handlingLevel is derived, not hand-authored: a scenario whose FIRs span
-// more than one district ("districts" already tracks every real district
-// involved, e.g. C1's motorcycle-fencing ring spans Bengaluru + Tumakuru)
-// is exactly the case a State CID would take over in practice - a single
-// district SP has no jurisdiction across district lines. This is a real
-// signal already latent in the authored data, not a fabricated judgment
-// call per scenario - see README's note on why (State/District scoping).
+// assignedTo/assignmentReason are hand-authored per scenario in cases.json,
+// NOT derived. An earlier version of this file inferred them
+// (districtIds.length > 1 ? "State CID" : "District"), which was wrong:
+// Karnataka CID takes a case by explicit assignment - order of the State
+// Government, the DGP, or the High Court/Supreme Court - plus category
+// triggers (Economic Offences Wing above Rs.1 crore, the Cyber Crimes and
+// Narcotics Wing, the Forest Cell, human trafficking) and one automatic
+// trigger, custodial death. How many districts a case's FIRs touch has
+// nothing to do with it: two district SPs coordinating across a boundary,
+// or their Range IGP coordinating them, is the ordinary path (see C1, C7).
+// Ref: https://cid.karnataka.gov.in/2/organisation/en
 const scenarioMeta = {};
 for (const c of dataset.cases) {
   const firstFir = c.firs[0];
@@ -210,7 +214,8 @@ for (const c of dataset.cases) {
     crimeMinorHeadID: firstFir.CrimeMinorHeadID,
     districtId: districtIds[0] || null,
     districtIds,
-    handlingLevel: districtIds.length > 1 ? "State CID" : "District",
+    assignedTo: c.assignedTo,
+    assignmentReason: c.assignmentReason,
     caseMasterIds: c.firs.map((f) => f.CaseMasterID),
   };
 }
