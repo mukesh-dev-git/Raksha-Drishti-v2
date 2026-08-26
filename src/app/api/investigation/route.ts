@@ -8,6 +8,7 @@ import cctvSightings from "@/lib/nosql-seed/CCTVSightings.json";
 import witnessStatements from "@/lib/nosql-seed/WitnessStatements.json";
 import timelineEvents from "@/lib/nosql-seed/TimelineEvents.json";
 import contradictionsSeed from "@/lib/nosql-seed/Contradictions.json";
+import aiContradictions from "@/lib/nosql-seed/AIContradictions.json";
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +19,18 @@ export const dynamic = "force-dynamic";
 // the 15 seeded scenarios happen to fall in this particular combination -
 // the frontend falls back to the mock generator in that case, same pattern
 // as every other live-data call in the app (see catalyst/README.md §3).
+//
+// `aiFindings` (P5.2b/P5.4) is GLM's OWN independent read of this
+// scenario's evidence, pre-computed once via detectScenarioContradictions()
+// and bundled as AIContradictions.json - not a live call per page load
+// (each call takes 10-60s and this endpoint needs to stay responsive), and
+// not the same thing as `contradiction`, which is the scenario author's
+// ground truth. Keep them visibly distinct in the UI - see
+// RealEvidenceFeed.tsx. `matchesAuthored` records whether GLM's citations
+// happened to fully cover the authored contradiction's records; it is not
+// itself shown as a general "AI accuracy" claim (RESEARCH_AND_PLAN.md
+// Part 6 - the real number is 2/15 across all scenarios, and it varies
+// run to run since this is a live model, not a deterministic function).
 //
 // scenarioId resolution: ZCQL (relational) CrimeMinorHeadID + District, via
 // the same CaseMaster/Unit join used by /api/district-stats, to get real
@@ -90,6 +103,7 @@ export async function GET(req: NextRequest) {
       witnessStatements: byScenario(witnessStatements),
       timeline: byScenario(timelineEvents),
       contradiction: byScenario(contradictionsSeed)[0] || null,
+      aiFindings: (aiContradictions.scenarios as Record<string, unknown>)[scenarioId] ?? null,
     });
   } catch (e) {
     return fail(e);

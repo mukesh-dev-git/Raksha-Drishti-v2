@@ -24,7 +24,7 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 | **P2** Route restructure | 🚧 **blocked** | PR #1 unresolved. Nothing here can start. |
 | **P3** Person spine | 🔵 **in progress** | P3.1+P3.3 ✅ (`589721d`) — fusion + timeline merge, 2 real bugs found and fixed. **P3.2 (`/persons`) is next.** |
 | **P4** Real analytics | ⚪ **waiting on P1.2** | Needs case volume before a hotspot or a trend means anything. |
-| **P5** AI | 🔵 **in progress** | P5.0-P5.3 ✅ · P5.2b ✅ — eval re-run at scenario scope: 3/15 real hits. **P5.4 is next.** |
+| **P5** AI | 🔵 **in progress** | P5.0-P5.3, P5.2b, P5.3b ✅ — real findings now visible in the Investigation Workspace UI (2/15, honest). **P5.4 is next.** |
 | **P6** Zia | 🚧 **gated** | Needs the P6.0 yes/no on generating images. |
 | **P7** Kannada voice (Zia) | ⚪ **ready** | Not gated like P6 - P7.1 can start from data we already have. |
 | **X** Cross-cutting | 🔵 | X3 ✅ · X1, X2 open |
@@ -64,7 +64,7 @@ P1  Data foundation    🔵 P1.1/P1.3 done ── P1.2 is the next real unlock
 P2  Route restructure  🚧 PR #1       ── highest risk, needs PR #1 resolved
 P3  Person spine       ⚪ ready       ── P1.1 unblocked it
 P4  Real analytics     ⚪ needs P1.2  ── 4 of 6 PS asks land here
-P5  AI features        🔵 P5.0-P5.3, P5.2b done ── P5.4 is next
+P5  AI features        🔵 P5.0-P5.3, P5.2b, P5.3b done ── P5.4 is next
 P6  Zia                🚧 gated on P6.0 ── only if we get images
 P7  Kannada voice       ⚪ ready       ── not gated like P6, can start now
 ```
@@ -292,7 +292,13 @@ reasons over it.*
       `getScenarioTimeline()` (personFusion.ts) + `detectScenarioContradictions()`
       (contradictionDetector.ts, sharing `runDetection()` with P5.2 — one
       schema, one guardrail, two entry points). Re-ran P5.3: **1/15 → 3/15
-      real hits (C1, C2, C11)**, each fix verified live, not assumed:
+      real hits (C1, C2, C11)** on that eval pass, each fix verified live,
+      not assumed. **This 3/15 was never persisted** — generating the
+      bundled `AIContradictions.json` artifact (below) was a *different*
+      run on the identical, unchanged prompts and got **2/15 (C1, C2)**.
+      Both numbers are real; the difference between them (not either number
+      alone) is the actual finding — this detector is not deterministic,
+      confirmed twice now, not theorized:
       - Confirmed C2 needs cross-person evidence — traced live: Ravindra's
         alibi (his own statement) vs. two calls with Praveen vs. a sighting
         of Praveen — three different people's records, unreachable from any
@@ -317,9 +323,36 @@ reasons over it.*
       into why; and the model sometimes reports one real multi-record
       contradiction as several separate smaller pairs instead of one group
       that covers everything (C4, C15) — found the right records, structured
-      wrong, currently scored a miss. Do not present 3/15 (or any number
-      from this eval) as more than what it is — 15 authored cases, honestly
-      run.
+      wrong, currently scored a miss. Do not present 2/15, 3/15, or any
+      number from any run as more than what it is — 15 authored cases,
+      honestly run, with a result that moves between runs.
+- [x] **P5.3b** ~~Surface AI findings in the real Investigation Workspace UI~~
+      — done. Until this, every P3/P5 module built today was library code
+      with zero UI surface — nothing an officer would ever see. Added:
+      - **`AIContradictions.json`** — all 15 scenarios pre-computed once via
+        `detectScenarioContradictions()` (retrying up to 2× on the "empty
+        tool call" failure mode found in P5.2b - a transient gap, not a
+        wrong answer, so retrying is a reliability fix, not re-running for
+        a better number). Same seeded-bundle pattern as every other real
+        collection in `nosql-seed/`, not a live call per page load - each
+        call takes 10-60s, which a page load can't wait on. **Final,
+        shipped result: 2/15 (C1, C2)** - generation itself hit a real
+        network condition partway through (`UND_ERR_CONNECT_TIMEOUT` on 5
+        scenarios after ~15 consecutive calls, confirmed transient by a
+        clean `curl` moments later) and was completed incrementally rather
+        than restarted from scratch.
+      - **`/api/investigation`** now returns `aiFindings` alongside the
+        existing authored `contradiction` field.
+      - **`RealEvidenceFeed.tsx`** renders both, kept visibly, honestly
+        distinct: red "Verified contradiction — case record" (what the
+        scenario was authored around) vs. indigo "AI-detected contradiction
+        — GLM-4.7-Flash" (what the model found on its own), with a verdict
+        pill (matches / independent-not-a-full-match / none this run) and
+        an explicit "generated once, not live" caption so nobody mistakes
+        it for a live call. Verified all three states render correctly by
+        temporarily pointing the fetch at a fixture route (C1 = match, C5 =
+        none, C15 = independent-not-a-full-match), then reverted before
+        commit - a real screenshot-equivalent check, not just a typecheck.
 - [ ] **P5.4** "Next question to ask" — phrasing layer on P5.2/P5.2b's output.
 - [ ] **P5.5** Suspicion score — deterministic weighted signals feed the
       existing `RiskGauge`; the LLM writes only the explanation, never the

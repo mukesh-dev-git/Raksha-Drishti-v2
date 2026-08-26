@@ -813,3 +813,51 @@ live data before being called a bug:
 it is: 15 authored cases, run for real, three found correctly.** It is a
 real, verified number - not 1/15 (which undercounted due to bugs 1-3
 above), and not something to round up either.
+
+## 6.5 P5.3b - findings surfaced in the real UI (2026-08-26, same day)
+
+Everything through 6.4 was library code - `personFusion.ts`,
+`contradictionDetector.ts`, `contradictionEval.ts` - with zero UI surface.
+No officer would ever see any of it. This closes that gap.
+
+**Generation, not live calls.** `AIContradictions.json` bundles all 15
+scenarios' `detectScenarioContradictions()` output, computed once - the
+same pattern every other real collection in `nosql-seed/` already uses,
+and necessary here specifically because a single call takes 10-60s, which
+a page load cannot wait on. `runDetection()` now retries up to 2 extra
+times, but only on "the model returned ok:true with no tool call at all" -
+confirmed live to be a transient gap (the same prompt that failed empty on
+one pass returned a real tool call minutes later on an unmodified
+re-request) rather than a wrong answer, so retrying is a reliability fix,
+not re-running until a preferred number appears.
+
+**The generation run itself hit a real infrastructure condition**, not
+just model non-determinism: after roughly 15 consecutive calls, 5
+scenarios failed with `UND_ERR_CONNECT_TIMEOUT` reaching
+`api.catalyst.zoho.in` - a TCP-level connect timeout, not an API error. A
+plain `curl` to the same host moments later connected in 0.27s, confirming
+it was transient rather than a lasting outage. Rather than restart the
+full 15-scenario run (burning real API calls for scenarios that already
+had a clean result), the generator was made incremental: it loads any
+existing `AIContradictions.json`, skips scenarios that already have a
+result with no `error`, and only regenerates the rest. Ran three more
+times to fully close out - once after the connectivity issue passed, once
+more for a single remaining "empty tool call" scenario (C10) that needed
+its full retry budget.
+
+**Final, shipped result: 2/15 (C1, C2).** This is a different number from
+6.4's 3/15 (C1, C2, C11) - same prompts, same code, different run. Neither
+number is wrong; the gap between them is real and is itself the finding.
+Do not present either as a fixed accuracy claim.
+
+**UI**: `/api/investigation` now returns `aiFindings` alongside the
+existing authored `contradiction` field. `RealEvidenceFeed.tsx` renders
+both, kept visibly and honestly distinct - a red "Verified contradiction -
+case record" panel (what the scenario was authored around) and an indigo
+"AI-detected contradiction - GLM-4.7-Flash" panel (what the model found
+independently), with a verdict pill and an explicit "generated once, not
+computed live" caption. All three states (full match, independent
+finding/no full match, none found this run) verified by temporarily
+pointing the component's fetch at a fixture route serving C1/C5/C15
+respectively, reading the rendered page text back, then reverting before
+commit - a real check of what renders, not just a passing typecheck.

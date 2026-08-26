@@ -1,0 +1,194 @@
+{
+  "generatedAt": "2026-08-26T12:48:26.601Z",
+  "model": "crm-di-glm47b_30b_it",
+  "note": "Pre-computed once via detectScenarioContradictions (P5.2b), not generated live per page load - same pattern as the rest of the seeded evidence. matchesAuthored means the AI's own finding independently covers every record id the scenario was authored around (Contradictions.json) - it does NOT mean the AI read that file.",
+  "scenarios": {
+    "C1": {
+      "contradictions": [
+        {
+          "recordIds": [
+            "C1-CC-2",
+            "C1-WS-2"
+          ],
+          "reasoning": "Toll camera shows Suresh Naik near Nelamangala on 19 March, but his recorded statement claims he was at his sister's house in Rajajinagar from 7-11pm that same day.",
+          "confidence": 0.95
+        }
+      ],
+      "droppedHallucinated": 0,
+      "matchesAuthored": true,
+      "error": null
+    },
+    "C2": {
+      "contradictions": [
+        {
+          "recordIds": [
+            "C2-CL-1",
+            "C2-CL-4",
+            "C2-CC-2",
+            "C2-TX-1",
+            "C2-WS-2"
+          ],
+          "reasoning": "Multiple records (calls, sighting, transaction) show Praveen Achari dealing with Ravindra Naidu, but Ravindra Naidu's witness statement claims he never dealt with Praveen Achari",
+          "confidence": 0.95
+        }
+      ],
+      "droppedHallucinated": 0,
+      "matchesAuthored": true,
+      "error": null
+    },
+    "C3": {
+      "contradictions": [],
+      "droppedHallucinated": 0,
+      "matchesAuthored": false,
+      "error": null
+    },
+    "C4": {
+      "contradictions": [
+        {
+          "recordIds": [
+            "C4-CL-3",
+            "C4-WS-1"
+          ],
+          "reasoning": "Call record shows notary and buyer spoke directly, contradicting witness statement that notary doesn't know buyer personally",
+          "confidence": 0.9
+        }
+      ],
+      "droppedHallucinated": 0,
+      "matchesAuthored": false,
+      "error": null
+    },
+    "C5": {
+      "contradictions": [],
+      "droppedHallucinated": 0,
+      "matchesAuthored": false,
+      "error": null
+    },
+    "C6": {
+      "contradictions": [
+        {
+          "recordIds": [
+            "C6-WS-1",
+            "C6-WS-2"
+          ],
+          "reasoning": "C6-WS-1 states Chandru told others to 'teach him a lesson' after a call with the contractor, while C6-WS-2 (the contractor himself) denies instructing anyone to harm workers and claims the call was only about payroll.",
+          "confidence": 0.85
+        }
+      ],
+      "droppedHallucinated": 0,
+      "matchesAuthored": false,
+      "error": null
+    },
+    "C7": {
+      "contradictions": [
+        {
+          "recordIds": [
+            "C7-WS-1",
+            "C7-CL-1",
+            "C7-CL-2"
+          ],
+          "reasoning": "Witness statement says Somesh K was asleep at home, but call records show calls to him before both thefts",
+          "confidence": 0.9
+        }
+      ],
+      "droppedHallucinated": 0,
+      "matchesAuthored": false,
+      "error": null
+    },
+    "C8": {
+      "contradictions": [],
+      "droppedHallucinated": 0,
+      "matchesAuthored": false,
+      "error": null
+    },
+    "C9": {
+      "contradictions": [],
+      "droppedHallucinated": 0,
+      "matchesAuthored": false,
+      "error": null
+    },
+    "C10": {
+      "contradictions": [
+        {
+          "recordIds": [
+            "C10-TX-1",
+            "C10-TX-2",
+            "C10-WS-1"
+          ],
+          "reasoning": "TX records show Vasant Naik receiving ₹7,000 and ₹4,000 from himself (garage cash) about Sagar Bandekar and Ganesh Koli, which is logically impossible; WS-1 states he buys scrap in bulk without asking where individual bikes come from, contradicting the implication of specific transactions for named individuals",
+          "confidence": 0.85
+        }
+      ],
+      "droppedHallucinated": 0,
+      "matchesAuthored": false,
+      "error": null
+    },
+    "C11": {
+      "contradictions": [
+        {
+          "recordIds": [
+            "C11-WS-1",
+            "C11-CL-1",
+            "C11-CL-2",
+            "C11-CL-3"
+          ],
+          "reasoning": "Ravi Caterer's witness statement claims they don't know any of the accused men, but call records show Ravi Caterer was in communication with Altaf Pathan, Kiran Bhosale, and Santosh Waghmare prior to the robbery.",
+          "confidence": 1
+        }
+      ],
+      "droppedHallucinated": 0,
+      "matchesAuthored": false,
+      "error": null
+    },
+    "C12": {
+      "contradictions": [],
+      "droppedHallucinated": 0,
+      "matchesAuthored": false,
+      "error": null
+    },
+    "C13": {
+      "contradictions": [
+        {
+          "recordIds": [
+            "C13-WS-1",
+            "C13-CL-3"
+          ],
+          "reasoning": "Witness statement claims Deepak Rathore never operated in Bengaluru, but call record C13-CL-3 is timed with Bengaluru withdrawals",
+          "confidence": 0.9
+        }
+      ],
+      "droppedHallucinated": 0,
+      "matchesAuthored": false,
+      "error": null
+    },
+    "C14": {
+      "contradictions": [
+        {
+          "recordIds": [
+            "C14-CL-1",
+            "C14-WS-1"
+          ],
+          "reasoning": "C14-CL-1 confirms the watcher's off-duty shift, while C14-WS-1 states Devaraj was on regular night duty",
+          "confidence": 0.95
+        }
+      ],
+      "droppedHallucinated": 0,
+      "matchesAuthored": false,
+      "error": null
+    },
+    "C15": {
+      "contradictions": [
+        {
+          "recordIds": [
+            "C15-CC-2",
+            "C15-WS-1"
+          ],
+          "reasoning": "Camera footage directly contradicts Zaid's claim that Bharath's group struck first",
+          "confidence": 0.95
+        }
+      ],
+      "droppedHallucinated": 0,
+      "matchesAuthored": false,
+      "error": null
+    }
+  }
+}

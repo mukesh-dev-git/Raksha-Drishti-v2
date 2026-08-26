@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AlertTriangle, BadgeCheck, PhoneCall, Landmark, Video, MessageSquareQuote } from "lucide-react";
+import { AlertTriangle, BadgeCheck, PhoneCall, Landmark, Video, MessageSquareQuote, Sparkles, CheckCircle2, HelpCircle } from "lucide-react";
 import PinnedCard from "./PinnedCard";
 import SectionHeading from "./SectionHeading";
 
@@ -42,6 +42,17 @@ interface Contradiction {
   conflictingRecords: string[];
   suggestedNextQuestion: string;
 }
+interface AiFinding {
+  recordIds: string[];
+  reasoning: string;
+  confidence: number;
+}
+interface AiFindings {
+  contradictions: AiFinding[];
+  droppedHallucinated: number;
+  matchesAuthored: boolean;
+  error: string | null;
+}
 
 interface InvestigationApiResponse {
   scenario: string | null;
@@ -50,6 +61,7 @@ interface InvestigationApiResponse {
   cctv?: CCTVSighting[];
   witnessStatements?: WitnessStatement[];
   contradiction?: Contradiction | null;
+  aiFindings?: AiFindings | null;
 }
 
 // -----------------------------------------------------------------------------
@@ -115,7 +127,7 @@ export default function RealEvidenceFeed({
             <AlertTriangle size={26} className="mt-1 shrink-0 text-red-700" />
             <div>
               <p className="text-[13px] font-bold uppercase tracking-[0.14em] text-red-700">
-                Contradiction detected
+                Verified contradiction — case record
               </p>
               <p className="mt-2 text-[16px] leading-relaxed text-ink">{data.contradiction.description}</p>
               <div className="mt-3 flex flex-wrap gap-2">
@@ -130,6 +142,70 @@ export default function RealEvidenceFeed({
               </div>
               <p className="mt-3 border-l-2 border-red-400/50 pl-4 text-[15px] italic text-muted">
                 Suggested next question: {data.contradiction.suggestedNextQuestion}
+              </p>
+            </div>
+          </div>
+        </PinnedCard>
+      )}
+
+      {/* P5.2b/P5.4 - GLM's own, independent read of this scenario's
+          evidence, pre-computed once (AIContradictions.json) and kept
+          visually distinct from the verified block above: that one is what
+          the case was authored around, this one is what an AI found on its
+          own, and the two agreeing is worth showing exactly because it
+          isn't guaranteed - see RESEARCH_AND_PLAN.md Part 6 for the real,
+          run-to-run-variable hit rate (2/15 on the run bundled here) rather
+          than presenting this as a solved feature. */}
+      {data.aiFindings && (
+        <PinnedCard pin="#4338ca" className="mb-6">
+          <div className="flex gap-4 p-6">
+            <Sparkles size={26} className="mt-1 shrink-0 text-indigo-700" />
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <p className="text-[13px] font-bold uppercase tracking-[0.14em] text-indigo-700">
+                  AI-detected contradiction — GLM-4.7-Flash
+                </p>
+                {data.aiFindings.contradictions.length > 0 &&
+                  (data.aiFindings.matchesAuthored ? (
+                    <span className="flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">
+                      <CheckCircle2 size={12} /> Matches verified record
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-700">
+                      <HelpCircle size={12} /> Independent finding — not a full match
+                    </span>
+                  ))}
+              </div>
+
+              {data.aiFindings.error ? (
+                <p className="mt-2 text-[14px] italic text-muted">
+                  AI analysis unavailable for this scenario ({data.aiFindings.error.slice(0, 120)}).
+                </p>
+              ) : data.aiFindings.contradictions.length === 0 ? (
+                <p className="mt-2 text-[14px] italic text-muted">
+                  No contradiction reported by AI analysis on this run.
+                </p>
+              ) : (
+                data.aiFindings.contradictions.map((f, i) => (
+                  <div key={i} className={i > 0 ? "mt-4 border-t border-line pt-4" : "mt-2"}>
+                    <p className="text-[16px] leading-relaxed text-ink">{f.reasoning}</p>
+                    <div className="mt-3 flex flex-wrap items-center gap-2">
+                      {f.recordIds.map((id) => (
+                        <span
+                          key={id}
+                          className="rounded-sm border border-indigo-200 bg-indigo-50 px-2 py-1 font-mono text-[12px] text-indigo-800"
+                        >
+                          {id}
+                        </span>
+                      ))}
+                      <span className="ml-1 text-[12px] text-muted">confidence {Math.round(f.confidence * 100)}%</span>
+                    </div>
+                  </div>
+                ))
+              )}
+
+              <p className="mt-3 text-[12px] text-muted">
+                Generated once from this scenario&apos;s evidence, not computed live on this page load.
               </p>
             </div>
           </div>

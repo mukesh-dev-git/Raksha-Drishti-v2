@@ -89,12 +89,36 @@ const SYSTEM_PROMPT =
  * swallowed. A hallucinated id is dropped from its group individually
  * rather than sinking the whole finding, but a finding needs 2+ REAL ids
  * left to mean anything as a contradiction.
+ *
+ * Retries up to 2 extra times, but ONLY on "the model returned ok:true with
+ * no tool call at all" - found live to be non-deterministic (the AIContradictions.json
+ * generation run got a genuinely empty response on 8 of 15 scenarios that
+ * had returned a real tool call minutes earlier on the identical prompt,
+ * confirmed by re-running the same scenario twice). That is a transient
+ * gap in this endpoint's behavior, not a wrong answer, so retrying is a
+ * reliability fix - NOT re-running until a preferred number shows up. A
+ * real API error (bad request, auth, non-JSON body) is NOT retried here;
+ * those aren't transient in the same way and callGlm already logs them.
  */
 async function runDetection(subjectId: string, subjectLabel: string, timelineText: string, recordCount: number, validIds: Set<string>): Promise<DetectionResult> {
   if (recordCount < 2) {
     return { ok: true, subjectId, contradictions: [], droppedHallucinated: 0 };
   }
 
+  const MAX_ATTEMPTS = 3;
+  let lastResult: DetectionResult | null = null;
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    lastResult = await runDetectionOnce(subjectId, subjectLabel, timelineText, recordCount, validIds);
+    const isEmptyToolCall = !lastResult.ok && lastResult.error.startsWith("model never called report_contradictions");
+    if (!isEmptyToolCall) return lastResult;
+    if (attempt < MAX_ATTEMPTS) {
+      console.warn(`[contradictionDetector] ${subjectId}: empty tool call on attempt ${attempt}/${MAX_ATTEMPTS}, retrying`);
+    }
+  }
+  return lastResult!;
+}
+
+async function runDetectionOnce(subjectId: string, subjectLabel: string, timelineText: string, recordCount: number, validIds: Set<string>): Promise<DetectionResult> {
   const result = await callGlm({
     messages: [
       { role: "system", content: SYSTEM_PROMPT },
