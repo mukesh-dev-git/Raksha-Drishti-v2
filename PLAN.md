@@ -26,12 +26,13 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 | **P4** Real analytics | ⚪ **waiting on P1.2** | Needs case volume before a hotspot or a trend means anything. |
 | **P5** AI | 🔵 **in progress** | P5.0 ✅ · P5.1 ✅ — GLM client works end-to-end. **P5.2 is next.** |
 | **P6** Zia | 🚧 **gated** | Needs the P6.0 yes/no on generating images. |
+| **P7** Kannada voice (Zia) | ⚪ **ready** | Not gated like P6 - P7.1 can start from data we already have. |
 | **X** Cross-cutting | 🔵 | X3 ✅ · X1, X2 open |
 
 **Done so far:** P0.1–P0.5 · P1.1 · P1.3 · P5.0 · P5.1 · X3
 
 **Ready to pick up right now, no decisions needed:** **P1.2** (then P1.6) ·
-P3.1–P3.3 · P5.2 · X1 · X2
+P3.1–P3.3 · P5.2 · P7.1 · X1 · X2
 
 **Blocked on someone, not on effort:**
 
@@ -62,8 +63,9 @@ P1  Data foundation    🔵 P1.1/P1.3 done ── P1.2 is the next real unlock
 P2  Route restructure  🚧 PR #1       ── highest risk, needs PR #1 resolved
 P3  Person spine       ⚪ ready       ── P1.1 unblocked it
 P4  Real analytics     ⚪ needs P1.2  ── 4 of 6 PS asks land here
-P5  AI features        🚧 OAuth token ── the differentiator
+P5  AI features        🔵 P5.0/P5.1 done ── P5.2 is the next real unlock
 P6  Zia                🚧 gated on P6.0 ── only if we get images
+P7  Kannada voice       ⚪ ready       ── not gated like P6, can start now
 ```
 
 P0 and P1 can run in parallel — different files, different people.
@@ -257,6 +259,31 @@ reasons over it.*
 
 **Explicitly not building:** sentiment analysis on crime complaints (not a
 policing signal), face recognition, barcode scanning.
+
+## P7 — Kannada voice pipeline (Zia Trained NLP Models)
+
+*Found 2026-08-26 (`RESEARCH_AND_PLAN.md` §2.1). Same auth as P5's `llm.ts`
+- different endpoints, no new token logic needed. Unlike P6, this is
+**not gated on generating images** - the audio Text-to-Audio needs can be
+synthesized from prose we already have, so P7 can start independently of
+P6.0's decision.*
+
+- [ ] **P7.1** Text-to-Audio on `WitnessStatements[].statementText` -
+      real spoken Kannada/English playback in the Investigation Workspace.
+      Cheapest item in this track: pure input from data that already exists,
+      no new authoring.
+- [ ] **P7.2** Audio-to-Text intake - let an officer dictate a
+      complaint/witness statement in Kannada and get back transcribed text.
+      This is a genuine answer to the PS's "Excel-based reporting" complaint,
+      not a demo trick: a real Karnataka station's friction is as much
+      Kannada-English as it is paper-digital. Needs P7.1 (or any other
+      Kannada audio source) to have something to transcribe in a demo.
+- [ ] **P7.3** Text Translation, Kannada ⇄ English, on `BriefFacts` /
+      witness statements - the bridge between station-level Kannada intake
+      and an SCRB/NCRB report that has to read in English.
+- [ ] **P7.4** Wire P7.2's transcript into P5.1's `llm.ts` as GLM input -
+      "officer speaks a witness statement in Kannada" → transcribed →
+      translated → structured/summarized by GLM, one pipeline.
 
 ## Cross-cutting
 

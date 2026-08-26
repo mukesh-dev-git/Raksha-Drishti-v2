@@ -165,8 +165,32 @@ Text Analytics (sentiment + NER + keyword extraction, **1500 char limit per
 request**), OCR (beta), Face Analytics, Identity Scanner (beta), Image
 Moderation, Object Recognition, Barcode Scanner.
 
+**Trained NLP Models (Zia)** — evaluated 2026-08-26, and this is a real find:
+**all three support Kannada**, Karnataka's official language, which nothing
+else in the stack does. Same auth as GLM (`CATALYST-ORG` +
+`Zoho-oauthtoken`, scope `QuickML.deployment.READ`) - `llm.ts`'s token logic
+covers these too, just a different endpoint.
+
+| Model | Method | Endpoint | Kannada? |
+|---|---|---|---|
+| **Text-to-Audio Synthesis** | POST, `application/json` in → `audio/wav` out | `.../models/zia/audio/synthesize` (path inferred, confirm in console) | ✅ `kn`, incl. named Kannada voices (Suresh/Chetan/Anu/Vidya) |
+| **Audio-to-Text Transcription** | POST, `multipart/form-data` in (WAV/MP3) → JSON out | `https://api.catalyst.zoho.in/quickml/api/v1/models/zia/audio/transcribe` | ✅ Kannada language identifier |
+| **Text Translation** | POST, `application/json` → JSON | `https://api.catalyst.zoho.in/quickml/api/v1/models/zia/translate` | ✅ Kannada ⇄ English + 8 other Indian languages |
+
+**Why this matters more than it looks:** the PS's own diagnosis is
+"Excel-based reporting" and "data silos" - a lot of that friction in a real
+Karnataka station is a **Kannada-English gap**, not just a paper-vs-digital
+one. Witness statements and FIR narratives are routinely given in Kannada;
+an SCRB state-level report needs English (and NCRB needs it nationally).
+Audio-to-Text + Translation is a real answer to that, not a demo trick - and
+unlike OCR/Face/Object Recognition (blocked on P6.0, since we have zero
+images), **audio is a track we're not blocked on**: Text-to-Audio can
+synthesize the input Audio-to-Text would need, straight from prose we
+already have (`WitnessStatements[].statementText`), no external asset
+sourcing required. See PLAN.md P7 for the buildable slice of this.
+
 **Also present in the console, not yet evaluated:** RAG, Knowledge Base,
-Trained NLP Models, Pipelines, Endpoints.
+Pipelines, Endpoints.
 
 ## 2.2 The LLM Serving API contract — ✅ read from the console (P5.0)
 
