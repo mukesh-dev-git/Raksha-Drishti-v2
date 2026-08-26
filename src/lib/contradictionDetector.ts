@@ -14,17 +14,21 @@ import { getFusedPerson, type FusedPerson } from "./personFusion";
 // Terse by design, not just by convention: this endpoint has a real total
 // (prompt + completion) token ceiling well under what the console documents
 // (128K output) - verified 2026-08-26 by bisection, see RESEARCH_AND_PLAN.md
-// §2.2. Two free-text fields (claim/conflictingClaim) plus a verbose
-// reasoning field routinely pushed even ONE finding's JSON past that
-// ceiling. Both claim texts are dropped from the schema - they're
-// redundant anyway, since the caller already has each record's own summary
-// from personFusion.ts's timeline by id - leaving only what P5.6's citation
-// guardrail actually needs: two ids and why they conflict.
+// §2.2. Free-text claim fields routinely pushed even ONE finding's JSON past
+// that ceiling; dropped from the schema since the caller already has each
+// record's own summary from personFusion.ts's timeline by id.
+//
+// recordIds is an ARRAY (2+), not a fixed pair - P5.3's eval run found 13 of
+// the 15 authored contradictions actually chain 3-4 records (a witness
+// statement plus two calls plus a transaction, for example), not 2. An
+// earlier pair-only schema would have made those structurally unfindable
+// regardless of what the model reasoned - a real design bug caught by
+// running the eval, not by re-reading the schema.
 const REPORT_TOOL: ToolDef = {
   type: "function",
   function: {
     name: "report_contradictions",
-    description: "Report contradicting record pairs from the timeline. Empty array if none.",
+    description: "Report contradicting record groups from the timeline. Empty array if none.",
     parameters: {
       type: "object",
       properties: {
@@ -33,12 +37,15 @@ const REPORT_TOOL: ToolDef = {
           items: {
             type: "object",
             properties: {
-              claimRecordId: { type: "string", description: "First record id" },
-              conflictingRecordId: { type: "string", description: "Second, conflicting record id" },
+              recordIds: {
+                type: "array",
+                items: { type: "string" },
+                description: "2 or more record ids (from the timeline given to you) whose claims cannot all be true together",
+              },
               reasoning: { type: "string", description: "One short sentence: why they conflict" },
               confidence: { type: "number", description: "0.0-1.0" },
             },
-            required: ["claimRecordId", "conflictingRecordId", "reasoning", "confidence"],
+            required: ["recordIds", "reasoning", "confidence"],
           },
         },
       },
@@ -48,8 +55,7 @@ const REPORT_TOOL: ToolDef = {
 };
 
 export type DetectedContradiction = {
-  claimRecordId: string;
-  conflictingRecordId: string;
+  recordIds: string[];
   reasoning: string;
   confidence: number;
 };
@@ -130,16 +136,19 @@ export async function detectContradictions(personId: string): Promise<DetectionR
   for (const item of raw) {
     const c = item as Partial<DetectedContradiction>;
     if (
-      typeof c.claimRecordId === "string" &&
-      typeof c.conflictingRecordId === "string" &&
+      Array.isArray(c.recordIds) &&
+      c.recordIds.every((id) => typeof id === "string") &&
       typeof c.reasoning === "string" &&
       typeof c.confidence === "number"
     ) {
-      // The citation guardrail, enforced: a finding whose cited ids aren't
-      // both real records in this person's timeline does not survive,
-      // regardless of how plausible the prose reads.
-      if (validIds.has(c.claimRecordId) && validIds.has(c.conflictingRecordId)) {
-        validated.push(c as DetectedContradiction);
+      // The citation guardrail, enforced per-id, not all-or-nothing: a
+      // hallucinated id is dropped from the group rather than sinking the
+      // whole finding, but a finding needs 2+ REAL ids left to mean
+      // anything as a contradiction - one real id alone isn't a conflict.
+      const real = c.recordIds.filter((id) => validIds.has(id));
+      if (real.length >= 2) {
+        validated.push({ recordIds: real, reasoning: c.reasoning, confidence: c.confidence });
+        if (real.length < c.recordIds.length) dropped += c.recordIds.length - real.length;
       } else {
         dropped++;
       }

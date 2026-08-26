@@ -690,3 +690,70 @@ Track D outranks most of Track B. Contradiction detection over 15 scenarios
 is a nice demo; **hotspots, trends, anomaly detection and predictive risk
 are four of the six PS asks and all four are blocked on D2/D3/D4**, not on
 any LLM. Sequence: **D1–D4 → Phase 1/2 UI work → B2 person spine → B4 AI.**
+
+---
+
+# Part 6 — P5.2/P5.3 eval, run for real (2026-08-26)
+
+Ran the contradiction detector against all 15 authored contradictions, not
+estimated. Real result: **1 hit / 15**, and the reason is the finding, not
+the number itself.
+
+## 6.1 The false assumption
+
+`Contradictions.json`'s `conflictingRecords` was assumed to always be a
+2-record pair (`[claimId, conflictingId]`) — true for exactly **2 of 15**
+scenarios (C1, C5). The other 13 are 3-4 record chains:
+
+```
+C2  3  ["C2-WS-2","C2-CC-2","C2-CL-1"]
+C6  4  ["C6-WS-2","C6-CL-1","C6-CL-2","C6-WS-1"]
+C13 4  ["C13-WS-1","C13-TX-1","C13-TX-2","C13-CL-3"]
+...
+```
+
+A pair-only detector schema made those 13 structurally unfindable regardless
+of how well the model reasoned. Found by running the eval, not by re-reading
+the schema — `contradictionDetector.ts`'s `recordIds: string[]` (min 2)
+replaces the fixed pair.
+
+## 6.2 The deeper finding: most contradictions are cross-person
+
+Even after fixing the schema, 13/15 still miss - `findOwner()` (does one
+person's fused timeline contain every ground-truth id?) returns null for
+them. Verified on **C2**, not assumed: traced each cited record to its
+person via `resolvedPersons`.
+
+```
+C2-WS-2  relatedPerson P4  -> Ravindra Naidu (fence, pawnbroker) - alibi
+C2-CC-2  personOrVehicle "P1 entering with a bag"    -> Praveen Achari, sighted
+C2-CL-1  from P1, to P4                              -> Praveen calls Ravindra
+```
+
+The contradiction is: Ravindra's alibi (WS-2) is undercut by Praveen being
+sighted (CC-2) *and* the call between them (CL-1) placing them in contact —
+**two people's records, read together**, not one suspect's own claims
+conflicting. C1 (the one hit) is the exception: Suresh's own witness
+statement contradicts a CCTV sighting of *his own* vehicle - genuinely
+single-person.
+
+**Implication:** P5.2 as literally specified ("contradiction detector over
+a fused person's timeline") can only ever address single-person cases —
+a minority of this dataset (2 of 15). The detector itself is not shown to
+be wrong by this result; it was pointed at too narrow a slice of the
+evidence. **P5.2b (PLAN.md) generalizes to scenario-level evidence** —
+every person's timeline merged for a scenario, not filtered to one — before
+any hit-rate number should be shown to anyone.
+
+## 6.3 Two bugs the eval run also caught live
+
+- **`llm.ts`'s `text` field could be `undefined` on a live 200**, despite
+  its type declaring `string` - a truncated/malformed generation can omit
+  `response` from the body entirely. Crashed a caller
+  (`contradictionDetector.ts`'s error-path `.slice()`) that reasonably
+  trusted the type. Fixed by defaulting `text: parsed.response ?? ""` at
+  the source, not by defensive-coding every caller separately.
+- The original pair-only schema (6.1) was itself found by running data
+  through the eval, not by review - a reminder that this project's pattern
+  of "verify against real data before trusting a type or a schema" applies
+  to code we write ourselves, not only to the vendor's docs.

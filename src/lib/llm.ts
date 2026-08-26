@@ -305,7 +305,15 @@ export async function callGlm(opts: GlmChatOptions): Promise<LlmResult> {
 
   return {
     ok: true,
-    text: parsed.response,
+    // Defaulted, not trusted as-is: found live 2026-08-26 that `response`
+    // can be absent from an otherwise-200 body (toolCallCount 0, budget
+    // fully consumed - likely a truncated/malformed generation on the
+    // vendor's side). The type below says `string`; a live payload doesn't
+    // always agree, and a bare `parsed.response` here crashed a caller that
+    // reasonably trusted the type (contradictionDetector.ts's error-path
+    // .slice()). Never let an external response's shape violate what this
+    // module promises its own callers.
+    text: parsed.response ?? "",
     toolCalls,
     reasoning: parsed.reasoning ?? null,
     usage: parsed.usage,

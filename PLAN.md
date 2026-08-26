@@ -22,17 +22,18 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 | **P0** Credibility | ✅ **done** | All 5. App no longer promises what it can't do. |
 | **P1** Data foundation | 🔵 **in progress** | P1.1 ✅ · P1.3 ✅ · P1.4 `[~]` built, not applied · **P1.2 is next** · P1.5 needs a decision · P1.6 last |
 | **P2** Route restructure | 🚧 **blocked** | PR #1 unresolved. Nothing here can start. |
-| **P3** Person spine | ⚪ **ready** | Unblocked by P1.1. Nothing else in its way. |
+| **P3** Person spine | 🔵 **in progress** | P3.1+P3.3 ✅ (`589721d`) — fusion + timeline merge, 2 real bugs found and fixed. **P3.2 (`/persons`) is next.** |
 | **P4** Real analytics | ⚪ **waiting on P1.2** | Needs case volume before a hotspot or a trend means anything. |
-| **P5** AI | 🔵 **in progress** | P5.0 ✅ · P5.1 ✅ — GLM client works end-to-end. **P5.2 is next.** |
+| **P5** AI | 🔵 **in progress** | P5.0-P5.3 ✅ — real eval run: 1/15 hit, honestly diagnosed (see P5.3). **P5.2b is next.** |
 | **P6** Zia | 🚧 **gated** | Needs the P6.0 yes/no on generating images. |
 | **P7** Kannada voice (Zia) | ⚪ **ready** | Not gated like P6 - P7.1 can start from data we already have. |
 | **X** Cross-cutting | 🔵 | X3 ✅ · X1, X2 open |
 
-**Done so far:** P0.1–P0.5 · P1.1 · P1.3 · P5.0 · P5.1 · X3
+**Done so far:** P0.1–P0.5 · P1.1 · P1.3 · P3.1 · P3.3 · P5.0 · P5.1 · P5.2 ·
+P5.3 · X3
 
 **Ready to pick up right now, no decisions needed:** **P1.2** (then P1.6) ·
-P3.1–P3.3 · P5.2 · P7.1 · X1 · X2
+P3.2 · P5.2b · P7.1 · X1 · X2
 
 **Blocked on someone, not on effort:**
 
@@ -63,7 +64,7 @@ P1  Data foundation    🔵 P1.1/P1.3 done ── P1.2 is the next real unlock
 P2  Route restructure  🚧 PR #1       ── highest risk, needs PR #1 resolved
 P3  Person spine       ⚪ ready       ── P1.1 unblocked it
 P4  Real analytics     ⚪ needs P1.2  ── 4 of 6 PS asks land here
-P5  AI features        🔵 P5.0/P5.1 done ── P5.2 is the next real unlock
+P5  AI features        🔵 P5.0-P5.3 done ── P5.2b (scenario-level) is next
 P6  Zia                🚧 gated on P6.0 ── only if we get images
 P7  Kannada voice       ⚪ ready       ── not gated like P6, can start now
 ```
@@ -258,13 +259,42 @@ reasons over it.*
         truncated). Use `tools`/`tool_choice` for structured output, don't
         fight it with prompt wording.
       Full log in `RESEARCH_AND_PLAN.md` §2.2.
-- [ ] **P5.2** Contradiction detector over a fused person's timeline, via tool
-      calling, returning `{claim, conflictingClaim, sourceRecordIds[],
-      confidence}`.
-- [ ] **P5.3** **Evaluate P5.2 against the 15 authored contradictions** in
-      `Contradictions.json` — they're our ground truth. Report the real hit
-      rate *including misses*.
-- [ ] **P5.4** "Next question to ask" — phrasing layer on P5.2's output.
+- [x] **P5.2** ~~Contradiction detector over a fused person's timeline~~ —
+      done, `src/lib/contradictionDetector.ts`. Verified against Suresh Naik
+      (KA-P0001): exact match with C1's real ground truth
+      (`C1-WS-2`/`C1-CC-2`), zero hallucinated citations. Four real,
+      live-verified fixes along the way (not guessable from docs) — see
+      `4e88214`'s message: `tool_choice` forcing is broken on this endpoint,
+      GLM sometimes emits tool calls as inline text instead of the
+      structured field (`llm.ts` now parses both), a real total
+      prompt+completion token ceiling well under the documented 128K, and a
+      truncated response can look identical to "no contradiction found"
+      unless checked for explicitly.
+- [x] **P5.3** ~~Evaluate P5.2 against the 15 authored contradictions~~ —
+      done, run for real (not estimated): **1 hit / 15 total, honestly, and
+      the reason why is the actual finding.** `Contradictions.json`'s
+      `conflictingRecords` is 2 ids for only 2 of 15 scenarios (C1, C5) —
+      the other 13 are 3-4 record chains, and **verified on C2** by tracing
+      each cited record back to its person: the contradiction spans **two
+      different people** (P1 sighted; P4's alibi; a call linking them), not
+      one suspect's own claims. P5.2 as scoped — one person's timeline — can
+      only ever address single-person cases, which are a minority of this
+      dataset. Of the 2 in-scope cases, found 1 (C1); missed C5. **New,
+      correctly-scoped follow-up: P5.2b**, below.
+      First pass also caught two of its own bugs live rather than shipping
+      them: the tool schema originally forced exactly a 2-id pair (fixed to
+      `recordIds: string[]`, min 2, after this eval run proved most ground
+      truth isn't a pair), and `llm.ts`'s `text` field could be `undefined`
+      on a live 200 despite its type saying `string` (a truncated
+      generation can omit `response` entirely) - crashed a caller that
+      reasonably trusted the type; now defaulted to `""` at the source.
+- [ ] **P5.2b** Scenario-level contradiction detection — the real
+      generalization P5.3 shows is needed. Same detector, same schema, same
+      guardrail, but over ALL of a scenario's fused evidence (every
+      person's timeline merged, not filtered to one), so a finding can cite
+      records naming different people. Re-run P5.3 against this version
+      before trusting a hit-rate number in front of anyone.
+- [ ] **P5.4** "Next question to ask" — phrasing layer on P5.2/P5.2b's output.
 - [ ] **P5.5** Suspicion score — deterministic weighted signals feed the
       existing `RiskGauge`; the LLM writes only the explanation, never the
       number.
