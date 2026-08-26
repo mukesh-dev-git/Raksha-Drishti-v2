@@ -162,6 +162,44 @@ function parseToolCalls(raw: GlmToolCall[] | undefined): ParsedToolCall[] {
   });
 }
 
+// ---------------------------------------------------------------------------
+// Fallback: this model sometimes emits a tool call as an inline TEXT tag
+// format instead of using the structured `tool_calls` array - found live
+// 2026-08-26 (RESEARCH_AND_PLAN.md §2.2), not documented anywhere:
+//
+//   <tool_call>report_contradictions<arg_key>contradictions<arg_value>[...]
+//
+// One <arg_key>NAME<arg_value>VALUE pair per parameter, no closing tag seen
+// in practice. `tool_calls` is empty when this happens - the structured
+// field and the inline-tag format are mutually exclusive per response, not
+// layered - so this only runs when the real array came back empty.
+// ---------------------------------------------------------------------------
+const INLINE_TOOL_CALL_RE = /<tool_call>([a-zA-Z0-9_]+)((?:<arg_key>[\s\S]*?<arg_value>[\s\S]*?)+)(?:<\/tool_call>|$)/;
+const INLINE_ARG_RE = /<arg_key>([^<]+)<arg_value>([\s\S]*?)(?=<arg_key>|$)/g;
+
+function parseInlineToolCall(text: string): ParsedToolCall | null {
+  const m = INLINE_TOOL_CALL_RE.exec(text);
+  if (!m) return null;
+  const name = m[1];
+  const argsBlock = m[2];
+  const args: Record<string, unknown> = {};
+  let am: RegExpExecArray | null;
+  INLINE_ARG_RE.lastIndex = 0;
+  while ((am = INLINE_ARG_RE.exec(argsBlock))) {
+    const key = am[1].trim();
+    const rawValue = am[2].trim();
+    try {
+      args[key] = JSON.parse(rawValue);
+    } catch {
+      // Truncated (ran out of max_tokens mid-JSON) or a plain string value -
+      // either way, not silently coerced. Caller sees this key missing from
+      // `arguments` and can decide whether that's fatal; the raw text stays
+      // inspectable via the top-level LlmResult.text.
+    }
+  }
+  return { name, arguments: args, rawArguments: argsBlock };
+}
+
 /**
  * Calls GLM-4.7-Flash. Never throws for an API-level failure (bad request,
  * auth, timeout) - returns `{ ok: false }` so callers degrade gracefully
@@ -253,10 +291,22 @@ export async function callGlm(opts: GlmChatOptions): Promise<LlmResult> {
     hasReasoning: !!parsed.reasoning, // logged for audit; NEVER surface parsed.reasoning to the UI
   });
 
+  let toolCalls = parseToolCalls(parsed.tool_calls);
+  if (toolCalls.length === 0 && parsed.response?.includes("<tool_call>")) {
+    const inline = parseInlineToolCall(parsed.response);
+    if (inline) {
+      console.warn("[llm.ts] GLM emitted a tool call as inline text, not the tool_calls array - using fallback parser", {
+        name: inline.name,
+        keysParsed: Object.keys(inline.arguments as object),
+      });
+      toolCalls = [inline];
+    }
+  }
+
   return {
     ok: true,
     text: parsed.response,
-    toolCalls: parseToolCalls(parsed.tool_calls),
+    toolCalls,
     reasoning: parsed.reasoning ?? null,
     usage: parsed.usage,
   };
