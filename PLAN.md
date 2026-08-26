@@ -24,7 +24,7 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 | **P2** Route restructure | 🚧 **blocked** | PR #1 unresolved. Nothing here can start. |
 | **P3** Person spine | 🔵 **in progress** | P3.1+P3.3 ✅ (`589721d`) — fusion + timeline merge, 2 real bugs found and fixed. **P3.2 (`/persons`) is next.** |
 | **P4** Real analytics | ⚪ **mixed** | P4.1–P4.3 need P1.2's case volume. **P4.6+P4.7 done** (`f9fde9e`) — MO-clustering (3 real clusters) and the repeat-offender view (6 real people), both live. P4.8 still open. |
-| **P5** AI | 🔵 **in progress** | P5.0-P5.3, P5.2b, P5.3b ✅ — real findings now visible in the Investigation Workspace UI (2/15, honest). **P5.4 is next.** |
+| **P5** AI | 🔵 **in progress** | P5.0-P5.3, P5.2b, P5.3b ✅ — real findings now visible in the Investigation Workspace UI (2/15, honest). **P5.4 is next.** P5.8 (ask-anything chatbot, real case-file links) added, not started. |
 | **P6** Zia | 🚧 **gated** | Needs the P6.0 yes/no on generating images. |
 | **P7** Kannada voice (Zia) | ⚪ **ready** | Not gated like P6 - P7.1 can start from data we already have. |
 | **X** Cross-cutting | 🔵 | X3 ✅ · X1, X2 open |
@@ -33,7 +33,7 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 P5.3 · X3
 
 **Ready to pick up right now, no decisions needed:** **P1.2** (then P1.6) ·
-P3.2 · P4.8 (→ P5.7) · P5.4 · P7.1 · X1 · X2
+P3.2 · P4.8 (→ P5.7) · P5.4 · P5.8 · P7.1 · X1 · X2
 
 **Blocked on someone, not on effort:**
 
@@ -405,6 +405,34 @@ reasons over it.*
       narrate convincingly. Worth shipping now regardless (labelled
       "generated once" like P5.3b, same pattern), and gets materially
       better the moment P1.2 lands, not blocked on it.
+- [ ] **P5.8** *(added 2026-08-26 — user request)* **Ask-anything chatbot** —
+      a persistent Q&A widget (site-wide, not page-scoped) an officer can ask
+      a free-text question ("which cases involve Suresh Naik", "what's the
+      status of FIR-1002", "any repeat offenders in Ballari") and get an
+      answer grounded in the real seeded data, not a general-knowledge guess.
+      Not scoped anywhere before now — checked `features.md` and the rest of
+      this file, genuinely missing.
+      **The standout requirement, per the user's own framing: every case it
+      references must come with a real, clickable navigation link to that
+      case's actual page** (`/cases/[caseType]/[district]/investigation-
+      workspace` or `case-files/[caseId]`, via `scenarioLink()` /
+      `dashboardData.ts`'s existing resolvers) — not just a name or FIR
+      number in prose. This is the same citation-grounding discipline P5.6
+      already exists to enforce for AI findings (no finding renders without
+      a real record ID); here the "citation" is a working link, and a
+      version of this that answers in prose without one is a worse, not
+      equal, version of the feature.
+      Natural fit for `llm.ts`'s existing tool-calling (P5.1 done, verified
+      live) — give GLM tools that query `personFusion.ts` / `caseFacts.json`
+      / `dashboardData.ts` (find-person, find-case, list-repeat-offenders-in-
+      district, etc.) and force it to cite what it used, same `tool_choice`
+      pattern P5.2/P5.2b already use. Not blocked on anything else in P5 -
+      could start now.
+      Scope check before building: decide whether this answers over the
+      *whole* seeded dataset (all 19 real FIRs across every collection) or
+      is scoped per-page (e.g. only the case currently open in the
+      Investigation Workspace) - the "which cases involve X" example above
+      needs the former; a per-case assistant is a smaller, easier v1.
 
 ## P6 — Zia (gated)
 
