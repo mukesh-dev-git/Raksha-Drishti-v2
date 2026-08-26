@@ -50,7 +50,7 @@ export function districtLabel(districtId: number): string {
 
 // scenarioId -> real /cases/[caseType]/[district]/investigation-workspace URL,
 // resolved via the same dbId tables every other live route already uses.
-function scenarioLink(scenarioId: string): string | null {
+export function scenarioLink(scenarioId: string): string | null {
   const meta = META[scenarioId];
   if (!meta) return null;
   const c = caseTypes.find((x) => x.dbId === meta.crimeMinorHeadID);

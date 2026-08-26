@@ -1,0 +1,263 @@
+{
+  "9001": {
+    "caseMasterId": 9001,
+    "scenarioId": "C1",
+    "crimeNo": "144010101202600001",
+    "crimeMinorHeadId": 1,
+    "districtId": 4401,
+    "sections": [
+      "IPC-379",
+      "IPC-34"
+    ],
+    "incidentFromDate": "2026-03-14 20:15:00",
+    "gravityOffenceId": 2
+  },
+  "9002": {
+    "caseMasterId": 9002,
+    "scenarioId": "C1",
+    "crimeNo": "144060601202600001",
+    "crimeMinorHeadId": 3,
+    "districtId": 4406,
+    "sections": [
+      "IPC-420",
+      "IPC-468",
+      "IPC-471"
+    ],
+    "incidentFromDate": "2026-03-19 00:00:00",
+    "gravityOffenceId": 2
+  },
+  "9003": {
+    "caseMasterId": 9003,
+    "scenarioId": "C2",
+    "crimeNo": "144020201202600001",
+    "crimeMinorHeadId": 1,
+    "districtId": 4402,
+    "sections": [
+      "IPC-384",
+      "IPC-324",
+      "IPC-411",
+      "IPC-120B"
+    ],
+    "incidentFromDate": "2026-02-01 18:40:00",
+    "gravityOffenceId": 1
+  },
+  "9004": {
+    "caseMasterId": 9004,
+    "scenarioId": "C3",
+    "crimeNo": "144030301202600001",
+    "crimeMinorHeadId": 3,
+    "districtId": 4403,
+    "sections": [
+      "IPC-384",
+      "IPC-506"
+    ],
+    "incidentFromDate": "2026-03-01 00:00:00",
+    "gravityOffenceId": 2
+  },
+  "9005": {
+    "caseMasterId": 9005,
+    "scenarioId": "C3",
+    "crimeNo": "144010102202600002",
+    "crimeMinorHeadId": 3,
+    "districtId": 4401,
+    "sections": [
+      "IPC-384",
+      "ITACT-66D",
+      "IPC-506"
+    ],
+    "incidentFromDate": "2026-03-10 00:00:00",
+    "gravityOffenceId": 2
+  },
+  "9006": {
+    "caseMasterId": 9006,
+    "scenarioId": "C4",
+    "crimeNo": "144040401202600001",
+    "crimeMinorHeadId": 3,
+    "districtId": 4404,
+    "sections": [
+      "IPC-467",
+      "IPC-468",
+      "IPC-471",
+      "IPC-420",
+      "IPC-120B"
+    ],
+    "incidentFromDate": "2026-04-01 00:00:00",
+    "gravityOffenceId": 2
+  },
+  "9007": {
+    "caseMasterId": 9007,
+    "scenarioId": "C5",
+    "crimeNo": "144050501202600001",
+    "crimeMinorHeadId": 4,
+    "districtId": 4405,
+    "sections": [
+      "IPC-457",
+      "IPC-380",
+      "IPC-411"
+    ],
+    "incidentFromDate": "2026-06-02 02:00:00",
+    "gravityOffenceId": 2
+  },
+  "9008": {
+    "caseMasterId": 9008,
+    "scenarioId": "C6",
+    "crimeNo": "144070701202600001",
+    "crimeMinorHeadId": 2,
+    "districtId": 4407,
+    "sections": [
+      "IPC-324",
+      "IPC-506",
+      "IPC-34"
+    ],
+    "incidentFromDate": "2026-01-17 19:00:00",
+    "gravityOffenceId": 1
+  },
+  "9009": {
+    "caseMasterId": 9009,
+    "scenarioId": "C7",
+    "crimeNo": "144080802202600001",
+    "crimeMinorHeadId": 1,
+    "districtId": 4408,
+    "sections": [
+      "IPC-379"
+    ],
+    "incidentFromDate": "2026-07-07 23:00:00",
+    "gravityOffenceId": 2
+  },
+  "9010": {
+    "caseMasterId": 9010,
+    "scenarioId": "C7",
+    "crimeNo": "144060602202600002",
+    "crimeMinorHeadId": 1,
+    "districtId": 4406,
+    "sections": [
+      "IPC-379",
+      "IPC-411"
+    ],
+    "incidentFromDate": "2026-07-14 22:30:00",
+    "gravityOffenceId": 2
+  },
+  "9011": {
+    "caseMasterId": 9011,
+    "scenarioId": "C8",
+    "crimeNo": "144010102202600003",
+    "crimeMinorHeadId": 3,
+    "districtId": 4401,
+    "sections": [
+      "IPC-420",
+      "ITACT-66D",
+      "ITACT-66C",
+      "IPC-120B"
+    ],
+    "incidentFromDate": "2026-06-15 00:00:00",
+    "gravityOffenceId": 2
+  },
+  "9012": {
+    "caseMasterId": 9012,
+    "scenarioId": "C9",
+    "crimeNo": "144020202202600004",
+    "crimeMinorHeadId": 2,
+    "districtId": 4402,
+    "sections": [
+      "IPC-323",
+      "IPC-506"
+    ],
+    "incidentFromDate": "2026-02-19 21:00:00",
+    "gravityOffenceId": 2
+  },
+  "9013": {
+    "caseMasterId": 9013,
+    "scenarioId": "C10",
+    "crimeNo": "144030301202600002",
+    "crimeMinorHeadId": 4,
+    "districtId": 4403,
+    "sections": [
+      "IPC-457",
+      "IPC-379",
+      "IPC-413"
+    ],
+    "incidentFromDate": "2026-05-21 01:00:00",
+    "gravityOffenceId": 2
+  },
+  "9014": {
+    "caseMasterId": 9014,
+    "scenarioId": "C11",
+    "crimeNo": "144040401202600002",
+    "crimeMinorHeadId": 1,
+    "districtId": 4404,
+    "sections": [
+      "IPC-379",
+      "IPC-354",
+      "IPC-120B"
+    ],
+    "incidentFromDate": "2026-11-01 20:00:00",
+    "gravityOffenceId": 1
+  },
+  "9015": {
+    "caseMasterId": 9015,
+    "scenarioId": "C12",
+    "crimeNo": "144050501202600002",
+    "crimeMinorHeadId": 3,
+    "districtId": 4405,
+    "sections": [
+      "IPC-420",
+      "IPC-406",
+      "IPC-120B"
+    ],
+    "incidentFromDate": "2026-04-01 00:00:00",
+    "gravityOffenceId": 2
+  },
+  "9016": {
+    "caseMasterId": 9016,
+    "scenarioId": "C13",
+    "crimeNo": "144070701202600002",
+    "crimeMinorHeadId": 3,
+    "districtId": 4407,
+    "sections": [
+      "ITACT-66C",
+      "IPC-420"
+    ],
+    "incidentFromDate": "2026-09-20 00:00:00",
+    "gravityOffenceId": 2
+  },
+  "9017": {
+    "caseMasterId": 9017,
+    "scenarioId": "C13",
+    "crimeNo": "144010103202600004",
+    "crimeMinorHeadId": 3,
+    "districtId": 4401,
+    "sections": [
+      "ITACT-66C",
+      "IPC-420"
+    ],
+    "incidentFromDate": "2026-10-08 00:00:00",
+    "gravityOffenceId": 2
+  },
+  "9018": {
+    "caseMasterId": 9018,
+    "scenarioId": "C14",
+    "crimeNo": "144080801202600001",
+    "crimeMinorHeadId": 4,
+    "districtId": 4408,
+    "sections": [
+      "IPC-379",
+      "IPC-120B"
+    ],
+    "incidentFromDate": "2026-11-29 02:00:00",
+    "gravityOffenceId": 1
+  },
+  "9019": {
+    "caseMasterId": 9019,
+    "scenarioId": "C15",
+    "crimeNo": "144010101202600002",
+    "crimeMinorHeadId": 2,
+    "districtId": 4401,
+    "sections": [
+      "IPC-324",
+      "IPC-34",
+      "IPC-506"
+    ],
+    "incidentFromDate": "2026-07-24 17:30:00",
+    "gravityOffenceId": 1
+  }
+}

@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Phone, ChevronLeft, ChevronRight } from "lucide-react";
-import { Home, LayoutDashboard, MapPin, BarChart3, FolderKanban } from "lucide-react";
+import { Home, LayoutDashboard, MapPin, BarChart3, FolderKanban, Waypoints, ShieldAlert } from "lucide-react";
 import { BASE_PATH } from "@/lib/basePath";
 
 type Item = {
@@ -33,11 +33,15 @@ const SECTIONS: { heading: string; items: Item[] }[] = [
     items: [
       { label: "Crime Overview", href: "/crime-count", icon: BarChart3 },
       { label: "Crime Hotspots", href: "/crime-hotspots", icon: MapPin },
+      { label: "Pattern Analysis", href: "/pattern-analysis", icon: Waypoints },
     ],
   },
   {
     heading: "Investigation",
-    items: [{ label: "Cases", href: "/cases", icon: FolderKanban }],
+    items: [
+      { label: "Cases", href: "/cases", icon: FolderKanban },
+      { label: "Repeat Offenders", href: "/repeat-offenders", icon: ShieldAlert },
+    ],
   },
 ];
 

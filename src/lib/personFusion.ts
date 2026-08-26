@@ -275,3 +275,25 @@ export function getScenarioTimeline(scenarioId: string): ScenarioEvidenceItem[] 
   }
   return [...byId.values()].sort((a, b) => a.timestamp.localeCompare(b.timestamp));
 }
+
+/**
+ * P4.7 - the discovery surface `getCrossCasePersons()` never got: every
+ * person who appears in 2+ real `CaseMasterID`s, ranked by how many. This is
+ * deliberately NOT restricted to `scenarioIds.length > 1` the way
+ * `getCrossCasePersons()` is - PLAN.md's own note on why: zero people
+ * currently span two different scenarios (nobody was authored that way
+ * yet), but 6 real people already span 2+ FIRs within one scenario. Ship
+ * against the data that actually exists rather than an empty page; this
+ * list strengthens for free the moment a genuinely cross-scenario repeat
+ * offender gets authored, since the query is the same query.
+ */
+export function getRepeatCaseSuspects(): FusedPerson[] {
+  return [...fuseAllPersons().values()]
+    .filter((p) => p.caseMasterIds.length > 1)
+    .sort(
+      (a, b) =>
+        b.caseMasterIds.length - a.caseMasterIds.length ||
+        b.scenarioIds.length - a.scenarioIds.length ||
+        a.name.localeCompare(b.name)
+    );
+}

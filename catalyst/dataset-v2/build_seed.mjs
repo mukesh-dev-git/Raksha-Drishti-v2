@@ -272,4 +272,42 @@ writeFileSync(
 );
 console.log(`scenarioMeta.json`.padEnd(30), `${Object.keys(scenarioMeta).length} scenarios`);
 
+// --- 6. Per-FIR case facts (Act/Section, district, crime type - for P4.6) ----
+// ActSectionAssociation is seeded into the Data Store (§2 above) but was
+// confirmed (Part 5 of RESEARCH_AND_PLAN.md) to be read nowhere in src/ -
+// this is what makes it readable, bundled the same way scenarioMeta.json is
+// rather than requiring a live ZCQL join (which can't be exercised locally -
+// see catalyst/README.md on why local dev has no Catalyst request context).
+// One row per real FIR (19 today), not per scenario - MO clustering needs
+// each case's own section signature and district, not the scenario summary.
+const unitToDistrict = new Map(lookups.Unit.map((u) => [u.UnitID, u.DistrictID]));
+const caseFacts = {};
+for (const c of dataset.cases) {
+  for (const fir of c.firs) {
+    const sections = [
+      ...new Set(
+        (c.actSections || [])
+          .filter((a) => a.CaseMasterID === fir.CaseMasterID)
+          .map((a) => `${a.ActID}-${a.SectionID}`)
+      ),
+    ];
+    caseFacts[fir.CaseMasterID] = {
+      caseMasterId: fir.CaseMasterID,
+      scenarioId: c.scenarioId,
+      crimeNo: fir.CrimeNo,
+      crimeMinorHeadId: fir.CrimeMinorHeadID,
+      districtId: unitToDistrict.get(fir.PoliceStationID) ?? null,
+      sections,
+      incidentFromDate: fir.IncidentFromDate,
+      gravityOffenceId: fir.GravityOffenceID,
+    };
+  }
+}
+writeFileSync(
+  path.join(outNoSqlDir, "caseFacts.json"),
+  JSON.stringify(caseFacts, null, 2),
+  "utf-8"
+);
+console.log(`caseFacts.json`.padEnd(30), `${Object.keys(caseFacts).length} FIRs`);
+
 console.log(`\nDone. CSVs in ${path.relative(process.cwd(), outCsvDir)}, NoSQL JSON in ${path.relative(process.cwd(), outNoSqlDir)}.`);
