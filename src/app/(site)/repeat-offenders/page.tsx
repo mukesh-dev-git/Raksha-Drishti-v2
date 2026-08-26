@@ -5,6 +5,7 @@ import RepeatOffendersClient, { type EnrichedPerson, type PersonCaseInfo } from 
 import { getRepeatCaseSuspects } from "@/lib/personFusion";
 import { scenarioLink } from "@/lib/dashboardData";
 import { getOffenderPhotoUrl } from "@/lib/offenderPhotos";
+import { getPersonIdentity } from "@/lib/personIdentity";
 import { caseTypes, districts } from "@/lib/data";
 import scenarioMeta from "@/lib/nosql-seed/scenarioMeta.json";
 import caseFactsRaw from "@/lib/nosql-seed/caseFacts.json";
@@ -67,6 +68,12 @@ export default function RepeatOffendersPage() {
     // OffenderAvatar itself stays a pure/presentational component so it can
     // be safely used inside RepeatOffendersClient's client component tree.
     photoUrl: getOffenderPhotoUrl(p.personId),
+    // Synthetic KYC fields (masked Aadhaar/phone/address) - see
+    // personIdentity.ts's own comment for why this exists and how it's
+    // generated. Null is possible in principle (a person outside the
+    // register) but never happens for anyone getRepeatCaseSuspects() returns,
+    // since that list is itself built from the same Accused register.
+    identity: getPersonIdentity(p.personId),
   }));
 
   // Real, computed-not-claimed numbers for the stat row - see PLAN.md P4.7.

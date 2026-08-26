@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { FolderKanban, Layers, Clock, MapPinned, Fingerprint, ChevronRight } from "lucide-react";
+import { FolderKanban, Layers, Clock, MapPinned, Fingerprint, ChevronRight, CreditCard, Phone, Home } from "lucide-react";
 import OffenderAvatar from "@/components/OffenderAvatar";
 import CrossSourceTimeline from "@/components/CrossSourceTimeline";
 import type { FusedPerson } from "@/lib/personFusion";
+import type { PersonIdentity } from "@/lib/personIdentity";
 
 export type PersonCaseInfo = {
   caseMasterId: number;
@@ -17,7 +18,11 @@ export type PersonCaseInfo = {
   link: string | null;
 };
 
-export type EnrichedPerson = FusedPerson & { cases: PersonCaseInfo[]; photoUrl: string | null };
+export type EnrichedPerson = FusedPerson & {
+  cases: PersonCaseInfo[];
+  photoUrl: string | null;
+  identity: PersonIdentity | null;
+};
 
 // -----------------------------------------------------------------------------
 // Master-detail per direct user ask: click a person on the left, see more on
@@ -101,6 +106,39 @@ export default function RepeatOffendersClient({ people }: { people: EnrichedPers
                 </div>
               </div>
             </div>
+
+            {selected.identity && (
+              <div className="border-b border-line bg-surface-2/30 px-5 py-3">
+                <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-muted">
+                  Registered identity
+                </p>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                  <span className="flex items-start gap-2 text-[13px] text-ink">
+                    <CreditCard size={14} className="mt-0.5 shrink-0 text-muted" aria-hidden="true" />
+                    <span>
+                      <span className="block text-[10.5px] uppercase tracking-wide text-muted">Aadhaar</span>
+                      <span className="font-mono">{selected.identity.aadhaarMasked}</span>
+                    </span>
+                  </span>
+                  <span className="flex items-start gap-2 text-[13px] text-ink">
+                    <Phone size={14} className="mt-0.5 shrink-0 text-muted" aria-hidden="true" />
+                    <span>
+                      <span className="block text-[10.5px] uppercase tracking-wide text-muted">Phone</span>
+                      <span className="font-mono">{selected.identity.phone}</span>
+                    </span>
+                  </span>
+                  {selected.identity.address && (
+                    <span className="flex items-start gap-2 text-[13px] text-ink">
+                      <Home size={14} className="mt-0.5 shrink-0 text-muted" aria-hidden="true" />
+                      <span>
+                        <span className="block text-[10.5px] uppercase tracking-wide text-muted">Address</span>
+                        {selected.identity.address}
+                      </span>
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
 
             <div className="grid grid-cols-1 gap-5 p-5 md:grid-cols-[1fr_1.3fr]">
               {/* How this person was linked - provable facts only, no

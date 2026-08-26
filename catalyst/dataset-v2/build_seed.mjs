@@ -4,8 +4,8 @@
 //   - catalyst/dataset-v2/out/csv/<Table>.csv   one per Data Store table,
 //     ready for `catalyst ds:import --table <Name> <csv>`
 //   - catalyst/dataset-v2/out/nosql/<Collection>.json   one per new NoSQL
-//     collection (calls/transactions/CCTV/statements/timeline/contradictions),
-//     not tables in the FIR schema - see DATA_STORE_SCHEMA.md
+//     collection (calls/transactions/CCTV/statements/timeline/contradictions/
+//     PersonIdentity), not tables in the FIR schema - see DATA_STORE_SCHEMA.md
 //
 // Run: node catalyst/dataset-v2/build_seed.mjs
 // -----------------------------------------------------------------------------
@@ -309,5 +309,139 @@ writeFileSync(
   "utf-8"
 );
 console.log(`caseFacts.json`.padEnd(30), `${Object.keys(caseFacts).length} FIRs`);
+
+// --- 7. Person identity - synthetic KYC-style fields (Aadhaar/phone/address) -
+// The real FIR schema has nothing to build this from: `Accused` is only
+// AccusedMasterID/CaseMasterID/AccusedName/AgeYear/GenderID/PersonID -
+// confirmed by grepping DATA_STORE_SCHEMA.md, zero matches for
+// Aadhaar/phone/address anywhere in the 21-table backbone OR the 6 extended
+// tables not yet built. But a reviewer WILL expect a suspect record to carry
+// this (it's what a real arrest memo / personal-search actually collects),
+// so this is fully synthetic - fabricated here, once, and baked to JSON,
+// not left for the UI to invent per-render.
+//
+// Deliberately NOT the investigationData.ts pattern (a seeded-RNG mock
+// GENERATOR that runs at request time, explicitly flagged there as a
+// placeholder pending real API data). This is meant to read as real, stored
+// identity data attached to the person register - so it has to be stable
+// across renders and re-deploys, which only baking it to a file gives you.
+//
+// Deterministic per PersonID (hash-seeded PRNG, not Math.random) - re-running
+// this generator reproduces the exact same Aadhaar/phone/address for
+// KA-P0001 every time, same discipline every other generator in this file
+// follows.
+//
+// Aadhaar is MASKED on write (first 8 digits never leave this script, only
+// "XXXX XXXX 4821" does) - the same convention UIDAI's own masked-Aadhaar
+// display uses. No reason for a repeat-offender list view to expose a full
+// 12-digit number, fake or not.
+//
+// Address is grounded in one real fact: the district the person's FIRST
+// FIR was actually registered in (via caseFacts, computed above), plus a
+// fabricated door number/locality/cross. PIN prefixes are the real postal
+// prefix for each of the 8 districts the seeded dataset actually touches -
+// illustrative, not a real locality-level lookup.
+console.log("\nPerson identity:");
+
+const DISTRICT_PIN_PREFIX = {
+  4401: "560", // Bengaluru Urban
+  4402: "570", // Mysuru
+  4403: "590", // Belagavi
+  4404: "585", // Kalaburagi
+  4405: "575", // Dakshina Kannada
+  4406: "572", // Tumakuru
+  4407: "583", // Ballari
+  4408: "577", // Shivamogga
+};
+const LOCALITY_WORDS = [
+  "Gandhi Nagar", "Kuvempu Nagar", "Vidyaranyapura", "Shanti Nagar",
+  "Ashok Nagar", "Nehru Colony", "Basaveshwara Nagar", "Ganesh Layout",
+  "Sri Ram Colony", "Vivekananda Nagar", "Anand Nagar", "Rajiv Gandhi Nagar",
+];
+const ORDINALS = ["th", "st", "nd", "rd"];
+function ordinal(n) {
+  const rem = n % 100;
+  return n + (ORDINALS[(rem - 20) % 10] || ORDINALS[rem] || ORDINALS[0]);
+}
+
+function seededHash(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) h = (Math.imul(h, 31) + str.charCodeAt(i)) >>> 0;
+  return h;
+}
+// xorshift32 - a few more independent-looking deterministic digits than one
+// hash alone gives, still fully reproducible from personId.
+function makeRng(seed) {
+  let s = seed || 1;
+  return () => {
+    s ^= s << 13; s >>>= 0;
+    s ^= s >>> 17;
+    s ^= s << 5; s >>>= 0;
+    return s / 4294967296;
+  };
+}
+function digits(rng, n) {
+  let out = "";
+  for (let i = 0; i < n; i++) out += Math.floor(rng() * 10);
+  return out;
+}
+
+// Canonical name per person - same "longest spelling wins" rule
+// resolvePersonRefs (§3) uses, so this file's name matches what the app
+// actually displays.
+const personName = new Map();
+for (const c of dataset.cases) {
+  for (const a of c.accused || []) {
+    const cur = personName.get(a.PersonID);
+    if (!cur || a.AccusedName.length > cur.length) personName.set(a.PersonID, a.AccusedName);
+  }
+}
+
+// Person -> their FIRST-registered FIR's CaseMasterID (by appearance order
+// in cases.json, which is chronological), for district grounding.
+const personFirstCase = new Map();
+for (const c of dataset.cases) {
+  for (const fir of c.firs) {
+    for (const a of (c.accused || []).filter((x) => x.CaseMasterID === fir.CaseMasterID)) {
+      if (!personFirstCase.has(a.PersonID)) personFirstCase.set(a.PersonID, fir.CaseMasterID);
+    }
+  }
+}
+
+const personIdentity = {};
+for (const [personId, name] of personName.entries()) {
+  const rng = makeRng(seededHash(personId));
+  const aadhaarFull = digits(rng, 12);
+  const phoneFirst = "6789"[Math.floor(rng() * 4)]; // valid Indian mobile prefixes
+  const phoneRest = digits(rng, 9);
+  const doorNo = 1 + Math.floor(rng() * 180);
+  const crossNo = 1 + Math.floor(rng() * 9);
+  const locality = LOCALITY_WORDS[Math.floor(rng() * LOCALITY_WORDS.length)];
+
+  const firstCaseId = personFirstCase.get(personId);
+  const cf = firstCaseId != null ? caseFacts[firstCaseId] : null;
+  const districtId = cf?.districtId ?? null;
+  const districtName = districtId != null ? lookups.District.find((d) => d.DistrictID === districtId)?.DistrictName ?? null : null;
+  const pinPrefix = districtId != null ? DISTRICT_PIN_PREFIX[districtId] : null;
+  const pin = pinPrefix ? `${pinPrefix}${digits(rng, 3)}` : null;
+
+  personIdentity[personId] = {
+    personId,
+    name,
+    aadhaarMasked: `XXXX XXXX ${aadhaarFull.slice(8)}`,
+    phone: `+91 ${phoneFirst}${phoneRest.slice(0, 4)} ${phoneRest.slice(4)}`,
+    address: districtName
+      ? `No. ${doorNo}, ${ordinal(crossNo)} Cross, ${locality}, ${districtName}, Karnataka - ${pin}`
+      : null,
+    districtId,
+    districtName,
+  };
+}
+writeFileSync(
+  path.join(outNoSqlDir, "PersonIdentity.json"),
+  JSON.stringify(personIdentity, null, 2),
+  "utf-8"
+);
+console.log(`PersonIdentity.json`.padEnd(30), `${Object.keys(personIdentity).length} people`);
 
 console.log(`\nDone. CSVs in ${path.relative(process.cwd(), outCsvDir)}, NoSQL JSON in ${path.relative(process.cwd(), outNoSqlDir)}.`);

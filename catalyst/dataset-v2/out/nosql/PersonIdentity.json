@@ -1,0 +1,425 @@
+{
+  "KA-P0001": {
+    "personId": "KA-P0001",
+    "name": "Suresh Naik",
+    "aadhaarMasked": "XXXX XXXX 3409",
+    "phone": "+91 76385 81731",
+    "address": "No. 150, 7th Cross, Vivekananda Nagar, Bengaluru Urban, Karnataka - 560332",
+    "districtId": 4401,
+    "districtName": "Bengaluru Urban"
+  },
+  "KA-P0002": {
+    "personId": "KA-P0002",
+    "name": "Deepak M",
+    "aadhaarMasked": "XXXX XXXX 1856",
+    "phone": "+91 96316 01297",
+    "address": "No. 96, 4th Cross, Vivekananda Nagar, Bengaluru Urban, Karnataka - 560073",
+    "districtId": 4401,
+    "districtName": "Bengaluru Urban"
+  },
+  "KA-P0003": {
+    "personId": "KA-P0003",
+    "name": "Iqbal Sait",
+    "aadhaarMasked": "XXXX XXXX 4745",
+    "phone": "+91 81291 92392",
+    "address": "No. 78, 7th Cross, Vivekananda Nagar, Tumakuru, Karnataka - 572568",
+    "districtId": 4406,
+    "districtName": "Tumakuru"
+  },
+  "KA-P0004": {
+    "personId": "KA-P0004",
+    "name": "Praveen Achari",
+    "aadhaarMasked": "XXXX XXXX 0498",
+    "phone": "+91 61221 23646",
+    "address": "No. 45, 5th Cross, Vivekananda Nagar, Mysuru, Karnataka - 570808",
+    "districtId": 4402,
+    "districtName": "Mysuru"
+  },
+  "KA-P0005": {
+    "personId": "KA-P0005",
+    "name": "Manoj Kumar S",
+    "aadhaarMasked": "XXXX XXXX 2624",
+    "phone": "+91 86249 63427",
+    "address": "No. 173, 5th Cross, Sri Ram Colony, Mysuru, Karnataka - 570853",
+    "districtId": 4402,
+    "districtName": "Mysuru"
+  },
+  "KA-P0006": {
+    "personId": "KA-P0006",
+    "name": "Yusuf Ali",
+    "aadhaarMasked": "XXXX XXXX 2261",
+    "phone": "+91 66277 42571",
+    "address": "No. 118, 6th Cross, Sri Ram Colony, Mysuru, Karnataka - 570502",
+    "districtId": 4402,
+    "districtName": "Mysuru"
+  },
+  "KA-P0007": {
+    "personId": "KA-P0007",
+    "name": "Ravindra Naidu (fence, pawnbroker)",
+    "aadhaarMasked": "XXXX XXXX 7760",
+    "phone": "+91 69367 65070",
+    "address": "No. 120, 4th Cross, Rajiv Gandhi Nagar, Mysuru, Karnataka - 570837",
+    "districtId": 4402,
+    "districtName": "Mysuru"
+  },
+  "KA-P0008": {
+    "personId": "KA-P0008",
+    "name": "Z. Merchant (app registered as 'RapidFin Solutions')",
+    "aadhaarMasked": "XXXX XXXX 7313",
+    "phone": "+91 89349 35939",
+    "address": "No. 177, 5th Cross, Rajiv Gandhi Nagar, Belagavi, Karnataka - 590798",
+    "districtId": 4403,
+    "districtName": "Belagavi"
+  },
+  "KA-P0009": {
+    "personId": "KA-P0009",
+    "name": "Tarun Bhatia (call-centre lead)",
+    "aadhaarMasked": "XXXX XXXX 5589",
+    "phone": "+91 63321 95205",
+    "address": "No. 35, 5th Cross, Basaveshwara Nagar, Belagavi, Karnataka - 590633",
+    "districtId": 4403,
+    "districtName": "Belagavi"
+  },
+  "KA-P0010": {
+    "personId": "KA-P0010",
+    "name": "Mallikarjun Rao (property broker)",
+    "aadhaarMasked": "XXXX XXXX 1261",
+    "phone": "+91 61826 34576",
+    "address": "No. 173, 8th Cross, Kuvempu Nagar, Kalaburagi, Karnataka - 585934",
+    "districtId": 4404,
+    "districtName": "Kalaburagi"
+  },
+  "KA-P0011": {
+    "personId": "KA-P0011",
+    "name": "Shantaram Kulkarni (notary)",
+    "aadhaarMasked": "XXXX XXXX 3524",
+    "phone": "+91 82895 54433",
+    "address": "No. 118, 1st Cross, Kuvempu Nagar, Kalaburagi, Karnataka - 585684",
+    "districtId": 4404,
+    "districtName": "Kalaburagi"
+  },
+  "KA-P0012": {
+    "personId": "KA-P0012",
+    "name": "Prakash Jadhav (buyer)",
+    "aadhaarMasked": "XXXX XXXX 4498",
+    "phone": "+91 65872 04701",
+    "address": "No. 77, 1st Cross, Ashok Nagar, Kalaburagi, Karnataka - 585729",
+    "districtId": 4404,
+    "districtName": "Kalaburagi"
+  },
+  "KA-P0013": {
+    "personId": "KA-P0013",
+    "name": "Vinod Poojary",
+    "aadhaarMasked": "XXXX XXXX 0745",
+    "phone": "+91 85844 73257",
+    "address": "No. 45, 8th Cross, Ashok Nagar, Dakshina Kannada, Karnataka - 575989",
+    "districtId": 4405,
+    "districtName": "Dakshina Kannada"
+  },
+  "KA-P0014": {
+    "personId": "KA-P0014",
+    "name": "Naveen Kotian",
+    "aadhaarMasked": "XXXX XXXX 3856",
+    "phone": "+91 90667 10153",
+    "address": "No. 151, 1st Cross, Shanti Nagar, Dakshina Kannada, Karnataka - 575454",
+    "districtId": 4405,
+    "districtName": "Dakshina Kannada"
+  },
+  "KA-P0015": {
+    "personId": "KA-P0015",
+    "name": "Rafiq Ahmed (shop owner, fence)",
+    "aadhaarMasked": "XXXX XXXX 2409",
+    "phone": "+91 70749 90816",
+    "address": "No. 96, 8th Cross, Shanti Nagar, Dakshina Kannada, Karnataka - 575204",
+    "districtId": 4405,
+    "districtName": "Dakshina Kannada"
+  },
+  "KA-P0016": {
+    "personId": "KA-P0016",
+    "name": "Chandru M (site supervisor)",
+    "aadhaarMasked": "XXXX XXXX 0583",
+    "phone": "+91 97611 40037",
+    "address": "No. 55, 7th Cross, Vidyaranyapura, Ballari, Karnataka - 583159",
+    "districtId": 4407,
+    "districtName": "Ballari"
+  },
+  "KA-P0017": {
+    "personId": "KA-P0017",
+    "name": "Basha Sab",
+    "aadhaarMasked": "XXXX XXXX 4120",
+    "phone": "+91 77791 70981",
+    "address": "No. 23, 1st Cross, Vidyaranyapura, Ballari, Karnataka - 583409",
+    "districtId": 4407,
+    "districtName": "Ballari"
+  },
+  "KA-P0018": {
+    "personId": "KA-P0018",
+    "name": "Ravi Kumar T",
+    "aadhaarMasked": "XXXX XXXX 4977",
+    "phone": "+91 71635 20802",
+    "address": "No. 13, 9th Cross, Gandhi Nagar, Ballari, Karnataka - 583820",
+    "districtId": 4407,
+    "districtName": "Ballari"
+  },
+  "KA-P0019": {
+    "personId": "KA-P0019",
+    "name": "Ismail Sheikh (mining contractor)",
+    "aadhaarMasked": "XXXX XXXX 0319",
+    "phone": "+91 91667 50156",
+    "address": "No. 48, 2nd Cross, Gandhi Nagar, Ballari, Karnataka - 583560",
+    "districtId": 4407,
+    "districtName": "Ballari"
+  },
+  "KA-P0020": {
+    "personId": "KA-P0020",
+    "name": "Halappa D",
+    "aadhaarMasked": "XXXX XXXX 0427",
+    "phone": "+91 96752 80744",
+    "address": "No. 6, 3rd Cross, Shanti Nagar, Shivamogga, Karnataka - 577955",
+    "districtId": 4408,
+    "districtName": "Shivamogga"
+  },
+  "KA-P0021": {
+    "personId": "KA-P0021",
+    "name": "Somesh K (truck driver)",
+    "aadhaarMasked": "XXXX XXXX 5075",
+    "phone": "+91 79188 79309",
+    "address": "No. 55, 5th Cross, Vivekananda Nagar, Shivamogga, Karnataka - 577706",
+    "districtId": 4408,
+    "districtName": "Shivamogga"
+  },
+  "KA-P0022": {
+    "personId": "KA-P0022",
+    "name": "Rohan Malhotra (floor manager)",
+    "aadhaarMasked": "XXXX XXXX 8618",
+    "phone": "+91 99108 48650",
+    "address": "No. 22, 6th Cross, Vivekananda Nagar, Bengaluru Urban, Karnataka - 560556",
+    "districtId": 4401,
+    "districtName": "Bengaluru Urban"
+  },
+  "KA-P0023": {
+    "personId": "KA-P0023",
+    "name": "Priya Kapoor (owner-of-record)",
+    "aadhaarMasked": "XXXX XXXX 8394",
+    "phone": "+91 72130 89473",
+    "address": "No. 150, 6th Cross, Ganesh Layout, Bengaluru Urban, Karnataka - 560502",
+    "districtId": 4401,
+    "districtName": "Bengaluru Urban"
+  },
+  "KA-P0024": {
+    "personId": "KA-P0024",
+    "name": "Amit Verma (agent)",
+    "aadhaarMasked": "XXXX XXXX 6941",
+    "phone": "+91 92162 19535",
+    "address": "No. 96, 5th Cross, Ganesh Layout, Bengaluru Urban, Karnataka - 560851",
+    "districtId": 4401,
+    "districtName": "Bengaluru Urban"
+  },
+  "KA-P0025": {
+    "personId": "KA-P0025",
+    "name": "Sana Iyer (agent)",
+    "aadhaarMasked": "XXXX XXXX 9850",
+    "phone": "+91 87225 75830",
+    "address": "No. 78, 7th Cross, Sri Ram Colony, Bengaluru Urban, Karnataka - 560386",
+    "districtId": 4401,
+    "districtName": "Bengaluru Urban"
+  },
+  "KA-P0026": {
+    "personId": "KA-P0026",
+    "name": "Srinivas Iyengar",
+    "aadhaarMasked": "XXXX XXXX 5203",
+    "phone": "+91 68256 06189",
+    "address": "No. 45, 4th Cross, Sri Ram Colony, Mysuru, Karnataka - 570026",
+    "districtId": 4402,
+    "districtName": "Mysuru"
+  },
+  "KA-P0027": {
+    "personId": "KA-P0027",
+    "name": "Nandish Iyengar (accused's brother)",
+    "aadhaarMasked": "XXXX XXXX 7779",
+    "phone": "+91 84274 55855",
+    "address": "No. 173, 4th Cross, Vivekananda Nagar, Mysuru, Karnataka - 570181",
+    "districtId": 4402,
+    "districtName": "Mysuru"
+  },
+  "KA-P0028": {
+    "personId": "KA-P0028",
+    "name": "Sagar Bandekar",
+    "aadhaarMasked": "XXXX XXXX 7136",
+    "phone": "+91 64203 35103",
+    "address": "No. 118, 7th Cross, Vivekananda Nagar, Belagavi, Karnataka - 590232",
+    "districtId": 4403,
+    "districtName": "Belagavi"
+  },
+  "KA-P0029": {
+    "personId": "KA-P0029",
+    "name": "Vasant Naik (garage owner)",
+    "aadhaarMasked": "XXXX XXXX 3835",
+    "phone": "+91 60103 53632",
+    "address": "No. 120, 3rd Cross, Basaveshwara Nagar, Belagavi, Karnataka - 590117",
+    "districtId": 4403,
+    "districtName": "Belagavi"
+  },
+  "KA-P0030": {
+    "personId": "KA-P0030",
+    "name": "Ganesh Koli",
+    "aadhaarMasked": "XXXX XXXX 2827",
+    "phone": "+91 65206 72256",
+    "address": "No. 160, 2nd Cross, Vivekananda Nagar, Belagavi, Karnataka - 590302",
+    "districtId": 4403,
+    "districtName": "Belagavi"
+  },
+  "KA-P0031": {
+    "personId": "KA-P0031",
+    "name": "Altaf Pathan",
+    "aadhaarMasked": "XXXX XXXX 2466",
+    "phone": "+91 85175 03714",
+    "address": "No. 125, 9th Cross, Vivekananda Nagar, Kalaburagi, Karnataka - 585051",
+    "districtId": 4404,
+    "districtName": "Kalaburagi"
+  },
+  "KA-P0032": {
+    "personId": "KA-P0032",
+    "name": "Kiran Bhosale",
+    "aadhaarMasked": "XXXX XXXX 6036",
+    "phone": "+91 68652 46138",
+    "address": "No. 173, 8th Cross, Ashok Nagar, Kalaburagi, Karnataka - 585200",
+    "districtId": 4404,
+    "districtName": "Kalaburagi"
+  },
+  "KA-P0033": {
+    "personId": "KA-P0033",
+    "name": "Santosh Waghmare",
+    "aadhaarMasked": "XXXX XXXX 8779",
+    "phone": "+91 88620 66890",
+    "address": "No. 118, 1st Cross, Ashok Nagar, Kalaburagi, Karnataka - 585350",
+    "districtId": 4404,
+    "districtName": "Kalaburagi"
+  },
+  "KA-P0034": {
+    "personId": "KA-P0034",
+    "name": "Ravi Caterer (catering staff, informant)",
+    "aadhaarMasked": "XXXX XXXX 9203",
+    "phone": "+91 63608 27064",
+    "address": "No. 77, 1st Cross, Vidyaranyapura, Kalaburagi, Karnataka - 585405",
+    "districtId": 4404,
+    "districtName": "Kalaburagi"
+  },
+  "KA-P0035": {
+    "personId": "KA-P0035",
+    "name": "Wilfred Pinto (director)",
+    "aadhaarMasked": "XXXX XXXX 6950",
+    "phone": "+91 84679 96915",
+    "address": "No. 45, 7th Cross, Kuvempu Nagar, Dakshina Kannada, Karnataka - 575165",
+    "districtId": 4405,
+    "districtName": "Dakshina Kannada"
+  },
+  "KA-P0036": {
+    "personId": "KA-P0036",
+    "name": "Neha D'Silva (co-director)",
+    "aadhaarMasked": "XXXX XXXX 7941",
+    "phone": "+91 99703 18620",
+    "address": "No. 151, 1st Cross, Vidyaranyapura, Dakshina Kannada, Karnataka - 575670",
+    "districtId": 4405,
+    "districtName": "Dakshina Kannada"
+  },
+  "KA-P0037": {
+    "personId": "KA-P0037",
+    "name": "Clifton Rego (local recruiter)",
+    "aadhaarMasked": "XXXX XXXX 7394",
+    "phone": "+91 79784 87378",
+    "address": "No. 96, 8th Cross, Vidyaranyapura, Dakshina Kannada, Karnataka - 575930",
+    "districtId": 4405,
+    "districtName": "Dakshina Kannada"
+  },
+  "KA-P0038": {
+    "personId": "KA-P0038",
+    "name": "Faizal Khan (device installer)",
+    "aadhaarMasked": "XXXX XXXX 5618",
+    "phone": "+91 93857 37695",
+    "address": "No. 55, 8th Cross, Shanti Nagar, Ballari, Karnataka - 583875",
+    "districtId": 4407,
+    "districtName": "Ballari"
+  },
+  "KA-P0039": {
+    "personId": "KA-P0039",
+    "name": "Deepak Rathore (card cloner)",
+    "aadhaarMasked": "XXXX XXXX 9075",
+    "phone": "+91 73735 58344",
+    "address": "No. 23, 1st Cross, Shanti Nagar, Ballari, Karnataka - 583735",
+    "districtId": 4407,
+    "districtName": "Ballari"
+  },
+  "KA-P0040": {
+    "personId": "KA-P0040",
+    "name": "Anand M (cash-out mule)",
+    "aadhaarMasked": "XXXX XXXX 8776",
+    "phone": "+91 64122 01578",
+    "address": "No. 143, 4th Cross, Shanti Nagar, Ballari, Karnataka - 583650",
+    "districtId": 4407,
+    "districtName": "Ballari"
+  },
+  "KA-P0041": {
+    "personId": "KA-P0041",
+    "name": "Manjappa Gowda",
+    "aadhaarMasked": "XXXX XXXX 9242",
+    "phone": "+91 88145 60297",
+    "address": "No. 1, 4th Cross, Vidyaranyapura, Shivamogga, Karnataka - 577605",
+    "districtId": 4408,
+    "districtName": "Shivamogga"
+  },
+  "KA-P0042": {
+    "personId": "KA-P0042",
+    "name": "Yallappa Naik",
+    "aadhaarMasked": "XXXX XXXX 5993",
+    "phone": "+91 68076 30743",
+    "address": "No. 59, 7th Cross, Vidyaranyapura, Shivamogga, Karnataka - 577955",
+    "districtId": 4408,
+    "districtName": "Shivamogga"
+  },
+  "KA-P0043": {
+    "personId": "KA-P0043",
+    "name": "Devaraj (forest watcher, insider)",
+    "aadhaarMasked": "XXXX XXXX 1503",
+    "phone": "+91 85590 29208",
+    "address": "No. 17, 5th Cross, Sri Ram Colony, Shivamogga, Karnataka - 577807",
+    "districtId": 4408,
+    "districtName": "Shivamogga"
+  },
+  "KA-P0044": {
+    "personId": "KA-P0044",
+    "name": "Zaid Khan",
+    "aadhaarMasked": "XXXX XXXX 4150",
+    "phone": "+91 65522 99751",
+    "address": "No. 50, 4th Cross, Ganesh Layout, Bengaluru Urban, Karnataka - 560556",
+    "districtId": 4401,
+    "districtName": "Bengaluru Urban"
+  },
+  "KA-P0045": {
+    "personId": "KA-P0045",
+    "name": "Bharath Gowda",
+    "aadhaarMasked": "XXXX XXXX 3826",
+    "phone": "+91 82549 39072",
+    "address": "No. 102, 3rd Cross, Anand Nagar, Bengaluru Urban, Karnataka - 560601",
+    "districtId": 4401,
+    "districtName": "Bengaluru Urban"
+  },
+  "KA-P0046": {
+    "personId": "KA-P0046",
+    "name": "Naveen Raju",
+    "aadhaarMasked": "XXXX XXXX 1489",
+    "phone": "+91 62578 69926",
+    "address": "No. 156, 5th Cross, Anand Nagar, Bengaluru Urban, Karnataka - 560751",
+    "districtId": 4401,
+    "districtName": "Bengaluru Urban"
+  },
+  "KA-P0047": {
+    "personId": "KA-P0047",
+    "name": "Suhail Ahmed",
+    "aadhaarMasked": "XXXX XXXX 4328",
+    "phone": "+91 76934 25531",
+    "address": "No. 39, 3rd Cross, Vivekananda Nagar, Bengaluru Urban, Karnataka - 560286",
+    "districtId": 4401,
+    "districtName": "Bengaluru Urban"
+  }
+}
