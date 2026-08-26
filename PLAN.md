@@ -24,21 +24,21 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 | **P2** Route restructure | 🚧 **blocked** | PR #1 unresolved. Nothing here can start. |
 | **P3** Person spine | ⚪ **ready** | Unblocked by P1.1. Nothing else in its way. |
 | **P4** Real analytics | ⚪ **waiting on P1.2** | Needs case volume before a hotspot or a trend means anything. |
-| **P5** AI | 🚧 **blocked** | Contract known (P5.0 ✅). Blocked on a working OAuth access token. |
+| **P5** AI | 🔵 **in progress** | P5.0 ✅ · P5.1 ✅ — GLM client works end-to-end. **P5.2 is next.** |
 | **P6** Zia | 🚧 **gated** | Needs the P6.0 yes/no on generating images. |
 | **X** Cross-cutting | 🔵 | X3 ✅ · X1, X2 open |
 
-**Done so far:** P0.1–P0.5 · P1.1 · P1.3 · P5.0 · X3
+**Done so far:** P0.1–P0.5 · P1.1 · P1.3 · P5.0 · P5.1 · X3
 
 **Ready to pick up right now, no decisions needed:** **P1.2** (then P1.6) ·
-P3.1–P3.3 · X1 · X2
+P3.1–P3.3 · P5.2 · X1 · X2
 
 **Blocked on someone, not on effort:**
 
 | Blocked | Needs |
 |---|---|
 | All of P2 | **PR #1 — merge or close** |
-| All of P5 | **A working access token** (see P5.0's auth note) |
+| ~~All of P5~~ | ~~a working access token~~ — **unblocked**, `src/lib/llm.ts` verified live |
 | All of P6 | **P6.0 — do we generate images at all?** "No" closes the track cleanly |
 | P1.5, P4.5 | **Agreement on the caste/religion framing** before anything is built |
 
@@ -211,16 +211,27 @@ reasons over it.*
       are equivalent but because the token was rejected first. See §2.2's
       "what we've ruled out" for what those calls established, and the
       grant-token-vs-access-token trap that is the most likely cause.
-- [ ] **P5.1** `src/lib/llm.ts` — server-side-only GLM client. Typed, timeout,
-      graceful fallback, every call logged with prompt + response (log
-      `message.reasoning` too, but never render it — §2.2).
-      Bigger than it first looked: auth is **OAuth with a short-lived token**,
-      not a static API key, so this needs token minting + caching + refresh.
-      No OAuth handling exists in the repo today, and `initCatalyst()` in
-      `zcql.ts` is a different mechanism (Slate-injected request context for
-      the Data Store) that may not yield a QuickML token at all. **Settle how
-      the token is minted on Slate first** — that, plus the `Zoho-oauthtoken`
-      vs `Bearer` question from P5.0, is the whole risk in this item.
+- [x] **P5.1** ~~`src/lib/llm.ts` — server-side-only GLM client~~ — done and
+      **verified against a real live call**, not just typechecked. Along the
+      way, resolved everything P5.0 had left open:
+      - The prior 401s were a dead grant-token-used-as-access-token, not an
+        auth-scheme problem — both `Zoho-oauthtoken` and `Bearer` work once
+        a real access token is used.
+      - `CATALYST-ORG: <org id>` header is required — its absence was the
+        *next* failure after fixing the token (`ORGID_HEADER_UNAVAILABLE`).
+      - The real 200 response is `{response, tool_calls, usage, model,
+        created_time}` — **flat**, not the OpenAI `choices[0].message`
+        shape the console's own sample documents. `llm.ts` is written
+        against the verified shape.
+      - The untested piece — minting via `grant_type=refresh_token` rather
+        than the one-time `authorization_code` exchange — was exercised for
+        real on first request (proven by a differing token prefix, not
+        assumed).
+      - New finding for P5.2: GLM does not reliably follow short-output
+        instructions ("reply with one word" → it reasons anyway and gets
+        truncated). Use `tools`/`tool_choice` for structured output, don't
+        fight it with prompt wording.
+      Full log in `RESEARCH_AND_PLAN.md` §2.2.
 - [ ] **P5.2** Contradiction detector over a fused person's timeline, via tool
       calling, returning `{claim, conflictingClaim, sourceRecordIds[],
       confidence}`.

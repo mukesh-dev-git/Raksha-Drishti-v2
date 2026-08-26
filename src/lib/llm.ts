@@ -1,0 +1,263 @@
+// -----------------------------------------------------------------------------
+// Server-side-only client for Zoho Catalyst QuickML's GLM-4.7-Flash (P5.1).
+// Import this ONLY from Route Handlers / Server Components - it reads
+// QUICKML_* secrets from process.env and must never reach the client bundle
+// (same discipline as viewScope.server.ts used to keep next/headers out of
+// client code - see PLAN.md P0.5's note on that class of bug).
+//
+// Full contract, gotchas and the 2026-08-26 verification log are in
+// RESEARCH_AND_PLAN.md §2.2. The three things that actually blocked every
+// earlier call, in the order they were found:
+//   1. A grant token was being used as an access token (dead by design -
+//      Zoho's Self Client is a two-step exchange; skipping step 2 produces a
+//      bare 401 on every endpoint, every auth scheme, even plain Catalyst).
+//   2. `CATALYST-ORG` header is required and undocumented in the console
+//      sample - its absence returns 400 ORGID_HEADER_UNAVAILABLE.
+//   3. (Windows-specific, not a server bug) passing the JSON body as a
+//      literal command-line string through PowerShell mangles embedded
+//      quotes before curl sees them - write to a file and use
+//      `--data-binary @file`, or just don't shell out at all, which is what
+//      this module does.
+//
+// The verified 200 response shape is FLAT, not the OpenAI chat.completion
+// shape the console's Sample Response tab shows:
+//   { response: string, tool_calls: [...], usage: {...}, model, created_time }
+// not `choices[0].message.content`. Trusting the sample here would silently
+// read `undefined` on every real call - see RESEARCH_AND_PLAN.md §2.2 for
+// the live proof. `reasoning` (only with enableThinking) is unconfirmed at
+// the top level vs. nested - treated as optional/top-level until a real
+// thinking-mode call proves otherwise. NEVER render `reasoning` - it's the
+// model's scratchpad (hedging, discarded hypotheses), which is precisely
+// what P5.6's citation guardrail exists to keep out of the UI. Log it.
+// -----------------------------------------------------------------------------
+
+const TOKEN_URL = "https://accounts.zoho.in/oauth/v2/token";
+const GLM_MODEL = "crm-di-glm47b_30b_it"; // console shows "GLM-4.7-Flash" - NOT this string
+const REQUEST_TIMEOUT_MS = 20_000; // vendor sample: 2.4s queue + 8.9s total for 256 tokens - there IS a queue
+
+export type ChatMessage = {
+  role: "system" | "user" | "assistant" | "tool";
+  content: string;
+};
+
+export type ToolDef = {
+  type: "function";
+  function: { name: string; description?: string; parameters: Record<string, unknown> };
+};
+
+export type GlmChatOptions = {
+  messages: ChatMessage[];
+  maxTokens?: number;
+  temperature?: number;
+  tools?: ToolDef[];
+  toolChoice?: "auto" | "none" | { type: "function"; function: { name: string } };
+  /** Zoho extension, not standard OpenAI. Enables step-by-step reasoning in
+   *  the response - see the module comment on why that field must never be
+   *  rendered even though it's logged. */
+  enableThinking?: boolean;
+};
+
+// The verified live shape (2026-08-26) - see module comment.
+type GlmToolCall = {
+  id?: string;
+  type: "function";
+  function: { name: string; arguments: string }; // JSON-encoded STRING, not an object - RESEARCH_AND_PLAN.md §2.2
+};
+
+type GlmChatSuccess = {
+  response: string;
+  tool_calls: GlmToolCall[];
+  usage: { prompt_tokens: number; completion_tokens: number; total_tokens: number; prompt_tokens_details?: unknown };
+  model: string;
+  created_time: number;
+  reasoning?: string; // unconfirmed shape - see module comment
+};
+
+// Documented error shape - but the real 401s seen during setup had an EMPTY
+// body, not this shape. Never assume an error response is parseable JSON.
+type GlmErrorBody = { code?: string; message?: string; details?: { reason?: string } };
+
+export type ParsedToolCall = { name: string; arguments: unknown; rawArguments: string };
+
+export type LlmResult =
+  | {
+      ok: true;
+      text: string;
+      toolCalls: ParsedToolCall[];
+      reasoning: string | null;
+      usage: GlmChatSuccess["usage"];
+    }
+  | { ok: false; status: number; error: string };
+
+// ---------------------------------------------------------------------------
+// Token cache. Module-scope, so it's warm-instance-only - it does NOT
+// survive a cold start on Slate, same limitation Route Handlers already have
+// with any other in-memory cache. That's an accepted tradeoff for a
+// hackathon-scale app, not an oversight; a durable cache (NoSQL row, Edge
+// Config) is the real fix if this ever needs to survive cold starts.
+// ---------------------------------------------------------------------------
+let cachedToken: { accessToken: string; expiresAt: number } | null = null;
+
+function requireEnv(name: string): string {
+  const v = process.env[name];
+  if (!v) throw new Error(`llm.ts: missing required env var ${name} - see .env.local, RESEARCH_AND_PLAN.md §2.2`);
+  return v;
+}
+
+async function mintAccessToken(): Promise<{ accessToken: string; expiresIn: number }> {
+  const clientId = requireEnv("QUICKML_CLIENT_ID");
+  const clientSecret = requireEnv("QUICKML_CLIENT_SECRET");
+  const refreshToken = requireEnv("QUICKML_REFRESH_TOKEN");
+
+  const body = new URLSearchParams({
+    grant_type: "refresh_token",
+    client_id: clientId,
+    client_secret: clientSecret,
+    refresh_token: refreshToken,
+  });
+
+  const res = await fetch(TOKEN_URL, { method: "POST", body });
+  const text = await res.text();
+  let parsed: { access_token?: string; expires_in?: number; error?: string } = {};
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    throw new Error(`llm.ts: token refresh returned non-JSON (HTTP ${res.status}): ${text.slice(0, 200)}`);
+  }
+  if (!res.ok || !parsed.access_token) {
+    throw new Error(`llm.ts: token refresh failed (HTTP ${res.status}): ${parsed.error ?? text.slice(0, 200)}`);
+  }
+  return { accessToken: parsed.access_token, expiresIn: parsed.expires_in ?? 3600 };
+}
+
+/** Returns a valid access token, minting/refreshing if the cached one is
+ *  missing or within 5 minutes of expiry. Exported for a one-off health
+ *  check; callGlm() calls this itself. */
+export async function getAccessToken(): Promise<string> {
+  const now = Date.now();
+  if (cachedToken && cachedToken.expiresAt - now > 5 * 60_000) {
+    return cachedToken.accessToken;
+  }
+  // No refresh-token flow attempted yet in this session - the working token
+  // in .env.local as of 2026-08-26 came from the initial authorization_code
+  // exchange (self_client.json, since deleted). This mint call exercises the
+  // refresh_token grant for the first time; if QUICKML_REFRESH_TOKEN turns
+  // out not to carry the QuickML.deployment.READ scope through a refresh,
+  // this is where that would surface - log the raw error rather than swallow it.
+  const { accessToken, expiresIn } = await mintAccessToken();
+  cachedToken = { accessToken, expiresAt: now + expiresIn * 1000 };
+  return accessToken;
+}
+
+function parseToolCalls(raw: GlmToolCall[] | undefined): ParsedToolCall[] {
+  if (!raw?.length) return [];
+  return raw.map((tc) => {
+    let args: unknown;
+    try {
+      args = JSON.parse(tc.function.arguments);
+    } catch {
+      args = null; // malformed args from the model - caller decides whether that's fatal
+    }
+    return { name: tc.function.name, arguments: args, rawArguments: tc.function.arguments };
+  });
+}
+
+/**
+ * Calls GLM-4.7-Flash. Never throws for an API-level failure (bad request,
+ * auth, timeout) - returns `{ ok: false }` so callers degrade gracefully
+ * (P5.1's "graceful fallback" requirement). Throws only for missing
+ * configuration (requireEnv), which is a setup bug, not a runtime condition
+ * to design around.
+ *
+ * Every call is logged with the prompt and the response (including
+ * `reasoning` if present) for the audit trail P5.1 asks for - but callers
+ * must never put `reasoning` in anything user-facing. See module comment.
+ */
+export async function callGlm(opts: GlmChatOptions): Promise<LlmResult> {
+  const projectId = requireEnv("QUICKML_PROJECT_ID");
+  const orgId = requireEnv("QUICKML_ORG_ID");
+  const url = `https://api.catalyst.zoho.in/quickml/v1/project/${projectId}/glm/chat`;
+
+  const body: Record<string, unknown> = {
+    model: GLM_MODEL,
+    messages: opts.messages,
+  };
+  if (opts.maxTokens !== undefined) body.max_tokens = opts.maxTokens;
+  if (opts.temperature !== undefined) body.temperature = opts.temperature;
+  if (opts.tools) body.tools = opts.tools;
+  if (opts.toolChoice) body.tool_choice = opts.toolChoice;
+  if (opts.enableThinking) body.chat_template_kwargs = { enable_thinking: true };
+
+  let accessToken: string;
+  try {
+    accessToken = await getAccessToken();
+  } catch (e) {
+    console.error("[llm.ts] token acquisition failed", e);
+    return { ok: false, status: 0, error: e instanceof Error ? e.message : "token acquisition failed" };
+  }
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+  let res: Response;
+  try {
+    res = await fetch(url, {
+      method: "POST",
+      headers: {
+        // Console documents Zoho-oauthtoken; both this and Bearer verified
+        // working 2026-08-26 (RESEARCH_AND_PLAN.md §2.2). Using the
+        // console's own documented scheme.
+        Authorization: `Zoho-oauthtoken ${accessToken}`,
+        "CATALYST-ORG": orgId,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    });
+  } catch (e) {
+    clearTimeout(timer);
+    const timedOut = e instanceof Error && e.name === "AbortError";
+    console.error("[llm.ts] request failed", { timedOut, error: e });
+    return { ok: false, status: 0, error: timedOut ? "timeout" : e instanceof Error ? e.message : "network error" };
+  }
+  clearTimeout(timer);
+
+  const rawText = await res.text();
+
+  if (!res.ok) {
+    // Documented shape is {code,message,details}, but the setup-phase 401s
+    // had an EMPTY body - never assume this parses.
+    let errMsg = rawText || `HTTP ${res.status} (empty body)`;
+    try {
+      const parsed = JSON.parse(rawText) as GlmErrorBody;
+      errMsg = parsed.message ?? parsed.code ?? errMsg;
+    } catch {
+      // non-JSON error body - use the raw text/status as-is
+    }
+    console.error("[llm.ts] GLM call failed", { status: res.status, body: rawText.slice(0, 500), request: body });
+    return { ok: false, status: res.status, error: errMsg };
+  }
+
+  let parsed: GlmChatSuccess;
+  try {
+    parsed = JSON.parse(rawText);
+  } catch {
+    console.error("[llm.ts] GLM returned non-JSON on a 200", rawText.slice(0, 500));
+    return { ok: false, status: res.status, error: "non-JSON success response" };
+  }
+
+  console.log("[llm.ts] GLM call ok", {
+    promptMessages: opts.messages.length,
+    usage: parsed.usage,
+    toolCallCount: parsed.tool_calls?.length ?? 0,
+    hasReasoning: !!parsed.reasoning, // logged for audit; NEVER surface parsed.reasoning to the UI
+  });
+
+  return {
+    ok: true,
+    text: parsed.response,
+    toolCalls: parseToolCalls(parsed.tool_calls),
+    reasoning: parsed.reasoning ?? null,
+    usage: parsed.usage,
+  };
+}

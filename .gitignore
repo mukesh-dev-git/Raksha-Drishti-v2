@@ -12,3 +12,4 @@ next-env.d.ts
 
 # Reference-only nested project — never track or push
 /Raksha-Drishti-V2.0/
+self_client*.json

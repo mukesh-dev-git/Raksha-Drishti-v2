@@ -232,20 +232,67 @@ The VLM sample reports `queue_wait_time` 2.4s and `total_time_taken` 8.9s for
 256 output tokens. **There is a queue.** Timeouts must be generous and every
 call needs a fallback path — see P5.1.
 
-### ⚠️ Unresolved: which `Authorization` scheme actually works
+### ✅ Resolved 2026-08-26: BOTH `Authorization` schemes work
 
-The console and the code samples disagree, and this is not a detail we can
-guess at:
+Verified against `/glm/chat` with a real access token — `Zoho-oauthtoken
+<token>` and `Bearer <token>` both return HTTP 200 for the identical request.
+The disagreement between the console and the code samples was real but
+harmless; the gateway accepts either. **Use `Zoho-oauthtoken`** in
+`llm.ts` anyway, since it's the scheme the console itself documents and the
+one that will keep working if `Bearer` is ever tightened up.
 
-| Source | Header |
-|---|---|
-| Console "Headers" box | `"Authorization": "Zoho-oauthtoken <access-token>"` |
-| Both code samples (python + fetch) | `"Authorization": "Bearer YOUR_TOKEN"` |
+**What was actually blocking every prior call was two compounding problems,
+not the auth scheme:**
+1. The token in use was a **grant token used as an access token** (see the
+   ruled-out table below) - a genuinely dead token, hence the bare 401s.
+2. Once a real token was minted, the *next* failure was
+   `CATALYST-ORG_HEADER_UNAVAILABLE` - **the `CATALYST-ORG` header is
+   required** and wasn't in the earlier probes. Add it:
+   `CATALYST-ORG: 60079393411`.
 
-`Zoho-oauthtoken` is the Zoho-wide convention and matches the
-`QuickML.deployment.READ` OAuth scope; `Bearer` looks like a generic
-template that may not have been updated. **Verify with one real call before
-writing the client** — whichever works, record it here.
+A third, non-blocking finding: sending the JSON body as a literal
+command-line string through PowerShell mangles embedded quotes before curl
+ever sees them (`JSON_PARSE_ERROR` / `zoho-inputstream`). Write the body to a
+file and use `curl --data-binary @file.json`, on Windows specifically.
+
+### ⚠️ NEW finding: the real response shape doesn't match the console's own sample
+
+A live call returns:
+
+```json
+{"response": "...", "tool_calls": [], "usage": {...}, "model": "...", "created_time": 1787721087}
+```
+
+**Not** the OpenAI `chat.completion` shape (`choices[0].message.content`)
+the console's Sample Response tab documents. The actual reply text is the
+top-level `response` string, not `choices[0].message.content`. `tool_calls`
+is still a top-level array, not nested under `message`. **Write `llm.ts`
+against this real shape, not the sample** - anyone who trusted the sample
+would have a client that silently reads `undefined` from every call.
+
+(Not yet re-verified: whether `tool_calls[].function.arguments` is still a
+JSON-encoded string in this shape, since this smoke test didn't exercise
+tool calling. Confirm with a real tool-calling request before P5.2 relies on
+it.)
+
+### ✅ Resolved 2026-08-26: the refresh_token grant works
+
+`src/lib/llm.ts` mints via `grant_type=refresh_token` (not the
+`authorization_code` exchange used once to bootstrap `.env.local`) and it
+was exercised for real on the first dev-server request - the minted token's
+prefix differed from the one written to `.env.local`, proving a fresh mint
+rather than a reused cache hit. `QUICKML_REFRESH_TOKEN` +
+`QUICKML_CLIENT_ID`/`SECRET` are therefore sufficient going forward;
+`QUICKML_ACCESS_TOKEN` in `.env.local` is now just the original bootstrap
+value and `llm.ts` never reads it.
+
+Also confirmed live: **GLM does not reliably follow short-output
+instructions.** Asked twice to "reply with exactly one word," it narrated
+step-by-step reasoning instead and got truncated by `max_tokens`. Not a bug
+in the client - a real model-behavior property to design around. P5.2's
+contradiction detector should lean on `tools`/`tool_choice` for structured
+output rather than parsing free text, which sidesteps this rather than
+fighting it with prompt instructions.
 
 Also note what "OAuth" implies and a static API key does not: **the access
 token is short-lived** (Zoho's are typically ~1 hour). `src/lib/llm.ts`
