@@ -1,5 +1,3 @@
-import { getOffenderPhotoUrl } from "@/lib/offenderPhotos";
-
 // -----------------------------------------------------------------------------
 // Photo if one's been supplied (public/offenders/, see that folder's
 // README), else an initials tile - same fallback pattern used by
@@ -13,6 +11,13 @@ import { getOffenderPhotoUrl } from "@/lib/offenderPhotos";
 // compositions (a height-chart backdrop, a booking placard), and a small
 // circular avatar crop was cutting that framing off. A card reads as
 // "an ID photo on a case file", which is what this page actually is.
+//
+// Pure/presentational deliberately: `photoUrl` is resolved by the CALLER
+// (getOffenderPhotoUrl, fs-based) and passed in, rather than this component
+// resolving it itself. This component is used from RepeatOffendersClient.tsx,
+// a client component - importing the fs-based resolver in here would pull
+// `fs` into the browser bundle and break the build ("Module not found:
+// Can't resolve 'fs'"), which is exactly what happened until this was split.
 // -----------------------------------------------------------------------------
 const PALETTE = [
   { bg: "bg-dash-blue-bg", text: "text-dash-blue" },
@@ -36,14 +41,14 @@ function colorFor(personId: string) {
 export default function OffenderAvatar({
   personId,
   name,
+  photoUrl = null,
   size = 112,
 }: {
   personId: string;
   name: string;
+  photoUrl?: string | null;
   size?: number;
 }) {
-  const photoUrl = getOffenderPhotoUrl(personId);
-
   if (photoUrl) {
     // Plain <img>, not next/image: these are demo files dropped straight
     // into public/ with no known dimensions ahead of time, and next/image

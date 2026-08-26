@@ -1,123 +1,105 @@
-import Link from "next/link";
-import { Layers, FolderKanban, Clock } from "lucide-react";
+import { Users, MapPinned, Repeat, Link2 } from "lucide-react";
 import PageShell from "@/components/PageShell";
-import OffenderAvatar from "@/components/OffenderAvatar";
+import StatTile from "@/components/ui/StatTile";
+import RepeatOffendersClient, { type EnrichedPerson, type PersonCaseInfo } from "@/components/RepeatOffendersClient";
 import { getRepeatCaseSuspects } from "@/lib/personFusion";
 import { scenarioLink } from "@/lib/dashboardData";
+import { getOffenderPhotoUrl } from "@/lib/offenderPhotos";
+import { caseTypes, districts } from "@/lib/data";
 import scenarioMeta from "@/lib/nosql-seed/scenarioMeta.json";
+import caseFactsRaw from "@/lib/nosql-seed/caseFacts.json";
 
 const TITLES = scenarioMeta as Record<string, { title: string }>;
 
+type CaseFact = {
+  caseMasterId: number;
+  scenarioId: string;
+  crimeMinorHeadId: number;
+  districtId: number | null;
+};
+const CASE_FACTS = caseFactsRaw as Record<string, CaseFact>;
+
 // -----------------------------------------------------------------------------
-// P4.7 - the discovery surface the PS's "Repeat Offender Tracking... across
-// different jurisdictions" ask needs and didn't have. The computation
-// (getRepeatCaseSuspects, personFusion.ts) already existed from P3.1; this
-// is its first UI surface anywhere in the app.
+// P4.7 redesign - the discovery surface the PS's "Repeat Offender Tracking...
+// across different jurisdictions" ask needs, rebuilt toward a master-detail
+// intelligence layout per direct user reference (screenshot of a reference
+// dashboard). This file stays the server component: it resolves every real
+// fact (district/case-type names, case links, cross-district stats) once at
+// request time and hands a plain data object to the client component, which
+// owns only the click-to-select UI state - same split as
+// InvestigationWorkspaceClient.tsx.
 //
-// Honest about scale, same discipline as pattern-analysis: real seeded data
-// gives 6 people who span 2+ CaseMasterIDs, all within one scenario each -
-// zero people span two different scenarios yet (see PLAN.md P4.7 / P3.1).
-// Shipped against the data that's actually real today, not an empty page
-// waiting for a hypothetical dataset.
+// Deliberately built ONLY from real, provable data. Explicitly NOT built,
+// because nothing in the seed backs them: a risk score, a Watchlist / "Create
+// Investigation Note" action (no CRUD write endpoints exist anywhere in the
+// app - confirmed via grep, zero POST/PUT/DELETE/PATCH handlers), device-ID
+// based linking, a jurisdiction mini-map with pins, a "Connections Overview"
+// network graph, extra tabs (Connections/Pattern/Locations/Communications),
+// "AI-Suggested Investigative Leads", a District/Crime Type/Date/Risk filter
+// row, or an Export button. The reference mockup has all of these; this page
+// intentionally does not, rather than fabricating data to fill them in.
 // -----------------------------------------------------------------------------
 export const metadata = { title: "Repeat Offenders" };
+
+function resolveCase(caseMasterId: number): PersonCaseInfo {
+  const f = CASE_FACTS[String(caseMasterId)];
+  const meta = f ? TITLES[f.scenarioId] : undefined;
+  const crimeType = f ? caseTypes.find((c) => c.dbId === f.crimeMinorHeadId) : undefined;
+  const district = f ? districts.find((d) => d.dbId === f.districtId) : undefined;
+  return {
+    caseMasterId,
+    scenarioId: f?.scenarioId ?? "",
+    scenarioTitle: meta?.title ?? String(caseMasterId),
+    crimeTypeName: crimeType?.name ?? "Unknown",
+    districtId: f?.districtId ?? null,
+    districtName: district?.name ?? "Unknown",
+    link: crimeType && district && f ? scenarioLink(f.scenarioId) : null,
+  };
+}
 
 export default function RepeatOffendersPage() {
   const people = getRepeatCaseSuspects();
 
+  const enriched: EnrichedPerson[] = people.map((p) => ({
+    ...p,
+    cases: p.caseMasterIds.map(resolveCase),
+    // Resolved server-side (fs.existsSync) and passed down as a plain URL -
+    // OffenderAvatar itself stays a pure/presentational component so it can
+    // be safely used inside RepeatOffendersClient's client component tree.
+    photoUrl: getOffenderPhotoUrl(p.personId),
+  }));
+
+  // Real, computed-not-claimed numbers for the stat row - see PLAN.md P4.7.
+  const totalRepeat = enriched.length;
+  const crossDistrict = enriched.filter((p) => new Set(p.cases.map((c) => c.districtId).filter((d) => d !== null)).size > 1).length;
+  const threeOrMoreCases = enriched.filter((p) => p.caseMasterIds.length >= 3).length;
+  const totalCaseLinks = enriched.reduce((sum, p) => sum + p.caseMasterIds.length, 0);
+
   return (
     <PageShell
       title="Repeat Offenders"
-      description="People named across more than one case file, ranked by how many. Every case link is a real investigation — not a name match, a shared record ID."
+      description="People named across more than one case file, ranked by how many. Every link below traces back to a real record id — not a name match."
       breadcrumbs={[{ label: "Repeat Offenders", href: "/repeat-offenders" }]}
     >
-      {people.length === 0 ? (
+      {enriched.length === 0 ? (
         <div className="rounded-xl border border-dashed border-line bg-surface p-8 text-center text-sm text-muted">
           No one in the current seeded dataset appears in more than one case.
         </div>
       ) : (
         <div className="space-y-5">
-          <p className="text-sm text-muted">
-            {people.length} people appear in 2 or more cases in the current seeded dataset.
-          </p>
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+            <StatTile label="Repeat subjects" value={String(totalRepeat)} icon={<Users size={18} />} hint="Named in 2+ FIRs" />
+            <StatTile
+              label="Cross-district"
+              value={`${crossDistrict}/${totalRepeat}`}
+              icon={<MapPinned size={18} />}
+              hint={`${Math.round((crossDistrict / totalRepeat) * 100)}% span more than one district`}
+            />
+            <StatTile label="3+ case subjects" value={String(threeOrMoreCases)} icon={<Repeat size={18} />} hint="None yet in the seeded set" />
+            <StatTile label="Total case-links" value={String(totalCaseLinks)} icon={<Link2 size={18} />} hint="Summed across all repeat subjects" />
+          </div>
 
-          {people.map((p) => {
-            const scenarios = [...new Set(p.timeline.map((t) => t.scenarioId))];
-
-            return (
-              <div key={p.personId} className="overflow-hidden rounded-xl border border-line bg-surface shadow-sm">
-                <div className="flex flex-wrap items-start gap-4 border-b border-line bg-surface-2/50 px-5 py-4">
-                  <OffenderAvatar personId={p.personId} name={p.name} />
-                  <div className="min-w-0 flex-1">
-                    <p className="text-[16px] font-semibold text-navy">{p.name}</p>
-                    {p.aliases.length > 1 && (
-                      <p className="mt-0.5 text-[12px] text-muted">
-                        Also recorded as: {p.aliases.filter((a) => a !== p.name).join(", ")}
-                      </p>
-                    )}
-                    <div className="mt-3 flex flex-wrap items-center gap-4 text-[13px] text-muted">
-                      <span className="flex items-center gap-1.5">
-                        <FolderKanban size={14} aria-hidden="true" /> {p.caseMasterIds.length} cases
-                      </span>
-                      <span className="flex items-center gap-1.5">
-                        <Layers size={14} aria-hidden="true" /> {scenarios.length} investigation{scenarios.length === 1 ? "" : "s"}
-                      </span>
-                      <span className="flex items-center gap-1.5">
-                        <Clock size={14} aria-hidden="true" /> {p.timeline.length} linked records
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 gap-4 p-5 md:grid-cols-[1fr_1.4fr]">
-                  {/* Cases */}
-                  <div>
-                    <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-muted">Cases</p>
-                    <div className="space-y-1.5">
-                      {scenarios.map((sid) => {
-                        const link = scenarioLink(sid);
-                        const title = TITLES[sid]?.title ?? sid;
-                        const content = (
-                          <div className="flex items-center justify-between gap-2 rounded-lg border border-line px-3 py-2 text-[13px] transition hover:border-navy">
-                            <span className="min-w-0 truncate text-ink">{title}</span>
-                            <span className="shrink-0 font-mono text-[11px] text-muted">{sid}</span>
-                          </div>
-                        );
-                        return link ? (
-                          <Link key={sid} href={link}>
-                            {content}
-                          </Link>
-                        ) : (
-                          <div key={sid}>{content}</div>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* Fused timeline preview */}
-                  <div>
-                    <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-muted">
-                      Cross-source timeline
-                    </p>
-                    <ul className="space-y-1.5">
-                      {p.timeline.slice(0, 5).map((t) => (
-                        <li key={t.id} className="flex gap-2 text-[13px] leading-relaxed">
-                          <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-navy/50" />
-                          <span className="min-w-0">
-                            <span className="font-mono text-[11px] text-muted">{t.id}</span>{" "}
-                            <span className="text-ink">{t.summary}</span>
-                          </span>
-                        </li>
-                      ))}
-                      {p.timeline.length > 5 && (
-                        <li className="pl-3.5 text-[12px] text-muted">+ {p.timeline.length - 5} more records</li>
-                      )}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+          <RepeatOffendersClient people={enriched} />
         </div>
       )}
     </PageShell>
