@@ -24,7 +24,7 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 | **P2** Route restructure | 🚧 **blocked** | PR #1 unresolved. Nothing here can start. |
 | **P3** Person spine | 🔵 **in progress** | P3.1+P3.3 ✅ (`589721d`) — fusion + timeline merge, 2 real bugs found and fixed. **P3.2 (`/persons`) is next.** |
 | **P4** Real analytics | ⚪ **waiting on P1.2** | Needs case volume before a hotspot or a trend means anything. |
-| **P5** AI | 🔵 **in progress** | P5.0-P5.3 ✅ — real eval run: 1/15 hit, honestly diagnosed (see P5.3). **P5.2b is next.** |
+| **P5** AI | 🔵 **in progress** | P5.0-P5.3 ✅ · P5.2b ✅ — eval re-run at scenario scope: 3/15 real hits. **P5.4 is next.** |
 | **P6** Zia | 🚧 **gated** | Needs the P6.0 yes/no on generating images. |
 | **P7** Kannada voice (Zia) | ⚪ **ready** | Not gated like P6 - P7.1 can start from data we already have. |
 | **X** Cross-cutting | 🔵 | X3 ✅ · X1, X2 open |
@@ -33,7 +33,7 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 P5.3 · X3
 
 **Ready to pick up right now, no decisions needed:** **P1.2** (then P1.6) ·
-P3.2 · P5.2b · P7.1 · X1 · X2
+P3.2 · P5.4 · P7.1 · X1 · X2
 
 **Blocked on someone, not on effort:**
 
@@ -64,7 +64,7 @@ P1  Data foundation    🔵 P1.1/P1.3 done ── P1.2 is the next real unlock
 P2  Route restructure  🚧 PR #1       ── highest risk, needs PR #1 resolved
 P3  Person spine       ⚪ ready       ── P1.1 unblocked it
 P4  Real analytics     ⚪ needs P1.2  ── 4 of 6 PS asks land here
-P5  AI features        🔵 P5.0-P5.3 done ── P5.2b (scenario-level) is next
+P5  AI features        🔵 P5.0-P5.3, P5.2b done ── P5.4 is next
 P6  Zia                🚧 gated on P6.0 ── only if we get images
 P7  Kannada voice       ⚪ ready       ── not gated like P6, can start now
 ```
@@ -288,12 +288,38 @@ reasons over it.*
       on a live 200 despite its type saying `string` (a truncated
       generation can omit `response` entirely) - crashed a caller that
       reasonably trusted the type; now defaulted to `""` at the source.
-- [ ] **P5.2b** Scenario-level contradiction detection — the real
-      generalization P5.3 shows is needed. Same detector, same schema, same
-      guardrail, but over ALL of a scenario's fused evidence (every
-      person's timeline merged, not filtered to one), so a finding can cite
-      records naming different people. Re-run P5.3 against this version
-      before trusting a hit-rate number in front of anyone.
+- [x] **P5.2b** ~~Scenario-level contradiction detection~~ — done,
+      `getScenarioTimeline()` (personFusion.ts) + `detectScenarioContradictions()`
+      (contradictionDetector.ts, sharing `runDetection()` with P5.2 — one
+      schema, one guardrail, two entry points). Re-ran P5.3: **1/15 → 3/15
+      real hits (C1, C2, C11)**, each fix verified live, not assumed:
+      - Confirmed C2 needs cross-person evidence — traced live: Ravindra's
+        alibi (his own statement) vs. two calls with Praveen vs. a sighting
+        of Praveen — three different people's records, unreachable from any
+        one person's timeline. `getScenarioTimeline` found it immediately.
+      - The inline-tag fallback parser (P5.2) turned out inconsistent
+        across responses — sometimes `<arg_key>x<arg_value>`, sometimes
+        `<arg_key>x</arg_key><arg_value>` — and only the first form was
+        handled. Silently failed the eval's C2 call even though the model
+        had found the *exact right answer* — a parsing bug reading as a
+        detection miss. Fixed with an optional closing tag in the regex.
+      - The "hard total-token ceiling ~1800" theory from P5.2/P5.3 was
+        itself wrong — a live call at 1923 total tokens returned clean.
+        What was really happening: `maxTokens: 700` was too small for
+        scenario-level prompts (naturally longer — more merged records),
+        and every truncated response had `toolCallCount: 0` — confirmed
+        from server logs, not inferred. Raised to 1500.
+      - Raising `maxTokens` made generation slower; several real calls then
+        exceeded the 20s request timeout mid-generation. Raised to 45s.
+      **Two honest limitations left, not chased further:** a few calls
+      return genuinely empty (`response` empty, no tool call) even at the
+      larger budget — a live model/gateway quirk without full visibility
+      into why; and the model sometimes reports one real multi-record
+      contradiction as several separate smaller pairs instead of one group
+      that covers everything (C4, C15) — found the right records, structured
+      wrong, currently scored a miss. Do not present 3/15 (or any number
+      from this eval) as more than what it is — 15 authored cases, honestly
+      run.
 - [ ] **P5.4** "Next question to ask" — phrasing layer on P5.2/P5.2b's output.
 - [ ] **P5.5** Suspicion score — deterministic weighted signals feed the
       existing `RiskGauge`; the LLM writes only the explanation, never the

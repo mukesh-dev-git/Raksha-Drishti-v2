@@ -235,3 +235,43 @@ export function getFusedPerson(personId: string): FusedPerson | null {
 export function getCrossCasePersons(): FusedPerson[] {
   return [...fuseAllPersons().values()].filter((p) => p.scenarioIds.length > 1);
 }
+
+export type ScenarioEvidenceItem = FusedEvidenceItem & {
+  /** Every fused person this record is attributed to - almost always one,
+   *  but a call pushes to both ends (from/to), so it needs to be an array
+   *  rather than assuming a single owner. */
+  personIds: string[];
+  personNames: string[];
+};
+
+/**
+ * P5.2b - the generalization P5.3's eval run proved necessary: 13 of the 15
+ * authored contradictions cite records belonging to TWO DIFFERENT people
+ * (verified on C2 - see RESEARCH_AND_PLAN.md Part 6), not one person's own
+ * conflicting claims. `getFusedPerson()` can only ever see one person's
+ * slice; this merges every person's timeline for one scenario into a single
+ * ordered view, so a contradiction spanning two people's records is
+ * actually visible to whatever reads this.
+ *
+ * Merges by record id (a call is one record cited from two people's
+ * perspectives, not two records) and unions the person attributions onto
+ * one item rather than duplicating it.
+ */
+export function getScenarioTimeline(scenarioId: string): ScenarioEvidenceItem[] {
+  const byId = new Map<string, ScenarioEvidenceItem>();
+  for (const person of fuseAllPersons().values()) {
+    for (const item of person.timeline) {
+      if (item.scenarioId !== scenarioId) continue;
+      const existing = byId.get(item.id);
+      if (existing) {
+        if (!existing.personIds.includes(person.personId)) {
+          existing.personIds.push(person.personId);
+          existing.personNames.push(person.name);
+        }
+      } else {
+        byId.set(item.id, { ...item, personIds: [person.personId], personNames: [person.name] });
+      }
+    }
+  }
+  return [...byId.values()].sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+}

@@ -757,3 +757,59 @@ any hit-rate number should be shown to anyone.
   through the eval, not by review - a reminder that this project's pattern
   of "verify against real data before trusting a type or a schema" applies
   to code we write ourselves, not only to the vendor's docs.
+
+## 6.4 P5.2b - scenario-level re-run (2026-08-26, same day)
+
+`personFusion.ts` gained `getScenarioTimeline(scenarioId)`, merging every
+person's timeline for one scenario into one ordered view (dedup by record
+id - a call is one record cited from two people's perspectives, not two
+records). `contradictionDetector.ts` gained `detectScenarioContradictions()`,
+sharing its schema and citation guardrail with the person-level detector via
+one `runDetection()` core rather than a second parallel implementation.
+
+Re-ran the P5.3 eval against it. **1/15 → 3/15 real hits (C1, C2, C11)**,
+and getting there surfaced three more real bugs, each confirmed against
+live data before being called a bug:
+
+1. **The inline-tag fallback parser was inconsistent across responses.**
+   The same call shape produced both `<arg_key>x<arg_value>` (no closing
+   tag) and `<arg_key>x</arg_key><arg_value>` (closing tag present) on
+   different calls. The regex only handled the first form. This silently
+   failed the eval's C2 call even though the model had found the *exact
+   right answer* on that call - a parsing bug reading as a detection miss,
+   not a model failure. Fixed with an optional `(?:</arg_key>)?` in the
+   regex.
+2. **The "hard total-token ceiling ~1800" theory (Part 6.1) was itself
+   wrong.** A live call at 1923 total tokens (prompt+completion) returned
+   clean. What was actually happening: `maxTokens: 700` was tuned against
+   person-level prompts and too small for scenario-level ones (naturally
+   longer - more merged records across more people). Confirmed from server
+   logs, not inferred: every response whose `completion_tokens` landed
+   exactly on the 700 ceiling had `toolCallCount: 0`; every response that
+   stopped short of it had a real tool call. Raised to 1500.
+3. **Raising `maxTokens` made generation slower**, and several real calls
+   then exceeded `llm.ts`'s 20s request timeout mid-generation - a timeout,
+   not an API or model failure. Raised to 45s.
+
+**Two limitations left, deliberately not chased further this session:**
+
+- A few calls return genuinely empty (`response` empty string, no tool
+  call) even at the larger budget, with no error from the API - a live
+  quirk of this model/gateway combination without full visibility into why
+  (no `finish_reason` in the response shape to inspect). Recorded as
+  observed, not explained.
+- The model sometimes reports one real multi-record contradiction as
+  several separate smaller findings instead of one group that covers
+  everything (C4 found `{WS-1, CL-3}` of a 3-id ground truth; C15 found
+  three overlapping pairs among 3 of its 4 ground-truth ids, never
+  combining them, and never citing the 4th at all). It found the right
+  *records* in the neighborhood but not the right *shape* of finding. This
+  is a real detector limitation, not a bug to patch reflexively - the
+  citation guardrail already accepts a superset match, and going further
+  (post-hoc merging overlapping findings) would be scoring the evaluator
+  more than fixing the detector. Left as a stated limitation.
+
+**Do not present 3/15, or any hit-rate number from this eval, as more than
+it is: 15 authored cases, run for real, three found correctly.** It is a
+real, verified number - not 1/15 (which undercounted due to bugs 1-3
+above), and not something to round up either.

@@ -33,7 +33,13 @@
 
 const TOKEN_URL = "https://accounts.zoho.in/oauth/v2/token";
 const GLM_MODEL = "crm-di-glm47b_30b_it"; // console shows "GLM-4.7-Flash" - NOT this string
-const REQUEST_TIMEOUT_MS = 20_000; // vendor sample: 2.4s queue + 8.9s total for 256 tokens - there IS a queue
+// Vendor sample: 2.4s queue + 8.9s total for 256 output tokens - there IS a
+// queue, and generation time scales with max_tokens. 20s was tuned against
+// person-level calls (maxTokens 700); raising maxTokens to 1500 for
+// scenario-level calls (contradictionDetector.ts) pushed several real
+// calls past 20s and they were aborted mid-generation - a timeout, not a
+// model or API failure. 45s gives real headroom at the larger budget.
+const REQUEST_TIMEOUT_MS = 45_000;
 
 export type ChatMessage = {
   role: "system" | "user" | "assistant" | "tool";
@@ -165,17 +171,24 @@ function parseToolCalls(raw: GlmToolCall[] | undefined): ParsedToolCall[] {
 // ---------------------------------------------------------------------------
 // Fallback: this model sometimes emits a tool call as an inline TEXT tag
 // format instead of using the structured `tool_calls` array - found live
-// 2026-08-26 (RESEARCH_AND_PLAN.md §2.2), not documented anywhere:
+// 2026-08-26 (RESEARCH_AND_PLAN.md §2.2), not documented anywhere, and
+// found INCONSISTENT across responses on 2026-08-26's P5.3 eval re-run: the
+// same call shape produced both
+//   <arg_key>contradictions<arg_value>[...]           (no closing tag)
+// and
+//   <arg_key>contradictions</arg_key><arg_value>[...]  (closing tag present)
+// on different calls. The first regex only matched the no-closing-tag form
+// and silently failed the eval's C2 call even though the model had found
+// the exactly-correct answer - a parsing bug masquerading as a detection
+// miss. `(?:<\/arg_key>)?` makes the closing tag optional rather than
+// assumed either way.
 //
-//   <tool_call>report_contradictions<arg_key>contradictions<arg_value>[...]
-//
-// One <arg_key>NAME<arg_value>VALUE pair per parameter, no closing tag seen
-// in practice. `tool_calls` is empty when this happens - the structured
-// field and the inline-tag format are mutually exclusive per response, not
-// layered - so this only runs when the real array came back empty.
+// `tool_calls` is empty when this happens - the structured field and the
+// inline-tag format are mutually exclusive per response, not layered - so
+// this only runs when the real array came back empty.
 // ---------------------------------------------------------------------------
 const INLINE_TOOL_CALL_RE = /<tool_call>([a-zA-Z0-9_]+)((?:<arg_key>[\s\S]*?<arg_value>[\s\S]*?)+)(?:<\/tool_call>|$)/;
-const INLINE_ARG_RE = /<arg_key>([^<]+)<arg_value>([\s\S]*?)(?=<arg_key>|$)/g;
+const INLINE_ARG_RE = /<arg_key>([^<]+)(?:<\/arg_key>)?<arg_value>([\s\S]*?)(?=<arg_key>|<\/tool_call>|$)/g;
 
 function parseInlineToolCall(text: string): ParsedToolCall | null {
   const m = INLINE_TOOL_CALL_RE.exec(text);
