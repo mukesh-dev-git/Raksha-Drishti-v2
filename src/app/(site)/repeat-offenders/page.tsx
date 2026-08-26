@@ -46,28 +46,26 @@ export default function RepeatOffendersPage() {
 
             return (
               <div key={p.personId} className="overflow-hidden rounded-xl border border-line bg-surface shadow-sm">
-                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line bg-surface-2/50 px-5 py-4">
-                  <div className="flex items-center gap-3">
-                    <OffenderAvatar personId={p.personId} name={p.name} />
-                    <div>
-                      <p className="text-[15px] font-semibold text-navy">{p.name}</p>
-                      {p.aliases.length > 1 && (
-                        <p className="text-[12px] text-muted">
-                          Also recorded as: {p.aliases.filter((a) => a !== p.name).join(", ")}
-                        </p>
-                      )}
+                <div className="flex flex-wrap items-start gap-4 border-b border-line bg-surface-2/50 px-5 py-4">
+                  <OffenderAvatar personId={p.personId} name={p.name} />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[16px] font-semibold text-navy">{p.name}</p>
+                    {p.aliases.length > 1 && (
+                      <p className="mt-0.5 text-[12px] text-muted">
+                        Also recorded as: {p.aliases.filter((a) => a !== p.name).join(", ")}
+                      </p>
+                    )}
+                    <div className="mt-3 flex flex-wrap items-center gap-4 text-[13px] text-muted">
+                      <span className="flex items-center gap-1.5">
+                        <FolderKanban size={14} aria-hidden="true" /> {p.caseMasterIds.length} cases
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <Layers size={14} aria-hidden="true" /> {scenarios.length} investigation{scenarios.length === 1 ? "" : "s"}
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <Clock size={14} aria-hidden="true" /> {p.timeline.length} linked records
+                      </span>
                     </div>
-                  </div>
-                  <div className="flex flex-wrap items-center gap-4 text-[13px] text-muted">
-                    <span className="flex items-center gap-1.5">
-                      <FolderKanban size={14} aria-hidden="true" /> {p.caseMasterIds.length} cases
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                      <Layers size={14} aria-hidden="true" /> {scenarios.length} investigation{scenarios.length === 1 ? "" : "s"}
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                      <Clock size={14} aria-hidden="true" /> {p.timeline.length} linked records
-                    </span>
                   </div>
                 </div>
 
