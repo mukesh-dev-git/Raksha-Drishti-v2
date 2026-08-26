@@ -23,7 +23,7 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 | **P1** Data foundation | 🔵 **in progress** | P1.1 ✅ · P1.3 ✅ · P1.4 `[~]` built, not applied · **P1.2 is next** · P1.5 needs a decision · P1.6 last |
 | **P2** Route restructure | 🚧 **blocked** | PR #1 unresolved. Nothing here can start. |
 | **P3** Person spine | 🔵 **in progress** | P3.1+P3.3 ✅ (`589721d`) — fusion + timeline merge, 2 real bugs found and fixed. **P3.2 (`/persons`) is next.** |
-| **P4** Real analytics | ⚪ **mixed** | P4.1–P4.3 need P1.2's case volume. **P4.6–P4.8 (added 2026-08-26) don't** — MO-clustering and the repeat-offender surface both work on today's 19-case/15-scenario data, just get better after P1.2. |
+| **P4** Real analytics | ⚪ **mixed** | P4.1–P4.3 need P1.2's case volume. **P4.6+P4.7 done** (`f9fde9e`) — MO-clustering (3 real clusters) and the repeat-offender view (6 real people), both live. P4.8 still open. |
 | **P5** AI | 🔵 **in progress** | P5.0-P5.3, P5.2b, P5.3b ✅ — real findings now visible in the Investigation Workspace UI (2/15, honest). **P5.4 is next.** |
 | **P6** Zia | 🚧 **gated** | Needs the P6.0 yes/no on generating images. |
 | **P7** Kannada voice (Zia) | ⚪ **ready** | Not gated like P6 - P7.1 can start from data we already have. |
@@ -33,7 +33,7 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 P5.3 · X3
 
 **Ready to pick up right now, no decisions needed:** **P1.2** (then P1.6) ·
-P3.2 · P4.6 · P4.7 · P4.8 (→ P5.7) · P5.4 · P7.1 · X1 · X2
+P3.2 · P4.8 (→ P5.7) · P5.4 · P7.1 · X1 · X2
 
 **Blocked on someone, not on effort:**
 
@@ -63,7 +63,7 @@ P0  Credibility        ✅ done
 P1  Data foundation    🔵 P1.1/P1.3 done ── P1.2 is the next real unlock
 P2  Route restructure  🚧 PR #1       ── highest risk, needs PR #1 resolved
 P3  Person spine       ⚪ ready       ── P1.1 unblocked it
-P4  Real analytics     ⚪ needs P1.2  ── 4 of 6 PS asks land here
+P4  Real analytics     ⚪ P4.6/P4.7 done ── P4.1-P4.3 still need P1.2
 P5  AI features        🔵 P5.0-P5.3, P5.2b, P5.3b done ── P5.4 is next
 P6  Zia                🚧 gated on P6.0 ── only if we get images
 P7  Kannada voice       ⚪ ready       ── not gated like P6, can start now
@@ -219,30 +219,31 @@ reasons over it.*
 - [ ] **P4.4** Chargesheet rate + time-to-chargesheet from
       `ChargesheetDetails`; Heinous/Non-Heinous split from `GravityOffenceID`.
 - [ ] **P4.5** Socio-economic correlation view (gated on P1.5's framing).
-- [ ] **P4.6** *(added 2026-08-26 — user request)* **MO pattern-clustering /
-      similar-case matching.** The PS names this directly: "Network &
-      Behavioral Analysis... identifying recurring Modus Operandi." Group
-      cases by shared `Act`/`Section` combination + time-of-day bucket +
-      crime sub-type — data that's in the schema and, per the Part 5 audit,
-      **completely unused today** (`ActSectionAssociation` is seeded, never
-      read anywhere in `src/`). Deterministic similarity scoring, not an
-      LLM — same "None of this needs an LLM" framing as the rest of P4. A
-      genuinely different analytic *shape* than a map or a person-graph:
-      "these 4 unrelated-looking burglaries share a method."
-- [ ] **P4.7** *(added 2026-08-26 — user request)* **Statewide
-      repeat-offender / cross-jurisdiction network view.** The PS's other
-      named ask: "Repeat Offender Tracking... across different
-      jurisdictions." P3.1's `getCrossCasePersons()` (personFusion.ts)
-      already computes this — **but nothing surfaces it.** P3.2
-      (`/persons/[personId]`) is a profile page you reach only if you
-      already know the id; this is the missing *discovery* surface an SCRB
-      analyst would actually land on - a ranked list (most cases / most
-      districts) with a lightweight network view. Honest caveat carried
-      over from P3.1: `getCrossCasePersons()` returns **zero** people today
-      strictly cross-*scenario* — the 6 real "spans 2+ cases" examples are
-      all within one scenario. Ship the page against "spans 2+
-      `CaseMasterID`s" (6 real examples now) and it strengthens for free
-      once P1.2 authors genuinely cross-scenario repeat offenders.
+- [x] **P4.6** ~~MO pattern-clustering / similar-case matching~~ — done,
+      `/pattern-analysis` (`f9fde9e`, branch `feature/mo-patterns-and-
+      repeat-offenders`). `build_seed.mjs` now emits `caseFacts.json`
+      (per-FIR Act/Section signature + district, resolved via
+      `lookups.Unit` — the same data the Part 5 audit found read nowhere
+      in `src/`). A naive "shares any section" rule was tried and rejected
+      **after computing the real frequency table**: `IPC-420`/`379`/`120B`
+      each appear in 6 of 19 cases (~32%), so it produced one useless
+      6-case mega-cluster. Shipped rule instead: exact signature match, or
+      2+ shared sections where at least one is rare (≤3 of 19 cases).
+      **Verified against hand-computed expected output before shipping** —
+      3 real clusters across 6 real cases (a cyber-fraud pattern spanning
+      Bengaluru/Ballari, an exact assault-charge match spanning
+      Ballari/Bengaluru, a forgery pattern spanning Tumakuru/Kalaburagi),
+      and the running code reproduced that exact result.
+- [x] **P4.7** ~~Statewide repeat-offender / cross-jurisdiction network
+      view~~ — done, `/repeat-offenders` (`f9fde9e`, same branch).
+      `personFusion.ts` gains `getRepeatCaseSuspects()` — deliberately
+      **not** the same query as P3.1's `getCrossCasePersons()`
+      (scenario-count > 1, which is 0 people right now); ships against
+      "spans 2+ real `CaseMasterID`s" instead (6 real people today), per
+      this item's own note above. First UI surface anywhere in the app for
+      a computation that existed since P3.1 but nothing showed — verified
+      live by clicking a real case link through to its investigation
+      workspace, not just by reading the code.
 - [ ] **P4.8** *(added 2026-08-26 — user request)* **Fetch real aggregate
       stats on `/crime-count` and `/crime-hotspots` themselves.**
       Verified: both pages are currently a bare `PageShell` +
