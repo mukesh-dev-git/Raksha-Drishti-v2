@@ -175,13 +175,37 @@ rewrites the same workspace. **Land or close that PR first.***
 it's the PS's "impossible in Excel" claim made literal, and every AI feature
 reasons over it.*
 
-- [ ] **P3.1** Entity fusion — union-find over `Accused`/`Victim`/
-      `ComplainantDetails` + NoSQL persons → one canonical person.
-      **Deterministic code, no LLM.**
+- [x] **P3.1 + P3.3** ~~Entity fusion~~ / ~~cross-source timeline merge~~ —
+      done together as `src/lib/personFusion.ts` (built as one pass since
+      fusion's natural output IS the merged timeline). 47 people, 116
+      timeline items, all citable by real record id (P5.6-ready).
+      **Two real gaps found and fixed, not assumed away:**
+      - Five record types cite a person in five different shapes (clean
+        token on calls/statements; a token *prefix in free text* on CCTV;
+        no token at all on transactions — a name embedded in an account
+        label). A first pass only handled the clean-token cases and
+        **silently dropped C1-CC-2** — the CCTV sighting the one authored
+        contradiction in C1 actually hinges on — because it names the
+        person via "Suresh Naik's registered vehicle...", not a token.
+        Fixed with a name/alias fallback match, same technique already
+        needed for transactions. Verified Suresh's fused timeline now
+        contains it before moving on.
+      - `Victim`/`Complainant` `resolvedPersons` entries are a **different,
+        thinner shape** (`{id, name, type}`, no `personId`) — P1.1 scoped
+        its global-id work to `Accused` only. Fusing a victim would mean
+        inventing an id or keying by name, exactly what P1.1 fixed for
+        Accused — so they're skipped (`isFusable`), not guessed at. Real
+        follow-up, not done here: give Victim/Complainant the same
+        treatment.
+      - Also found: "6 people span 2+ cases" (P1.1) means 2+
+        `CaseMasterIDs`, not 2+ *scenarios* — all 6 stay within one
+        scenario. **Zero people currently span two different scenarios.**
+        The cross-jurisdiction repeat-offender story is real at the
+        multi-FIR level today, not yet at the multi-investigation level;
+        that's a data-authoring gap for P1.2, not a fusion bug.
 - [ ] **P3.2** `/persons` index + `/persons/[personId]` profile: every case
-      they touch, cross-case timeline, MO.
-- [ ] **P3.3** Cross-source timeline merge — one ordered timeline per person,
-      each event tagged with the source that reported it.
+      they touch, cross-case timeline, MO. Consumes `personFusion.ts`
+      directly - the hard part is already done.
 
 ## P4 — Real analytics (4 of the 6 PS asks)
 
