@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { ShieldAlert, Layers, FolderKanban, Clock } from "lucide-react";
+import { Layers, FolderKanban, Clock } from "lucide-react";
 import PageShell from "@/components/PageShell";
+import OffenderAvatar from "@/components/OffenderAvatar";
 import { getRepeatCaseSuspects } from "@/lib/personFusion";
 import { scenarioLink } from "@/lib/dashboardData";
 import scenarioMeta from "@/lib/nosql-seed/scenarioMeta.json";
@@ -46,8 +47,8 @@ export default function RepeatOffendersPage() {
             return (
               <div key={p.personId} className="overflow-hidden rounded-xl border border-line bg-surface shadow-sm">
                 <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line bg-surface-2/50 px-5 py-4">
-                  <div className="flex items-center gap-2.5">
-                    <ShieldAlert size={18} className="text-navy" aria-hidden="true" />
+                  <div className="flex items-center gap-3">
+                    <OffenderAvatar personId={p.personId} name={p.name} />
                     <div>
                       <p className="text-[15px] font-semibold text-navy">{p.name}</p>
                       {p.aliases.length > 1 && (
