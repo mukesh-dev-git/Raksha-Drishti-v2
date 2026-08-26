@@ -861,3 +861,79 @@ finding/no full match, none found this run) verified by temporarily
 pointing the component's fetch at a fixture route serving C1/C5/C15
 respectively, reading the rendered page text back, then reverting before
 commit - a real check of what renders, not just a passing typecheck.
+
+---
+
+# Part 7 — Two requests, added to the plan (2026-08-26)
+
+Two asks from the user, not yet built - recorded here with the reasoning,
+tasks tracked in `PLAN.md` P4.6-P4.8, P5.7.
+
+## 7.1 AI insights below the map, on both map pages
+
+Checked before proposing anything: `/crime-count` and `/crime-hotspots` are
+each **just** a `PageShell` + `MapEmbed` today - no chart, no stat, no data
+fetch of any kind on either page file. "Below the map" is currently empty,
+not under-developed.
+
+Two dependencies, tracked as separate tasks because they're genuinely
+separable work:
+
+- **P4.8** - get real aggregate numbers onto these two pages at all
+  (`getSummary`/`getCaseTypes`/district-stats - the same calls `/dashboard`
+  already makes). No LLM involved; this is plumbing.
+- **P5.7** - a narrative AI panel underneath, via `llm.ts` reasoning over
+  those real numbers in plain prose (no `tools` needed - a summary isn't a
+  structured finding). This is the PS's "Pattern & Trend Discovery" and
+  "Sociological... Predictive Dashboards" language, made concrete for the
+  two pages an SCRB analyst actually opens first.
+
+**Honest scoping note, same one that applies to the rest of P4:** the real
+Data Store has 19 cases across 8 districts today. An LLM narrating trends
+over that will read thin - a real number of cases, not a rich one. Worth
+building anyway (same "generated once, labelled as such" pattern as
+P5.3b's `AIContradictions.json`) - it gets materially better the moment
+P1.2 lands real volume, and there's no reason to gate the UI work on that.
+
+## 7.2 Two more analytics methods for SCRB
+
+Went back to the PS's own language plus the Part 5 schema audit rather
+than inventing categories. Cross-referenced against what's already
+scoped (P4.1-P4.5, P3.2) to avoid proposing something already covered -
+P4.4 already claims chargesheet/disposal analytics, for instance, so that
+was NOT one of the two chosen.
+
+**Chosen — P4.6, MO pattern-clustering / similar-case matching.** The PS,
+verbatim: *"Network & Behavioral Analysis: ...identifying recurring Modus
+Operandi (MO)."* `ActSectionAssociation` - which act/section combination
+was charged on a case - is seeded and, confirmed by the Part 5 audit,
+**read nowhere in `src/`.** Group cases by shared Act/Section combination +
+time-of-day bucket + crime sub-type: a genuinely different analytic shape
+from a map or a person-graph - "these four unrelated-looking burglaries
+share a method," which is precisely the thing a spreadsheet can't surface
+and the PS names as impossible in Excel. Deterministic, not an LLM - stays
+consistent with P4's "none of this needs an LLM" framing.
+
+**Chosen — P4.7, statewide repeat-offender / cross-jurisdiction network
+view.** The PS's other named ask: *"Repeat Offender Tracking... across
+different jurisdictions."* The underlying computation already exists -
+`personFusion.ts`'s `getCrossCasePersons()` (P3.1, built 2026-08-26) - but
+has **zero UI surface anywhere in the app.** P3.2 (`/persons/[personId]`)
+is a profile page reachable only if an analyst already has a specific id
+in hand; nothing today is the *discovery* page an SCRB analyst would
+actually land on first ("who is operating across more than one case right
+now"). Same honest caveat P3.1 already recorded: `getCrossCasePersons()`
+returns zero people cross-*scenario* today (the 6 real "spans 2+ cases"
+examples are all within one scenario) - the page should ship against
+"spans 2+ `CaseMasterID`s" (real, 6 examples now) rather than wait for
+genuinely cross-scenario data, and strengthens for free once P1.2 authors
+some.
+
+**Considered, not chosen (both already tracked elsewhere, so proposing
+them again here would have been double-counting, not a real second and
+third option):**
+- Anomaly / trend-spike detection - already **P4.3**.
+- Predictive risk scoring - already noted in §2.4 as `⏸️`, gated on
+  QuickML Pipelines plus a historical baseline the seed doesn't carry.
+- Socio-economic correlation - already **P4.5**, gated on P1.5's framing
+  decision (caste/religion/occupation presentation).

@@ -23,7 +23,7 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 | **P1** Data foundation | 🔵 **in progress** | P1.1 ✅ · P1.3 ✅ · P1.4 `[~]` built, not applied · **P1.2 is next** · P1.5 needs a decision · P1.6 last |
 | **P2** Route restructure | 🚧 **blocked** | PR #1 unresolved. Nothing here can start. |
 | **P3** Person spine | 🔵 **in progress** | P3.1+P3.3 ✅ (`589721d`) — fusion + timeline merge, 2 real bugs found and fixed. **P3.2 (`/persons`) is next.** |
-| **P4** Real analytics | ⚪ **waiting on P1.2** | Needs case volume before a hotspot or a trend means anything. |
+| **P4** Real analytics | ⚪ **mixed** | P4.1–P4.3 need P1.2's case volume. **P4.6–P4.8 (added 2026-08-26) don't** — MO-clustering and the repeat-offender surface both work on today's 19-case/15-scenario data, just get better after P1.2. |
 | **P5** AI | 🔵 **in progress** | P5.0-P5.3, P5.2b, P5.3b ✅ — real findings now visible in the Investigation Workspace UI (2/15, honest). **P5.4 is next.** |
 | **P6** Zia | 🚧 **gated** | Needs the P6.0 yes/no on generating images. |
 | **P7** Kannada voice (Zia) | ⚪ **ready** | Not gated like P6 - P7.1 can start from data we already have. |
@@ -33,7 +33,7 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 P5.3 · X3
 
 **Ready to pick up right now, no decisions needed:** **P1.2** (then P1.6) ·
-P3.2 · P5.4 · P7.1 · X1 · X2
+P3.2 · P4.6 · P4.7 · P4.8 (→ P5.7) · P5.4 · P7.1 · X1 · X2
 
 **Blocked on someone, not on effort:**
 
@@ -219,6 +219,37 @@ reasons over it.*
 - [ ] **P4.4** Chargesheet rate + time-to-chargesheet from
       `ChargesheetDetails`; Heinous/Non-Heinous split from `GravityOffenceID`.
 - [ ] **P4.5** Socio-economic correlation view (gated on P1.5's framing).
+- [ ] **P4.6** *(added 2026-08-26 — user request)* **MO pattern-clustering /
+      similar-case matching.** The PS names this directly: "Network &
+      Behavioral Analysis... identifying recurring Modus Operandi." Group
+      cases by shared `Act`/`Section` combination + time-of-day bucket +
+      crime sub-type — data that's in the schema and, per the Part 5 audit,
+      **completely unused today** (`ActSectionAssociation` is seeded, never
+      read anywhere in `src/`). Deterministic similarity scoring, not an
+      LLM — same "None of this needs an LLM" framing as the rest of P4. A
+      genuinely different analytic *shape* than a map or a person-graph:
+      "these 4 unrelated-looking burglaries share a method."
+- [ ] **P4.7** *(added 2026-08-26 — user request)* **Statewide
+      repeat-offender / cross-jurisdiction network view.** The PS's other
+      named ask: "Repeat Offender Tracking... across different
+      jurisdictions." P3.1's `getCrossCasePersons()` (personFusion.ts)
+      already computes this — **but nothing surfaces it.** P3.2
+      (`/persons/[personId]`) is a profile page you reach only if you
+      already know the id; this is the missing *discovery* surface an SCRB
+      analyst would actually land on - a ranked list (most cases / most
+      districts) with a lightweight network view. Honest caveat carried
+      over from P3.1: `getCrossCasePersons()` returns **zero** people today
+      strictly cross-*scenario* — the 6 real "spans 2+ cases" examples are
+      all within one scenario. Ship the page against "spans 2+
+      `CaseMasterID`s" (6 real examples now) and it strengthens for free
+      once P1.2 authors genuinely cross-scenario repeat offenders.
+- [ ] **P4.8** *(added 2026-08-26 — user request)* **Fetch real aggregate
+      stats on `/crime-count` and `/crime-hotspots` themselves.**
+      Verified: both pages are currently a bare `PageShell` +
+      `MapEmbed` and nothing else — no `getSummary`/`getCaseTypes` call, no
+      chart, no stat card, on either page file. Prerequisite for P5.7
+      below (there's no "below the map" content to attach AI insights to
+      yet). Same real/fallback data pattern as everywhere else in the app.
 
 ## P5 — AI 🚧
 
@@ -359,6 +390,20 @@ reasons over it.*
       number.
 - [ ] **P5.6** Citation guardrail enforced **in the tool schema**: no finding
       renders without a real record ID.
+- [ ] **P5.7** *(added 2026-08-26 — user request)* **AI insights panel below
+      the map on `/crime-count` and `/crime-hotspots`** (needs P4.8's real
+      stats to exist first). Plain narrative prose via `llm.ts` (no
+      `tools`/`tool_choice` needed here — this is a summary, not a
+      structured finding), reasoning over real `getSummary`/`getCaseTypes`/
+      district-stats numbers: "Theft is up X% in Bengaluru Urban this
+      quarter while clearance held steady in Mysuru" - the PS's "Pattern &
+      Trend Discovery" and "Sociological... Predictive Dashboards" made
+      concrete for the two pages that most need it. Same honest caveat as
+      the rest of P4: reasoning over 19 real cases across 8 districts (pre-
+      P1.2) will read thin - a real number of cases, but not enough to
+      narrate convincingly. Worth shipping now regardless (labelled
+      "generated once" like P5.3b, same pattern), and gets materially
+      better the moment P1.2 lands, not blocked on it.
 
 ## P6 — Zia (gated)
 
