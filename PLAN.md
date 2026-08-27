@@ -21,7 +21,7 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 |---|---|---|
 | **P0** Credibility | ✅ **done** | All 5. App no longer promises what it can't do. |
 | **P1** Data foundation | 🔵 **in progress** | P1.1 ✅ · P1.3 ✅ · P1.4 `[~]` built, not applied · **P1.2 is next** · P1.5 needs a decision · P1.6 last |
-| **P2** Route restructure | 🚧 **blocked** | PR #1 unresolved. Nothing here can start. |
+| **P2** Route restructure | 🔵 **in progress** | On `feature/cases-restructure-crud`. P2.1+P2.1a done — real FIR Index (`/cases`) + real case detail (`/cases/[caseId]`), old `[caseType]` routes retired. **P2.1b (districts) is next**, then P2.1c (persons), P2.1d (search), P2.4 (CRUD write endpoints). |
 | **P3** Person spine | 🔵 **in progress** | P3.1+P3.3 ✅ (`589721d`) — fusion + timeline merge, 2 real bugs found and fixed. **P3.2 (`/persons`) is next.** |
 | **P4** Real analytics | ⚪ **mixed** | P4.1–P4.3 need P1.2's case volume. **P4.6+P4.7 done** (`f9fde9e`) — MO-clustering (3 real clusters) and the repeat-offender view (6 real people), both live. P4.8 still open. |
 | **P5** AI | 🔵 **in progress** | P5.0-P5.3, P5.2b, P5.3b ✅ — real findings now visible in the Investigation Workspace UI (2/15, honest). **P5.4 is next.** P5.8 (ask-anything chatbot, real case-file links) added, not started. |
@@ -32,14 +32,15 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 **Done so far:** P0.1–P0.5 · P1.1 · P1.3 · P3.1 · P3.3 · P5.0 · P5.1 · P5.2 ·
 P5.3 · X3
 
-**Ready to pick up right now, no decisions needed:** **P1.2** (then P1.6) ·
+**Ready to pick up right now, no decisions needed:** **P2.1b** (districts,
+then P2.1c persons, P2.1d search, P2.4 CRUD) · **P1.2** (then P1.6) ·
 P3.2 · P4.8 (→ P5.7) · P5.4 · P5.8 · P7.1 · X1 · X2
 
 **Blocked on someone, not on effort:**
 
 | Blocked | Needs |
 |---|---|
-| All of P2 | **PR #1 — merge or close** |
+| ~~All of P2~~ | ~~PR #1 — merge or close~~ — **unblocked 2026-08-27**, resolved by decision (proceed independently) |
 | ~~All of P5~~ | ~~a working access token~~ — **unblocked**, `src/lib/llm.ts` verified live |
 | All of P6 | **P6.0 — do we generate images at all?** "No" closes the track cleanly |
 | P1.5, P4.5 | **Agreement on the caste/religion framing** before anything is built |
@@ -158,17 +159,99 @@ locally, then wipe + re-import **once**. See `RESEARCH_AND_PLAN.md` §5.*
 - [ ] **P1.6** Wipe the Data Store and re-import cleanly. Record row counts in
       `catalyst/README.md`.
 
-## P2 — Route restructure 🚧
+## P2 — Route restructure 🔵 in progress (`feature/cases-restructure-crud`)
 
-*Blocked: collides head-on with the open Investigation Module PR, which
-rewrites the same workspace. **Land or close that PR first.***
+*Grounded in real CCTNS/Karnataka-police workflow research (chat, 2026-08-27),
+not a guess: real systems are search-first (FIR number / person / district),
+with a flat FIR Index worklist as the daily-use screen - not a mandatory
+"pick a crime type, then a district" gate to reach one case. Approved via a
+click-through prototype before any restructuring code was written.*
 
-- [ ] **P2.0** 🚧 Resolve PR #1 — merge it or close it.
-- [ ] **P2.1** Move the workspace to `/cases/[caseId]`. Crime type and
-      district become **query filters** on `/cases`, not path segments.
-- [ ] **P2.2** Keep old URLs 301-redirecting so nothing already demoed 404s.
+- [x] **P2.0** ~~Resolve PR #1~~ — resolved by decision, not merge. v2 PR #1
+      ("Investigation Module — synthetic-data domain model + full case
+      workspace", KavyaSreeA, opened 2026-08-24) overlaps heavily with this
+      work and was already `CONFLICTING`/stale against main. User decision:
+      treat it as superseded, proceed independently - PR left open for the
+      user to close/discuss with the author directly, not touched here.
+- [x] **P2.1** `/cases` rebuilt as the real FIR Index — every real FIR (19),
+      one flat searchable/filterable list (crime type / district / status /
+      free text), not a category picker. `src/lib/caseWorklist.ts`.
+      Replaces `data.ts`'s `caseFiles` placeholder (3 hardcoded FIR-100x
+      rows shown unfiltered under every case type + district).
+- [x] **P2.1a** `/cases/[caseId]` — new, real, single-case detail page,
+      keyed by the actual `CaseMasterID`. Replaces two fake terminuses at
+      once: `case-files/[caseId]` (the RNG-mock flipbook) and the real half
+      of the old `investigation-workspace` (a live-ZCQL call that can't run
+      in local dev and only ever resolved "first scenario matching this
+      crime type + district", not one specific case). Real case facts,
+      sections, sibling-FIR cross-links (a scenario can span 2+ FIRs),
+      cross-source evidence timeline (`CrossSourceTimeline`, reused from
+      P4.7), and both verified + AI-detected contradiction findings, kept
+      visibly distinct per the existing `RealEvidenceFeed` convention.
+      **Forced retirement, not optional scope:** Next.js rejects two
+      differently-named dynamic segments at the same path level
+      (`[caseId]` vs `[caseType]`) as a hard build error - so shipping
+      `/cases/[caseId]` required deleting the entire old `[caseType]` tree
+      in the same change (`investigation-workspace`, `case-files`,
+      `case-files/[caseId]`, `district-wise`, and their components:
+      `InvestigationWorkspaceClient`, `CaseFilesListClient`,
+      `DistrictWiseClient`, `CasesListClient`). `scenarioLink()`
+      (dashboardData.ts) and `moPatterns.ts`'s link-builder were updated to
+      point at the new route - confirmed only 2 call sites, no others.
+      **Real data-quality fix along the way:** all 19 real FIRs had been
+      hardcoded to `CaseStatusID=4` ("Under Investigation") - a real,
+      unused `CaseStatusMaster` column. Hand-varied 6 by registered-date
+      age (2 Closed, 3 Charge Sheeted, 1 Open, 13 stay Under Investigation)
+      so status filtering has something real to show - documented in
+      `build_seed.mjs` §7 with exact reasoning per case.
+      **Bug found + fixed live:** `border-danger/30`-style Tailwind opacity
+      modifiers silently fail on this app's plain-hex color tokens
+      (confirmed via computed-style check - falls back to default gray,
+      not the intended tint). Fixed in the new page; flagged as a spawned
+      follow-up task for the same pre-existing bug elsewhere (AlertsPanel,
+      HomeHeader, AIPanel, CrossSourceTimeline).
+      Verified: typecheck clean, production build clean, live in-browser -
+      worklist stat tiles/filters/rows and case-detail facts/evidence/
+      contradictions all confirmed against real data, not just rendered.
+- [ ] **P2.1b** `/districts` + `/districts/[district]` — new, the SP/Range
+      lens (pendency, clearance, real case list for that district),
+      decoupled from crime type. Absorbs the real half of the old
+      `district-wise` trend/clearance content; crime type becomes a filter
+      on the district's case list, not a path segment above it.
+      **Not started.**
+- [ ] **P2.1c** `/persons` + `/persons/[personId]` — new. The Crime and
+      Criminal Records Search equivalent: search any person, land on their
+      fused profile. `/repeat-offenders` becomes a filtered view into this
+      (2+ cases) rather than the only place a person is reachable; its
+      detail panel becomes this real, linkable page. **Not started.**
+- [ ] **P2.1d** Wire the header search bar (`DashboardTopbar.tsx`) to real
+      data — currently a fully decorative `<input>`, zero state/routing.
+      Should hit case worklist + persons (once P2.1c exists) + districts,
+      grouped results, same shape as the approved prototype. **Not started.**
+- [ ] **P2.2** Old-URL redirects — `/cases/[caseType]/[district]/
+      investigation-workspace` etc. now 404 instead of resolving (nothing
+      in-app still links to them, but anything bookmarked/demoed against
+      the old URLs will break). Add `redirects()` in `next.config.js` if
+      that matters for this project. **Not started, real gap.**
 - [ ] **P2.3** Rebuild `/dashboard` as an attention list — alerts and
-      anomalies first, totals demoted to a strip.
+      anomalies first, totals demoted to a strip. **Not started.**
+- [ ] **P2.4** CRUD hooks, built in parallel per user request (not after
+      the restructure) — case status update, investigating-officer
+      assignment, case-diary entries on `/cases/[caseId]`. Needs real
+      POST/PUT endpoints (zero write endpoints exist anywhere today -
+      confirmed earlier this session) - and since local dev has no live
+      Catalyst request context (`catalyst/README.md`), full round-trip
+      testing needs a Slate deploy, not just `npm run dev`. **Not started -
+      the prototype's status-dropdown/diary-entry demo was UI-only, no real
+      write endpoint behind it yet.**
+
+**Known follow-up, not done here:** `investigationData.ts` and every
+component that only it fed (`AIPanel.tsx`, `EntityDetailCard.tsx`,
+`entityStyles.tsx`, `EvidenceBoard.tsx`, `EvidencePanel.tsx`,
+`TimelinePanel.tsx`, `flipbook/*`) are now fully dead code - confirmed
+nothing under `src/app` imports them any more. Left in place rather than
+deleted in the same change as the routing retirement; worth a dedicated
+cleanup pass.
 
 ## P3 — The person spine
 

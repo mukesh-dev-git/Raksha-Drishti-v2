@@ -280,7 +280,25 @@ console.log(`scenarioMeta.json`.padEnd(30), `${Object.keys(scenarioMeta).length}
 // see catalyst/README.md on why local dev has no Catalyst request context).
 // One row per real FIR (19 today), not per scenario - MO clustering needs
 // each case's own section signature and district, not the scenario summary.
+//
+// Extended for the P2 cases restructure (case worklist / case detail): now
+// also carries caseStatusId, the registered date, and the resolved police
+// station name - the fields a real FIR Index and a real case-detail page
+// actually need, so neither has to re-import lookups.json or cases.json
+// itself (which aren't bundled into src/).
+//
+// caseStatusId is real CaseStatusMaster data (1 Open / 2 Charge Sheeted /
+// 3 Closed / 4 Under Investigation) that was sitting unused: every one of
+// the 19 real FIRs was hardcoded to 4 in cases.json, so a real status-
+// filterable worklist would have shown one status for every case. Hand-
+// varied 6 of the 19 by registered-date age relative to today (2026-08-27)
+// before this run - the 2 oldest (9008, Jan 18; 9003, Feb 2) to Closed, 3
+// more from Feb-Mar to Charge Sheeted (9001, 9002, 9012), the newest
+// past-dated one (9011, Aug 1) to Open - so the worklist has a real,
+// defensible spread instead of 19 identical pills. The other 13 stay
+// Under Investigation, which is realistic - most active cases sit there.
 const unitToDistrict = new Map(lookups.Unit.map((u) => [u.UnitID, u.DistrictID]));
+const unitById = new Map(lookups.Unit.map((u) => [u.UnitID, u]));
 const caseFacts = {};
 for (const c of dataset.cases) {
   for (const fir of c.firs) {
@@ -291,15 +309,24 @@ for (const c of dataset.cases) {
           .map((a) => `${a.ActID}-${a.SectionID}`)
       ),
     ];
+    const complainantNames = (c.complainants || [])
+      .filter((x) => x.CaseMasterID === fir.CaseMasterID)
+      .map((x) => x.ComplainantName);
+    const unit = unitById.get(fir.PoliceStationID);
     caseFacts[fir.CaseMasterID] = {
       caseMasterId: fir.CaseMasterID,
       scenarioId: c.scenarioId,
       crimeNo: fir.CrimeNo,
       crimeMinorHeadId: fir.CrimeMinorHeadID,
-      districtId: unitToDistrict.get(fir.PoliceStationID) ?? null,
+      districtId: unit?.DistrictID ?? unitToDistrict.get(fir.PoliceStationID) ?? null,
+      policeStationId: fir.PoliceStationID,
+      policeStationName: unit?.UnitName ?? null,
       sections,
       incidentFromDate: fir.IncidentFromDate,
+      crimeRegisteredDate: fir.CrimeRegisteredDate,
       gravityOffenceId: fir.GravityOffenceID,
+      caseStatusId: fir.CaseStatusID,
+      complainantNames,
     };
   }
 }

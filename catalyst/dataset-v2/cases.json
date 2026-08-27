@@ -19,7 +19,7 @@
           "CaseMasterID": 9001, "CrimeNo": "144010101202600001", "CaseNo": "202600001",
           "CrimeRegisteredDate": "2026-03-15", "PolicePersonID": 5001, "PoliceStationID": 440101,
           "CaseCategoryID": 1, "GravityOffenceID": 2, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 1,
-          "CaseStatusID": 4, "CourtID": 3001,
+          "CaseStatusID": 2, "CourtID": 3001,
           "IncidentFromDate": "2026-03-14T20:15:00", "IncidentToDate": "2026-03-14T20:30:00",
           "InfoReceivedPSDate": "2026-03-14T21:00:00", "latitude": 13.032433, "longitude": 77.557783,
           "BriefFacts": "Complainant reports 3 motorcycles stolen from a paid parking lot near Yeshwanthpur station between 8:15-8:30pm."
@@ -28,7 +28,7 @@
           "CaseMasterID": 9002, "CrimeNo": "144060601202600001", "CaseNo": "202600001",
           "CrimeRegisteredDate": "2026-03-20", "PolicePersonID": 5007, "PoliceStationID": 440601,
           "CaseCategoryID": 1, "GravityOffenceID": 2, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 3,
-          "CaseStatusID": 4, "CourtID": 3006,
+          "CaseStatusID": 2, "CourtID": 3006,
           "IncidentFromDate": "2026-03-19T00:00:00", "IncidentToDate": "2026-03-19T00:00:00",
           "InfoReceivedPSDate": "2026-03-20T11:30:00", "latitude": 13.340396, "longitude": 77.11964,
           "BriefFacts": "4 buyers report being sold motorcycles with forged registration transfer papers by a man identifying himself as a used-vehicle dealer."
@@ -105,7 +105,7 @@
           "CaseMasterID": 9003, "CrimeNo": "144020201202600001", "CaseNo": "202600001",
           "CrimeRegisteredDate": "2026-02-02", "PolicePersonID": 5003, "PoliceStationID": 440201,
           "CaseCategoryID": 1, "GravityOffenceID": 1, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 1,
-          "CaseStatusID": 4, "CourtID": 3002,
+          "CaseStatusID": 3, "CourtID": 3002,
           "IncidentFromDate": "2026-02-01T18:40:00", "IncidentToDate": "2026-02-01T18:50:00",
           "InfoReceivedPSDate": "2026-02-01T19:10:00", "latitude": 12.302372, "longitude": 76.650969,
           "BriefFacts": "4-5 men enter a jewellery shop near K.R. Market at closing time, threaten staff, and flee with gold ornaments worth approx. Rs 32 lakh."
@@ -388,7 +388,7 @@
           "CaseMasterID": 9008, "CrimeNo": "144070701202600001", "CaseNo": "202600001",
           "CrimeRegisteredDate": "2026-01-18", "PolicePersonID": 5009, "PoliceStationID": 440701,
           "CaseCategoryID": 1, "GravityOffenceID": 1, "CrimeMajorHeadID": 2, "CrimeMinorHeadID": 2,
-          "CaseStatusID": 4, "CourtID": 3007,
+          "CaseStatusID": 3, "CourtID": 3007,
           "IncidentFromDate": "2026-01-17T19:00:00", "IncidentToDate": "2026-01-17T19:20:00",
           "InfoReceivedPSDate": "2026-01-17T20:00:00", "latitude": 15.133152, "longitude": 76.927674,
           "BriefFacts": "Worker who publicly demanded overdue wages is beaten by 3 men near the mine site gate; sustains a fractured arm."
@@ -528,7 +528,7 @@
           "CaseMasterID": 9011, "CrimeNo": "144010102202600003", "CaseNo": "202600003",
           "CrimeRegisteredDate": "2026-08-01", "PolicePersonID": 5002, "PoliceStationID": 440102,
           "CaseCategoryID": 1, "GravityOffenceID": 2, "CrimeMajorHeadID": 1, "CrimeMinorHeadID": 3,
-          "CaseStatusID": 4, "CourtID": 3001,
+          "CaseStatusID": 1, "CourtID": 3001,
           "IncidentFromDate": "2026-06-15T00:00:00", "IncidentToDate": "2026-07-30T00:00:00",
           "InfoReceivedPSDate": "2026-08-01T09:00:00", "latitude": 12.971845, "longitude": 77.758155,
           "BriefFacts": "Raid on a Whitefield office space following multiple victim complaints of fraudulent 'Microsoft support' calls resulting in remote-access bank fraud."
@@ -599,7 +599,7 @@
           "CaseMasterID": 9012, "CrimeNo": "144020202202600004", "CaseNo": "202600004",
           "CrimeRegisteredDate": "2026-02-20", "PolicePersonID": 5003, "PoliceStationID": 440202,
           "CaseCategoryID": 1, "GravityOffenceID": 2, "CrimeMajorHeadID": 2, "CrimeMinorHeadID": 2,
-          "CaseStatusID": 4, "CourtID": 3002,
+          "CaseStatusID": 2, "CourtID": 3002,
           "IncidentFromDate": "2026-02-19T21:00:00", "IncidentToDate": "2026-02-19T21:30:00",
           "InfoReceivedPSDate": "2026-02-19T22:15:00", "latitude": 12.326085, "longitude": 76.615557,
           "BriefFacts": "Complainant reports being assaulted by her husband after a dispute; visible injuries noted by attending officer."

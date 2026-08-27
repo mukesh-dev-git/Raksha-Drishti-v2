@@ -5,12 +5,19 @@
     "crimeNo": "144010101202600001",
     "crimeMinorHeadId": 1,
     "districtId": 4401,
+    "policeStationId": 440101,
+    "policeStationName": "Yeshwanthpur PS",
     "sections": [
       "IPC-379",
       "IPC-34"
     ],
     "incidentFromDate": "2026-03-14 20:15:00",
-    "gravityOffenceId": 2
+    "crimeRegisteredDate": "2026-03-15",
+    "gravityOffenceId": 2,
+    "caseStatusId": 2,
+    "complainantNames": [
+      "Ramesh K"
+    ]
   },
   "9002": {
     "caseMasterId": 9002,
@@ -18,13 +25,20 @@
     "crimeNo": "144060601202600001",
     "crimeMinorHeadId": 3,
     "districtId": 4406,
+    "policeStationId": 440601,
+    "policeStationName": "Tumakuru City PS",
     "sections": [
       "IPC-420",
       "IPC-468",
       "IPC-471"
     ],
     "incidentFromDate": "2026-03-19 00:00:00",
-    "gravityOffenceId": 2
+    "crimeRegisteredDate": "2026-03-20",
+    "gravityOffenceId": 2,
+    "caseStatusId": 2,
+    "complainantNames": [
+      "Girish Patel"
+    ]
   },
   "9003": {
     "caseMasterId": 9003,
@@ -32,6 +46,8 @@
     "crimeNo": "144020201202600001",
     "crimeMinorHeadId": 1,
     "districtId": 4402,
+    "policeStationId": 440201,
+    "policeStationName": "K.R. Market PS",
     "sections": [
       "IPC-384",
       "IPC-324",
@@ -39,7 +55,12 @@
       "IPC-120B"
     ],
     "incidentFromDate": "2026-02-01 18:40:00",
-    "gravityOffenceId": 1
+    "crimeRegisteredDate": "2026-02-02",
+    "gravityOffenceId": 1,
+    "caseStatusId": 3,
+    "complainantNames": [
+      "Nataraj Shetty (shop owner)"
+    ]
   },
   "9004": {
     "caseMasterId": 9004,
@@ -47,12 +68,19 @@
     "crimeNo": "144030301202600001",
     "crimeMinorHeadId": 3,
     "districtId": 4403,
+    "policeStationId": 440301,
+    "policeStationName": "Belagavi Camp PS",
     "sections": [
       "IPC-384",
       "IPC-506"
     ],
     "incidentFromDate": "2026-03-01 00:00:00",
-    "gravityOffenceId": 2
+    "crimeRegisteredDate": "2026-04-05",
+    "gravityOffenceId": 2,
+    "caseStatusId": 4,
+    "complainantNames": [
+      "Vinayak Desai"
+    ]
   },
   "9005": {
     "caseMasterId": 9005,
@@ -60,13 +88,21 @@
     "crimeNo": "144010102202600002",
     "crimeMinorHeadId": 3,
     "districtId": 4401,
+    "policeStationId": 440102,
+    "policeStationName": "Whitefield PS",
     "sections": [
       "IPC-384",
       "ITACT-66D",
       "IPC-506"
     ],
     "incidentFromDate": "2026-03-10 00:00:00",
-    "gravityOffenceId": 2
+    "crimeRegisteredDate": "2026-04-10",
+    "gravityOffenceId": 2,
+    "caseStatusId": 4,
+    "complainantNames": [
+      "Farida Banu",
+      "Rohit Shetty"
+    ]
   },
   "9006": {
     "caseMasterId": 9006,
@@ -74,6 +110,8 @@
     "crimeNo": "144040401202600001",
     "crimeMinorHeadId": 3,
     "districtId": 4404,
+    "policeStationId": 440401,
+    "policeStationName": "Kalaburagi Town PS",
     "sections": [
       "IPC-467",
       "IPC-468",
@@ -82,7 +120,12 @@
       "IPC-120B"
     ],
     "incidentFromDate": "2026-04-01 00:00:00",
-    "gravityOffenceId": 2
+    "crimeRegisteredDate": "2026-05-12",
+    "gravityOffenceId": 2,
+    "caseStatusId": 4,
+    "complainantNames": [
+      "Basavaraj Patil (actual owner)"
+    ]
   },
   "9007": {
     "caseMasterId": 9007,
@@ -90,13 +133,20 @@
     "crimeNo": "144050501202600001",
     "crimeMinorHeadId": 4,
     "districtId": 4405,
+    "policeStationId": 440501,
+    "policeStationName": "Mangaluru North PS",
     "sections": [
       "IPC-457",
       "IPC-380",
       "IPC-411"
     ],
     "incidentFromDate": "2026-06-02 02:00:00",
-    "gravityOffenceId": 2
+    "crimeRegisteredDate": "2026-06-03",
+    "gravityOffenceId": 2,
+    "caseStatusId": 4,
+    "complainantNames": [
+      "Melvin D'Souza (warehouse manager)"
+    ]
   },
   "9008": {
     "caseMasterId": 9008,
@@ -104,13 +154,20 @@
     "crimeNo": "144070701202600001",
     "crimeMinorHeadId": 2,
     "districtId": 4407,
+    "policeStationId": 440701,
+    "policeStationName": "Ballari Town PS",
     "sections": [
       "IPC-324",
       "IPC-506",
       "IPC-34"
     ],
     "incidentFromDate": "2026-01-17 19:00:00",
-    "gravityOffenceId": 1
+    "crimeRegisteredDate": "2026-01-18",
+    "gravityOffenceId": 1,
+    "caseStatusId": 3,
+    "complainantNames": [
+      "Hanumantha Naik"
+    ]
   },
   "9009": {
     "caseMasterId": 9009,
@@ -118,11 +175,18 @@
     "crimeNo": "144080802202600001",
     "crimeMinorHeadId": 1,
     "districtId": 4408,
+    "policeStationId": 440802,
+    "policeStationName": "Sagar Rural PS",
     "sections": [
       "IPC-379"
     ],
     "incidentFromDate": "2026-07-07 23:00:00",
-    "gravityOffenceId": 2
+    "crimeRegisteredDate": "2026-07-08",
+    "gravityOffenceId": 2,
+    "caseStatusId": 4,
+    "complainantNames": [
+      "Shivappa Gowda"
+    ]
   },
   "9010": {
     "caseMasterId": 9010,
@@ -130,12 +194,19 @@
     "crimeNo": "144060602202600002",
     "crimeMinorHeadId": 1,
     "districtId": 4406,
+    "policeStationId": 440602,
+    "policeStationName": "Sira Rural PS",
     "sections": [
       "IPC-379",
       "IPC-411"
     ],
     "incidentFromDate": "2026-07-14 22:30:00",
-    "gravityOffenceId": 2
+    "crimeRegisteredDate": "2026-07-15",
+    "gravityOffenceId": 2,
+    "caseStatusId": 4,
+    "complainantNames": [
+      "Nagaraju H"
+    ]
   },
   "9011": {
     "caseMasterId": 9011,
@@ -143,6 +214,8 @@
     "crimeNo": "144010102202600003",
     "crimeMinorHeadId": 3,
     "districtId": 4401,
+    "policeStationId": 440102,
+    "policeStationName": "Whitefield PS",
     "sections": [
       "IPC-420",
       "ITACT-66D",
@@ -150,7 +223,13 @@
       "IPC-120B"
     ],
     "incidentFromDate": "2026-06-15 00:00:00",
-    "gravityOffenceId": 2
+    "crimeRegisteredDate": "2026-08-01",
+    "gravityOffenceId": 2,
+    "caseStatusId": 1,
+    "complainantNames": [
+      "Margaret Fernandes (victim, complainant)",
+      "K.S. Venkataraman (victim, complainant)"
+    ]
   },
   "9012": {
     "caseMasterId": 9012,
@@ -158,12 +237,19 @@
     "crimeNo": "144020202202600004",
     "crimeMinorHeadId": 2,
     "districtId": 4402,
+    "policeStationId": 440202,
+    "policeStationName": "Vidyaranyapuram PS",
     "sections": [
       "IPC-323",
       "IPC-506"
     ],
     "incidentFromDate": "2026-02-19 21:00:00",
-    "gravityOffenceId": 2
+    "crimeRegisteredDate": "2026-02-20",
+    "gravityOffenceId": 2,
+    "caseStatusId": 2,
+    "complainantNames": [
+      "Rekha Iyengar"
+    ]
   },
   "9013": {
     "caseMasterId": 9013,
@@ -171,13 +257,20 @@
     "crimeNo": "144030301202600002",
     "crimeMinorHeadId": 4,
     "districtId": 4403,
+    "policeStationId": 440301,
+    "policeStationName": "Belagavi Camp PS",
     "sections": [
       "IPC-457",
       "IPC-379",
       "IPC-413"
     ],
     "incidentFromDate": "2026-05-21 01:00:00",
-    "gravityOffenceId": 2
+    "crimeRegisteredDate": "2026-05-22",
+    "gravityOffenceId": 2,
+    "caseStatusId": 4,
+    "complainantNames": [
+      "Ajay Kulkarni"
+    ]
   },
   "9014": {
     "caseMasterId": 9014,
@@ -185,13 +278,20 @@
     "crimeNo": "144040401202600002",
     "crimeMinorHeadId": 1,
     "districtId": 4404,
+    "policeStationId": 440401,
+    "policeStationName": "Kalaburagi Town PS",
     "sections": [
       "IPC-379",
       "IPC-354",
       "IPC-120B"
     ],
     "incidentFromDate": "2026-11-01 20:00:00",
-    "gravityOffenceId": 1
+    "crimeRegisteredDate": "2026-11-02",
+    "gravityOffenceId": 1,
+    "caseStatusId": 4,
+    "complainantNames": [
+      "Savitri Deshmukh (guest, victim)"
+    ]
   },
   "9015": {
     "caseMasterId": 9015,
@@ -199,13 +299,21 @@
     "crimeNo": "144050501202600002",
     "crimeMinorHeadId": 3,
     "districtId": 4405,
+    "policeStationId": 440501,
+    "policeStationName": "Mangaluru North PS",
     "sections": [
       "IPC-420",
       "IPC-406",
       "IPC-120B"
     ],
     "incidentFromDate": "2026-04-01 00:00:00",
-    "gravityOffenceId": 2
+    "crimeRegisteredDate": "2026-09-10",
+    "gravityOffenceId": 2,
+    "caseStatusId": 4,
+    "complainantNames": [
+      "Vincent Lobo",
+      "Shwetha Kamath"
+    ]
   },
   "9016": {
     "caseMasterId": 9016,
@@ -213,12 +321,19 @@
     "crimeNo": "144070701202600002",
     "crimeMinorHeadId": 3,
     "districtId": 4407,
+    "policeStationId": 440701,
+    "policeStationName": "Ballari Town PS",
     "sections": [
       "ITACT-66C",
       "IPC-420"
     ],
     "incidentFromDate": "2026-09-20 00:00:00",
-    "gravityOffenceId": 2
+    "crimeRegisteredDate": "2026-10-05",
+    "gravityOffenceId": 2,
+    "caseStatusId": 4,
+    "complainantNames": [
+      "Bank Nodal Officer, Ballari Branch"
+    ]
   },
   "9017": {
     "caseMasterId": 9017,
@@ -226,12 +341,19 @@
     "crimeNo": "144010103202600004",
     "crimeMinorHeadId": 3,
     "districtId": 4401,
+    "policeStationId": 440103,
+    "policeStationName": "K.G. Halli PS",
     "sections": [
       "ITACT-66C",
       "IPC-420"
     ],
     "incidentFromDate": "2026-10-08 00:00:00",
-    "gravityOffenceId": 2
+    "crimeRegisteredDate": "2026-10-18",
+    "gravityOffenceId": 2,
+    "caseStatusId": 4,
+    "complainantNames": [
+      "Bank Nodal Officer, K.G. Halli Branch"
+    ]
   },
   "9018": {
     "caseMasterId": 9018,
@@ -239,12 +361,19 @@
     "crimeNo": "144080801202600001",
     "crimeMinorHeadId": 4,
     "districtId": 4408,
+    "policeStationId": 440801,
+    "policeStationName": "Shivamogga City PS",
     "sections": [
       "IPC-379",
       "IPC-120B"
     ],
     "incidentFromDate": "2026-11-29 02:00:00",
-    "gravityOffenceId": 1
+    "crimeRegisteredDate": "2026-12-01",
+    "gravityOffenceId": 1,
+    "caseStatusId": 4,
+    "complainantNames": [
+      "Forest Range Officer, Shivamogga"
+    ]
   },
   "9019": {
     "caseMasterId": 9019,
@@ -252,12 +381,19 @@
     "crimeNo": "144010101202600002",
     "crimeMinorHeadId": 2,
     "districtId": 4401,
+    "policeStationId": 440101,
+    "policeStationName": "Yeshwanthpur PS",
     "sections": [
       "IPC-324",
       "IPC-34",
       "IPC-506"
     ],
     "incidentFromDate": "2026-07-24 17:30:00",
-    "gravityOffenceId": 1
+    "crimeRegisteredDate": "2026-07-25",
+    "gravityOffenceId": 1,
+    "caseStatusId": 4,
+    "complainantNames": [
+      "Arjun Reddy (victim, complainant)"
+    ]
   }
 }

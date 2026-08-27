@@ -37,6 +37,7 @@
 import caseFacts from "./nosql-seed/caseFacts.json";
 import scenarioMeta from "./nosql-seed/scenarioMeta.json";
 import { caseTypes, districts } from "./data";
+import { caseDetailLink } from "./caseWorklist";
 
 type CaseFact = {
   caseMasterId: number;
@@ -101,7 +102,7 @@ function toMember(f: CaseFact): PatternMember {
     crimeTypeName: c?.name ?? "Unknown",
     districtName: d?.name ?? "Unknown",
     sections: f.sections,
-    link: c && d ? `/cases/${c.slug}/${d.slug}/investigation-workspace` : null,
+    link: caseDetailLink(f.caseMasterId),
   };
 }
 

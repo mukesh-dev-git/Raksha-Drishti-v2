@@ -1,29 +1,30 @@
 import PageShell from "@/components/PageShell";
-import CasesListClient from "@/components/cases/CasesListClient";
-import { getCaseTypes } from "@/lib/api";
+import CaseWorklistClient from "@/components/cases/CaseWorklistClient";
+import { getCaseWorklist } from "@/lib/caseWorklist";
 
 // -----------------------------------------------------------------------------
-// /cases — searchable list of case types. Select one to view its district-wise
-// breakdown.
+// P2 restructure - /cases is now the FIR Index: every real case, one flat
+// searchable/filterable list, not a "pick a crime type first" gate. This is
+// the SHO's real worklist concept (see the CCTNS research this restructure
+// was grounded in) - crime type, district and status are filters on this
+// page, not path segments, per PLAN.md P2.1.
+//
+// Replaces the old case-type picker (CasesListClient, deleted) AND the fake
+// case-files list (data.ts's caseFiles - 3 hardcoded FIR-100x rows shown
+// unfiltered under every case type + district, deleted along with the
+// [caseType] route tree it lived under - see caseWorklist.ts).
 // -----------------------------------------------------------------------------
 export const metadata = { title: "Cases" };
 
-// Live from Catalyst Data Store; bundled sample as fallback on any error.
-// This page previously imported `caseTypes` straight from data.ts and never
-// called the live endpoint at all, even though rd_api/api/casetypes has
-// always existed - just never wired up here. Fixed now that the endpoint
-// runs as a Route Handler in this same deployment.
-export const dynamic = "force-dynamic";
-
-export default async function CasesPage() {
-  const caseTypes = await getCaseTypes();
+export default function CasesPage() {
+  const cases = getCaseWorklist();
   return (
     <PageShell
       title="Cases"
-      description="Search or browse a crime category to view how cases are distributed across districts, then drill into a district's investigation workspace."
+      description="Every registered case, searchable and filterable — open a row for the full case record. Not a category picker."
       breadcrumbs={[{ label: "Cases", href: "/cases" }]}
     >
-      <CasesListClient caseTypes={caseTypes} />
+      <CaseWorklistClient cases={cases} />
     </PageShell>
   );
 }

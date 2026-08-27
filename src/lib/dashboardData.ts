@@ -48,15 +48,19 @@ export function districtLabel(districtId: number): string {
   return districts.find((d) => d.dbId === districtId)?.name ?? `District ${districtId}`;
 }
 
-// scenarioId -> real /cases/[caseType]/[district]/investigation-workspace URL,
-// resolved via the same dbId tables every other live route already uses.
+// scenarioId -> real /cases/[caseId] URL (P2 restructure - the real,
+// single-case detail page keyed by CaseMasterID). Links to the scenario's
+// FIRST real FIR; a scenario spanning more than one (e.g. C1's 9001+9002)
+// shows the rest as "same investigation" cross-links on that page itself
+// (see getSiblingCases, caseWorklist.ts) rather than needing a link per FIR
+// here. Was `/cases/[caseType]/[district]/investigation-workspace` - that
+// route is retired (Next.js won't allow it to coexist with `/cases/
+// [caseId]`: two differently-named dynamic segments at the same path
+// level is a hard build error, not a style choice).
 export function scenarioLink(scenarioId: string): string | null {
   const meta = META[scenarioId];
-  if (!meta) return null;
-  const c = caseTypes.find((x) => x.dbId === meta.crimeMinorHeadID);
-  const d = districts.find((x) => x.dbId === meta.districtId);
-  if (!c || !d) return null;
-  return `/cases/${c.slug}/${d.slug}/investigation-workspace`;
+  if (!meta || meta.caseMasterIds.length === 0) return null;
+  return `/cases/${meta.caseMasterIds[0]}`;
 }
 
 // Picks which scenario to feature. Filtered to a district, feature any

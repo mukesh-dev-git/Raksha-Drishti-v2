@@ -30,12 +30,6 @@ export type District = {
 // Year labels for the district trend series (oldest → newest).
 export const trendYears = [2022, 2023, 2024, 2025, 2026];
 
-export type CaseFile = {
-  id: string;
-  title: string;
-  status: string;
-};
-
 // Case types shown on /cases
 export const caseTypes: CaseType[] = [
   { slug: "theft", name: "Theft", total: 1240, dbId: 1 },
@@ -58,19 +52,9 @@ export const districts: District[] = [
   { slug: "shivamogga", name: "Shivamogga", count: 120, trend: [100, 108, 102, 115, 120], clearanceRate: 82, dbId: 4408 },
 ];
 
-// Individual case files shown in /case-files
-export const caseFiles: CaseFile[] = [
-  { id: "FIR-1001", title: "Case File FIR-1001", status: "Open" },
-  { id: "FIR-1002", title: "Case File FIR-1002", status: "Under Investigation" },
-  { id: "FIR-1003", title: "Case File FIR-1003", status: "Closed" },
-];
-
 // Helpers -----------------------------------------------------------------
 export const getCaseType = (slug: string) =>
   caseTypes.find((c) => c.slug === slug);
 
 export const getDistrict = (slug: string) =>
   districts.find((d) => d.slug === slug);
-
-export const getCaseFile = (id: string) =>
-  caseFiles.find((f) => f.id === id);
