@@ -295,9 +295,8 @@ click-through prototype before any restructuring code was written.*
       the district filter changes everything else on the page; every
       link (attention cards, "Open Workspace", Alerts) resolves to a real
       `/cases/[caseId]` or feature page, not a 404.
-      `StatCard.tsx`/`Sparkline.tsx` are now unused (only consumer was the
-      old 5-card grid) - left in place, flagged below with the other known
-      dead code rather than deleted mid-task.
+      `StatCard.tsx` was left unused (only consumer was the old 5-card
+      grid) - since deleted, see the dead-code note below.
 - [~] **P2.4** CRUD hooks, built in parallel per user request (not after
       the restructure) — **case status update done** (`PATCH /api/cases/
       [caseId]/status`), IO assignment and case-diary entries **not
@@ -341,15 +340,23 @@ click-through prototype before any restructuring code was written.*
         before any write endpoint for it can exist - not something this
         session can provision.
 
-**Known follow-up, not done here:** `investigationData.ts` and every
+**Dead-code cleanup: done.** Deleted `investigationData.ts` and every
 component that only it fed (`AIPanel.tsx`, `EntityDetailCard.tsx`,
 `entityStyles.tsx`, `EvidenceBoard.tsx`, `EvidencePanel.tsx`,
-`TimelinePanel.tsx`, `flipbook/*`) are now fully dead code - confirmed
-nothing under `src/app` imports them any more. `StatCard.tsx`/
-`Sparkline.tsx` joined that list with the P2.3 dashboard rebuild - their
-only consumer (the old 5-card stat grid) is gone, replaced by
-`StatStrip.tsx`. All left in place rather than deleted in the same change
-as the routing/dashboard retirement; worth a dedicated cleanup pass.
+`TimelinePanel.tsx`, `flipbook/CaseBoardPage.tsx`, `flipbook/
+CaseFileFlipbook.tsx`, `flipbook/pages.tsx`), plus `StatCard.tsx` (only
+consumer was the old dashboard 5-card grid, replaced by `StatStrip.tsx`).
+
+Verified with a *transitive* import check across all of `src/`, not just
+`src/app` - a first `src/app`-only pass produced two false positives
+(`MiniRelationshipGraph.tsx`, `HeroLiveOverview.tsx` both looked dead but
+are real, live components reached through `FeaturedInvestigationCard.tsx`/
+`HomeHero.tsx`), caught and corrected before deleting anything.
+`Sparkline.tsx` looked like it belonged with `StatCard` too but is still
+needed by `HeroLiveOverview.tsx` - kept. The real backstop either way was
+`tsc --noEmit` + `npm run build` after deleting - both clean, all 21
+pages still build at identical sizes, confirming nothing reachable was
+actually removed.
 
 ## P3 — The person spine
 
