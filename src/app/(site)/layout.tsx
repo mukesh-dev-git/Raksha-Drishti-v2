@@ -2,6 +2,7 @@ import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import DashboardTopbar from "@/components/dashboard/DashboardTopbar";
 import SiteFooter from "@/components/layout/SiteFooter";
 import { getRealAlerts } from "@/lib/dashboardData";
+import { getSearchIndex } from "@/lib/searchIndex";
 
 // -----------------------------------------------------------------------------
 // (site) route group — every page EXCEPT the Home welcome screen (see
@@ -25,12 +26,13 @@ import { getRealAlerts } from "@/lib/dashboardData";
 // -----------------------------------------------------------------------------
 export default function ShellLayout({ children }: { children: React.ReactNode }) {
   const alertCount = getRealAlerts(3).length;
+  const searchIndex = getSearchIndex();
 
   return (
     <div className="flex min-h-screen flex-1">
       <DashboardSidebar />
       <div className="flex min-w-0 flex-1 flex-col">
-        <DashboardTopbar alertCount={alertCount} />
+        <DashboardTopbar alertCount={alertCount} searchIndex={searchIndex} />
         <div id="main-content" className="flex-1 bg-paper">
           {children}
         </div>

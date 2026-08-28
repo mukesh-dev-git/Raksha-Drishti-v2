@@ -21,7 +21,7 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 |---|---|---|
 | **P0** Credibility | ✅ **done** | All 5. App no longer promises what it can't do. |
 | **P1** Data foundation | 🔵 **in progress** | P1.1 ✅ · P1.3 ✅ · P1.4 `[~]` built, not applied · **P1.2 is next** · P1.5 needs a decision · P1.6 last |
-| **P2** Route restructure | 🔵 **in progress** | On `feature/cases-restructure-crud`. P2.1+P2.1a+P2.1b+P2.1c done — real FIR Index (`/cases`), case detail (`/cases/[caseId]`), district lens (`/districts`), person register (`/persons`), old `[caseType]` routes retired. **P2.1d (wire header search) is next**, then P2.4 (CRUD write endpoints). |
+| **P2** Route restructure | 🔵 **in progress** | On `feature/cases-restructure-crud`. P2.1+P2.1a+P2.1b+P2.1c+P2.1d done — real FIR Index, case/district/person pages, header search all wired to real data, old `[caseType]` routes retired. **P2.4 (CRUD write endpoints) is next.** P2.2 (old-URL redirects) and P2.3 (dashboard rebuild) still open, lower priority. |
 | **P3** Person spine | ✅ **done** | P3.1+P3.3 (`589721d`) — fusion + timeline merge, 2 real bugs found and fixed. P3.2 (`/persons`) landed via the P2 restructure — see P2.1c. |
 | **P4** Real analytics | ⚪ **mixed** | P4.1–P4.3 need P1.2's case volume. **P4.6+P4.7 done** (`f9fde9e`) — MO-clustering (3 real clusters) and the repeat-offender view (6 real people), both live. P4.8 still open. |
 | **P5** AI | 🔵 **in progress** | P5.0-P5.3, P5.2b, P5.3b ✅ — real findings now visible in the Investigation Workspace UI (2/15, honest). **P5.4 is next.** P5.8 (ask-anything chatbot, real case-file links) added, not started. |
@@ -32,9 +32,9 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 **Done so far:** P0.1–P0.5 · P1.1 · P1.3 · P3.1 · P3.3 · P5.0 · P5.1 · P5.2 ·
 P5.3 · X3
 
-**Ready to pick up right now, no decisions needed:** **P2.1d** (wire header
-search, then P2.4 CRUD) · **P1.2** (then P1.6) ·
-P4.8 (→ P5.7) · P5.4 · P5.8 · P7.1 · X1 · X2
+**Ready to pick up right now, no decisions needed:** **P2.4** (CRUD write
+endpoints) · **P1.2** (then P1.6) · P4.8 (→ P5.7) · P5.4 · P5.8 · P7.1 ·
+X1 · X2
 
 **Blocked on someone, not on effort:**
 
@@ -250,10 +250,20 @@ click-through prototype before any restructuring code was written.*
       - verified live, Suresh Naik's two case rows now resolve to `/cases/
       9001` and `/cases/9002` respectively, not both to 9001.
       Sidebar: added "Persons" under Investigation.
-- [ ] **P2.1d** Wire the header search bar (`DashboardTopbar.tsx`) to real
-      data — currently a fully decorative `<input>`, zero state/routing.
-      Should hit case worklist + persons (once P2.1c exists) + districts,
-      grouped results, same shape as the approved prototype. **Not started.**
+- [x] **P2.1d** Wire the header search bar (`DashboardTopbar.tsx`) to real
+      data — done. Was a fully decorative `<input>`, zero state/routing.
+      `src/lib/searchIndex.ts` builds a small flat index (case title/FIR
+      no./accused, person name/aliases, district name → real hrefs) once,
+      server-side, in `ShellLayout` (a server component) and passes it
+      down as a plain prop - the client-side search bar only filters it,
+      no fetching. Grouped results (Cases/Persons/Districts), same shape
+      as the approved prototype. Small enough dataset (19+47+8 ≈ 74 items)
+      that no debounce/route-handler was needed - documented inline for
+      when that stops being true.
+      Verified live: typing "suresh" correctly returns both of his real,
+      distinctly-linked FIRs (`/cases/9001`, `/cases/9002` - the P2.1c
+      link-mislink bug stayed fixed here) plus his person record; clicking
+      a result navigates and clears the query.
 - [ ] **P2.2** Old-URL redirects — `/cases/[caseType]/[district]/
       investigation-workspace` etc. now 404 instead of resolving (nothing
       in-app still links to them, but anything bookmarked/demoed against
