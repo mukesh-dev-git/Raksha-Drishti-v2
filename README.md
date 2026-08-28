@@ -2,9 +2,11 @@
 
 **Karnataka State Police — Crime Analytics & Investigation Portal.**
 
-A Next.js (App Router) portal for viewing crime counts and hotspots, browsing
-cases by district, and working individual investigations through to the digital
-case file. Built with a dignified, accessible government-portal design system.
+A Next.js (App Router) portal for viewing crime counts and hotspots,
+searching cases/persons/districts directly, working a real FIR Index down to
+one case's full record, and surfacing cross-district patterns and repeat
+offenders statewide. Built with a dignified, accessible government-portal
+design system.
 
 ## Project status — read before deploying or touching the Data Store
 
@@ -33,19 +35,28 @@ code — see that file's notes on `dynamicParams`/`force-dynamic` and
 `X-Frame-Options`). Column-level schema reference:
 [`catalyst/DATA_STORE_SCHEMA.md`](catalyst/DATA_STORE_SCHEMA.md).
 
-**Live data status:** Dashboard summary, Cases list, District-wise stats,
-and Crime Count/Crime Hotspots' underlying stats all pull real data through
-`/api/*` Route Handlers. The Investigation Workspace additionally shows a
-"Verified Evidence Feed" panel of real seeded case data for the 15 (of 32)
-caseType/district combinations that have an authored scenario behind them —
-see
+**Live data status:** as of the P2 cases restructure (2026-08-28), **every
+page under `/cases`, `/districts`, `/persons`, `/repeat-offenders`,
+`/pattern-analysis`, and the dashboard's attention list is built from real
+seeded data** — the bundled seed JSON under `src/lib/nosql-seed/`, not a
+mock generator. There is no fallback-to-fake-data path left in this part of
+the app; the old `data.ts` placeholder rows (`caseFiles`) and the RNG mock
+generator (`investigationData.ts`) were deleted along with everything that
+only they fed once nothing reachable used them any more.
+
+Dashboard summary and Crime Count/Crime Hotspots' underlying stats
+separately pull **live** data through `/api/*` Route Handlers (real Data
+Store queries, not seed JSON) — see
 [`catalyst/README.md` §3](catalyst/README.md#3-api--️-route-handlers-rd_api-function-retired).
-Everything else (case files, the case-file flipbook, and any
-caseType/district combo without a seeded scenario) still runs on the
-bundled mock generators in `src/lib/data.ts` /
-`src/lib/investigationData.ts` — every live call falls back to that mock
-data automatically on any API error, so the site never breaks from a Data
-Store hiccup.
+(`/cases`'s FIR Index used to be one of these live-query pages too, before
+the P2 restructure moved it onto the seed-JSON path described above.)
+
+**The app also has its first real write endpoint**: `PATCH
+/api/cases/[caseId]/status`, confirmed working against the live Data Store
+(not just locally typechecked) — see `catalyst/README.md` §5. One honest
+gap: that endpoint writes live, but every read path above still serves the
+bundled seed JSON snapshot, so a live write doesn't show up anywhere in the
+UI yet.
 
 ## Where the work stands
 
@@ -55,10 +66,24 @@ and is the source of truth for what's done and what's next.
 domain research, the AI capability survey, and the Data Store audit. This
 section is just the orientation summary; when the two disagree, PLAN.md wins.
 
-*Last swept 2026-08-25.*
+*Last swept 2026-08-28.*
 
 **Done**
 
+- **P2 — the cases restructure (whole track), merged and live.** The old
+  `/cases/[caseType]/[district]/...` route tree (investigation-workspace,
+  case-files, district-wise) is retired — Next.js won't let it coexist with
+  the replacement anyway, two differently-named dynamic segments at the same
+  path level is a hard build error. In its place: a real FIR Index
+  (`/cases`), a real single-case detail page (`/cases/[caseId]`), a district
+  lens (`/districts`), a full person register (`/persons`), a working header
+  search, an attention-list dashboard surfacing cross-district pattern
+  signals for the first time, and the app's first real write endpoint
+  (`PATCH /api/cases/[caseId]/status`, confirmed against the live Data
+  Store). Full writeup, including two real bugs found and fixed along the
+  way and what's deliberately *not* built yet (IO assignment, case-diary —
+  the latter genuinely blocked on a table only a human can create in the
+  Catalyst console): `PLAN.md` P2.
 - **P0 — credibility.** Removed 11 login-bypass links from Home (plus 4 more
   in the shared footer), deleted 12 dead "Soon" nav items, made the maps
   responsive, reframed the state scope as **SCRB**, and demoted district from
@@ -72,27 +97,36 @@ section is just the orientation summary; when the two disagree, PLAN.md wins.
   station centroids each served two cases. Now 19/19 distinct, each anchored
   on its authored location so scenarios stay in the neighbourhood their
   narrative names.
-- **P5.0 — the LLM Serving API contract**, read out of the Catalyst console
-  since it isn't in public docs. Recorded in `RESEARCH_AND_PLAN.md` §2.2.
+- **P3.1/P3.3 — the person spine.** Entity fusion + cross-source timeline
+  merge across all 15 scenarios — the engine behind `/persons` and
+  `/repeat-offenders`.
+- **P4.6/P4.7 — pattern analysis + repeat offenders.** Deterministic MO
+  clustering (`/pattern-analysis`) and the statewide repeat-offender view
+  (`/repeat-offenders`), both real, both now also surfaced on the dashboard.
+- **P5.0–P5.3, P5.2b, P5.3b — AI contradiction detection**, visible in the
+  Investigation Workspace's successor, `/cases/[caseId]` (verified vs.
+  AI-detected findings, kept honestly distinct).
 
 **Next up**
 
 **P1.2 — merge the two seeds** into one generator that is both broad and
-deep. This is the highest-value unblocked item: `P4` (four of the problem
-statement's six capabilities) is waiting on case volume, not on AI and not on
-anyone's decision. 19 cases across 8 districts cannot show a hotspot, a
-trend, or a time-of-day distribution.
+deep. This is the highest-value unblocked item: `P4.1–P4.3` (real
+hotspot/trend/time-of-day analytics) are waiting on case volume, not on AI
+and not on anyone's decision. 19 cases across 8 districts cannot show a
+hotspot, a trend, or a time-of-day distribution. **Note:** this is a
+separate, larger decision from everything above — it ends in a one-time
+wipe-and-reimport of the *live* Data Store (P1.6), not something to start on
+momentum from an unrelated branch.
 
-Also unblocked and needing nothing from anyone: **P3** (the person spine —
-`/persons` profiles and cross-case entity fusion, which P1.1 cleared the way
-for), plus the two cross-cutting items X1 and X2.
+Also unblocked and needing nothing from anyone: **P2.2's IO assignment /
+case-diary** follow-ups (diary genuinely needs a human to create a table in
+the Catalyst console first), plus the two cross-cutting items X1 and X2.
 
 **Blocked on a decision, not on effort**
 
 | Blocked | Waiting on |
 |---|---|
-| All of **P2** (route restructure) | PR #1 — merge or close |
-| All of **P5** (AI) | A working OAuth access token |
+| All of **P5** (AI) *(the parts not already shipped)* | Ongoing — P5.4/P5.8 open |
 | All of **P6** (Zia) | Whether we generate case-document images at all |
 | **P1.5** / **P4.5** | Agreeing the caste/religion presentation first |
 
@@ -106,23 +140,48 @@ npm run dev
 Open http://localhost:3000 → the Home welcome page.
 
 Local `npm run dev` has no real Catalyst request context, so every `/api/*`
-route's Data Store/NoSQL call fails and the site transparently falls back to
-the bundled mock data in `src/lib/data.ts` / `investigationData.ts` — this is
-expected, not a bug. To see real data you need the deployed Slate app.
+route's live Data Store/NoSQL call fails (`"Failed to parse object"`) — this
+is expected, not a bug. The read-side `/api/*` routes (summary, casetypes,
+districts, district-stats) transparently fall back to bundled sample data in
+`src/lib/data.ts` on any error, so the site never breaks from this locally.
+The **write** endpoint (`PATCH /api/cases/[caseId]/status`) has no fallback
+by design — a write either really happens or it clearly fails; it cannot be
+exercised end-to-end locally at all, only on the deployed Slate app. Every
+page under `/cases`, `/districts`, `/persons`, `/repeat-offenders`,
+`/pattern-analysis` reads bundled *seed* JSON directly (not a mock, not a
+live call) and works identically local or deployed.
 
 ## Navigation flow
 
+Grounded in real CCTNS/Karnataka-police workflow research (`PLAN.md` P2's
+own note), not an arbitrary redesign: real police software is search-first
+(FIR number / person / district), with a flat FIR Index worklist as the
+daily-use screen — not a mandatory "pick a category, then a district" gate
+to reach one case. As of the P2 restructure:
+
 ```
-/                                    -> Home (public welcome screen, no sidebar)
-/dashboard                           -> analytics home (sidebar shell begins here)
+/                          -> Home (public welcome screen, no sidebar)
+/dashboard                 -> analytics home (attention list: alerts + cross-district
+                               pattern signals first, totals demoted to a strip)
+   |- header search        -> real, searches cases + persons + districts at once
    |- /crime-count
    |- /crime-hotspots
-   |- /cases
-        |- /cases/[caseType]/district-wise            (ranked district table)
-             |- .../[district]/investigation-workspace   (the investigation board)
-                  |- .../case-files                       (case-file list)
-                       |- .../[caseId]                    (digital case-file flipbook)
+   |- /pattern-analysis    -> real MO-clustering across all 19 seeded FIRs
+   |- /cases               -> the FIR Index: every real case, filterable by
+   |    |                     type/district/status/text - not a category picker
+   |    \- /cases/[caseId] -> one real case: facts, sections, evidence timeline,
+   |                          contradiction findings, status editor (real write)
+   |- /districts           -> pendency + clearance per district
+   |    \- /districts/[district] -> that district's real case list
+   |- /persons             -> every person in the register, searchable
+   |    \- /persons/[personId]   -> a real profile: identity, cases, timeline
+   \- /repeat-offenders    -> filtered view into /persons (2+ cases)
 ```
+
+The old `/cases/[caseType]/[district]/investigation-workspace` /
+`case-files` / `case-files/[caseId]` / `district-wise` tree 301/308-redirects
+to its closest real equivalent (`next.config.mjs`) — nothing bookmarked
+against the old shape just 404s.
 
 ## Design system
 
@@ -162,21 +221,28 @@ and font-size modes override the same variables.
 | Page | File | Notes |
 |------|------|-------|
 | Home | `src/app/page.tsx` | Public welcome screen (see below) — **live** (`/api/summary`) |
-| Dashboard | `src/app/(site)/dashboard/page.tsx` | Sidebar-shell analytics home (see below) — **live** (`/api/summary`, `/api/casetypes`) + real seeded scenario data |
+| Dashboard | `src/app/(site)/dashboard/page.tsx` | Attention-list home — real alerts + cross-district pattern signals first, totals demoted to a strip (`StatStrip.tsx`) — **live** (`/api/summary`, `/api/casetypes`) + real seeded scenario data |
 | Crime Count | `src/app/(site)/crime-count/page.tsx` | District/crime-type stats + charts — **live** (`/api/casetypes`, `/api/districts`) |
 | Crime Hotspots | `src/app/(site)/crime-hotspots/page.tsx` | MapLibre spatiotemporal heatmap, embedded via `MapEmbed.tsx` (see its comments for the Slate `X-Frame-Options` workaround) |
-| Cases | `src/app/(site)/cases/page.tsx` | Case-type cards — **live** (`/api/casetypes`) |
-| District-wise | `src/app/cases/[caseType]/district-wise/page.tsx` | Ranked district table — **live** (`/api/district-stats`) |
-| Investigation Workspace | `.../[district]/investigation-workspace/page.tsx` | Relationship graph, timeline, evidence, AI insights (mock) + a **Verified Evidence Feed** panel showing real seeded case data when available (`/api/investigation`, see `RealEvidenceFeed.tsx`) |
-| Case Files | `.../[district]/case-files/page.tsx` | Case-file list with status badges — mock data |
-| Case File (booklet) | `.../case-files/[caseId]/page.tsx` | Page-turning digital case-file flipbook — mock data |
+| Pattern Analysis | `src/app/(site)/pattern-analysis/page.tsx` | Real MO-clustering (shared/rare Act+Section signatures) across all 19 real FIRs — `src/lib/moPatterns.ts` |
+| Cases | `src/app/(site)/cases/page.tsx` | The real FIR Index — every seeded case, filterable by type/district/status/text — `src/lib/caseWorklist.ts` |
+| Case detail | `src/app/(site)/cases/[caseId]/page.tsx` | One real case, keyed by `CaseMasterID`: facts, sections, sibling-FIR cross-links, cross-source evidence timeline, verified + AI-detected contradiction findings, and a real status editor (`PATCH /api/cases/[caseId]/status`) |
+| Districts | `src/app/(site)/districts/page.tsx` | Real pendency/clearance/repeat-subject count per district — `src/lib/districtStats.ts` |
+| District detail | `src/app/(site)/districts/[district]/page.tsx` | That district's real case list (reuses the FIR Index's own table component) |
+| Persons | `src/app/(site)/persons/page.tsx` | Every person in the global register (47), searchable by name |
+| Person detail | `src/app/(site)/persons/[personId]/page.tsx` | A real profile: photo/initials, registered identity (Aadhaar/phone/address — synthetic, documented as such), every case, cross-source timeline |
+| Repeat Offenders | `src/app/(site)/repeat-offenders/page.tsx` | Filtered view into Persons: subjects named across 2+ cases, master-detail layout |
 
-Sample/fallback data lives in [`src/lib/data.ts`](src/lib/data.ts); the
-investigation board's seeded mock generator is in
-[`src/lib/investigationData.ts`](src/lib/investigationData.ts) — every "live"
-row above calls a Route Handler under `src/app/api/` first and only falls
-back to these on error (see `catalyst/README.md` §3/§3b for how each one
-resolves real data).
+Sample/fallback data for the **live Data Store `/api/*` routes only**
+(summary, casetypes, districts, district-stats) lives in
+[`src/lib/data.ts`](src/lib/data.ts). Everything in the table above reads
+**bundled seed JSON** (`src/lib/nosql-seed/`) directly, not a mock and not a
+live call — see `catalyst/README.md` §2b/§3b for how that seed data is
+generated and kept in sync. The old case-type-scoped route tree, its mock
+generator (`investigationData.ts`), and everything that only fed it
+(`AIPanel.tsx`, `EvidenceBoard.tsx`, `flipbook/*`, and more) were deleted in
+the P2 restructure — confirmed unreachable with a full transitive import
+check, not just a page-level grep.
 
 ### Home + sidebar shell (site-wide)
 
@@ -202,21 +268,23 @@ The app has two distinct shells:
   `(site)/layout.tsx` for both steps.
 
 **Every sidebar item navigates somewhere real** — Home, Dashboard, Crime
-Overview, Crime Hotspots, Cases. Twelve further entries (Investigation
-Workspace, Evidence Feed, Persons & Entities, Alerts & Leads, all of
-Reports and System) used to render disabled with a "Soon" pill; against
-three that worked they advertised a product four times the size of the
-real one, so they were removed. `Item.href` is required, so a dead entry
-is now a type error rather than a grey row. `PLAN.md` P2/P3 bring several
-back as real pages — add each one back to the sidebar only once its page
-exists. Every number in either shell is either live (`getSummary`/`getCaseTypes`, same fallback
-pattern as elsewhere) or real seeded scenario data (Featured Investigation,
-Alerts & Leads, Verified Evidence Feed — see `src/lib/dashboardData.ts`);
-nothing is fabricated, including no invented "vs. last month" deltas (stat
-cards show a real year-over-year sparkline instead). The dashboard's
-colourful accent palette (`--dash-*` tokens in `globals.css`) is
-deliberately scoped to the sidebar shell — Home keeps the muted navy/
-saffron system unchanged.
+Overview, Crime Hotspots, Pattern Analysis, Cases, Districts, Persons,
+Repeat Offenders. Twelve entries (Investigation Workspace, Evidence Feed,
+Persons & Entities, Alerts & Leads, all of Reports and System) used to
+render disabled with a "Soon" pill against three that worked, advertising a
+product four times the size of the real one — removed in P0. `Item.href` is
+required, so a dead entry is a type error rather than a grey row. Every one
+of P0's placeholder gaps that PLAN.md flagged as "add back once real" now
+has a real page and is in the sidebar (Districts and Persons landed with the
+P2 restructure). Every number in either shell is either live
+(`getSummary`/`getCaseTypes`, same fallback pattern as elsewhere) or real
+seeded data (Featured Investigation, Alerts & Leads, the two attention-list
+pattern signals — see `src/lib/dashboardData.ts`, `moPatterns.ts`,
+`personFusion.ts`); nothing is fabricated, including no invented "vs. last
+month" deltas (stat cards show a real year-over-year sparkline instead).
+The dashboard's colourful accent palette (`--dash-*` tokens in
+`globals.css`) is deliberately scoped to the sidebar shell — Home keeps the
+muted navy/saffron system unchanged.
 
 The Crime Hotspots mini-map preview shares its source with the full
 `/crime-hotspots` map. That map's "flaky CDN" failures turned out to be a
@@ -231,12 +299,31 @@ failures.
 - `src/components/layout/` — `SiteHeader`, `EmergencyBar`, `SiteNav`,
   `SiteFooter`, `AccessibilityControls`
 - `src/components/ui/` — `Breadcrumb`, `StatTile`, `StatusBadge`
-- `src/components/` — `PageShell`, `LinkCard`, `Placeholder`
-- `src/components/investigation/` and `src/components/flipbook/` — the
-  investigation board and case-file flipbook
+- `src/components/` — `PageShell`, `LinkCard`, `Placeholder`,
+  `CaseStatusPill`, `CrossSourceTimeline` (the real evidence timeline graph,
+  used on case/person detail pages)
+- `src/components/cases/` — `CaseWorklistClient` (the FIR Index table,
+  reused as-is on district detail), `CaseStatusEditor` (the real write
+  control)
+- `src/components/dashboard/` — `AttentionSignals`, `StatStrip` (the P2.3
+  dashboard rebuild), `DashboardTopbar` (real search)
+- `src/lib/caseWorklist.ts`, `districtStats.ts`, `searchIndex.ts`,
+  `caseStatus.ts` — the P2 restructure's data layer, all built from bundled
+  seed JSON (`src/lib/nosql-seed/`), no live calls
 - `src/lib/api.ts` — same-origin `fetch("/api/...")` helpers with automatic
-  fallback to `data.ts`; `src/lib/zcql.ts` — shared ZCQL/NoSQL helpers used
-  by every Route Handler under `src/app/api/`
+  fallback to `data.ts`, for the **live Data Store** routes only
+  (summary/casetypes/districts/district-stats); `src/lib/zcql.ts` — shared
+  ZCQL read helpers + the Data Store write helper (`updateRow()`) used by
+  every Route Handler under `src/app/api/`
+
+**Known dead code, not yet removed**: `src/components/investigation/`
+(`RealEvidenceFeed.tsx`, `PinnedCard.tsx`, `SectionHeading.tsx`) and the
+`/api/investigation` Route Handler it alone called are unreachable from any
+page as of the P2 restructure — case-detail's evidence timeline now reads
+`personFusion.ts`'s `getScenarioTimeline()` directly instead. Left in place
+pending a dedicated cleanup pass; see `PLAN.md`'s dead-code note for the
+full, verified list (checked with a transitive import scan, not a
+single-directory grep).
 
 ## Assets
 

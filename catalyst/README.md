@@ -165,7 +165,15 @@ a real deployed Route Handler on Slate (it was genuinely an open question
 whether the SDK's auth-via-injected-request-context worked outside an
 Advanced I/O Function at all — it does).
 
-## 3b. Investigation evidence — ✅ Route Handler + workspace UI
+## 3b. Investigation evidence — ✅ built, ⚠️ now orphaned (see §5)
+
+**As of the P2 cases restructure**, nothing in the UI calls this route any
+more — `/cases/[caseId]` reads evidence directly via `getScenarioTimeline()`
+instead, keyed by the exact `CaseMasterID` rather than resolved by crime
+type + district. The mechanics below are accurate and the route still
+works if hit directly; kept here as a reference and because
+`RealEvidenceFeed.tsx` (its one caller) hasn't been deleted yet - full note
+in §5.
 
 `GET /api/investigation?caseType=<slug>&district=<slug>` resolves real
 `CaseMasterID`s for the route (same `CaseMaster`/`Unit` ZCQL join as
@@ -214,17 +222,21 @@ Store hiccup, just quietly shows fallback numbers. No env var needed anymore
 (the old `NEXT_PUBLIC_RD_API_BASE` external-Function URL is retired).
 
 **Every page that calls into `api.ts` must be `export const dynamic =
-"force-dynamic"`** (`dashboard/page.tsx`, `cases/page.tsx`,
-`cases/[caseType]/district-wise/page.tsx`) — otherwise the fetch resolves
-once at build time and bakes in fallback data forever, the same static/
-dynamic classification gotcha covered in §1.
+"force-dynamic"`** (`dashboard/page.tsx`, `crime-count/page.tsx`,
+`crime-hotspots/page.tsx`) — otherwise the fetch resolves once at build time
+and bakes in fallback data forever, the same static/dynamic classification
+gotcha covered in §1.
 
-Currently wired to live data: **dashboard summary**, the **cases list**, and
-**district-wise** stats. Case files, the investigation workspace, and the
-case-file booklet still use the bundled mock data in
-`data.ts`/`investigationData.ts` — extend the same `api.ts` pattern if/when
-that's worth doing (the NoSQL collections in §2b are already seeded and
-ready for exactly this).
+Currently wired to **live** Data Store queries via `api.ts`: dashboard
+summary and Crime Count/Crime Hotspots' underlying stats. `/cases` (the FIR
+Index) moved *off* `api.ts` in the P2 restructure — it now reads bundled
+seed JSON directly via `caseWorklist.ts`, not a live call, same as
+`/districts` and `/persons`; there's no fallback path to describe there
+because there's no live call to fall back from. `investigationData.ts` (the
+mock generator the old case-files/investigation-workspace pages used) is
+deleted, not extended — the NoSQL collections in §2b were already seeded
+and ready for a real evidence path, which is what the P2 restructure built
+instead of ever wiring the mock generator to live data.
 
 ## 4. Auth (officer sign-in)
 [`src/components/auth/AuthGate.tsx`](../src/components/auth/AuthGate.tsx) gates the
@@ -307,13 +319,42 @@ already uses (§3).
   research and Data Store audit behind it.
 - Convert Data Store FK `Number` columns to `Lookup` columns now that parent
   rows actually exist.
-- CRUD (create/edit/delete) endpoints + auth-gated writes, per the
-  production-readiness discussion — not started. Would use live NoSQL
-  exact-key operations (`fetchItem`/`updateItems`/`deleteItems`, all
-  `EQUALS`-based, confirmed working) rather than the bundled-JSON read path
-  in §3b, since edits need to actually persist.
-- Extend live data to case files / the case-file flipbook, following the
-  same pattern as §3b.
+- **CRUD — first endpoint shipped and confirmed, 2026-08-28.** `PATCH
+  /api/cases/[caseId]/status` (`src/app/api/cases/[caseId]/status/route.ts`)
+  writes to the live **Data Store**, not NoSQL — via a *different* SDK
+  surface than ZCQL (which is SELECT-only): `capp.datastore()
+  .table("CaseMaster").updateRow({ROWID, CaseStatusID})`. `ROWID` (the
+  table's real, implicit system PK, not the business key `CaseMasterID`) is
+  fetched with one ZCQL `SELECT` first. Confirmed against the **live**
+  deployment via curl, both directions, not just a 200 taken on faith:
+  `{"statusId":3}` then `{"statusId":2}` on case 9001, both `{"ok":true,...}`
+  (200). New helper: `updateRow()` in `zcql.ts`. Not built yet: IO
+  assignment (same pattern, lower value without a real Employee picker) and
+  case-diary entries — **genuinely blocked**, not a priority call: no
+  `CaseDiary` table exists, and this Data Store has no CSV-import UI or DDL
+  via any SDK (see the "console-only" note earlier in this file) — a human
+  needs to create it by hand before any endpoint for it can exist.
+  ⚠️ One real gap this surfaced: the write path hits the live Data Store,
+  but every *read* path in the app (`/cases`, `/districts`, `/persons`, the
+  dashboard) serves the bundled seed JSON snapshot under
+  `src/lib/nosql-seed/`, not a live query — so a successful write is
+  currently invisible in the UI. A live write to the 6 NoSQL evidence
+  collections (calls/transactions/CCTV/statements/timeline/contradictions)
+  is separate, still unbuilt work — would use `fetchItem`/`updateItems`/
+  `deleteItems`, all `EQUALS`-based, confirmed working per Zoho's own SDK
+  docs but not yet exercised by any code here.
+- `RealEvidenceFeed.tsx` and the `/api/investigation` Route Handler it alone
+  called (§3b) are now **orphaned** — the P2 restructure's case-detail page
+  reads evidence a different way (`personFusion.ts`'s
+  `getScenarioTimeline()`, direct from bundled JSON, keyed by the exact
+  `CaseMasterID` rather than "first scenario matching this crime type +
+  district"). The route still runs if hit directly; nothing in the UI calls
+  it any more. Flagged for a cleanup pass, not deleted yet.
+- Case files / the case-file flipbook and their mock generator
+  (`investigationData.ts`) are **deleted**, not just unwired — see
+  `PLAN.md` P2's dead-code note. `/cases/[caseId]` replaced both the
+  flipbook and the real half of the old investigation-workspace in one
+  page.
 - **Stratus**: move images + case-file evidence into blob storage.
 - ~~`spatiotemporal.html` Crime Hotspots map "flaky CDN"~~ **fixed** (was
   never actually flaky): `spatiotemporal.html` hand-rolled its own style
