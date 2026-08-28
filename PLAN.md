@@ -375,6 +375,18 @@ needed by `HeroLiveOverview.tsx` - kept. The real backstop either way was
 pages still build at identical sizes, confirming nothing reachable was
 actually removed.
 
+**One more found since, not yet deleted:** `RealEvidenceFeed.tsx` (+ its
+two sub-components, `PinnedCard.tsx`/`SectionHeading.tsx`) and the
+`/api/investigation` Route Handler it alone called are now orphaned too -
+`/cases/[caseId]` reads evidence a different way
+(`personFusion.ts`'s `getScenarioTimeline()`, direct from bundled JSON,
+keyed by the exact `CaseMasterID`) rather than through that
+component/route. Found while updating `README.md`/`catalyst/README.md` to
+match current status (2026-08-28), confirmed via the same transitive-check
+discipline as above. The route still responds if hit directly; nothing in
+the UI calls it. Left in place - same "flag it, don't chase it mid-task"
+call as before.
+
 ## P3 — The person spine
 
 *Needs P1.1. This is the single highest-value addition in the whole plan:
