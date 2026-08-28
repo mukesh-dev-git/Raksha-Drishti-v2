@@ -21,7 +21,7 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 |---|---|---|
 | **P0** Credibility | ✅ **done** | All 5. App no longer promises what it can't do. |
 | **P1** Data foundation | 🔵 **in progress** | P1.1 ✅ · P1.3 ✅ · P1.4 `[~]` built, not applied · **P1.2 is next** · P1.5 needs a decision · P1.6 last |
-| **P2** Route restructure | 🟢 **read side done** | On `feature/cases-restructure-crud`, not yet merged/deployed. P2.1+P2.1a+P2.1b+P2.1c+P2.1d+P2.2+P2.3 all done — real FIR Index, case/district/person pages, header search, old-URL redirects, and an attention-list dashboard surfacing cross-district pattern signals for the first time. **Only P2.4 remains open**: the case-status write endpoint is built but genuinely unverified (no live Catalyst context in local dev) — needs a Slate deploy + Postman test. IO assignment/case-diary not started (diary blocked on console-only table provisioning, not a choice). |
+| **P2** Route restructure | ✅ **done, merged, deployed** | Merged to `main` and pushed to `v2/main` 2026-08-28 (17 commits) - confirmed live on Slate. P2.1+P2.1a+P2.1b+P2.1c+P2.1d+P2.2+P2.3 all real FIR Index, case/district/person pages, header search, old-URL redirects, attention-list dashboard. **P2.4's case-status write endpoint confirmed working against the live Data Store** (two real writes via curl, both directions, not just a 200 taken on faith) - the app's first-ever write, live. IO assignment/case-diary not started (diary blocked on console-only table provisioning, not a choice). One real gap surfaced: writes hit the live Data Store but every read path still serves bundled seed JSON, so a write is currently invisible in the UI - see P2.4. |
 | **P3** Person spine | ✅ **done** | P3.1+P3.3 (`589721d`) — fusion + timeline merge, 2 real bugs found and fixed. P3.2 (`/persons`) landed via the P2 restructure — see P2.1c. |
 | **P4** Real analytics | ⚪ **mixed** | P4.1–P4.3 need P1.2's case volume. **P4.6+P4.7 done** (`f9fde9e`) — MO-clustering (3 real clusters) and the repeat-offender view (6 real people), both live. P4.8 still open. |
 | **P5** AI | 🔵 **in progress** | P5.0-P5.3, P5.2b, P5.3b ✅ — real findings now visible in the Investigation Workspace UI (2/15, honest). **P5.4 is next.** P5.8 (ask-anything chatbot, real case-file links) added, not started. |
@@ -29,15 +29,11 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 | **P7** Kannada voice (Zia) | ⚪ **ready** | Not gated like P6 - P7.1 can start from data we already have. |
 | **X** Cross-cutting | 🔵 | X3 ✅ · X1, X2 open |
 
-**Done so far:** P0.1–P0.5 · P1.1 · P1.3 · P3.1 · P3.3 · P5.0 · P5.1 · P5.2 ·
-P5.3 · X3
+**Done so far:** P0.1–P0.5 · P1.1 · P1.3 · **P2 (whole track)** · P3.1 ·
+P3.3 · P5.0 · P5.1 · P5.2 · P5.3 · X3
 
 **Ready to pick up right now, no decisions needed:** **P1.2** (then P1.6) ·
 P4.8 (→ P5.7) · P5.4 · P5.8 · P7.1 · X1 · X2
-
-**Blocked on a Slate deploy to verify (built, not confirmed working):**
-P2.4's case-status write endpoint - see P2.4 for exactly what was and
-wasn't verifiable locally.
 
 **Blocked on someone, not on effort:**
 
@@ -297,7 +293,7 @@ click-through prototype before any restructuring code was written.*
       `/cases/[caseId]` or feature page, not a 404.
       `StatCard.tsx` was left unused (only consumer was the old 5-card
       grid) - since deleted, see the dead-code note below.
-- [~] **P2.4** CRUD hooks, built in parallel per user request (not after
+- [x] **P2.4** CRUD hooks, built in parallel per user request (not after
       the restructure) — **case status update done** (`PATCH /api/cases/
       [caseId]/status`), IO assignment and case-diary entries **not
       started, scoped out for a real reason** (below). This is the first
@@ -325,10 +321,31 @@ click-through prototype before any restructuring code was written.*
         real Catalyst call and fails with exactly that same
         `"Failed to parse object"` error every other live call hits
         locally (not a code bug - the expected local-dev limitation) - and
-        the UI surfaces that error cleanly instead of crashing. **Needs a
-        Slate deploy to confirm the actual write works** - user chose to
-        test via Postman against the deployed endpoint before falling
-        back to a from-scratch fix if that surfaces a real bug.
+        the UI surfaces that error cleanly instead of crashing.
+      - **✅ CONFIRMED WORKING on Slate, 2026-08-28** — `main` pushed to
+        `v2/main` (17 commits, this whole P2 restructure), auto-deploy
+        confirmed live by polling for `/persons` (a route that only
+        exists in the new code) to stop 404ing. Then the real test against
+        the live Data Store, via curl, not just the 200 status code taken
+        on faith: `PATCH /api/cases/9001/status {"statusId":3}` →
+        `{"ok":true,"caseMasterId":9001,"statusId":3}` (200) - moved case
+        9001 from Charge Sheeted to Closed for real. Immediately reversed
+        with a second real write (`{"statusId":2}` → `{"ok":true,...}`,
+        200) to restore it to the value the bundled seed JSON and every
+        screenshot/verification this session already assumes - **both
+        directions confirmed working**, not a one-off fluke. The 404/400
+        validation guards were re-checked against the live deploy too,
+        same results as local.
+        ⚠️ **One real, honest gap this surfaced**: the write endpoint
+        writes to the live Data Store, but every read path in this app
+        (`getCaseWorklist()`, the whole `/cases` + `/districts` +
+        `/persons` tree) reads the **bundled seed JSON**, not a live
+        query - by design, documented throughout this session. So a
+        successful live write is currently invisible in the UI; nothing
+        rereads it. Real next step if this write endpoint is to matter
+        beyond "proof the plumbing works": either a live GET alongside
+        it, or accept that case status is Data-Store-authoritative but
+        UI-displayed-from-snapshot until a broader live-read migration.
       - IO assignment: same pattern, one more `updateRow()` call - not
         built yet, lower value than status without a real Employee picker
         (free-text officer ID isn't much of an upgrade over nothing).
