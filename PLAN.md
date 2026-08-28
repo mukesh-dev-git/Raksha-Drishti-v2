@@ -21,8 +21,8 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 |---|---|---|
 | **P0** Credibility | ✅ **done** | All 5. App no longer promises what it can't do. |
 | **P1** Data foundation | 🔵 **in progress** | P1.1 ✅ · P1.3 ✅ · P1.4 `[~]` built, not applied · **P1.2 is next** · P1.5 needs a decision · P1.6 last |
-| **P2** Route restructure | 🔵 **in progress** | On `feature/cases-restructure-crud`. P2.1+P2.1a+P2.1b done — real FIR Index (`/cases`), real case detail (`/cases/[caseId]`), real district lens (`/districts`), old `[caseType]` routes retired. **P2.1c (persons) is next**, then P2.1d (search), P2.4 (CRUD write endpoints). |
-| **P3** Person spine | 🔵 **in progress** | P3.1+P3.3 ✅ (`589721d`) — fusion + timeline merge, 2 real bugs found and fixed. **P3.2 (`/persons`) is next.** |
+| **P2** Route restructure | 🔵 **in progress** | On `feature/cases-restructure-crud`. P2.1+P2.1a+P2.1b+P2.1c done — real FIR Index (`/cases`), case detail (`/cases/[caseId]`), district lens (`/districts`), person register (`/persons`), old `[caseType]` routes retired. **P2.1d (wire header search) is next**, then P2.4 (CRUD write endpoints). |
+| **P3** Person spine | ✅ **done** | P3.1+P3.3 (`589721d`) — fusion + timeline merge, 2 real bugs found and fixed. P3.2 (`/persons`) landed via the P2 restructure — see P2.1c. |
 | **P4** Real analytics | ⚪ **mixed** | P4.1–P4.3 need P1.2's case volume. **P4.6+P4.7 done** (`f9fde9e`) — MO-clustering (3 real clusters) and the repeat-offender view (6 real people), both live. P4.8 still open. |
 | **P5** AI | 🔵 **in progress** | P5.0-P5.3, P5.2b, P5.3b ✅ — real findings now visible in the Investigation Workspace UI (2/15, honest). **P5.4 is next.** P5.8 (ask-anything chatbot, real case-file links) added, not started. |
 | **P6** Zia | 🚧 **gated** | Needs the P6.0 yes/no on generating images. |
@@ -32,9 +32,9 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 **Done so far:** P0.1–P0.5 · P1.1 · P1.3 · P3.1 · P3.3 · P5.0 · P5.1 · P5.2 ·
 P5.3 · X3
 
-**Ready to pick up right now, no decisions needed:** **P2.1c** (persons,
-then P2.1d search, P2.4 CRUD) · **P1.2** (then P1.6) ·
-P3.2 · P4.8 (→ P5.7) · P5.4 · P5.8 · P7.1 · X1 · X2
+**Ready to pick up right now, no decisions needed:** **P2.1d** (wire header
+search, then P2.4 CRUD) · **P1.2** (then P1.6) ·
+P4.8 (→ P5.7) · P5.4 · P5.8 · P7.1 · X1 · X2
 
 **Blocked on someone, not on effort:**
 
@@ -62,8 +62,8 @@ not a data swap.
 ```
 P0  Credibility        ✅ done
 P1  Data foundation    🔵 P1.1/P1.3 done ── P1.2 is the next real unlock
-P2  Route restructure  🚧 PR #1       ── highest risk, needs PR #1 resolved
-P3  Person spine       ⚪ ready       ── P1.1 unblocked it
+P2  Route restructure  🔵 in progress ── P2.1/1a/1b/1c done, P2.1d next
+P3  Person spine       ✅ done       ── P3.2 landed via P2.1c
 P4  Real analytics     ⚪ P4.6/P4.7 done ── P4.1-P4.3 still need P1.2
 P5  AI features        🔵 P5.0-P5.3, P5.2b, P5.3b done ── P5.4 is next
 P6  Zia                🚧 gated on P6.0 ── only if we get images
@@ -231,11 +231,25 @@ click-through prototype before any restructuring code was written.*
       clearance (1 of 5 resolved), Mysuru 2 cases / 100% (2 of 2 resolved)
       - checked by hand against the worklist, not just rendered.
       Sidebar: added "Districts" under Investigation.
-- [ ] **P2.1c** `/persons` + `/persons/[personId]` — new. The Crime and
-      Criminal Records Search equivalent: search any person, land on their
-      fused profile. `/repeat-offenders` becomes a filtered view into this
-      (2+ cases) rather than the only place a person is reachable; its
-      detail panel becomes this real, linkable page. **Not started.**
+- [x] **P2.1c** `/persons` + `/persons/[personId]` — done. The Crime and
+      Criminal Records Search equivalent: every one of the 47 real people
+      in the register, searchable by name, not only the 6 repeat subjects.
+      `/persons/[personId]` reuses the visual pieces `/repeat-offenders`
+      proved (`OffenderAvatar`, registered identity, `CrossSourceTimeline`)
+      as its own linkable/bookmarkable page - `/repeat-offenders` now links
+      "View full profile" into it rather than being the only place a
+      person is reachable.
+      **Real bug found + fixed while wiring this up:** `/repeat-offenders`'
+      per-case links (`resolveCase()`) were calling `scenarioLink(scenarioId)`
+      for each case row - but that resolves to the scenario's FIRST
+      `CaseMasterID`, so a person's SECOND FIR in the same scenario (e.g.
+      Suresh Naik's 9002, sharing scenario C1 with 9001) silently linked to
+      the wrong case page. Introduced by P2.1a's `scenarioLink` rewrite,
+      caught here because `/persons/[personId]` needed the same per-case
+      link done correctly. Fixed to `caseDetailLink(caseMasterId)` directly
+      - verified live, Suresh Naik's two case rows now resolve to `/cases/
+      9001` and `/cases/9002` respectively, not both to 9001.
+      Sidebar: added "Persons" under Investigation.
 - [ ] **P2.1d** Wire the header search bar (`DashboardTopbar.tsx`) to real
       data — currently a fully decorative `<input>`, zero state/routing.
       Should hit case worklist + persons (once P2.1c exists) + districts,
@@ -299,9 +313,13 @@ reasons over it.*
         The cross-jurisdiction repeat-offender story is real at the
         multi-FIR level today, not yet at the multi-investigation level;
         that's a data-authoring gap for P1.2, not a fusion bug.
-- [ ] **P3.2** `/persons` index + `/persons/[personId]` profile: every case
-      they touch, cross-case timeline, MO. Consumes `personFusion.ts`
-      directly - the hard part is already done.
+- [x] **P3.2** ~~`/persons` index + `/persons/[personId]` profile~~ — done,
+      landed as part of the P2 cases restructure (see **P2.1c**) rather
+      than as a standalone task: real search over all 47 people, every
+      case they touch (via `caseWorklist.ts`), cross-case timeline
+      (`personFusion.ts`, unchanged - the hard part really was already
+      done), registered identity. `/repeat-offenders` now links into this
+      rather than being the only place a person is reachable.
 
 ## P4 — Real analytics (4 of the 6 PS asks)
 

@@ -3,7 +3,7 @@ import PageShell from "@/components/PageShell";
 import StatTile from "@/components/ui/StatTile";
 import RepeatOffendersClient, { type EnrichedPerson, type PersonCaseInfo } from "@/components/RepeatOffendersClient";
 import { getRepeatCaseSuspects } from "@/lib/personFusion";
-import { scenarioLink } from "@/lib/dashboardData";
+import { caseDetailLink } from "@/lib/caseWorklist";
 import { getOffenderPhotoUrl } from "@/lib/offenderPhotos";
 import { getPersonIdentity } from "@/lib/personIdentity";
 import { caseTypes, districts } from "@/lib/data";
@@ -54,7 +54,12 @@ function resolveCase(caseMasterId: number): PersonCaseInfo {
     crimeTypeName: crimeType?.name ?? "Unknown",
     districtId: f?.districtId ?? null,
     districtName: district?.name ?? "Unknown",
-    link: crimeType && district && f ? scenarioLink(f.scenarioId) : null,
+    // This specific FIR's own page - NOT scenarioLink(f.scenarioId), which
+    // resolves to the scenario's FIRST caseMasterId and would silently
+    // mislink every sibling FIR (e.g. Suresh Naik's 9002 row would have
+    // linked to 9001's page, since both share scenario C1). Found while
+    // building /persons/[personId] and reusing this same function.
+    link: f ? caseDetailLink(caseMasterId) : null,
   };
 }
 

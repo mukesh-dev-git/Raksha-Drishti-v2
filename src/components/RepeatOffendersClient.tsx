@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { FolderKanban, Layers, Clock, MapPinned, Fingerprint, ChevronRight, CreditCard, Phone, Home } from "lucide-react";
+import { FolderKanban, Layers, Clock, MapPinned, Fingerprint, ChevronRight, CreditCard, Phone, Home, UserSquare2 } from "lucide-react";
 import OffenderAvatar from "@/components/OffenderAvatar";
 import CrossSourceTimeline from "@/components/CrossSourceTimeline";
 import type { FusedPerson } from "@/lib/personFusion";
@@ -104,6 +104,12 @@ export default function RepeatOffendersClient({ people }: { people: EnrichedPers
                     {districtNames(selected).length === 1 ? "" : "s"}
                   </span>
                 </div>
+                <Link
+                  href={`/persons/${selected.personId}`}
+                  className="mt-3 inline-flex items-center gap-1.5 text-[12.5px] font-medium text-navy hover:underline"
+                >
+                  <UserSquare2 size={14} aria-hidden="true" /> View full profile
+                </Link>
               </div>
             </div>
 
