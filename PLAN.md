@@ -21,7 +21,7 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 |---|---|---|
 | **P0** Credibility | ✅ **done** | All 5. App no longer promises what it can't do. |
 | **P1** Data foundation | 🔵 **in progress** | P1.1 ✅ · P1.3 ✅ · P1.4 `[~]` built, not applied · **P1.2 is next** · P1.5 needs a decision · P1.6 last |
-| **P2** Route restructure | 🔵 **in progress** | On `feature/cases-restructure-crud`. P2.1+P2.1a+P2.1b+P2.1c+P2.1d done — real FIR Index, case/district/person pages, header search all wired to real data, old `[caseType]` routes retired. **P2.4 (CRUD write endpoints) is next.** P2.2 (old-URL redirects) and P2.3 (dashboard rebuild) still open, lower priority. |
+| **P2** Route restructure | 🔵 **in progress** | On `feature/cases-restructure-crud`. P2.1+P2.1a+P2.1b+P2.1c+P2.1d done — real FIR Index, case/district/person pages, header search all wired to real data, old `[caseType]` routes retired. **P2.4 status-update endpoint built, needs a Slate deploy to verify** — the first write endpoint anywhere in this app. IO assignment/case-diary not started (diary genuinely blocked on console-only table provisioning). P2.2 (old-URL redirects) and P2.3 (dashboard rebuild) still open, lower priority. |
 | **P3** Person spine | ✅ **done** | P3.1+P3.3 (`589721d`) — fusion + timeline merge, 2 real bugs found and fixed. P3.2 (`/persons`) landed via the P2 restructure — see P2.1c. |
 | **P4** Real analytics | ⚪ **mixed** | P4.1–P4.3 need P1.2's case volume. **P4.6+P4.7 done** (`f9fde9e`) — MO-clustering (3 real clusters) and the repeat-offender view (6 real people), both live. P4.8 still open. |
 | **P5** AI | 🔵 **in progress** | P5.0-P5.3, P5.2b, P5.3b ✅ — real findings now visible in the Investigation Workspace UI (2/15, honest). **P5.4 is next.** P5.8 (ask-anything chatbot, real case-file links) added, not started. |
@@ -32,9 +32,12 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 **Done so far:** P0.1–P0.5 · P1.1 · P1.3 · P3.1 · P3.3 · P5.0 · P5.1 · P5.2 ·
 P5.3 · X3
 
-**Ready to pick up right now, no decisions needed:** **P2.4** (CRUD write
-endpoints) · **P1.2** (then P1.6) · P4.8 (→ P5.7) · P5.4 · P5.8 · P7.1 ·
-X1 · X2
+**Ready to pick up right now, no decisions needed:** **P1.2** (then P1.6) ·
+P4.8 (→ P5.7) · P5.4 · P5.8 · P7.1 · X1 · X2
+
+**Blocked on a Slate deploy to verify (built, not confirmed working):**
+P2.4's case-status write endpoint - see P2.4 for exactly what was and
+wasn't verifiable locally.
 
 **Blocked on someone, not on effort:**
 
@@ -271,15 +274,48 @@ click-through prototype before any restructuring code was written.*
       that matters for this project. **Not started, real gap.**
 - [ ] **P2.3** Rebuild `/dashboard` as an attention list — alerts and
       anomalies first, totals demoted to a strip. **Not started.**
-- [ ] **P2.4** CRUD hooks, built in parallel per user request (not after
-      the restructure) — case status update, investigating-officer
-      assignment, case-diary entries on `/cases/[caseId]`. Needs real
-      POST/PUT endpoints (zero write endpoints exist anywhere today -
-      confirmed earlier this session) - and since local dev has no live
-      Catalyst request context (`catalyst/README.md`), full round-trip
-      testing needs a Slate deploy, not just `npm run dev`. **Not started -
-      the prototype's status-dropdown/diary-entry demo was UI-only, no real
-      write endpoint behind it yet.**
+- [~] **P2.4** CRUD hooks, built in parallel per user request (not after
+      the restructure) — **case status update done** (`PATCH /api/cases/
+      [caseId]/status`), IO assignment and case-diary entries **not
+      started, scoped out for a real reason** (below). This is the first
+      write endpoint anywhere in this app - every route before it was
+      read-only.
+      - `src/lib/zcql.ts`'s new `updateRow()`: Data Store DML is a
+        *separate* API from ZCQL (which is SELECT-only) -
+        `capp.datastore().table(name).updateRow({ROWID, ...})`, confirmed
+        against the SDK's own `table.d.ts` since no existing write call in
+        this codebase to copy from. Needs the row's internal `ROWID`
+        (Catalyst's implicit system PK), not the business key
+        `CaseMasterID` - so the endpoint does `SELECT ROWID WHERE
+        CaseMasterID = ?` first, then `updateRow()`.
+      - `CaseStatusEditor.tsx`: real dropdown + Save on `/cases/[caseId]`,
+        replacing the static status pill. Failure is shown, not swallowed
+        - the point of this control right now is partly to make the first
+        live test legible ("here's exactly what Catalyst said"), not just
+        to look finished.
+      - **Honestly UNTESTED against a live Data Store** - confirmed why:
+        local dev has no Catalyst request context (every `zcql()` call
+        fails immediately with `"Failed to parse object"`, hit repeatedly
+        this session). What *was* verified locally, live, via curl and
+        the browser: bad `caseId` → 404 before any DB call; bad
+        `statusId` → 400 before any DB call; a valid request reaches the
+        real Catalyst call and fails with exactly that same
+        `"Failed to parse object"` error every other live call hits
+        locally (not a code bug - the expected local-dev limitation) - and
+        the UI surfaces that error cleanly instead of crashing. **Needs a
+        Slate deploy to confirm the actual write works** - user chose to
+        test via Postman against the deployed endpoint before falling
+        back to a from-scratch fix if that surfaces a real bug.
+      - IO assignment: same pattern, one more `updateRow()` call - not
+        built yet, lower value than status without a real Employee picker
+        (free-text officer ID isn't much of an upgrade over nothing).
+      - Case-diary entries: **genuinely blocked on infra, not skipped by
+        choice** - no `CaseDiary` table exists, and Catalyst's Data Store
+        has no CSV-import UI or DDL via any SDK; every table is hand-
+        created in the console (`catalyst/README.md` §2b). Needs a human
+        with console access to create it (Schema View → **+ New Table**)
+        before any write endpoint for it can exist - not something this
+        session can provision.
 
 **Known follow-up, not done here:** `investigationData.ts` and every
 component that only it fed (`AIPanel.tsx`, `EntityDetailCard.tsx`,

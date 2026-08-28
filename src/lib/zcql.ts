@@ -91,6 +91,38 @@ export function fail(e: unknown) {
 // NoSQLMarshall.makeString() (a raw JS string is rejected), per the SDK's
 // own table.d.ts queryTable() example. Left unused for now - kept as a
 // reference for whichever future call actually uses an EQUALS key_condition.
+// -----------------------------------------------------------------------------
+// Data Store row-level writes (P2.4 - the first write endpoint anywhere in
+// this app; every prior route is read-only). ZCQL itself is SELECT-only -
+// Catalyst's Data Store DML (insert/update/delete) is a *separate* API,
+// `capp.datastore().table(name)`, confirmed against the SDK's own
+// table.d.ts (node_modules/zcatalyst-sdk-node/lib/datastore/table.d.ts) -
+// not guessed, since there was no existing write call anywhere in this
+// codebase to copy from.
+//
+// updateRow() needs the table's internal ROWID, not the business key
+// (CaseMasterID) - ROWID is Catalyst's implicit system primary key on
+// every Data Store row (alongside CREATEDTIME/MODIFIEDTIME/CREATORID),
+// queryable via ZCQL like any other column. So a status update is two
+// calls, not one: SELECT ROWID WHERE CaseMasterID = ?, then
+// updateRow({ ROWID, CaseStatusID }).
+//
+// UNTESTED against a live Data Store as of this writing - local dev has no
+// Catalyst request context (every zcql() call here fails immediately with
+// "Failed to parse object", confirmed repeatedly this session), so this
+// can only be verified after a Slate deploy. Written as carefully as the
+// SDK's own types allow; flag any live failure here first if case-status
+// updates don't work post-deploy.
+export async function updateRow(
+  req: NextRequest,
+  tableName: string,
+  rowId: string | number,
+  columns: Record<string, unknown>
+) {
+  const capp = initCatalyst(req);
+  return capp.datastore().table(tableName).updateRow({ ROWID: rowId, ...columns });
+}
+
 export async function nosqlGetByExactId(req: NextRequest, tableName: string, id: string) {
   const capp = initCatalyst(req);
   const { NoSQLEnum, NoSQLMarshall } = require("zcatalyst-sdk-node/lib/no-sql");

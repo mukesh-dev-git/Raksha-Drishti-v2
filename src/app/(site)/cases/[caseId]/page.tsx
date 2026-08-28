@@ -3,6 +3,7 @@ import Link from "next/link";
 import { FolderKanban, MapPin, Building2, Calendar, Users, ShieldAlert, AlertTriangle, Sparkles, CheckCircle2 } from "lucide-react";
 import PageShell from "@/components/PageShell";
 import CaseStatusPill from "@/components/CaseStatusPill";
+import CaseStatusEditor from "@/components/cases/CaseStatusEditor";
 import CrossSourceTimeline from "@/components/CrossSourceTimeline";
 import { getWorklistCase, getSiblingCases, caseDetailLink } from "@/lib/caseWorklist";
 import { getScenarioTimeline } from "@/lib/personFusion";
@@ -55,7 +56,7 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ cas
         { label: "Cases", href: "/cases" },
         { label: c.crimeNo, href: caseDetailLink(caseMasterId) },
       ]}
-      actions={<CaseStatusPill statusId={c.statusId} />}
+      actions={<CaseStatusEditor caseMasterId={caseMasterId} statusId={c.statusId} />}
     >
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1.1fr_1.4fr] lg:items-start">
         <div className="space-y-5">
@@ -142,7 +143,7 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ cas
                   <p className="mb-1 flex items-center gap-1.5 text-[12px] font-semibold text-dash-purple">
                     <Sparkles size={14} aria-hidden="true" /> AI-detected contradiction — GLM-4.7-Flash
                     {aiFinding.matchesAuthored && (
-                      <span className="ml-1 inline-flex items-center gap-1 text-[10.5px] font-normal text-dash-purple/80">
+                      <span className="ml-1 inline-flex items-center gap-1 text-[10.5px] font-normal text-dash-purple">
                         <CheckCircle2 size={11} aria-hidden="true" /> matches verified finding
                       </span>
                     )}
