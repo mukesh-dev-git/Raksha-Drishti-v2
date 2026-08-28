@@ -59,7 +59,7 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ cas
       actions={<CaseStatusEditor caseMasterId={caseMasterId} statusId={c.statusId} />}
     >
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1.1fr_1.4fr] lg:items-start">
-        <div className="space-y-5">
+        <div className="min-w-0 space-y-5">
           {/* Case facts */}
           <div className="rounded-xl border border-line bg-surface shadow-sm">
             <div className="border-b border-line bg-surface-2/50 px-5 py-3">
@@ -120,7 +120,7 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ cas
           )}
         </div>
 
-        <div className="space-y-5">
+        <div className="min-w-0 space-y-5">
           {/* Contradiction findings - kept visibly distinct, same discipline
               RealEvidenceFeed uses: authored ground truth vs an independent
               AI read, never conflated. */}

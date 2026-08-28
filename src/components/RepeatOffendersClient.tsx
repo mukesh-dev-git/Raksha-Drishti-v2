@@ -76,7 +76,7 @@ export default function RepeatOffendersClient({ people }: { people: EnrichedPers
 
       {/* Right: detail panel for the selected person */}
       {selected && (
-        <div className="space-y-4">
+        <div className="min-w-0 space-y-4">
           <div className="overflow-hidden rounded-xl border border-line bg-surface shadow-sm">
             <div className="flex flex-wrap items-start gap-4 border-b border-line bg-surface-2/50 px-5 py-4">
               <OffenderAvatar personId={selected.personId} name={selected.name} photoUrl={selected.photoUrl} size={112} />
