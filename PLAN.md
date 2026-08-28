@@ -21,7 +21,7 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 |---|---|---|
 | **P0** Credibility | ✅ **done** | All 5. App no longer promises what it can't do. |
 | **P1** Data foundation | 🔵 **in progress** | P1.1 ✅ · P1.3 ✅ · P1.4 `[~]` built, not applied · **P1.2 is next** · P1.5 needs a decision · P1.6 last |
-| **P2** Route restructure | 🔵 **in progress** | On `feature/cases-restructure-crud`. P2.1+P2.1a+P2.1b+P2.1c+P2.1d+P2.2 done — real FIR Index, case/district/person pages, header search, old-URL redirects all live. **P2.4 status-update endpoint built, needs a Slate deploy to verify** — the first write endpoint anywhere in this app. IO assignment/case-diary not started (diary genuinely blocked on console-only table provisioning). **P2.3 (dashboard rebuild) is the last open item.** |
+| **P2** Route restructure | 🟢 **read side done** | On `feature/cases-restructure-crud`, not yet merged/deployed. P2.1+P2.1a+P2.1b+P2.1c+P2.1d+P2.2+P2.3 all done — real FIR Index, case/district/person pages, header search, old-URL redirects, and an attention-list dashboard surfacing cross-district pattern signals for the first time. **Only P2.4 remains open**: the case-status write endpoint is built but genuinely unverified (no live Catalyst context in local dev) — needs a Slate deploy + Postman test. IO assignment/case-diary not started (diary blocked on console-only table provisioning, not a choice). |
 | **P3** Person spine | ✅ **done** | P3.1+P3.3 (`589721d`) — fusion + timeline merge, 2 real bugs found and fixed. P3.2 (`/persons`) landed via the P2 restructure — see P2.1c. |
 | **P4** Real analytics | ⚪ **mixed** | P4.1–P4.3 need P1.2's case volume. **P4.6+P4.7 done** (`f9fde9e`) — MO-clustering (3 real clusters) and the repeat-offender view (6 real people), both live. P4.8 still open. |
 | **P5** AI | 🔵 **in progress** | P5.0-P5.3, P5.2b, P5.3b ✅ — real findings now visible in the Investigation Workspace UI (2/15, honest). **P5.4 is next.** P5.8 (ask-anything chatbot, real case-file links) added, not started. |
@@ -278,8 +278,26 @@ click-through prototype before any restructuring code was written.*
       real 308 with the correct `Location`, and every destination itself
       resolves 200 - checked with curl against a real running server, not
       assumed from the config alone.
-- [ ] **P2.3** Rebuild `/dashboard` as an attention list — alerts and
-      anomalies first, totals demoted to a strip. **Not started.**
+- [x] **P2.3** Rebuild `/dashboard` as an attention list — done. Alerts and
+      anomalies now open the page; the 5 stat totals that used to be the
+      first thing on screen are demoted to a compact one-row `StatStrip`.
+      **The actual point of this rebuild, not just reordering**: two new
+      "anomaly" signals surface real cross-district pattern data
+      (`getMoPatternClusters()`, `getRepeatCaseSuspects()`) that has
+      existed since P4.6/P4.7 but was never once mentioned on the
+      dashboard - the PS's "Pattern & Trend Discovery... across districts"
+      ask, previously invisible on SCRB's actual home screen. Deliberately
+      **statewide regardless of `?district=`** - a cross-district finding
+      scoped to one district isn't one anymore (`AttentionSignals.tsx`).
+      Verified live: signal cards show the same real counts already
+      verified on `/pattern-analysis` (3 clusters, 1 exact) and
+      `/repeat-offenders` (6 subjects); confirmed they stay fixed while
+      the district filter changes everything else on the page; every
+      link (attention cards, "Open Workspace", Alerts) resolves to a real
+      `/cases/[caseId]` or feature page, not a 404.
+      `StatCard.tsx`/`Sparkline.tsx` are now unused (only consumer was the
+      old 5-card grid) - left in place, flagged below with the other known
+      dead code rather than deleted mid-task.
 - [~] **P2.4** CRUD hooks, built in parallel per user request (not after
       the restructure) — **case status update done** (`PATCH /api/cases/
       [caseId]/status`), IO assignment and case-diary entries **not
@@ -327,9 +345,11 @@ click-through prototype before any restructuring code was written.*
 component that only it fed (`AIPanel.tsx`, `EntityDetailCard.tsx`,
 `entityStyles.tsx`, `EvidenceBoard.tsx`, `EvidencePanel.tsx`,
 `TimelinePanel.tsx`, `flipbook/*`) are now fully dead code - confirmed
-nothing under `src/app` imports them any more. Left in place rather than
-deleted in the same change as the routing retirement; worth a dedicated
-cleanup pass.
+nothing under `src/app` imports them any more. `StatCard.tsx`/
+`Sparkline.tsx` joined that list with the P2.3 dashboard rebuild - their
+only consumer (the old 5-card stat grid) is gone, replaced by
+`StatStrip.tsx`. All left in place rather than deleted in the same change
+as the routing/dashboard retirement; worth a dedicated cleanup pass.
 
 ## P3 — The person spine
 
