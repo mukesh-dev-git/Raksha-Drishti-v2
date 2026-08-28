@@ -29,6 +29,43 @@ const nextConfig = {
       },
     ];
   },
+
+  // P2.2 - the old [caseType]/[district]-scoped route tree was retired in
+  // the P2 restructure (Next.js can't let it coexist with /cases/[caseId] -
+  // two differently-named dynamic segments at the same path level is a hard
+  // build error, not a style choice). These 301s exist so nothing already
+  // bookmarked or demoed against the old URLs just 404s.
+  //
+  // None of the old fake ids survive the redirect (case-files/[caseId] used
+  // placeholder ids like "FIR-1001" that never mapped to a real case, and
+  // district-wise's crime-type segment has no real 1:1 destination now that
+  // crime type is a filter, not a route) - every old URL lands on the
+  // closest still-real equivalent: the district-scoped case list for
+  // anything that named a district, /cases (the FIR Index) otherwise.
+  async redirects() {
+    return [
+      {
+        source: "/cases/:caseType/:district/investigation-workspace",
+        destination: "/districts/:district",
+        permanent: true,
+      },
+      {
+        source: "/cases/:caseType/:district/case-files",
+        destination: "/districts/:district",
+        permanent: true,
+      },
+      {
+        source: "/cases/:caseType/:district/case-files/:caseId",
+        destination: "/districts/:district",
+        permanent: true,
+      },
+      {
+        source: "/cases/:caseType/district-wise",
+        destination: "/cases",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

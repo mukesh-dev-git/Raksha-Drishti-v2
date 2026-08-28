@@ -21,7 +21,7 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 |---|---|---|
 | **P0** Credibility | ✅ **done** | All 5. App no longer promises what it can't do. |
 | **P1** Data foundation | 🔵 **in progress** | P1.1 ✅ · P1.3 ✅ · P1.4 `[~]` built, not applied · **P1.2 is next** · P1.5 needs a decision · P1.6 last |
-| **P2** Route restructure | 🔵 **in progress** | On `feature/cases-restructure-crud`. P2.1+P2.1a+P2.1b+P2.1c+P2.1d done — real FIR Index, case/district/person pages, header search all wired to real data, old `[caseType]` routes retired. **P2.4 status-update endpoint built, needs a Slate deploy to verify** — the first write endpoint anywhere in this app. IO assignment/case-diary not started (diary genuinely blocked on console-only table provisioning). P2.2 (old-URL redirects) and P2.3 (dashboard rebuild) still open, lower priority. |
+| **P2** Route restructure | 🔵 **in progress** | On `feature/cases-restructure-crud`. P2.1+P2.1a+P2.1b+P2.1c+P2.1d+P2.2 done — real FIR Index, case/district/person pages, header search, old-URL redirects all live. **P2.4 status-update endpoint built, needs a Slate deploy to verify** — the first write endpoint anywhere in this app. IO assignment/case-diary not started (diary genuinely blocked on console-only table provisioning). **P2.3 (dashboard rebuild) is the last open item.** |
 | **P3** Person spine | ✅ **done** | P3.1+P3.3 (`589721d`) — fusion + timeline merge, 2 real bugs found and fixed. P3.2 (`/persons`) landed via the P2 restructure — see P2.1c. |
 | **P4** Real analytics | ⚪ **mixed** | P4.1–P4.3 need P1.2's case volume. **P4.6+P4.7 done** (`f9fde9e`) — MO-clustering (3 real clusters) and the repeat-offender view (6 real people), both live. P4.8 still open. |
 | **P5** AI | 🔵 **in progress** | P5.0-P5.3, P5.2b, P5.3b ✅ — real findings now visible in the Investigation Workspace UI (2/15, honest). **P5.4 is next.** P5.8 (ask-anything chatbot, real case-file links) added, not started. |
@@ -267,11 +267,17 @@ click-through prototype before any restructuring code was written.*
       distinctly-linked FIRs (`/cases/9001`, `/cases/9002` - the P2.1c
       link-mislink bug stayed fixed here) plus his person record; clicking
       a result navigates and clears the query.
-- [ ] **P2.2** Old-URL redirects — `/cases/[caseType]/[district]/
-      investigation-workspace` etc. now 404 instead of resolving (nothing
-      in-app still links to them, but anything bookmarked/demoed against
-      the old URLs will break). Add `redirects()` in `next.config.js` if
-      that matters for this project. **Not started, real gap.**
+- [x] **P2.2** Old-URL redirects — done, `next.config.mjs`'s new
+      `redirects()`. None of the old fake ids survive (`case-files/
+      [caseId]`'s placeholder ids like `FIR-1001` never mapped to a real
+      case; district-wise's crime-type segment has no 1:1 destination now
+      that type is a filter, not a route), so every old URL lands on the
+      closest still-real equivalent: `investigation-workspace` and
+      `case-files*` → `/districts/:district`, `district-wise` → `/cases`.
+      Verified live (not just configured): all 4 old patterns return a
+      real 308 with the correct `Location`, and every destination itself
+      resolves 200 - checked with curl against a real running server, not
+      assumed from the config alone.
 - [ ] **P2.3** Rebuild `/dashboard` as an attention list — alerts and
       anomalies first, totals demoted to a strip. **Not started.**
 - [~] **P2.4** CRUD hooks, built in parallel per user request (not after
