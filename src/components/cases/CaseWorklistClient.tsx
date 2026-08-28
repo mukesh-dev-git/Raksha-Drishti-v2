@@ -14,7 +14,16 @@ import { caseTypes, districts } from "@/lib/data";
 // crime type, then a district" gate as the way to reach a case. Filters are
 // query state on this one page, not path segments - matches PLAN.md P2.1.
 // -----------------------------------------------------------------------------
-export default function CaseWorklistClient({ cases }: { cases: WorklistCase[] }) {
+export default function CaseWorklistClient({
+  cases,
+  hideDistrictFilter = false,
+}: {
+  cases: WorklistCase[];
+  /** Set when `cases` is already scoped to one district (e.g. embedded on
+   *  /districts/[district]) - the district dropdown would otherwise let a
+   *  viewer pick a different district and silently filter everything out. */
+  hideDistrictFilter?: boolean;
+}) {
   const [query, setQuery] = useState("");
   const [type, setType] = useState("");
   const [district, setDistrict] = useState("");
@@ -64,17 +73,19 @@ export default function CaseWorklistClient({ cases }: { cases: WorklistCase[] })
             <option key={c.slug} value={c.slug}>{c.name}</option>
           ))}
         </select>
-        <select
-          value={district}
-          onChange={(e) => setDistrict(e.target.value)}
-          className="rounded-sm border border-line bg-surface px-3 py-2 text-sm text-ink"
-          aria-label="Filter by district"
-        >
-          <option value="">All districts</option>
-          {districts.map((d) => (
-            <option key={d.slug} value={d.slug}>{d.name}</option>
-          ))}
-        </select>
+        {!hideDistrictFilter && (
+          <select
+            value={district}
+            onChange={(e) => setDistrict(e.target.value)}
+            className="rounded-sm border border-line bg-surface px-3 py-2 text-sm text-ink"
+            aria-label="Filter by district"
+          >
+            <option value="">All districts</option>
+            {districts.map((d) => (
+              <option key={d.slug} value={d.slug}>{d.name}</option>
+            ))}
+          </select>
+        )}
         <select
           value={status}
           onChange={(e) => setStatus(e.target.value ? (Number(e.target.value) as CaseStatusId) : "")}

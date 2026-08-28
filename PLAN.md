@@ -21,7 +21,7 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 |---|---|---|
 | **P0** Credibility | ✅ **done** | All 5. App no longer promises what it can't do. |
 | **P1** Data foundation | 🔵 **in progress** | P1.1 ✅ · P1.3 ✅ · P1.4 `[~]` built, not applied · **P1.2 is next** · P1.5 needs a decision · P1.6 last |
-| **P2** Route restructure | 🔵 **in progress** | On `feature/cases-restructure-crud`. P2.1+P2.1a done — real FIR Index (`/cases`) + real case detail (`/cases/[caseId]`), old `[caseType]` routes retired. **P2.1b (districts) is next**, then P2.1c (persons), P2.1d (search), P2.4 (CRUD write endpoints). |
+| **P2** Route restructure | 🔵 **in progress** | On `feature/cases-restructure-crud`. P2.1+P2.1a+P2.1b done — real FIR Index (`/cases`), real case detail (`/cases/[caseId]`), real district lens (`/districts`), old `[caseType]` routes retired. **P2.1c (persons) is next**, then P2.1d (search), P2.4 (CRUD write endpoints). |
 | **P3** Person spine | 🔵 **in progress** | P3.1+P3.3 ✅ (`589721d`) — fusion + timeline merge, 2 real bugs found and fixed. **P3.2 (`/persons`) is next.** |
 | **P4** Real analytics | ⚪ **mixed** | P4.1–P4.3 need P1.2's case volume. **P4.6+P4.7 done** (`f9fde9e`) — MO-clustering (3 real clusters) and the repeat-offender view (6 real people), both live. P4.8 still open. |
 | **P5** AI | 🔵 **in progress** | P5.0-P5.3, P5.2b, P5.3b ✅ — real findings now visible in the Investigation Workspace UI (2/15, honest). **P5.4 is next.** P5.8 (ask-anything chatbot, real case-file links) added, not started. |
@@ -32,8 +32,8 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 **Done so far:** P0.1–P0.5 · P1.1 · P1.3 · P3.1 · P3.3 · P5.0 · P5.1 · P5.2 ·
 P5.3 · X3
 
-**Ready to pick up right now, no decisions needed:** **P2.1b** (districts,
-then P2.1c persons, P2.1d search, P2.4 CRUD) · **P1.2** (then P1.6) ·
+**Ready to pick up right now, no decisions needed:** **P2.1c** (persons,
+then P2.1d search, P2.4 CRUD) · **P1.2** (then P1.6) ·
 P3.2 · P4.8 (→ P5.7) · P5.4 · P5.8 · P7.1 · X1 · X2
 
 **Blocked on someone, not on effort:**
@@ -213,12 +213,24 @@ click-through prototype before any restructuring code was written.*
       Verified: typecheck clean, production build clean, live in-browser -
       worklist stat tiles/filters/rows and case-detail facts/evidence/
       contradictions all confirmed against real data, not just rendered.
-- [ ] **P2.1b** `/districts` + `/districts/[district]` — new, the SP/Range
-      lens (pendency, clearance, real case list for that district),
-      decoupled from crime type. Absorbs the real half of the old
-      `district-wise` trend/clearance content; crime type becomes a filter
-      on the district's case list, not a path segment above it.
-      **Not started.**
+- [x] **P2.1b** `/districts` + `/districts/[district]` — done. The SP/Range
+      lens: real total cases, clearance rate, and repeat-subject count
+      (cross-referenced against `getRepeatCaseSuspects()`, not a separate
+      count) per district, all computed from `getCaseWorklist()` so numbers
+      never disagree with what `/cases` itself shows filtered the same way.
+      District detail reuses `CaseWorklistClient` pre-scoped to that
+      district's cases (added a `hideDistrictFilter` prop rather than
+      leaving a district dropdown that could filter a district's own page
+      down to zero rows). Deliberately **no trend chart** - the old
+      `district-wise` page's 5-year trend was `data.ts`'s fake placeholder;
+      the seeded dataset only has one real year of dates, so a real trend
+      needs P1.2 first (documented in `districtStats.ts`, same gap
+      P4.1-P4.3 are blocked on - nothing shown here that isn't computed
+      from real FIRs).
+      Verified live: Bengaluru Urban correctly shows 5 cases / 20%
+      clearance (1 of 5 resolved), Mysuru 2 cases / 100% (2 of 2 resolved)
+      - checked by hand against the worklist, not just rendered.
+      Sidebar: added "Districts" under Investigation.
 - [ ] **P2.1c** `/persons` + `/persons/[personId]` — new. The Crime and
       Criminal Records Search equivalent: search any person, land on their
       fused profile. `/repeat-offenders` becomes a filtered view into this

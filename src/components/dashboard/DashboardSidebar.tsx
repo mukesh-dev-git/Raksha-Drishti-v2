@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Phone, ChevronLeft, ChevronRight } from "lucide-react";
-import { Home, LayoutDashboard, MapPin, BarChart3, FolderKanban, Waypoints, ShieldAlert } from "lucide-react";
+import { Home, LayoutDashboard, MapPin, BarChart3, FolderKanban, Waypoints, ShieldAlert, Landmark } from "lucide-react";
 import { BASE_PATH } from "@/lib/basePath";
 
 type Item = {
@@ -40,6 +40,7 @@ const SECTIONS: { heading: string; items: Item[] }[] = [
     heading: "Investigation",
     items: [
       { label: "Cases", href: "/cases", icon: FolderKanban },
+      { label: "Districts", href: "/districts", icon: Landmark },
       { label: "Repeat Offenders", href: "/repeat-offenders", icon: ShieldAlert },
     ],
   },
