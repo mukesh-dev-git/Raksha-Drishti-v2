@@ -1,0 +1,654 @@
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<title>Raksha Drishti — Karnataka Crime Hotspots</title>
+
+<!-- P4.1/P4.9 - real statewide hotspot map, replacing the old Bengaluru-only
+     synthetic demo. Same technique as the existing crime-map-source embeds:
+     MapLibre GL JS (free, token-free Mapbox-compatible fork) + Uber H3 for
+     the discrete hex-bin clustering layer, plus a native MapLibre `heatmap`
+     layer for the separate kernel-density view (P4.9 item 3) - both driven
+     by the SAME real per-FIR points, toggled with one control rather than
+     built as two different pages. -->
+<link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script src="https://unpkg.com/h3-js@4.1.0/dist/h3-js.umd.js"></script>
+
+<style>
+  :root {
+    --panel: rgba(17,22,30,0.94); --border: #2b3340; --ink: #e6edf3; --dim: #93a1b0;
+    --accent: #2e90e5; --hot: #e51e8c;
+  }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #0a0d12; color: var(--ink);
+    font-family: Inter, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
+  #map { position: absolute; inset: 0; }
+
+  .card { position: absolute; z-index: 10; background: var(--panel); border: 1px solid var(--border);
+    border-radius: 12px; backdrop-filter: blur(8px); box-shadow: 0 8px 30px rgba(0,0,0,.55); }
+
+  #left { top: 14px; left: 14px; width: 300px; max-height: calc(100vh - 28px); overflow-y: auto; }
+  #left .sect { padding: 13px 15px; border-bottom: 1px solid var(--border); }
+  #left .sect:last-child { border-bottom: none; }
+  #left .brand { display: flex; align-items: center; justify-content: space-between; padding: 11px 15px; }
+  #left .brand .back { font-size: 12px; color: var(--accent); text-decoration: none; font-weight: 600; }
+  #left .brand .back:hover { text-decoration: underline; }
+  #left .brand .brandname { font-size: 12px; font-weight: 700; letter-spacing: .3px; color: var(--ink); }
+  .sect h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .6px; color: var(--dim);
+    margin: 0 0 10px; }
+  .find select { width: 100%; box-sizing: border-box; background: #10151d; color: var(--ink);
+    border: 1px solid var(--border); border-radius: 8px; padding: 9px 10px; font-size: 13px; }
+  .seg { display: flex; gap: 6px; }
+  .seg button { flex: 1; font-size: 11px; padding: 6px 0; border-radius: 7px; cursor: pointer;
+    border: 1px solid var(--border); background: #10151d; color: var(--dim); }
+  .seg button.active { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; }
+  .rng label { display: flex; justify-content: space-between; font-size: 12px; color: var(--dim); margin: 8px 0 5px; }
+  .rng label b { color: var(--ink); font-variant-numeric: tabular-nums; }
+  input[type=range] { width: 100%; accent-color: var(--accent); }
+  .play { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+  .play button { background: var(--accent); color: #fff; border: none; font-weight: 700; font-size: 12px;
+    padding: 7px 12px; border-radius: 8px; cursor: pointer; }
+  .play span { font-size: 10.5px; color: var(--dim); }
+  .totalStat { display: flex; justify-content: space-between; align-items: baseline;
+    margin: -2px 0 12px; padding-bottom: 11px; border-bottom: 1px solid var(--border); }
+  .totalStat .k { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--dim); }
+  .totalStat b { font-size: 20px; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .types { display: grid; grid-template-columns: 1fr; gap: 6px; font-size: 12px; }
+  .types label { display: flex; align-items: center; gap: 6px; cursor: pointer; white-space: nowrap; }
+  .types label span.dot { width: 9px; height: 9px; border-radius: 2px; flex: none; }
+  .types label span.cnt { margin-left: auto; color: var(--dim); font-size: 11px; font-variant-numeric: tabular-nums; }
+  .allnone { text-align: right; font-size: 11px; margin-top: 8px; color: var(--accent); }
+  .allnone a { cursor: pointer; margin-left: 10px; }
+
+  #info { top: 14px; right: 14px; width: 300px; padding: 15px 16px; }
+  #info h2 { font-size: 15px; margin: 0 0 12px; display: flex; justify-content: space-between; align-items: center; }
+  #info .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 14px; }
+  #info .stat .k { font-size: 10px; text-transform: uppercase; letter-spacing: .5px; color: var(--dim); }
+  #info .stat .v { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; margin-top: 2px; }
+  #info .breakdown { margin-top: 14px; border-top: 1px solid var(--border); padding-top: 12px; }
+  #info .brow { display: flex; align-items: center; gap: 8px; font-size: 12px; margin: 5px 0; }
+  #info .brow .dot { width: 9px; height: 9px; border-radius: 2px; flex: none; }
+  #info .brow .bar { height: 6px; border-radius: 3px; background: var(--accent); }
+  #info .brow .n { margin-left: auto; color: var(--dim); font-variant-numeric: tabular-nums; }
+  #info .muted { color: var(--dim); font-size: 12px; }
+
+  #styles { bottom: 16px; left: 14px; padding: 7px 8px; display: flex; gap: 4px; }
+  #styles button { font-size: 11.5px; padding: 6px 11px; border-radius: 7px; cursor: pointer;
+    border: 1px solid var(--border); background: transparent; color: var(--dim); display: flex; gap: 6px; align-items: center; }
+  #styles button.active { background: #10151d; color: var(--ink); border-color: var(--accent); }
+  #styles button i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+
+  #legend { bottom: 16px; right: 14px; padding: 9px 12px; font-size: 11px; width: 210px; }
+  #legend .bar { height: 9px; width: 190px; border-radius: 3px; margin: 6px 0 3px; }
+  #legend .ends { display: flex; justify-content: space-between; color: var(--dim); }
+  #legend .note { margin-top: 7px; color: var(--dim); font-size: 10px; line-height: 1.4; }
+
+  #loading { position: absolute; inset: 0; z-index: 40; display: flex; align-items: center;
+    justify-content: center; background: #0a0d12; color: var(--dim); font-size: 14px; }
+
+  .crime-pop .maplibregl-popup-content { background: var(--panel); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 13px; color: var(--ink); box-shadow: 0 8px 30px rgba(0,0,0,.6); }
+  .crime-pop .maplibregl-popup-tip { border-top-color: var(--panel); border-bottom-color: var(--panel); }
+  .crime-pop .maplibregl-popup-close-button { color: var(--dim); font-size: 17px; padding: 0 6px; }
+  .crime-pop .pop-title { font-size: 14px; font-weight: 700; }
+  .crime-pop .pop-sub { font-size: 10.5px; color: var(--dim); margin: 2px 0 9px; }
+  .crime-pop .pop-stats { display: flex; gap: 12px; padding: 8px 0; border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border); margin-bottom: 8px; }
+  .crime-pop .pop-stats div { display: flex; flex-direction: column; font-size: 10px; color: var(--dim);
+    text-transform: uppercase; letter-spacing: .4px; }
+  .crime-pop .pop-stats span { font-size: 16px; font-weight: 700; color: var(--ink); text-transform: none;
+    letter-spacing: 0; font-variant-numeric: tabular-nums; }
+  .crime-pop .pop-break .brow { display: flex; align-items: center; gap: 7px; font-size: 11.5px; margin: 4px 0; }
+  .crime-pop .pop-break .dot { width: 8px; height: 8px; border-radius: 2px; flex: none; }
+  .crime-pop .pop-break .bar { height: 5px; border-radius: 3px; }
+  .crime-pop .pop-break .n { margin-left: auto; color: var(--dim); font-variant-numeric: tabular-nums; }
+</style>
+
+<div id="map"></div>
+<div id="loading">Loading registered FIRs…</div>
+
+<div id="left" class="card">
+  <div class="sect brand">
+    <a href="../dashboard/" target="_parent" class="back">‹ Dashboard</a>
+    <div class="brandname">Raksha Drishti</div>
+  </div>
+  <div class="sect find">
+    <h2>Jump to a district</h2>
+    <select id="place"><option value="">Karnataka — state view</option></select>
+  </div>
+
+  <div class="sect">
+    <h2>View mode</h2>
+    <div class="seg" id="viewMode">
+      <button data-mode="clusters" class="active">Clusters</button>
+      <button data-mode="density">Density</button>
+    </div>
+    <div class="play" style="margin-top:8px">
+      <span id="modeNote">Hex-binned FIR counts — click a cell for its stats.</span>
+    </div>
+  </div>
+
+  <div class="sect">
+    <h2>Time of day</h2>
+    <div class="rng">
+      <label>Incident hour <b id="hourLbl">00:00 – 23:00</b></label>
+      <input type="range" id="hourStart" min="0" max="23" value="0" />
+      <input type="range" id="hourEnd" min="0" max="23" value="23" />
+    </div>
+    <div class="rng" style="margin-top:10px">
+      <label>Day type</label>
+      <div class="seg" id="dayType">
+        <button data-day="all" class="active">All</button>
+        <button data-day="weekday">Weekday</button>
+        <button data-day="weekend">Weekend</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sect">
+    <h2>Crime types</h2>
+    <div class="totalStat"><span class="k">FIRs plotted</span><b id="totalCount">0</b></div>
+    <div class="types" id="types"></div>
+    <div class="allnone"><a id="selAll">All</a><a id="selNone">None</a></div>
+  </div>
+</div>
+
+<div id="info" class="card">
+  <h2><span id="infoTitle">No area selected</span></h2>
+  <div id="infoBody" class="muted">Click any hexagon to see its real FIR count, top crime type and
+    leading district, and how it ranks against the other cells in view.</div>
+</div>
+
+<div id="styles" class="card">
+  <button data-style="night" class="active"><i style="background:#0a0d12;border:1px solid #444"></i>Night</button>
+  <button data-style="light"><i style="background:#e8ebef"></i>Light</button>
+  <button data-style="bright"><i style="background:#f6e7c0"></i>Bright</button>
+  <button data-style="aerial"><i style="background:#3d5a34"></i>Aerial</button>
+</div>
+
+<div id="legend" class="card">
+  <div id="legendTitle">FIRs per hexagon</div>
+  <div class="bar" id="legendBar"></div>
+  <div class="ends"><span>Low</span><span>High</span></div>
+  <div class="note" id="legendNote">Loading real case coordinates…</div>
+</div>
+
+<script type="module">
+// ---------------------------------------------------------------------------
+// Config — real data only. Crime types match src/lib/data.ts's `caseTypes`
+// (CrimeSubHead lookup); districts match `districts` (District lookup). Kept
+// as a small hardcoded mirror here rather than importing the TS module,
+// same pattern the original map.html/spatiotemporal.html already used for
+// their own (fake) PLACES list — this file is served standalone, with no
+// bundler, so it can't import app code directly.
+// ---------------------------------------------------------------------------
+const CRIME_TYPES = [
+  { id: "theft",    label: "Theft",    color: "#4fc3f7" },
+  { id: "assault",  label: "Assault",  color: "#ef5350" },
+  { id: "fraud",    label: "Fraud",    color: "#ffca28" },
+  { id: "burglary", label: "Burglary", color: "#66bb6a" },
+];
+const CRIME_COLOR = Object.fromEntries(CRIME_TYPES.map(c => [c.id, c.color]));
+const CRIME_LABEL = Object.fromEntries(CRIME_TYPES.map(c => [c.id, c.label]));
+
+const DISTRICT_LABEL = {
+  bengaluru: "Bengaluru Urban", mysuru: "Mysuru", belagavi: "Belagavi",
+  kalaburagi: "Kalaburagi", "dakshina-kannada": "Dakshina Kannada",
+  tumakuru: "Tumakuru", ballari: "Ballari", shivamogga: "Shivamogga",
+};
+
+// Turbo-style ramp (green → teal → yellow → orange → red → magenta).
+const RAMP = [
+  [0.00, [44, 180, 120]], [0.20, [30, 190, 190]], [0.38, [150, 210, 55]],
+  [0.55, [240, 220, 50]], [0.72, [245, 150, 30]], [0.86, [230, 55, 55]],
+  [1.00, [233, 30, 140]],
+];
+function ramp(t) {
+  t = Math.max(0, Math.min(1, t));
+  for (let i = 1; i < RAMP.length; i++) {
+    if (t <= RAMP[i][0]) {
+      const [t0, c0] = RAMP[i - 1], [t1, c1] = RAMP[i];
+      const f = (t - t0) / (t1 - t0);
+      return `rgb(${Math.round(c0[0] + f * (c1[0] - c0[0]))},${Math.round(c0[1] + f * (c1[1] - c0[1]))},${Math.round(c0[2] + f * (c1[2] - c0[2]))})`;
+    }
+  }
+  return `rgb(233,30,140)`;
+}
+
+const CARTO = s => `https://basemaps.cartocdn.com/gl/${s}/style.json`;
+const STYLES = { night: CARTO("dark-matter-gl-style"), light: CARTO("positron-gl-style"), bright: CARTO("voyager-gl-style"), aerial: null };
+function satelliteStyle(glyphs) {
+  return {
+    version: 8,
+    glyphs: glyphs || "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/{fontstack}/{range}.pbf",
+    sources: { sat: { type: "raster", tileSize: 256,
+      tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"],
+      attribution: "Esri, Maxar, Earthstar Geographics" } },
+    layers: [{ id: "sat", type: "raster", source: "sat" }],
+  };
+}
+
+// H3 resolution by zoom, tuned for a STATEWIDE view (Karnataka is ~700km
+// north-south) rather than the old Bengaluru-only build's city-block-first
+// scale — a cell subdivides as you zoom from "whole state" down to
+// "neighbourhood". Approx corner-to-corner width: r4 45km · r5 17km ·
+// r6 6.3km · r7 2.4km · r8 0.9km · r9 350m · r10 132m · r11 50m.
+function resForZoom(z) {
+  if (z < 6.0) return 4;
+  if (z < 7.5) return 5;
+  if (z < 9.0) return 6;
+  if (z < 10.5) return 7;
+  if (z < 12.0) return 8;
+  if (z < 13.5) return 9;
+  if (z < 15.0) return 10;
+  return 11;
+}
+const HUNIT = { 4: 0.15, 5: 0.35, 6: 0.7, 7: 1.6, 8: 3, 9: 6, 10: 7, 11: 5 };
+const HCAP  = { 4: 7000, 5: 6000, 6: 4500, 7: 3200, 8: 1600, 9: 720, 10: 280, 11: 130 };
+const heightFor = (res, count) => Math.min(HCAP[res], 5 + count * HUNIT[res]);
+
+// ---------------------------------------------------------------------------
+// State
+// ---------------------------------------------------------------------------
+const state = {
+  all: [], hourStart: 0, hourEnd: 23, day: "all",
+  types: new Set(CRIME_TYPES.map(c => c.id)),
+  selected: null, styleKey: "night", glyphs: null, mode: "clusters", lastCells: [],
+};
+
+const _qp = new URLSearchParams(location.search);
+const ONLY_TYPE = _qp.get("only");
+if (ONLY_TYPE && CRIME_TYPES.some(c => c.id === ONLY_TYPE)) state.types = new Set([ONLY_TYPE]);
+if (_qp.get("embed")) {
+  ["left", "styles"].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = "none"; });
+}
+
+// ---------------------------------------------------------------------------
+// Map
+// ---------------------------------------------------------------------------
+const map = new maplibregl.Map({
+  container: "map", style: STYLES.night,
+  center: [76.0, 14.7], zoom: 6.2, pitch: 35, bearing: 0, maxZoom: 18.5, minZoom: 5.5,
+});
+map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), "top-right");
+
+function addBuildings() {
+  if (map.getLayer("3d-buildings")) return;
+  const layers = (map.getStyle().layers) || [];
+  const bl = layers.find(l => l["source-layer"] === "building");
+  if (!bl) return;
+  map.addLayer({
+    id: "3d-buildings", type: "fill-extrusion", source: bl.source, "source-layer": "building",
+    minzoom: 13.5,
+    paint: {
+      "fill-extrusion-color": ["interpolate", ["linear"], ["zoom"], 13.5, "#1a2230", 16.5, "#28323f"],
+      "fill-extrusion-height": ["interpolate", ["linear"], ["zoom"],
+        13.5, 0, 15, ["coalesce", ["get", "render_height"], ["get", "height"], 8]],
+      "fill-extrusion-base": ["coalesce", ["get", "render_min_height"], ["get", "min_height"], 0],
+      "fill-extrusion-opacity": 0.9,
+    },
+  }, "hex-3d");
+}
+function firstSymbolLayerId() {
+  const layers = map.getStyle().layers || [];
+  const sym = layers.find(l => l.type === "symbol");
+  return sym ? sym.id : undefined;
+}
+const emptyFC = () => ({ type: "FeatureCollection", features: [] });
+
+function addLayers() {
+  if (map.getSource("hexes")) return;
+  map.addSource("hexes", { type: "geojson", data: emptyFC() });
+  map.addSource("centroids", { type: "geojson", data: emptyFC() });
+  map.addSource("crimes", { type: "geojson", data: emptyFC() });
+  const beforeLabels = firstSymbolLayerId();
+
+  map.addLayer({
+    id: "hex-3d", type: "fill-extrusion", source: "hexes",
+    paint: {
+      "fill-extrusion-color": ["get", "color"], "fill-extrusion-height": ["get", "height"],
+      "fill-extrusion-base": 0, "fill-extrusion-opacity": 0.5, "fill-extrusion-vertical-gradient": true,
+    },
+  }, beforeLabels);
+  map.addLayer({
+    id: "hex-selected", type: "line", source: "hexes",
+    paint: { "line-color": "#ffffff", "line-width": 2.5 },
+    filter: ["==", ["get", "id"], "__none__"],
+  }, beforeLabels);
+  // Kernel-density heatmap layer (P4.9 item 3) — MapLibre's native `heatmap`
+  // type, a smoothed concentration surface. Distinct from the hex-3d
+  // discrete-cluster layers above: this shows WHERE density is highest as a
+  // continuous gradient, not per-cell counts. Starts hidden — view-mode
+  // toggle below controls visibility.
+  map.addLayer({
+    id: "crime-heat", type: "heatmap", source: "crimes", maxzoom: 20, layout: { visibility: "none" },
+    paint: {
+      "heatmap-weight": 0.7,
+      "heatmap-intensity": ["interpolate", ["linear"], ["zoom"], 5, 0.5, 9, 1.0, 13, 1.8, 17, 2.8],
+      "heatmap-radius": ["interpolate", ["linear"], ["zoom"], 5, 8, 8, 14, 11, 24, 14, 40, 17, 65],
+      "heatmap-opacity": 0.82,
+      "heatmap-color": ["interpolate", ["linear"], ["heatmap-density"],
+        0.00, "rgba(0,0,0,0)", 0.15, "rgba(44,180,120,0.75)", 0.35, "rgba(30,190,190,0.85)",
+        0.55, "rgba(150,210,55,0.90)", 0.72, "rgba(240,220,50,0.92)", 0.87, "rgba(245,150,30,0.95)",
+        1.00, "rgba(233,30,140,1)"],
+    },
+  });
+  addBuildings();
+  map.addLayer({
+    id: "hex-count", type: "symbol", source: "centroids",
+    layout: { "text-field": ["get", "countStr"], "text-size": 12, "text-font": ["Open Sans Bold"],
+      "text-allow-overlap": false, "text-ignore-placement": false },
+    paint: { "text-color": "#ffffff", "text-halo-color": "#000000", "text-halo-width": 1.2 },
+  });
+}
+
+map.on("load", () => {
+  try { state.glyphs = map.getStyle().glyphs; } catch (e) {}
+  addLayers();
+  render();
+});
+
+function ensureLayers() {
+  if (!map.isStyleLoaded() || map.getSource("hexes")) return;
+  try { state.glyphs = map.getStyle().glyphs || state.glyphs; } catch (e) {}
+  addLayers();
+  if (state.all.length) render();
+}
+map.on("styledata", ensureLayers);
+map.on("sourcedata", ensureLayers);
+map.on("idle", ensureLayers);
+
+let moveTimer = null;
+map.on("moveend", () => { clearTimeout(moveTimer); moveTimer = setTimeout(render, 180); });
+
+// ---------------------------------------------------------------------------
+// Filtering + aggregation
+// ---------------------------------------------------------------------------
+function inHourWindow(h) {
+  if (h == null) return true; // no real timestamp to filter on — don't hide real data over it
+  return state.hourStart <= state.hourEnd
+    ? (h >= state.hourStart && h <= state.hourEnd)
+    : (h >= state.hourStart || h <= state.hourEnd);
+}
+function passFilters(d) {
+  return inHourWindow(d.hour) && state.types.has(d.crime_type) &&
+    (state.day === "all" || d.is_weekend == null || (state.day === "weekend" ? d.is_weekend === 1 : d.is_weekend === 0));
+}
+
+function updateCounts() {
+  const counts = Object.fromEntries(CRIME_TYPES.map(c => [c.id, 0]));
+  let total = 0;
+  for (const d of state.all) {
+    if (!inHourWindow(d.hour)) continue;
+    if (!(state.day === "all" || d.is_weekend == null || (state.day === "weekend" ? d.is_weekend === 1 : d.is_weekend === 0))) continue;
+    counts[d.crime_type] = (counts[d.crime_type] || 0) + 1;
+    total++;
+  }
+  const totalEl = document.getElementById("totalCount");
+  if (totalEl) totalEl.textContent = total.toLocaleString("en-IN");
+  CRIME_TYPES.forEach(c => {
+    const el = document.getElementById(`cnt-${c.id}`);
+    if (el) el.textContent = (counts[c.id] || 0).toLocaleString("en-IN");
+  });
+}
+
+function render() {
+  if (!map.getSource("hexes")) return;
+
+  if (state.mode === "density") {
+    const feats = [];
+    for (const d of state.all) {
+      if (!passFilters(d)) continue;
+      feats.push({ type: "Feature", geometry: { type: "Point", coordinates: [d.lon, d.lat] }, properties: {} });
+    }
+    map.getSource("crimes").setData({ type: "FeatureCollection", features: feats });
+    return;
+  }
+
+  const res = resForZoom(map.getZoom());
+  const b = map.getBounds();
+  const [w, s, e, n] = [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()];
+
+  const cells = new Map(); // cellId -> { total, mix:{}, districts:{} }
+  for (const d of state.all) {
+    if (d.lon < w || d.lon > e || d.lat < s || d.lat > n) continue;
+    if (!passFilters(d)) continue;
+    const id = h3.latLngToCell(d.lat, d.lon, res);
+    let c = cells.get(id);
+    if (!c) { c = { total: 0, mix: {}, districts: {} }; cells.set(id, c); }
+    c.total++;
+    c.mix[d.crime_type] = (c.mix[d.crime_type] || 0) + 1;
+    c.districts[d.district] = (c.districts[d.district] || 0) + 1;
+  }
+
+  const counts = [...cells.values()].map(c => c.total).sort((a, z) => a - z);
+  const p95 = counts.length ? counts[Math.min(counts.length - 1, Math.floor(counts.length * 0.95))] : 1;
+  const norm = Math.max(p95, 1);
+
+  const polys = [], cents = [];
+  for (const [id, c] of cells) {
+    const t = Math.min(1, c.total / norm);
+    const color = ramp(t);
+    const boundary = h3.cellToBoundary(id).map(([la, lo]) => [lo, la]);
+    boundary.push(boundary[0]);
+    const topCrime = Object.entries(c.mix).sort((a, z) => z[1] - a[1])[0][0];
+    const topDistrict = Object.entries(c.districts).sort((a, z) => z[1] - a[1])[0][0];
+    polys.push({
+      type: "Feature",
+      properties: { id, color, height: heightFor(res, c.total), count: c.total,
+        top: topCrime, topDistrict, mix: JSON.stringify(c.mix) },
+      geometry: { type: "Polygon", coordinates: [boundary] },
+    });
+    const [clat, clng] = h3.cellToLatLng(id);
+    cents.push({ type: "Feature", properties: { countStr: String(c.total) },
+      geometry: { type: "Point", coordinates: [clng, clat] } });
+  }
+
+  map.getSource("hexes").setData({ type: "FeatureCollection", features: polys });
+  map.getSource("centroids").setData({ type: "FeatureCollection", features: cents });
+  state.lastCells = [...cells.values()].map(c => c.total);
+
+  if (state.selected && cells.has(state.selected)) updatePanel(state.selected, cells.get(state.selected));
+}
+
+// ---------------------------------------------------------------------------
+// Area selection
+// ---------------------------------------------------------------------------
+let popup = null;
+
+map.on("click", "hex-3d", (ev) => {
+  if (state.mode !== "clusters") return;
+  const f = ev.features[0];
+  const id = f.properties.id;
+  state.selected = id;
+  map.setFilter("hex-selected", ["==", ["get", "id"], id]);
+  const cell = { total: f.properties.count, mix: JSON.parse(f.properties.mix), topDistrict: f.properties.topDistrict };
+  updatePanel(id, cell);
+  showPopup(id, cell);
+});
+map.on("mouseenter", "hex-3d", () => { if (state.mode === "clusters") map.getCanvas().style.cursor = "pointer"; });
+map.on("mouseleave", "hex-3d", () => map.getCanvas().style.cursor = "");
+
+function cellContext(id, cell) {
+  const [lat, lng] = h3.cellToLatLng(id);
+  const all = state.lastCells.slice().sort((a, z) => a - z);
+  const pct = all.length ? Math.round((all.filter(v => v <= cell.total).length / all.length) * 100) : 0;
+  const entries = Object.entries(cell.mix).sort((a, z) => z[1] - a[1]);
+  const maxMix = Math.max(...Object.values(cell.mix));
+  const districtName = DISTRICT_LABEL[cell.topDistrict] || cell.topDistrict || "Unknown district";
+  return { lat, lng, districtName, pct, entries, maxMix, top: entries[0] };
+}
+function breakdownRows(entries, maxMix) {
+  return entries.map(([k, v]) => `
+    <div class="brow"><span class="dot" style="background:${CRIME_COLOR[k]}"></span>${CRIME_LABEL[k]}
+      <span class="bar" style="width:${8 + (v / maxMix) * 90}px;background:${CRIME_COLOR[k]}"></span>
+      <span class="n">${v}</span></div>`).join("");
+}
+
+function updatePanel(id, cell) {
+  const c = cellContext(id, cell);
+  document.getElementById("infoTitle").textContent = c.districtName;
+  document.getElementById("infoBody").innerHTML = `
+    <div style="font-size:11.5px;color:var(--dim);margin:-4px 0 12px">
+      Leading district in this cell · hex ${id.slice(-6)}</div>
+    <div class="grid">
+      <div class="stat"><div class="k">Real FIRs</div><div class="v">${cell.total}</div></div>
+      <div class="stat"><div class="k">Top crime</div><div class="v" style="font-size:15px">${CRIME_LABEL[c.top[0]]}</div></div>
+      <div class="stat"><div class="k">Cell percentile</div><div class="v">${c.pct}<span style="font-size:13px">th</span></div></div>
+      <div class="stat"><div class="k">Crime types</div><div class="v">${c.entries.length}</div></div>
+    </div>
+    <div class="breakdown"><div class="k" style="font-size:10px;text-transform:uppercase;color:var(--dim);letter-spacing:.5px;margin-bottom:6px">Breakdown</div>${breakdownRows(c.entries, c.maxMix)}</div>`;
+}
+
+function showPopup(id, cell) {
+  const c = cellContext(id, cell);
+  const html = `
+    <div class="pop-title">${c.districtName}</div>
+    <div class="pop-sub">Hexagon-binned real FIRs</div>
+    <div class="pop-stats">
+      <div><span>${cell.total}</span>FIRs</div>
+      <div><span>${CRIME_LABEL[c.top[0]]}</span>top crime</div>
+      <div><span>${c.pct}th</span>percentile</div>
+    </div>
+    <div class="pop-break">${breakdownRows(c.entries, c.maxMix)}</div>`;
+  if (popup) popup.remove();
+  popup = new maplibregl.Popup({ closeButton: true, maxWidth: "260px", offset: 14, className: "crime-pop" })
+    .setLngLat([c.lng, c.lat]).setHTML(html).addTo(map);
+  popup.on("close", () => { state.selected = null; map.setFilter("hex-selected", ["==", ["get", "id"], "__none__"]); });
+}
+
+// ---------------------------------------------------------------------------
+// Controls
+// ---------------------------------------------------------------------------
+const placeSel = document.getElementById("place");
+placeSel.onchange = e => {
+  if (!e.target.value) {
+    map.flyTo({ center: [76.0, 14.7], zoom: 6.2, pitch: 35, bearing: 0, duration: 1400 });
+    return;
+  }
+  const [lat, lng] = e.target.value.split(",").map(Number);
+  map.flyTo({ center: [lng, lat], zoom: 10.4, pitch: 50, duration: 1400 });
+};
+
+const typesEl = document.getElementById("types");
+CRIME_TYPES.forEach(c => {
+  const l = document.createElement("label");
+  l.innerHTML = `<input type="checkbox" checked><span class="dot" style="background:${c.color}"></span>${c.label}<span class="cnt" id="cnt-${c.id}">0</span>`;
+  typesEl.appendChild(l);
+  l.querySelector("input").onchange = e => {
+    if (e.target.checked) state.types.add(c.id); else state.types.delete(c.id);
+    render();
+  };
+});
+document.getElementById("selAll").onclick = () => setAllTypes(true);
+document.getElementById("selNone").onclick = () => setAllTypes(false);
+function setAllTypes(on) {
+  state.types = new Set(on ? CRIME_TYPES.map(c => c.id) : []);
+  typesEl.querySelectorAll("input").forEach(i => i.checked = on);
+  render();
+}
+
+const hs = document.getElementById("hourStart"), he = document.getElementById("hourEnd"), hl = document.getElementById("hourLbl");
+const pad = n => String(n).padStart(2, "0");
+function hourLabel() { hl.textContent = pad(state.hourStart) + ":00 – " + pad(state.hourEnd) + ":00"; }
+hs.oninput = e => { state.hourStart = +e.target.value; hourLabel(); render(); updateCounts(); };
+he.oninput = e => { state.hourEnd = +e.target.value; hourLabel(); render(); updateCounts(); };
+
+document.querySelectorAll("#dayType button").forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll("#dayType button").forEach(x => x.classList.remove("active"));
+    btn.classList.add("active"); state.day = btn.dataset.day; render(); updateCounts();
+  };
+});
+
+// View mode: Clusters (discrete H3 hex-bins, P4.1) vs Density (kernel-density
+// heatmap, P4.9 item 3) — same underlying real points, two different real
+// statistical techniques, not two different datasets.
+document.querySelectorAll("#viewMode button").forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll("#viewMode button").forEach(x => x.classList.remove("active"));
+    btn.classList.add("active");
+    state.mode = btn.dataset.mode;
+    const clusterVis = state.mode === "clusters" ? "visible" : "none";
+    const heatVis = state.mode === "density" ? "visible" : "none";
+    ["hex-3d", "hex-selected", "hex-count"].forEach(id => { if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", clusterVis); });
+    if (map.getLayer("crime-heat")) map.setLayoutProperty("crime-heat", "visibility", heatVis);
+    document.getElementById("info").style.display = state.mode === "clusters" ? "" : "none";
+    document.getElementById("modeNote").textContent = state.mode === "clusters"
+      ? "Hex-binned FIR counts — click a cell for its stats."
+      : "Smoothed concentration surface — no per-cell counts to click.";
+    document.getElementById("legendTitle").textContent = state.mode === "clusters" ? "FIRs per hexagon" : "Relative density";
+    document.getElementById("legendNote").textContent = state.mode === "clusters"
+      ? legendNoteClusters()
+      : legendNoteDensity();
+    render();
+  };
+});
+
+document.querySelectorAll("#styles button").forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll("#styles button").forEach(x => x.classList.remove("active"));
+    btn.classList.add("active");
+    const key = btn.dataset.style; state.styleKey = key;
+    map.setStyle(key === "aerial" ? satelliteStyle(state.glyphs) : STYLES[key]);
+  };
+});
+
+document.getElementById("legendBar").style.background =
+  `linear-gradient(90deg, ${[0, .2, .4, .6, .8, 1].map(t => ramp(t)).join(",")})`;
+
+// ---------------------------------------------------------------------------
+// Load real data
+// ---------------------------------------------------------------------------
+let TOTAL_FIRS = 0, PLOTTED = 0, MISSING = 0;
+function legendNoteClusters() {
+  return `${PLOTTED.toLocaleString("en-IN")} of ${TOTAL_FIRS.toLocaleString("en-IN")} registered FIRs plotted by real latitude/longitude` +
+    (MISSING ? ` (${MISSING} missing coordinates, excluded — not estimated).` : ".") +
+    ` Cells bin real points into hexagons that subdivide as you zoom; colour/height scale against the busiest cell in view (95th percentile), not an absolute count.`;
+}
+function legendNoteDensity() {
+  return `Kernel-density surface over the same ${PLOTTED.toLocaleString("en-IN")} real points — a smoothed concentration estimate, distinct from the per-cell counts in Clusters mode.`;
+}
+
+fetch("/crime-map/data/points.json").then(r => r.json()).then(data => {
+  TOTAL_FIRS = data.total; PLOTTED = data.plotted; MISSING = data.missingCoords;
+
+  state.all = data.points.map(p => ({
+    lat: p.lat, lon: p.lng, crime_type: p.crimeType, district: p.district,
+    hour: p.hour, is_weekend: p.weekend, status: p.status,
+  }));
+
+  // District "jump to" list + statewide fit bounds, both derived from the
+  // real loaded points (mean coordinate per district) — not a hardcoded
+  // guess at where each district's HQ sits.
+  const byDistrict = new Map();
+  let minLat = 90, maxLat = -90, minLng = 180, maxLng = -180;
+  for (const d of state.all) {
+    minLat = Math.min(minLat, d.lat); maxLat = Math.max(maxLat, d.lat);
+    minLng = Math.min(minLng, d.lon); maxLng = Math.max(maxLng, d.lon);
+    const b = byDistrict.get(d.district) || { sumLat: 0, sumLng: 0, n: 0 };
+    b.sumLat += d.lat; b.sumLng += d.lon; b.n++;
+    byDistrict.set(d.district, b);
+  }
+  [...byDistrict.entries()]
+    .sort((a, b) => (DISTRICT_LABEL[a[0]] || a[0]).localeCompare(DISTRICT_LABEL[b[0]] || b[0]))
+    .forEach(([slug, b]) => {
+      const o = document.createElement("option");
+      o.value = `${b.sumLat / b.n},${b.sumLng / b.n}`;
+      o.textContent = DISTRICT_LABEL[slug] || slug;
+      placeSel.appendChild(o);
+    });
+  if (state.all.length) {
+    map.fitBounds([[minLng, minLat], [maxLng, maxLat]], { padding: 60, duration: 0 });
+  }
+
+  document.getElementById("loading").style.display = "none";
+  document.getElementById("legendNote").textContent = legendNoteClusters();
+  hourLabel();
+  updateCounts();
+  if (map.getSource("hexes")) render();
+}).catch(err => {
+  document.getElementById("loading").textContent = "Couldn't load real case data (" + err.message + ").";
+});
+</script>

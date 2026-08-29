@@ -31,6 +31,12 @@ type CaseFact = {
   gravityOffenceId: number;
   caseStatusId: number;
   complainantNames: string[];
+  /** Real per-FIR incident coordinates (P4.1) - straight from CaseMaster's
+   *  latitude/longitude, added to caseFacts.json by build_seed.mjs. Nullable
+   *  because a handful of hand-authored rows predating this field could in
+   *  principle be missing it - never fabricated when absent. */
+  latitude: number | null;
+  longitude: number | null;
 };
 const FACTS = caseFactsRaw as Record<string, CaseFact>;
 const TITLES = scenarioMeta as Record<string, { title: string }>;
@@ -75,6 +81,9 @@ export type WorklistCase = {
   gravityOffenceId: number;
   incidentFromDate: string | null;
   incidentToDate: string | null;
+  /** Real per-FIR incident coordinates (P4.1) - see CaseFact above. */
+  latitude: number | null;
+  longitude: number | null;
 };
 
 let cache: WorklistCase[] | null = null;
@@ -143,6 +152,8 @@ export function getCaseWorklist(): WorklistCase[] {
       gravityOffenceId: f.gravityOffenceId,
       incidentFromDate: f.incidentFromDate,
       incidentToDate: f.incidentToDate,
+      latitude: f.latitude ?? null,
+      longitude: f.longitude ?? null,
     };
   }).sort((a, b) => (b.registeredDate ?? "").localeCompare(a.registeredDate ?? ""));
 
