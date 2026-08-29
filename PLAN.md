@@ -764,7 +764,7 @@ everything else this session.
       `/persons/[personId]`). Low-risk, high-value - both signals already
       exist and are verified, this is a real cross-link, not new
       computation.
-- [ ] **P9.4** *(= advanced visualization, subagent)* **A real
+- [x] **P9.4** *(= advanced visualization, subagent)* **A real
       relationship/network graph on `/cases/[caseId]`**, replacing what
       the deleted `EvidenceBoard.tsx` used to show on mock data. Real
       nodes/edges only, derived from the same evidence already on that
@@ -776,7 +776,28 @@ everything else this session.
       dependency, reuse it rather than hand-rolling physics). Must degrade
       honestly for a case with few records (no graph invented where there's
       nothing to show), and must not fabricate an edge/relationship type
-      not actually evidenced by a real record.
+      not actually evidenced by a real record. **Done, on
+      `feature/case-relationship-graph`, not yet merged to `main`** - built
+      against the raw seed collections directly (not `getScenarioTimeline`,
+      which flattens each record onto one person's own view and loses the
+      pair a record actually connects), reusing personFusion.ts's
+      `matchTextToPerson`/`extractCctvToken` (now exported) rather than
+      reimplementing them. Nodes: Accused/Victim by `resolvedPersons`'
+      real `type`, CCTV camera locations, and witnesses who don't already
+      resolve to a known person. Edges: one per real call/transaction/
+      cctv-sighting/witness-statement, self-statements dropped (not a
+      relationship), multiple real records between the same pair drawn as
+      distinct curved lines rather than collapsed into one. Verified
+      against 3 real cases (9001/C1: 6 nodes·9 edges, 9012/C9: 5 nodes·3
+      edges - honestly sparse, 9008/C6: 7 nodes·6 edges), counts
+      cross-checked against a standalone JS replica run directly on the
+      seed JSON, live in-browser with no console errors and no page
+      overflow. Known honest gap: `matchTextToPerson`'s plain substring
+      match misses some witness-name/CCTV free-text phrasings that don't
+      literally contain a stored alias (e.g. "Faizal Khan installing a
+      device" vs. alias "Faizal Khan (device installer)") - same
+      pre-existing imprecision personFusion.ts already has for this
+      helper, not introduced here, left as real follow-up.
 - [ ] **P9.2** *(= CRUD, lowest priority)* IO assignment endpoint - same
       `updateRow()` pattern P2.4's status editor already proved live. Only
       if time remains after P9.1/P9.3/P9.4; explicitly not case-diary
