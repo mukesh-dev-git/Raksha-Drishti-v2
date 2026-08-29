@@ -28,7 +28,7 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 | **P6** Zia | 🚧 **gated** | Needs the P6.0 yes/no on generating images. |
 | **P7** Kannada voice (Zia) | ⚪ **ready** | Not gated like P6 - P7.1 can start from data we already have. |
 | **X** Cross-cutting | 🔵 | X3 ✅ · X1, X2 open |
-| **P9** Refined-prototype push | 🔵 **in progress, today** | P9.1+P9.1b+P9.3+P9.2 all done, verified live (suspicion score, tool-schema guardrail, pattern/repeat cross-links, real IO assignment). **P9.4** (relationship graph) finished on a subagent's branch, `feature/case-relationship-graph` - reviewed and merged next. |
+| **P9** Refined-prototype push | ✅ **done, today** | All five sub-items shipped and independently verified: P9.1+P9.1b (suspicion score + tool-schema guardrail), P9.3 (pattern/repeat cross-links), P9.2 (real IO assignment), P9.4 (relationship graph, built on a subagent's branch `feature/case-relationship-graph`, merged to `main` after review - the only real conflict was two adjacent import lines in `cases/[caseId]/page.tsx`; every other overlapping file (`caseWorklist.ts`, `contradictionDetector.ts`, `personFusion.ts`, `.gitignore`) merged clean with nothing lost, re-verified with `tsc --noEmit`, `next build`, and a live check on cases 9001+9002 showing the graph, MO-cluster card, repeat badges and IO picker all rendering together). |
 
 **Done so far:** P0.1–P0.5 · P1.1 · P1.3 · **P2 (whole track)** · P3.1 ·
 P3.3 · P5.0 · P5.1 · P5.2 · P5.3 · X3
