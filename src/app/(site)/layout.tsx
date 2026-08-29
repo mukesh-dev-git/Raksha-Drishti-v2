@@ -1,6 +1,7 @@
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import DashboardTopbar from "@/components/dashboard/DashboardTopbar";
 import SiteFooter from "@/components/layout/SiteFooter";
+import AskAnything from "@/components/AskAnything";
 import { getRealAlerts } from "@/lib/dashboardData";
 import { getSearchIndex } from "@/lib/searchIndex";
 
@@ -41,6 +42,11 @@ export default function ShellLayout({ children }: { children: React.ReactNode })
             page - not just the Home welcome screen. */}
         <SiteFooter />
       </div>
+      {/* P5.8 - site-wide, per PLAN.md's own framing ("persistent... not
+          page-scoped"). Mounted here, not in the root layout, so it follows
+          the same "every page except Home" boundary this shell already
+          draws for everything else (see the module comment above). */}
+      <AskAnything />
     </div>
   );
 }
