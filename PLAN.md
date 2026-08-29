@@ -622,9 +622,14 @@ reasons over it.*
 - [x] **P4.9** Done (2026-08-29, subagents across both map/stats tracks).
       All 7 researched candidates built, not just proposed:
       1. **District choropleth** - `/crime-hotspots`, real per-district
-         volume/clearance via `getDistrictStats()`, positions honestly
-         labeled "illustrative... not an official boundary map" (no real
-         Karnataka GeoJSON in this repo).
+         volume/clearance via `getDistrictStats()`.
+         **Rebuilt on a real basemap, 2026-08-30** (direct feedback: the
+         original was a plain SVG schematic with no geography at all - "no
+         maps in 2 types"). Still no Karnataka boundary GeoJSON bundled, and
+         still none fabricated - instead, the same real per-district
+         centroids are plotted as proportional circles on the same free
+         CARTO basemap the hotspot map uses (`choropleth.html`), a standard
+         honest cartographic form given no boundary data exists.
       2. **Time-of-day × day-of-week heatmap** - see P4.2.
       3. **Kernel-density heatmap layer** - `/crime-hotspots`, a
          Clusters/Density toggle on the same real coordinates.
@@ -639,6 +644,10 @@ reasons over it.*
       6. **Cross-district flow map** - `/crime-hotspots`, sourced from the
          15 authored scenarios only (never the 5,000 single-FIR bulk
          cases) - real result, 4 of 15 scenarios span two districts.
+         **Also rebuilt on a real basemap, 2026-08-30**, same reasoning as
+         the choropleth above (`flows.html`) - curved arcs between real
+         district centroids, colored by crime type, on the same CARTO
+         basemap.
       7. **Control-chart trend alerts** - see P4.3.
       **A real bug found and fixed during verification, not by the
       subagents' own testing:** two of the new `/crime-count` chart
