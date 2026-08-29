@@ -35,6 +35,14 @@ import { getFusedPerson, getScenarioTimeline, type FusedEvidenceItem } from "./p
 // the 15 authored contradictions actually chain 3-4 records, not 2. A
 // pair-only schema would make those structurally unfindable regardless of
 // what the model reasoned.
+//
+// P9.1b (= P5.6) - `minItems: 2` added to the schema itself, not just the
+// runtime check below. The runtime check (`real.length >= 2` after
+// filtering to real, non-hallucinated ids) was already the actual
+// guarantee and stays exactly as it was - a schema constraint is advisory
+// (a model can still ignore it), so this doesn't replace that check, it
+// just tells the model the constraint upfront instead of only discovering
+// a too-short finding gets silently dropped after the fact.
 const REPORT_TOOL: ToolDef = {
   type: "function",
   function: {
@@ -51,6 +59,7 @@ const REPORT_TOOL: ToolDef = {
               recordIds: {
                 type: "array",
                 items: { type: "string" },
+                minItems: 2,
                 description: "2 or more record ids (from the timeline given to you) whose claims cannot all be true together",
               },
               reasoning: { type: "string", description: "One short sentence: why they conflict" },

@@ -42,6 +42,11 @@ export type WorklistCase = {
   statusLabel: string;
   registeredDate: string | null;
   accusedNames: string[];
+  /** Same accused, but with the real global personId attached - added for
+   *  P9.3 (linking a case's accused to their real /persons/[personId]
+   *  profile and repeat-subject flag). accusedNames stays as-is since
+   *  several callers already depend on the plain string[] shape. */
+  accused: { personId: string; name: string; caseCount: number }[];
   sections: string[];
   policeStationName: string | null;
 };
@@ -52,15 +57,20 @@ let cache: WorklistCase[] | null = null;
 export function getCaseWorklist(): WorklistCase[] {
   if (cache) return cache;
 
-  // caseMasterId -> accused names, reusing the same fused-person register
+  // caseMasterId -> accused, reusing the same fused-person register
   // repeat-offenders/pattern-analysis already trust, rather than a third
   // way of reading Accused rows.
   const accusedByCase = new Map<number, string[]>();
+  const accusedDetailByCase = new Map<number, { personId: string; name: string; caseCount: number }[]>();
   for (const p of fuseAllPersons().values()) {
     for (const cid of p.caseMasterIds) {
       const list = accusedByCase.get(cid) ?? [];
       if (!list.includes(p.name)) list.push(p.name);
       accusedByCase.set(cid, list);
+
+      const detailList = accusedDetailByCase.get(cid) ?? [];
+      detailList.push({ personId: p.personId, name: p.name, caseCount: p.caseMasterIds.length });
+      accusedDetailByCase.set(cid, detailList);
     }
   }
 
@@ -82,6 +92,7 @@ export function getCaseWorklist(): WorklistCase[] {
       statusLabel: CASE_STATUS_LABEL[statusId],
       registeredDate: f.crimeRegisteredDate,
       accusedNames: accusedByCase.get(f.caseMasterId) ?? [],
+      accused: accusedDetailByCase.get(f.caseMasterId) ?? [],
       sections: f.sections,
       policeStationName: f.policeStationName,
     };

@@ -9,6 +9,8 @@ import { getFusedPerson } from "@/lib/personFusion";
 import { getWorklistCase, caseDetailLink } from "@/lib/caseWorklist";
 import { getOffenderPhotoUrl } from "@/lib/offenderPhotos";
 import { getPersonIdentity } from "@/lib/personIdentity";
+import { getSuspicionScore } from "@/lib/suspicionScore";
+import RiskGauge from "@/components/persons/RiskGauge";
 
 // -----------------------------------------------------------------------------
 // P2.1c - the real, single-person profile page. This is the Crime and
@@ -36,6 +38,7 @@ export default async function PersonDetailPage({ params }: { params: Promise<{ p
   const isRepeat = person.caseMasterIds.length > 1;
   const identity = getPersonIdentity(personId);
   const photoUrl = getOffenderPhotoUrl(personId);
+  const suspicion = getSuspicionScore(personId);
 
   return (
     <PageShell
@@ -158,6 +161,8 @@ export default async function PersonDetailPage({ params }: { params: Promise<{ p
             </div>
           </div>
         </div>
+
+        {suspicion && <RiskGauge score={suspicion} />}
 
         <div className="rounded-xl border border-line bg-surface p-5 shadow-sm">
           <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.1em] text-muted">

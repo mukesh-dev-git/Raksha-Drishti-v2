@@ -28,7 +28,7 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 | **P6** Zia | 🚧 **gated** | Needs the P6.0 yes/no on generating images. |
 | **P7** Kannada voice (Zia) | ⚪ **ready** | Not gated like P6 - P7.1 can start from data we already have. |
 | **X** Cross-cutting | 🔵 | X3 ✅ · X1, X2 open |
-| **P9** Refined-prototype push | 🔵 **in progress, today** | P9.4 (relationship graph) on a subagent's branch, `feature/case-relationship-graph`. P9.1+P9.1b (suspicion score) and P9.3 (wire pattern/repeat signals into case detail) direct. P9.2 (IO assignment) only if time remains. |
+| **P9** Refined-prototype push | 🔵 **in progress, today** | P9.1+P9.1b (suspicion score + tool-schema guardrail) and P9.3 (pattern/repeat signals wired into case detail) done, verified live. **P9.4** (relationship graph) running on a subagent's branch, `feature/case-relationship-graph` - not yet reviewed/merged. P9.2 (IO assignment) only if time remains. |
 
 **Done so far:** P0.1–P0.5 · P1.1 · P1.3 · **P2 (whole track)** · P3.1 ·
 P3.3 · P5.0 · P5.1 · P5.2 · P5.3 · X3
@@ -738,32 +738,49 @@ independently while P9.1/P9.3 happen directly. Not merged to `main`
 without review - report back before merging, same discipline as
 everything else this session.
 
-- [ ] **P9.1** *(= P5.5)* **Suspicion score, for real.** Deterministic
-      weighted signals (contradiction count, cross-district case count,
-      repeat-subject flag, evidence volume) feed a real formula in
-      `src/lib/suspicionScore.ts`; the LLM (`llm.ts`, already verified
-      live) writes *only* the plain-language explanation of a score
-      it didn't compute - same "LLM never invents the number" discipline
-      `PLAN.md`'s original P5.5 framing already committed to. New
-      `RiskGauge.tsx` UI, surfaced on `/persons/[personId]` (a person's
-      risk, not a case's - matches how the signals are actually computed,
-      per-person). No such score exists anywhere in the UI today -
-      confirmed while auditing for this push.
-- [ ] **P9.1b** *(= P5.6)* Citation guardrail formalized **in the tool
-      schema** passed to GLM (`recordIds` required + non-empty), not just
-      convention - quick, do alongside P9.1 since both touch
-      `contradictionDetector.ts`.
+- [x] **P9.1** *(= P5.5)* **Suspicion score, for real.** Done. Deterministic
+      weighted signals (extra-case count, cross-district count, whether the
+      person's OWN cited records appear in a real authored contradiction,
+      evidence volume) feed a real formula in `src/lib/suspicionScore.ts` -
+      no LLM in this file at all. Today's scope deliberately stops short of
+      the original P5.5 framing's LLM explanation step (a live call is
+      10-60s, wrong for a page render; a precomputed batch is real
+      follow-up work) - the "why" shown is the deterministic factor list
+      itself, in plain language. New `RiskGauge.tsx`, surfaced on
+      `/persons/[personId]`.
+      Verified live against real people, by hand: Suresh Naik (KA-P0001,
+      2 cases/2 districts, his own timeline includes the exact record ids
+      C1's real contradiction cites) scores 55 ("Elevated") = 12+10+25+8,
+      matching the formula exactly. Deepak M (KA-P0002, same scenario, but
+      his own cited records do NOT include the contradiction's record ids)
+      correctly scores only 2 ("Low") - confirms the check is real
+      per-person attribution, not "same scenario has a contradiction
+      somewhere." Typecheck + build clean.
+- [x] **P9.1b** *(= P5.6)* Done. `minItems: 2` added to the
+      `report_contradictions` tool schema itself in
+      `contradictionDetector.ts` (was previously only a runtime check after
+      the fact, `real.length >= 2`, still in place unchanged as the actual
+      guarantee - a schema constraint is advisory, this makes it explicit
+      to the model rather than only discovered afterward).
       *(P5.4 "next question to ask" and P5.8 the chatbot are explicitly
       NOT attempted today - real, more open-ended builds, noted as
       next-session work rather than rushed.)*
-- [ ] **P9.3** *(investigation analysis enrichment)* Wire P4.6/P4.7's
-      already-real signals INTO `/cases/[caseId]` instead of leaving them
-      siloed on their own pages: if this case is part of a real MO
-      cluster, show it (link to `/pattern-analysis`); if an accused person
-      is a real repeat subject, flag it inline (link to their
-      `/persons/[personId]`). Low-risk, high-value - both signals already
-      exist and are verified, this is a real cross-link, not new
-      computation.
+- [x] **P9.3** *(investigation analysis enrichment)* Done. Wired P4.6/P4.7's
+      already-real signals INTO `/cases/[caseId]`: accused names are now
+      links to their real `/persons/[personId]` profile, each tagged
+      "Repeat (N)" if they're a real repeat subject (`caseWorklist.ts`
+      extended with a new `accused: {personId,name,caseCount}[]` field
+      alongside the existing `accusedNames: string[]`, kept for backward
+      compat); and a new card shows when a case is part of a real MO
+      cluster (`getMoPatternClusters()`), linking sections + a link to
+      `/pattern-analysis`.
+      Verified live against the exact clusters already verified earlier
+      this session: case 9001 correctly shows Suresh Naik tagged
+      "Repeat (2)"; case 9002 correctly shows "Linked to 1 other case by
+      shared sections IPC-420, IPC-468, IPC-471 — partial match" - the
+      exact `{9002, 9006}` cluster found in P4.6. No horizontal overflow
+      (checked given the min-w-0 lesson from the earlier UI bug).
+      Typecheck + build clean.
 - [ ] **P9.4** *(= advanced visualization, subagent)* **A real
       relationship/network graph on `/cases/[caseId]`**, replacing what
       the deleted `EvidenceBoard.tsx` used to show on mock data. Real

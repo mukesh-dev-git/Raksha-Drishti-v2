@@ -1,12 +1,13 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { FolderKanban, MapPin, Building2, Calendar, Users, ShieldAlert, AlertTriangle, Sparkles, CheckCircle2 } from "lucide-react";
+import { FolderKanban, MapPin, Building2, Calendar, Users, ShieldAlert, AlertTriangle, Sparkles, CheckCircle2, Waypoints } from "lucide-react";
 import PageShell from "@/components/PageShell";
 import CaseStatusPill from "@/components/CaseStatusPill";
 import CaseStatusEditor from "@/components/cases/CaseStatusEditor";
 import CrossSourceTimeline from "@/components/CrossSourceTimeline";
 import { getWorklistCase, getSiblingCases, caseDetailLink } from "@/lib/caseWorklist";
 import { getScenarioTimeline } from "@/lib/personFusion";
+import { getMoPatternClusters } from "@/lib/moPatterns";
 import scenarioMeta from "@/lib/nosql-seed/scenarioMeta.json";
 import contradictionsSeed from "@/lib/nosql-seed/Contradictions.json";
 import aiContradictionsSeed from "@/lib/nosql-seed/AIContradictions.json";
@@ -47,6 +48,9 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ cas
   const evidence = getScenarioTimeline(c.scenarioId);
   const authoredContradiction = CONTRADICTIONS.find((x) => x.scenarioId === c.scenarioId);
   const aiFinding = AI_CONTRADICTIONS.scenarios[c.scenarioId];
+  // P9.3 - real cross-link into P4.6's already-verified MO clustering:
+  // does this specific FIR belong to a real pattern cluster?
+  const patternCluster = getMoPatternClusters().find((cl) => cl.members.some((m) => m.caseMasterId === caseMasterId));
 
   return (
     <PageShell
@@ -70,9 +74,35 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ cas
               <FactRow icon={Building2} label="Police station" value={c.policeStationName ?? "Unknown"} />
               <FactRow icon={MapPin} label="District" value={c.districtName} />
               <FactRow icon={Calendar} label="Registered" value={c.registeredDate ?? "Unknown"} />
-              <FactRow icon={Users} label="Accused" value={c.accusedNames.length ? c.accusedNames.join(", ") : "Unidentified"} />
             </div>
-            <div className="px-5 py-4">
+            <div className="border-t border-surface-2 px-5 py-4">
+              <p className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-muted">
+                <Users size={12} aria-hidden="true" /> Accused
+              </p>
+              {c.accused.length > 0 ? (
+                <div className="flex flex-wrap gap-1.5">
+                  {c.accused.map((a) => (
+                    <Link
+                      key={a.personId}
+                      href={`/persons/${a.personId}`}
+                      className="flex items-center gap-1.5 rounded-full border border-line bg-surface-2 py-1 pl-1 pr-2.5 text-[12.5px] text-ink transition hover:border-navy"
+                    >
+                      <span className="rounded-full bg-dash-blue-bg px-2 py-0.5 text-[11px] font-medium text-dash-blue">
+                        {a.name}
+                      </span>
+                      {a.caseCount > 1 && (
+                        <span className="flex items-center gap-0.5 text-[10.5px] font-medium text-dash-pink">
+                          <ShieldAlert size={10} aria-hidden="true" /> Repeat ({a.caseCount})
+                        </span>
+                      )}
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-[13px] text-ink">Unidentified</p>
+              )}
+            </div>
+            <div className="border-t border-surface-2 px-5 py-4">
               <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-muted">Sections</p>
               <div className="flex flex-wrap gap-1.5">
                 {c.sections.map((s) => (
@@ -116,6 +146,25 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ cas
                   </Link>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* MO pattern cluster - real cross-link into P4.6's clustering */}
+          {patternCluster && (
+            <div className="rounded-xl border border-dash-purple bg-dash-purple-bg p-5">
+              <p className="mb-1 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-dash-purple">
+                <Waypoints size={12} aria-hidden="true" /> Part of an MO pattern cluster
+              </p>
+              <p className="mb-3 text-[12.5px] text-ink">
+                Linked to {patternCluster.members.length - 1} other case{patternCluster.members.length - 1 === 1 ? "" : "s"} by
+                shared sections {patternCluster.linkingSections.join(", ")} — {patternCluster.strength === "exact" ? "exact match" : "partial match"}.
+              </p>
+              <Link
+                href="/pattern-analysis"
+                className="inline-flex items-center gap-1 text-[12.5px] font-medium text-dash-purple hover:underline"
+              >
+                View the full cluster on Pattern Analysis →
+              </Link>
             </div>
           )}
         </div>
