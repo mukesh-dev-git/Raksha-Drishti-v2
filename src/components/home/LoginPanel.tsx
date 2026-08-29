@@ -113,7 +113,7 @@ export default function LoginPanel() {
         {/* 2. Officer sign-in - honestly not functional yet */}
         <div className="mt-4 w-full rounded-xl bg-white p-6 text-left shadow-lg">
           <h2 className="text-base font-semibold text-ink">Officer Sign-In</h2>
-          <p className="text-sm text-muted">Optional — verifies who you are</p>
+          <p className="text-sm text-muted">Authentication not enabled yet — for easier navigation during testing</p>
 
           {showNotConfigured ? (
             <div className="mt-4 rounded-lg border border-line bg-surface-2 p-4 text-sm text-ink">

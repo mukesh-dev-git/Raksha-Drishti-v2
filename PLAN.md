@@ -641,6 +641,18 @@ reasons over it.*
          evidence-linked people and 19 FIRs, 53 real edges. Deliberately no
          person-to-person edges - no real record ever names two people
          from different cases together, so drawing one would be fabricated.
+         **Redesigned 2026-08-30** (direct feedback: "not visible and
+         good") - root cause, not a styling fix: the graph is genuinely 15
+         disconnected components (every fused person has `scenarioIds.length
+         === 1`, so no edge ever crosses scenarios), and laying all 15 out
+         in one shared d3-force simulation let mutual repulsion scatter them
+         across a mostly-empty canvas - a real disconnected-component
+         failure mode, not a tuning problem. Fixed by rendering one small,
+         independently-laid-out d3-force graph per scenario in a responsive
+         grid instead of fighting the topology on a single canvas - loses
+         nothing (there was never a cross-scenario edge to draw) and every
+         cluster is legible without panning. Same d3-force engine
+         throughout; the library was never the problem.
       6. **Cross-district flow map** - `/crime-hotspots`, sourced from the
          15 authored scenarios only (never the 5,000 single-FIR bulk
          cases) - real result, 4 of 15 scenarios span two districts.
