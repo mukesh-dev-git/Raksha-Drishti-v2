@@ -7,6 +7,7 @@
     "districtId": 4401,
     "policeStationId": 440101,
     "policeStationName": "Yeshwanthpur PS",
+    "policePersonId": 5001,
     "sections": [
       "IPC-379",
       "IPC-34"
@@ -27,6 +28,7 @@
     "districtId": 4406,
     "policeStationId": 440601,
     "policeStationName": "Tumakuru City PS",
+    "policePersonId": 5007,
     "sections": [
       "IPC-420",
       "IPC-468",
@@ -48,6 +50,7 @@
     "districtId": 4402,
     "policeStationId": 440201,
     "policeStationName": "K.R. Market PS",
+    "policePersonId": 5003,
     "sections": [
       "IPC-384",
       "IPC-324",
@@ -70,6 +73,7 @@
     "districtId": 4403,
     "policeStationId": 440301,
     "policeStationName": "Belagavi Camp PS",
+    "policePersonId": 5004,
     "sections": [
       "IPC-384",
       "IPC-506"
@@ -90,6 +94,7 @@
     "districtId": 4401,
     "policeStationId": 440102,
     "policeStationName": "Whitefield PS",
+    "policePersonId": 5002,
     "sections": [
       "IPC-384",
       "ITACT-66D",
@@ -112,6 +117,7 @@
     "districtId": 4404,
     "policeStationId": 440401,
     "policeStationName": "Kalaburagi Town PS",
+    "policePersonId": 5005,
     "sections": [
       "IPC-467",
       "IPC-468",
@@ -135,6 +141,7 @@
     "districtId": 4405,
     "policeStationId": 440501,
     "policeStationName": "Mangaluru North PS",
+    "policePersonId": 5006,
     "sections": [
       "IPC-457",
       "IPC-380",
@@ -156,6 +163,7 @@
     "districtId": 4407,
     "policeStationId": 440701,
     "policeStationName": "Ballari Town PS",
+    "policePersonId": 5009,
     "sections": [
       "IPC-324",
       "IPC-506",
@@ -177,6 +185,7 @@
     "districtId": 4408,
     "policeStationId": 440802,
     "policeStationName": "Sagar Rural PS",
+    "policePersonId": 5012,
     "sections": [
       "IPC-379"
     ],
@@ -196,6 +205,7 @@
     "districtId": 4406,
     "policeStationId": 440602,
     "policeStationName": "Sira Rural PS",
+    "policePersonId": 5008,
     "sections": [
       "IPC-379",
       "IPC-411"
@@ -216,6 +226,7 @@
     "districtId": 4401,
     "policeStationId": 440102,
     "policeStationName": "Whitefield PS",
+    "policePersonId": 5002,
     "sections": [
       "IPC-420",
       "ITACT-66D",
@@ -239,6 +250,7 @@
     "districtId": 4402,
     "policeStationId": 440202,
     "policeStationName": "Vidyaranyapuram PS",
+    "policePersonId": 5003,
     "sections": [
       "IPC-323",
       "IPC-506"
@@ -259,6 +271,7 @@
     "districtId": 4403,
     "policeStationId": 440301,
     "policeStationName": "Belagavi Camp PS",
+    "policePersonId": 5004,
     "sections": [
       "IPC-457",
       "IPC-379",
@@ -280,6 +293,7 @@
     "districtId": 4404,
     "policeStationId": 440401,
     "policeStationName": "Kalaburagi Town PS",
+    "policePersonId": 5005,
     "sections": [
       "IPC-379",
       "IPC-354",
@@ -301,6 +315,7 @@
     "districtId": 4405,
     "policeStationId": 440501,
     "policeStationName": "Mangaluru North PS",
+    "policePersonId": 5006,
     "sections": [
       "IPC-420",
       "IPC-406",
@@ -323,6 +338,7 @@
     "districtId": 4407,
     "policeStationId": 440701,
     "policeStationName": "Ballari Town PS",
+    "policePersonId": 5009,
     "sections": [
       "ITACT-66C",
       "IPC-420"
@@ -343,6 +359,7 @@
     "districtId": 4401,
     "policeStationId": 440103,
     "policeStationName": "K.G. Halli PS",
+    "policePersonId": 5011,
     "sections": [
       "ITACT-66C",
       "IPC-420"
@@ -363,6 +380,7 @@
     "districtId": 4408,
     "policeStationId": 440801,
     "policeStationName": "Shivamogga City PS",
+    "policePersonId": 5010,
     "sections": [
       "IPC-379",
       "IPC-120B"
@@ -383,6 +401,7 @@
     "districtId": 4401,
     "policeStationId": 440101,
     "policeStationName": "Yeshwanthpur PS",
+    "policePersonId": 5001,
     "sections": [
       "IPC-324",
       "IPC-34",

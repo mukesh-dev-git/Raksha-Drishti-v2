@@ -28,7 +28,7 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 | **P6** Zia | 🚧 **gated** | Needs the P6.0 yes/no on generating images. |
 | **P7** Kannada voice (Zia) | ⚪ **ready** | Not gated like P6 - P7.1 can start from data we already have. |
 | **X** Cross-cutting | 🔵 | X3 ✅ · X1, X2 open |
-| **P9** Refined-prototype push | 🔵 **in progress, today** | P9.1+P9.1b (suspicion score + tool-schema guardrail) and P9.3 (pattern/repeat signals wired into case detail) done, verified live. **P9.4** (relationship graph) running on a subagent's branch, `feature/case-relationship-graph` - not yet reviewed/merged. P9.2 (IO assignment) only if time remains. |
+| **P9** Refined-prototype push | 🔵 **in progress, today** | P9.1+P9.1b+P9.3+P9.2 all done, verified live (suspicion score, tool-schema guardrail, pattern/repeat cross-links, real IO assignment). **P9.4** (relationship graph) finished on a subagent's branch, `feature/case-relationship-graph` - reviewed and merged next. |
 
 **Done so far:** P0.1–P0.5 · P1.1 · P1.3 · **P2 (whole track)** · P3.1 ·
 P3.3 · P5.0 · P5.1 · P5.2 · P5.3 · X3
@@ -794,8 +794,26 @@ everything else this session.
       honestly for a case with few records (no graph invented where there's
       nothing to show), and must not fabricate an edge/relationship type
       not actually evidenced by a real record.
-- [ ] **P9.2** *(= CRUD, lowest priority)* IO assignment endpoint - same
-      `updateRow()` pattern P2.4's status editor already proved live. Only
-      if time remains after P9.1/P9.3/P9.4; explicitly not case-diary
-      (still blocked on console table provisioning) or case creation
-      (bigger, not scoped for today).
+- [x] **P9.2** *(= CRUD, lowest priority)* IO assignment endpoint - done.
+      Same `updateRow()` pattern P2.4's status editor already proved live:
+      `PATCH /api/cases/[caseId]/officer` updates `CaseMaster.PolicePersonID`.
+      Not case-diary (still blocked on console table provisioning) or case
+      creation (bigger, not scoped for today) - exactly as scoped.
+      **Real roster, not invented officers**: `Employee`/`Rank`/
+      `Designation` are already-imported Data Store tables (12 employees,
+      real coverage of every district the seeded dataset uses - checked,
+      min 1 per district). Bundled as `employees.json` via `build_seed.mjs`
+      §8 (same pattern as `caseFacts.json`), resolved through the new
+      `src/lib/employees.ts`. `caseFacts.json`/`WorklistCase` extended with
+      the FIRs' real `PolicePersonID` and `districtId` so the picker shows
+      the *actual* currently-assigned officer, prioritizes that district's
+      own officers first, and needs no live query to do either.
+      Verified live: bad `caseId` → 404, bad `employeeId` → 400, both
+      before any DB call; a valid request reaches the real Catalyst call
+      and fails with the same `"Failed to parse object"` every other local
+      live call hits (expected, not a bug - needs a Slate deploy to
+      confirm the write itself, same as P2.4). Confirmed via the
+      accessibility tree (not just page text, which doesn't reliably show
+      which `<option>` is selected) that case 9001 correctly pre-selects
+      its real assigned officer, Inspector Manjunath R. Typecheck +
+      production build clean.

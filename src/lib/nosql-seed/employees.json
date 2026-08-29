@@ -1,0 +1,98 @@
+[
+  {
+    "employeeId": 5001,
+    "name": "Manjunath R",
+    "rankName": "Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4401,
+    "districtName": "Bengaluru Urban"
+  },
+  {
+    "employeeId": 5002,
+    "name": "Kavya Shetty",
+    "rankName": "Sub-Inspector",
+    "designationName": "Station House Officer",
+    "districtId": 4401,
+    "districtName": "Bengaluru Urban"
+  },
+  {
+    "employeeId": 5003,
+    "name": "Puttaraju N",
+    "rankName": "Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4402,
+    "districtName": "Mysuru"
+  },
+  {
+    "employeeId": 5004,
+    "name": "Sunanda Patil",
+    "rankName": "Sub-Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4403,
+    "districtName": "Belagavi"
+  },
+  {
+    "employeeId": 5005,
+    "name": "Basavaraj Hiremath",
+    "rankName": "Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4404,
+    "districtName": "Kalaburagi"
+  },
+  {
+    "employeeId": 5006,
+    "name": "Ananya Rai",
+    "rankName": "Sub-Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4405,
+    "districtName": "Dakshina Kannada"
+  },
+  {
+    "employeeId": 5007,
+    "name": "Chandrashekar B",
+    "rankName": "Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4406,
+    "districtName": "Tumakuru"
+  },
+  {
+    "employeeId": 5008,
+    "name": "Divya Reddy",
+    "rankName": "Sub-Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4406,
+    "districtName": "Tumakuru"
+  },
+  {
+    "employeeId": 5009,
+    "name": "Girish Naik",
+    "rankName": "Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4407,
+    "districtName": "Ballari"
+  },
+  {
+    "employeeId": 5010,
+    "name": "Roopa Hegde",
+    "rankName": "Sub-Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4408,
+    "districtName": "Shivamogga"
+  },
+  {
+    "employeeId": 5011,
+    "name": "Farhan Sheikh",
+    "rankName": "Sub-Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4401,
+    "districtName": "Bengaluru Urban"
+  },
+  {
+    "employeeId": 5012,
+    "name": "Nagesh Gowda",
+    "rankName": "Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4408,
+    "districtName": "Shivamogga"
+  }
+]

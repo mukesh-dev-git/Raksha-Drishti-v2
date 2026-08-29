@@ -4,10 +4,12 @@ import { FolderKanban, MapPin, Building2, Calendar, Users, ShieldAlert, AlertTri
 import PageShell from "@/components/PageShell";
 import CaseStatusPill from "@/components/CaseStatusPill";
 import CaseStatusEditor from "@/components/cases/CaseStatusEditor";
+import IOAssignmentEditor from "@/components/cases/IOAssignmentEditor";
 import CrossSourceTimeline from "@/components/CrossSourceTimeline";
 import { getWorklistCase, getSiblingCases, caseDetailLink } from "@/lib/caseWorklist";
 import { getScenarioTimeline } from "@/lib/personFusion";
 import { getMoPatternClusters } from "@/lib/moPatterns";
+import { getEmployeesByDistrict } from "@/lib/employees";
 import scenarioMeta from "@/lib/nosql-seed/scenarioMeta.json";
 import contradictionsSeed from "@/lib/nosql-seed/Contradictions.json";
 import aiContradictionsSeed from "@/lib/nosql-seed/AIContradictions.json";
@@ -51,6 +53,7 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ cas
   // P9.3 - real cross-link into P4.6's already-verified MO clustering:
   // does this specific FIR belong to a real pattern cluster?
   const patternCluster = getMoPatternClusters().find((cl) => cl.members.some((m) => m.caseMasterId === caseMasterId));
+  const officers = getEmployeesByDistrict(c.districtId);
 
   return (
     <PageShell
@@ -111,6 +114,9 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ cas
                   </span>
                 ))}
               </div>
+            </div>
+            <div className="border-t border-surface-2 px-5 py-4">
+              <IOAssignmentEditor caseMasterId={caseMasterId} currentEmployeeId={c.policePersonId} officers={officers} />
             </div>
           </div>
 

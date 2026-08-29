@@ -19,6 +19,7 @@ type CaseFact = {
   districtId: number | null;
   policeStationId: number | null;
   policeStationName: string | null;
+  policePersonId: number | null;
   sections: string[];
   incidentFromDate: string | null;
   crimeRegisteredDate: string | null;
@@ -36,6 +37,7 @@ export type WorklistCase = {
   title: string;
   crimeTypeName: string;
   crimeTypeSlug: string;
+  districtId: number | null;
   districtName: string;
   districtSlug: string;
   statusId: CaseStatusId;
@@ -49,6 +51,7 @@ export type WorklistCase = {
   accused: { personId: string; name: string; caseCount: number }[];
   sections: string[];
   policeStationName: string | null;
+  policePersonId: number | null;
 };
 
 let cache: WorklistCase[] | null = null;
@@ -86,6 +89,7 @@ export function getCaseWorklist(): WorklistCase[] {
       title: meta?.title ?? `Case ${f.caseMasterId}`,
       crimeTypeName: crimeType?.name ?? "Unknown",
       crimeTypeSlug: crimeType?.slug ?? "unknown",
+      districtId: f.districtId,
       districtName: district?.name ?? "Unknown",
       districtSlug: district?.slug ?? "unknown",
       statusId,
@@ -95,6 +99,7 @@ export function getCaseWorklist(): WorklistCase[] {
       accused: accusedDetailByCase.get(f.caseMasterId) ?? [],
       sections: f.sections,
       policeStationName: f.policeStationName,
+      policePersonId: f.policePersonId,
     };
   }).sort((a, b) => (b.registeredDate ?? "").localeCompare(a.registeredDate ?? ""));
 

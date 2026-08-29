@@ -321,6 +321,7 @@ for (const c of dataset.cases) {
       districtId: unit?.DistrictID ?? unitToDistrict.get(fir.PoliceStationID) ?? null,
       policeStationId: fir.PoliceStationID,
       policeStationName: unit?.UnitName ?? null,
+      policePersonId: fir.PolicePersonID ?? null,
       sections,
       incidentFromDate: fir.IncidentFromDate,
       crimeRegisteredDate: fir.CrimeRegisteredDate,
@@ -470,5 +471,32 @@ writeFileSync(
   "utf-8"
 );
 console.log(`PersonIdentity.json`.padEnd(30), `${Object.keys(personIdentity).length} people`);
+
+// --- 8. Employees - real seeded roster, for IO assignment (P9.2) ------------
+// Employee/Rank/Designation are real, already-imported Data Store tables
+// (catalyst/README.md §2) - this isn't fabricated data, just bundled the
+// same way scenarioMeta.json/caseFacts.json are, so the assignment picker
+// doesn't need a live query to show a real officer's name/rank/district.
+// 12 employees total, real coverage of every one of the 8 districts the
+// seeded dataset actually uses (checked: min 1 per district, Bengaluru
+// Urban has 3). If IDs/names/counts ever change in a live re-import
+// (P1.6), rerun this generator - nothing here is hand-maintained separately.
+const rankById = new Map(lookups.Rank.map((r) => [r.RankID, r.RankName]));
+const designationById = new Map(lookups.Designation.map((d) => [d.DesignationID, d.DesignationName]));
+const districtById = new Map(lookups.District.map((d) => [d.DistrictID, d.DistrictName]));
+const employees = lookups.Employee.map((e) => ({
+  employeeId: e.EmployeeID,
+  name: e.FirstName,
+  rankName: rankById.get(e.RankID) ?? "Unknown",
+  designationName: designationById.get(e.DesignationID) ?? "Unknown",
+  districtId: e.DistrictID,
+  districtName: districtById.get(e.DistrictID) ?? "Unknown",
+}));
+writeFileSync(
+  path.join(outNoSqlDir, "employees.json"),
+  JSON.stringify(employees, null, 2),
+  "utf-8"
+);
+console.log(`employees.json`.padEnd(30), `${employees.length} officers`);
 
 console.log(`\nDone. CSVs in ${path.relative(process.cwd(), outCsvDir)}, NoSQL JSON in ${path.relative(process.cwd(), outNoSqlDir)}.`);
