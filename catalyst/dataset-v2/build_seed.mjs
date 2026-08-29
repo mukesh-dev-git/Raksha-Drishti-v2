@@ -385,6 +385,13 @@ for (const c of dataset.cases) {
       gravityOffenceId: fir.GravityOffenceID,
       caseStatusId: fir.CaseStatusID,
       complainantNames,
+      // P4.1 (hotspot map) - the real per-FIR coordinates were already on
+      // CaseMaster (see caseMasterCols above) but never carried into the
+      // bundled facts file, so nothing in src/ could plot a real map. Same
+      // field, same source, just also exposed here rather than requiring a
+      // live ZCQL join for every page that needs a point on a map.
+      latitude: fir.latitude ?? null,
+      longitude: fir.longitude ?? null,
     };
   }
 }
@@ -414,6 +421,9 @@ for (const fir of bulk.caseMasterRows) {
     gravityOffenceId: fir.GravityOffenceID,
     caseStatusId: fir.CaseStatusID,
     complainantNames,
+    // See the authored-case loop above - same field, same reasoning.
+    latitude: fir.latitude ?? null,
+    longitude: fir.longitude ?? null,
   };
 }
 // Minified, not pretty-printed - this is the one file whose size scales
