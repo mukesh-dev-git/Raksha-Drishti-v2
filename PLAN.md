@@ -20,21 +20,22 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 | Track | State | Where it's at |
 |---|---|---|
 | **P0** Credibility | ✅ **done** | All 5. App no longer promises what it can't do. |
-| **P1** Data foundation | 🔵 **in progress** | P1.1 ✅ · P1.3 ✅ · P1.4 `[~]` built, not applied · **P1.2 is next** · P1.5 needs a decision · P1.6 last |
+| **P1** Data foundation | 🔵 **in progress** | P1.1 ✅ · P1.2 ✅ · P1.3 ✅ · P1.4 `[~]` built, not applied · P1.5 needs a decision · **P1.6 is next** (wipe + reimport, folds in P1.1's PersonID fix and P1.2's 390 bulk cases at once) |
 | **P2** Route restructure | ✅ **done, merged, deployed** | Merged to `main` and pushed to `v2/main` 2026-08-28 (17 commits) - confirmed live on Slate. P2.1+P2.1a+P2.1b+P2.1c+P2.1d+P2.2+P2.3 all real FIR Index, case/district/person pages, header search, old-URL redirects, attention-list dashboard. **P2.4's case-status write endpoint confirmed working against the live Data Store** (two real writes via curl, both directions, not just a 200 taken on faith) - the app's first-ever write, live. IO assignment/case-diary not started (diary blocked on console-only table provisioning, not a choice). One real gap surfaced: writes hit the live Data Store but every read path still serves bundled seed JSON, so a write is currently invisible in the UI - see P2.4. |
 | **P3** Person spine | ✅ **done** | P3.1+P3.3 (`589721d`) — fusion + timeline merge, 2 real bugs found and fixed. P3.2 (`/persons`) landed via the P2 restructure — see P2.1c. |
-| **P4** Real analytics | ⚪ **mixed** | P4.1–P4.3 need P1.2's case volume. **P4.6+P4.7 done** (`f9fde9e`) — MO-clustering (3 real clusters) and the repeat-offender view (6 real people), both live. P4.8 still open. |
+| **P4** Real analytics | ⚪ **mixed** | **P1.2 landed 2026-08-29 - `/cases` and `/districts` now run on 409 real cases** (real per-district volume/clearance, verified live), unblocking P4.1-P4.3's real map/trend/hotspot work (not yet built - that's still open, P1.2 only supplied the volume). **P4.6+P4.7 done** (`f9fde9e`) — MO-clustering (3 real clusters) and the repeat-offender view (6 real people), both live, deliberately still scoped to the 15 evidence-rich scenarios only (see P1.2's note on why). P4.8 still open. |
 | **P5** AI | 🔵 **in progress** | P5.0-P5.3, P5.2b, P5.3b ✅ — real findings now visible in the Investigation Workspace UI (2/15, honest). **P5.4 is next.** P5.8 (ask-anything chatbot, real case-file links) added, not started. |
 | **P6** Zia | 🚧 **gated** | Needs the P6.0 yes/no on generating images. |
 | **P7** Kannada voice (Zia) | ⚪ **ready** | Not gated like P6 - P7.1 can start from data we already have. |
 | **X** Cross-cutting | 🔵 | X3 ✅ · X1, X2 open |
 | **P9** Refined-prototype push | ✅ **done, today** | All five sub-items shipped and independently verified: P9.1+P9.1b (suspicion score + tool-schema guardrail), P9.3 (pattern/repeat cross-links), P9.2 (real IO assignment), P9.4 (relationship graph, built on a subagent's branch `feature/case-relationship-graph`, merged to `main` after review - the only real conflict was two adjacent import lines in `cases/[caseId]/page.tsx`; every other overlapping file (`caseWorklist.ts`, `contradictionDetector.ts`, `personFusion.ts`, `.gitignore`) merged clean with nothing lost, re-verified with `tsc --noEmit`, `next build`, and a live check on cases 9001+9002 showing the graph, MO-cluster card, repeat badges and IO picker all rendering together). |
 
-**Done so far:** P0.1–P0.5 · P1.1 · P1.3 · **P2 (whole track)** · P3.1 ·
+**Done so far:** P0.1–P0.5 · P1.1 · P1.2 · P1.3 · **P2 (whole track)** · P3.1 ·
 P3.3 · P5.0 · P5.1 · P5.2 · P5.3 · X3
 
-**Ready to pick up right now, no decisions needed:** **P1.2** (then P1.6) ·
-P4.8 (→ P5.7) · P5.4 · P5.8 · P7.1 · X1 · X2
+**Ready to pick up right now, no decisions needed:** **P1.6** (wipe +
+reimport - folds in P1.1 and P1.2 together) · P4.8 (→ P5.7) · P5.4 · P5.8 ·
+P7.1 · X1 · X2
 
 **Blocked on someone, not on effort:**
 
@@ -46,14 +47,14 @@ P4.8 (→ P5.7) · P5.4 · P5.8 · P7.1 · X1 · X2
 | P1.5, P4.5 | **Agreement on the caste/religion framing** before anything is built |
 
 **The honest read on P4:** it's the biggest remaining prize — 4 of the PS's 6
-capabilities — and it is *not* blocked on AI or on anyone's decision. It is
-blocked on **P1.2**, because 19 cases across 8 districts cannot show a
-hotspot, a trend, or a time-of-day distribution. P1.2 is the highest-value
-unblocked work in the plan. Note also that P4.1 is larger than "plot the
-coords": the map today is 16 hardcoded Bengaluru localities with crime types
-that don't exist in the 4-type schema, and **nothing in `src/` reads
-`latitude`/`longitude` at all** — so it's a rewrite to read the Data Store,
-not a data swap.
+capabilities — and as of P1.2 (2026-08-29) it is no longer blocked on data
+volume: 409 real cases across 8 districts exist now, real dates spanning
+2022-2026, real time-of-day via `geo_time.mjs`. P4.1-P4.3 are still open
+work, just genuinely unblocked work now rather than "not enough rows to plot
+anything." Note also that P4.1 is larger than "plot the coords": the map
+today is 16 hardcoded Bengaluru localities with crime types that don't exist
+in the 4-type schema, and **nothing in `src/` reads `latitude`/`longitude`
+at all** — so it's a rewrite to read the Data Store, not a data swap.
 
 ---
 
@@ -61,10 +62,10 @@ not a data swap.
 
 ```
 P0  Credibility        ✅ done
-P1  Data foundation    🔵 P1.1/P1.3 done ── P1.2 is the next real unlock
+P1  Data foundation    🔵 P1.1/P1.2/P1.3 done ── P1.6 (wipe+reimport) next
 P2  Route restructure  🔵 in progress ── P2.1/1a/1b/1c done, P2.1d next
 P3  Person spine       ✅ done       ── P3.2 landed via P2.1c
-P4  Real analytics     ⚪ P4.6/P4.7 done ── P4.1-P4.3 still need P1.2
+P4  Real analytics     ⚪ P4.6/P4.7 done, P1.2 unblocked P4.1-P4.3 ── still open work
 P5  AI features        🔵 P5.0-P5.3, P5.2b, P5.3b done ── P5.4 is next
 P6  Zia                🚧 gated on P6.0 ── only if we get images
 P7  Kannada voice       ⚪ ready       ── not gated like P6, can start now
@@ -124,11 +125,62 @@ locally, then wipe + re-import **once**. See `RESEARCH_AND_PLAN.md` §5.*
       **107/107 citations resolve.** See `RESEARCH_AND_PLAN.md` §5.3(a)+(a2).
       ⚠️ The live Data Store still holds the old `A1`-style values — the
       re-import is deliberately deferred to **P1.6** so the wipe happens once.
-- [ ] **P1.2** Merge the two seeds into one generator: broad (hundreds of
-      cases, so statistics mean something) **and** deep (the 15 authored
-      scenarios with full evidence). Port `ChargesheetDetails` from
-      `catalyst/seed/`.
-      *Done when:* `CaseMaster` ≳ 400 rows, the 15 scenarios still resolve.
+- [x] **P1.2** Done (2026-08-29). New `catalyst/dataset-v2/bulk_cases.mjs`
+      generates 390 real, statistically-varied `CaseMaster` rows (+
+      `ComplainantDetails`/`Victim`/`Accused`/`ActSectionAssociation`) using
+      the SAME `lookups.json` and the SAME `geo_time.mjs` `placeIncident()`/
+      `incidentHour()` P1.3/P1.4 already built - not a separate/incompatible
+      generator. `CaseMaster` now 409 rows (19 authored + 390 bulk), well
+      over the "≳400" bar; **all 19 authored FIRs verified still resolving
+      unchanged** (`/pattern-analysis` still finds exactly the same 3
+      clusters/7 cases, `/repeat-offenders` still finds exactly the same 6
+      people - checked live, not assumed). New `ChargesheetDetails` table
+      (shape ported from `catalyst/seed/`, per scope - NOT its rows, which
+      carry the old generator's real defects: `GenderID` stored as literal
+      text, every `Accused.PersonID` hardcoded to `"A1"` for all 4 sample
+      rows shown, `OccupationID`/`ReligionID`/`CasteID` hardcoded to `1,1,1`
+      for every complainant. "The seed generator is the problem, not the
+      rows" - so this generates fresh, correct rows against the real pinned
+      lookup IDs, not a port of the old ones), populated for every
+      Charge-Sheeted case, scenario and bulk alike (105 rows).
+      **Deliberate scope boundary, not an oversight:** bulk cases carry no
+      evidence records (calls/CCTV/transactions/statements) and are
+      EXCLUDED from every evidence-dependent feature - `personFusion.ts`
+      (P3.1, so `/persons` + repeat-offender detection stay at their real,
+      verified 47 people), and `moPatterns.ts` (P4.6 - `RARE_THRESHOLD=3`
+      was calibrated against the 19-case universe; diluted across ~400 bulk
+      cases drawn from ~20 IPC sections, "rare" stops meaning anything and
+      the rule would find fake clusters from coincidental section overlap).
+      A bulk case's accused ARE real (continuing global `KA-Pxxxx` IDs from
+      P1.1's register, only for Charge-Sheeted/Closed cases - a chargesheet
+      needs a named accused, matching real procedure) but un-linked: no
+      evidence-backed `/persons/[personId]` profile exists for them, so
+      `caseWorklist.ts`'s new `linked: boolean` field (via new bundled
+      `accused.json`) tells the case-detail page to render their name as
+      plain text, never a link that would 404 - verified live (case 5:
+      "Iqbal Kulkarni" renders as a `<span>`, not a `<Link>`, confirmed via
+      the accessibility tree, not just visually).
+      **Real payoff, verified live:** `/cases` now lists 409 real cases
+      (154 Under Investigation/105 Charge Sheeted/115 Closed/35 Open);
+      `/districts` now shows real, differentiated per-district volume and
+      clearance (Bengaluru Urban 91 cases/58%, down to Shivamogga 34/56% -
+      not the old "5 cases" toy numbers) with ZERO code changes to
+      `districtStats.ts` itself (it was already `getCaseWorklist()`-driven,
+      not `data.ts`'s fake counts - this is exactly the payoff P1.2 was
+      supposed to unlock). A bulk case with too little data degrades
+      honestly rather than faking it (case 5's relationship graph: "0
+      entities, 0 linked records... too few linked records to draw a
+      graph"). Also fixed along the way: `geo_time.mjs`'s own left-open note
+      on a rural theft time-of-day profile (rural stations - `spreadKm>=3`
+      in `STATION_LOCALITIES` - now get a night-shifted curve, urban theft
+      keeps the daytime/evening one).
+      ⚠️ **Local/bundled seed only** - the live Data Store still holds just
+      the 19 real FIRs. Importing the other 390 (+ `ChargesheetDetails`,
+      already a provisioned table per `DATA_STORE_SCHEMA.md`, not a new
+      console-provisioning blocker) is folded into **P1.6**'s wipe-and-
+      reimport, same reasoning as P1.1's deferred `PersonID` fix - one wipe,
+      not one per landed fix.
+      Typecheck + production build clean.
 - [x] **P1.3** ~~Populate `latitude`/`longitude` with real per-incident coords
       inside the correct district~~ — done. The defect was narrower than
       "no real coords": the coords were real, but **reused** — 5 station
@@ -157,7 +209,14 @@ locally, then wipe + re-import **once**. See `RESEARCH_AND_PLAN.md` §5.*
       lookup tables. **Framing agreed first** — victim/complainant
       demographics with explicit denominators, never offender propensity.
 - [ ] **P1.6** Wipe the Data Store and re-import cleanly. Record row counts in
-      `catalyst/README.md`.
+      `catalyst/README.md`. Now carries two real fixes at once, which is
+      exactly why this was deferred to one wipe rather than done per-fix:
+      P1.1's real `KA-Pxxxx` PersonIDs (the live Data Store still has the
+      old `A1`-style ones) and P1.2's 409-row `CaseMaster` (+ the new
+      `ChargesheetDetails` table - already provisioned, not a new console
+      step). `catalyst/dataset-v2/out/csv/*.csv` is already correct and
+      ready; this item is the live `ds:import` run + verification, not more
+      generation work.
 
 ## P2 — Route restructure 🔵 in progress (`feature/cases-restructure-crud`)
 

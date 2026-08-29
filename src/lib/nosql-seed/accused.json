@@ -1,0 +1,2130 @@
+[
+  {
+    "caseMasterId": 9001,
+    "personId": "KA-P0001",
+    "name": "Suresh Naik",
+    "caseCount": 2,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9001,
+    "personId": "KA-P0002",
+    "name": "Deepak M",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9002,
+    "personId": "KA-P0001",
+    "name": "Suresh N.",
+    "caseCount": 2,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9002,
+    "personId": "KA-P0003",
+    "name": "Iqbal Sait",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9003,
+    "personId": "KA-P0004",
+    "name": "Praveen Achari",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9003,
+    "personId": "KA-P0005",
+    "name": "Manoj Kumar S",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9003,
+    "personId": "KA-P0006",
+    "name": "Yusuf Ali",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9003,
+    "personId": "KA-P0007",
+    "name": "Ravindra Naidu (fence, pawnbroker)",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9004,
+    "personId": "KA-P0008",
+    "name": "Zoya Merchant (app runs as 'QuickCash Lending')",
+    "caseCount": 2,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9004,
+    "personId": "KA-P0009",
+    "name": "Tarun Bhatia (call-centre lead)",
+    "caseCount": 2,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9005,
+    "personId": "KA-P0008",
+    "name": "Z. Merchant (app registered as 'RapidFin Solutions')",
+    "caseCount": 2,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9005,
+    "personId": "KA-P0009",
+    "name": "Tarun Bhatia",
+    "caseCount": 2,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9006,
+    "personId": "KA-P0010",
+    "name": "Mallikarjun Rao (property broker)",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9006,
+    "personId": "KA-P0011",
+    "name": "Shantaram Kulkarni (notary)",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9006,
+    "personId": "KA-P0012",
+    "name": "Prakash Jadhav (buyer)",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9007,
+    "personId": "KA-P0013",
+    "name": "Vinod Poojary",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9007,
+    "personId": "KA-P0014",
+    "name": "Naveen Kotian",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9007,
+    "personId": "KA-P0015",
+    "name": "Rafiq Ahmed (shop owner, fence)",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9008,
+    "personId": "KA-P0016",
+    "name": "Chandru M (site supervisor)",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9008,
+    "personId": "KA-P0017",
+    "name": "Basha Sab",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9008,
+    "personId": "KA-P0018",
+    "name": "Ravi Kumar T",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9008,
+    "personId": "KA-P0019",
+    "name": "Ismail Sheikh (mining contractor)",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9009,
+    "personId": "KA-P0020",
+    "name": "Halappa D",
+    "caseCount": 2,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9009,
+    "personId": "KA-P0021",
+    "name": "Somesh K (truck driver)",
+    "caseCount": 2,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9010,
+    "personId": "KA-P0020",
+    "name": "Halappa D",
+    "caseCount": 2,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9010,
+    "personId": "KA-P0021",
+    "name": "Somesh Kumar",
+    "caseCount": 2,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9011,
+    "personId": "KA-P0022",
+    "name": "Rohan Malhotra (floor manager)",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9011,
+    "personId": "KA-P0023",
+    "name": "Priya Kapoor (owner-of-record)",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9011,
+    "personId": "KA-P0024",
+    "name": "Amit Verma (agent)",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9011,
+    "personId": "KA-P0025",
+    "name": "Sana Iyer (agent)",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9012,
+    "personId": "KA-P0026",
+    "name": "Srinivas Iyengar",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9012,
+    "personId": "KA-P0027",
+    "name": "Nandish Iyengar (accused's brother)",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9013,
+    "personId": "KA-P0028",
+    "name": "Sagar Bandekar",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9013,
+    "personId": "KA-P0029",
+    "name": "Vasant Naik (garage owner)",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9013,
+    "personId": "KA-P0030",
+    "name": "Ganesh Koli",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9014,
+    "personId": "KA-P0031",
+    "name": "Altaf Pathan",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9014,
+    "personId": "KA-P0032",
+    "name": "Kiran Bhosale",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9014,
+    "personId": "KA-P0033",
+    "name": "Santosh Waghmare",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9014,
+    "personId": "KA-P0034",
+    "name": "Ravi Caterer (catering staff, informant)",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9015,
+    "personId": "KA-P0035",
+    "name": "Wilfred Pinto (director)",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9015,
+    "personId": "KA-P0036",
+    "name": "Neha D'Silva (co-director)",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9015,
+    "personId": "KA-P0037",
+    "name": "Clifton Rego (local recruiter)",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9016,
+    "personId": "KA-P0038",
+    "name": "Faizal Khan (device installer)",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9016,
+    "personId": "KA-P0039",
+    "name": "Deepak Rathore (card cloner)",
+    "caseCount": 2,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9016,
+    "personId": "KA-P0040",
+    "name": "Anand M (cash-out mule)",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9017,
+    "personId": "KA-P0039",
+    "name": "Deepak Rathore",
+    "caseCount": 2,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9018,
+    "personId": "KA-P0041",
+    "name": "Manjappa Gowda",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9018,
+    "personId": "KA-P0042",
+    "name": "Yallappa Naik",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9018,
+    "personId": "KA-P0043",
+    "name": "Devaraj (forest watcher, insider)",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9019,
+    "personId": "KA-P0044",
+    "name": "Zaid Khan",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9019,
+    "personId": "KA-P0045",
+    "name": "Bharath Gowda",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9019,
+    "personId": "KA-P0046",
+    "name": "Naveen Raju",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 9019,
+    "personId": "KA-P0047",
+    "name": "Suhail Ahmed",
+    "caseCount": 1,
+    "linked": true
+  },
+  {
+    "caseMasterId": 5,
+    "personId": "KA-P0048",
+    "name": "Iqbal Kulkarni",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 8,
+    "personId": "KA-P0049",
+    "name": "Chandru Sait",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 13,
+    "personId": "KA-P0050",
+    "name": "Meena Achar",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 14,
+    "personId": "KA-P0051",
+    "name": "Nagaraj Kumar",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 16,
+    "personId": "KA-P0052",
+    "name": "Priya Sait",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 17,
+    "personId": "KA-P0053",
+    "name": "Dinesh Naik",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 18,
+    "personId": "KA-P0054",
+    "name": "Manoj Pinto",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 22,
+    "personId": "KA-P0055",
+    "name": "Yogesh Naik",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 25,
+    "personId": "KA-P0056",
+    "name": "Yogesh Bhat",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 26,
+    "personId": "KA-P0057",
+    "name": "Vijay Hegde",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 28,
+    "personId": "KA-P0058",
+    "name": "Geeta Hiremath",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 30,
+    "personId": "KA-P0059",
+    "name": "Manjunath Gowda",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 31,
+    "personId": "KA-P0060",
+    "name": "Pooja Hiremath",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 32,
+    "personId": "KA-P0061",
+    "name": "Meena Pinto",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 32,
+    "personId": "KA-P0062",
+    "name": "Ramesh Desai",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 33,
+    "personId": "KA-P0063",
+    "name": "Imran Gowda",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 34,
+    "personId": "KA-P0064",
+    "name": "Ashok Kulkarni",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 35,
+    "personId": "KA-P0060",
+    "name": "Pooja Hiremath",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 35,
+    "personId": "KA-P0065",
+    "name": "Anthony Hiremath",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 38,
+    "personId": "KA-P0066",
+    "name": "Anita Nayak",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 38,
+    "personId": "KA-P0067",
+    "name": "Anthony Rao",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 39,
+    "personId": "KA-P0055",
+    "name": "Yogesh Naik",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 40,
+    "personId": "KA-P0068",
+    "name": "Ravi Merchant",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 40,
+    "personId": "KA-P0069",
+    "name": "Ramesh Gowda",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 43,
+    "personId": "KA-P0070",
+    "name": "Rajesh Hiremath",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 45,
+    "personId": "KA-P0071",
+    "name": "Sneha Gowda",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 45,
+    "personId": "KA-P0072",
+    "name": "Dinesh Kumar",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 46,
+    "personId": "KA-P0073",
+    "name": "Nandini Pinto",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 49,
+    "personId": "KA-P0074",
+    "name": "Priya Patil",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 50,
+    "personId": "KA-P0075",
+    "name": "Vidya Poojary",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 51,
+    "personId": "KA-P0076",
+    "name": "Mary Pinto",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 51,
+    "personId": "KA-P0077",
+    "name": "Roopa Desai",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 52,
+    "personId": "KA-P0078",
+    "name": "Shilpa Nayak",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 53,
+    "personId": "KA-P0069",
+    "name": "Ramesh Gowda",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 54,
+    "personId": "KA-P0079",
+    "name": "Anthony Bhat",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 55,
+    "personId": "KA-P0080",
+    "name": "Girish Sait",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 57,
+    "personId": "KA-P0081",
+    "name": "Manoj Hiremath",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 60,
+    "personId": "KA-P0082",
+    "name": "Vinod D'Souza",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 61,
+    "personId": "KA-P0083",
+    "name": "Farhan Sait",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 62,
+    "personId": "KA-P0084",
+    "name": "Ravi Reddy",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 64,
+    "personId": "KA-P0084",
+    "name": "Ravi Reddy",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 65,
+    "personId": "KA-P0085",
+    "name": "Dinesh Reddy",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 66,
+    "personId": "KA-P0086",
+    "name": "Suresh Patil",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 67,
+    "personId": "KA-P0087",
+    "name": "Mahesh Sait",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 67,
+    "personId": "KA-P0088",
+    "name": "Mahesh D'Souza",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 69,
+    "personId": "KA-P0079",
+    "name": "Anthony Bhat",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 72,
+    "personId": "KA-P0089",
+    "name": "Ganesh Gowda",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 73,
+    "personId": "KA-P0090",
+    "name": "Naveen Nayak",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 80,
+    "personId": "KA-P0091",
+    "name": "Sowmya Hegde",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 81,
+    "personId": "KA-P0092",
+    "name": "Iqbal Hegde",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 81,
+    "personId": "KA-P0093",
+    "name": "Manjunath Patil",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 82,
+    "personId": "KA-P0094",
+    "name": "Kavya Nayak",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 86,
+    "personId": "KA-P0095",
+    "name": "Suresh Achar",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 87,
+    "personId": "KA-P0096",
+    "name": "Sneha Hegde",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 87,
+    "personId": "KA-P0097",
+    "name": "Mahesh Gowda",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 88,
+    "personId": "KA-P0098",
+    "name": "Ramesh Naik",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 89,
+    "personId": "KA-P0099",
+    "name": "Sunita Kumar",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 94,
+    "personId": "KA-P0100",
+    "name": "Yogesh Shetty",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 95,
+    "personId": "KA-P0101",
+    "name": "Ashok Merchant",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 95,
+    "personId": "KA-P0102",
+    "name": "Anil Hegde",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 97,
+    "personId": "KA-P0103",
+    "name": "Suresh Patil",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 98,
+    "personId": "KA-P0104",
+    "name": "Ashok Achar",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 99,
+    "personId": "KA-P0105",
+    "name": "Manoj Poojary",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 101,
+    "personId": "KA-P0106",
+    "name": "Rajesh Gowda",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 102,
+    "personId": "KA-P0107",
+    "name": "Kiran Desai",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 102,
+    "personId": "KA-P0108",
+    "name": "Rajesh Kumar",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 103,
+    "personId": "KA-P0109",
+    "name": "Naveen Gowda",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 104,
+    "personId": "KA-P0110",
+    "name": "Girish D'Souza",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 105,
+    "personId": "KA-P0111",
+    "name": "Arjun Naik",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 108,
+    "personId": "KA-P0112",
+    "name": "Roopa Gowda",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 109,
+    "personId": "KA-P0113",
+    "name": "Harish D'Souza",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 109,
+    "personId": "KA-P0094",
+    "name": "Kavya Nayak",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 110,
+    "personId": "KA-P0114",
+    "name": "Yogesh D'Souza",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 110,
+    "personId": "KA-P0115",
+    "name": "Sowmya Naik",
+    "caseCount": 3,
+    "linked": false
+  },
+  {
+    "caseMasterId": 112,
+    "personId": "KA-P0116",
+    "name": "Suresh Poojary",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 113,
+    "personId": "KA-P0117",
+    "name": "Rekha D'Souza",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 113,
+    "personId": "KA-P0118",
+    "name": "Chandru D'Souza",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 115,
+    "personId": "KA-P0119",
+    "name": "Ravi Rao",
+    "caseCount": 3,
+    "linked": false
+  },
+  {
+    "caseMasterId": 116,
+    "personId": "KA-P0120",
+    "name": "Arjun Desai",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 117,
+    "personId": "KA-P0121",
+    "name": "Girish Shetty",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 119,
+    "personId": "KA-P0114",
+    "name": "Yogesh D'Souza",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 121,
+    "personId": "KA-P0122",
+    "name": "Arjun Reddy",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 122,
+    "personId": "KA-P0123",
+    "name": "Sunita D'Souza",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 126,
+    "personId": "KA-P0124",
+    "name": "Sowmya Sait",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 127,
+    "personId": "KA-P0112",
+    "name": "Roopa Gowda",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 127,
+    "personId": "KA-P0125",
+    "name": "Ganesh Nayak",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 128,
+    "personId": "KA-P0106",
+    "name": "Rajesh Gowda",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 129,
+    "personId": "KA-P0126",
+    "name": "Srinivas Reddy",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 131,
+    "personId": "KA-P0127",
+    "name": "Naveen Shetty",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 134,
+    "personId": "KA-P0082",
+    "name": "Vinod D'Souza",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 135,
+    "personId": "KA-P0128",
+    "name": "Imran Rao",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 138,
+    "personId": "KA-P0129",
+    "name": "Rekha Achar",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 142,
+    "personId": "KA-P0130",
+    "name": "Anita Hegde",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 143,
+    "personId": "KA-P0131",
+    "name": "Mary Sait",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 144,
+    "personId": "KA-P0132",
+    "name": "Srinivas Merchant",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 145,
+    "personId": "KA-P0133",
+    "name": "Ravi Merchant",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 146,
+    "personId": "KA-P0134",
+    "name": "Manjunath Hiremath",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 146,
+    "personId": "KA-P0135",
+    "name": "Ganesh Shetty",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 147,
+    "personId": "KA-P0136",
+    "name": "Vijay Hiremath",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 149,
+    "personId": "KA-P0137",
+    "name": "Anthony Reddy",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 152,
+    "personId": "KA-P0138",
+    "name": "Anthony Naik",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 153,
+    "personId": "KA-P0139",
+    "name": "Manoj Kumar",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 153,
+    "personId": "KA-P0140",
+    "name": "Salim Hiremath",
+    "caseCount": 3,
+    "linked": false
+  },
+  {
+    "caseMasterId": 155,
+    "personId": "KA-P0141",
+    "name": "Ramesh Merchant",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 156,
+    "personId": "KA-P0142",
+    "name": "Ravi Khan",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 158,
+    "personId": "KA-P0115",
+    "name": "Sowmya Naik",
+    "caseCount": 3,
+    "linked": false
+  },
+  {
+    "caseMasterId": 160,
+    "personId": "KA-P0073",
+    "name": "Nandini Pinto",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 162,
+    "personId": "KA-P0143",
+    "name": "Ashok Kulkarni",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 163,
+    "personId": "KA-P0144",
+    "name": "Girish Shetty",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 164,
+    "personId": "KA-P0145",
+    "name": "Ravi Hegde",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 165,
+    "personId": "KA-P0146",
+    "name": "Anita Patil",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 167,
+    "personId": "KA-P0147",
+    "name": "Pooja Poojary",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 169,
+    "personId": "KA-P0148",
+    "name": "Srinivas Rao",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 171,
+    "personId": "KA-P0149",
+    "name": "Zoya D'Souza",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 172,
+    "personId": "KA-P0150",
+    "name": "Chandru Rao",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 173,
+    "personId": "KA-P0151",
+    "name": "Chandru Rao",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 173,
+    "personId": "KA-P0051",
+    "name": "Nagaraj Kumar",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 174,
+    "personId": "KA-P0152",
+    "name": "Joseph Kulkarni",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 175,
+    "personId": "KA-P0153",
+    "name": "Nandini Reddy",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 176,
+    "personId": "KA-P0154",
+    "name": "Joseph Merchant",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 180,
+    "personId": "KA-P0155",
+    "name": "Mary Nayak",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 181,
+    "personId": "KA-P0156",
+    "name": "Anthony Bhat",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 182,
+    "personId": "KA-P0157",
+    "name": "Vijay Hiremath",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 185,
+    "personId": "KA-P0138",
+    "name": "Anthony Naik",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 185,
+    "personId": "KA-P0158",
+    "name": "Nandini Naik",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 186,
+    "personId": "KA-P0159",
+    "name": "Fathima D'Souza",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 186,
+    "personId": "KA-P0148",
+    "name": "Srinivas Rao",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 187,
+    "personId": "KA-P0126",
+    "name": "Srinivas Reddy",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 189,
+    "personId": "KA-P0160",
+    "name": "Priya D'Souza",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 190,
+    "personId": "KA-P0161",
+    "name": "Anthony Pinto",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 191,
+    "personId": "KA-P0162",
+    "name": "Yogesh Reddy",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 193,
+    "personId": "KA-P0163",
+    "name": "Salim Achar",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 195,
+    "personId": "KA-P0164",
+    "name": "Farhan Patil",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 197,
+    "personId": "KA-P0165",
+    "name": "Farhan Desai",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 197,
+    "personId": "KA-P0166",
+    "name": "Meena Hegde",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 198,
+    "personId": "KA-P0167",
+    "name": "Ramesh Hiremath",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 199,
+    "personId": "KA-P0168",
+    "name": "Shalini Poojary",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 203,
+    "personId": "KA-P0169",
+    "name": "Sneha Bhat",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 209,
+    "personId": "KA-P0170",
+    "name": "Manjunath D'Souza",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 213,
+    "personId": "KA-P0171",
+    "name": "Ashok Desai",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 214,
+    "personId": "KA-P0172",
+    "name": "Nagaraj Patil",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 215,
+    "personId": "KA-P0173",
+    "name": "Vijay Naik",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 219,
+    "personId": "KA-P0174",
+    "name": "Manjunath Nayak",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 222,
+    "personId": "KA-P0119",
+    "name": "Ravi Rao",
+    "caseCount": 3,
+    "linked": false
+  },
+  {
+    "caseMasterId": 222,
+    "personId": "KA-P0175",
+    "name": "Imran Pinto",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 227,
+    "personId": "KA-P0176",
+    "name": "Zoya Kulkarni",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 230,
+    "personId": "KA-P0177",
+    "name": "Arjun Kulkarni",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 233,
+    "personId": "KA-P0178",
+    "name": "Radha Shetty",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 234,
+    "personId": "KA-P0179",
+    "name": "Vijay Naik",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 236,
+    "personId": "KA-P0153",
+    "name": "Nandini Reddy",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 236,
+    "personId": "KA-P0180",
+    "name": "Manoj Poojary",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 237,
+    "personId": "KA-P0181",
+    "name": "Shilpa Gowda",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 238,
+    "personId": "KA-P0182",
+    "name": "Dinesh Gowda",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 239,
+    "personId": "KA-P0183",
+    "name": "Ananya Merchant",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 239,
+    "personId": "KA-P0143",
+    "name": "Ashok Kulkarni",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 240,
+    "personId": "KA-P0184",
+    "name": "Nagaraj Gowda",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 243,
+    "personId": "KA-P0185",
+    "name": "Vijay Nayak",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 245,
+    "personId": "KA-P0186",
+    "name": "Sneha Merchant",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 249,
+    "personId": "KA-P0187",
+    "name": "Basavaraj Desai",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 250,
+    "personId": "KA-P0188",
+    "name": "Vinod Pinto",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 253,
+    "personId": "KA-P0189",
+    "name": "Meena Sait",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 255,
+    "personId": "KA-P0190",
+    "name": "Pooja Hegde",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 259,
+    "personId": "KA-P0191",
+    "name": "Chandru Hiremath",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 261,
+    "personId": "KA-P0140",
+    "name": "Salim Hiremath",
+    "caseCount": 3,
+    "linked": false
+  },
+  {
+    "caseMasterId": 261,
+    "personId": "KA-P0057",
+    "name": "Vijay Hegde",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 262,
+    "personId": "KA-P0192",
+    "name": "Anita Gowda",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 263,
+    "personId": "KA-P0193",
+    "name": "Girish Poojary",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 265,
+    "personId": "KA-P0194",
+    "name": "Ananya Reddy",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 268,
+    "personId": "KA-P0195",
+    "name": "Roopa Bhat",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 269,
+    "personId": "KA-P0196",
+    "name": "Anthony Poojary",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 270,
+    "personId": "KA-P0197",
+    "name": "Yogesh Nayak",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 270,
+    "personId": "KA-P0198",
+    "name": "Rekha Reddy",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 271,
+    "personId": "KA-P0199",
+    "name": "Vijay Pinto",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 274,
+    "personId": "KA-P0115",
+    "name": "Sowmya Naik",
+    "caseCount": 3,
+    "linked": false
+  },
+  {
+    "caseMasterId": 274,
+    "personId": "KA-P0200",
+    "name": "Meena Merchant",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 276,
+    "personId": "KA-P0140",
+    "name": "Salim Hiremath",
+    "caseCount": 3,
+    "linked": false
+  },
+  {
+    "caseMasterId": 277,
+    "personId": "KA-P0201",
+    "name": "Anthony Rao",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 278,
+    "personId": "KA-P0202",
+    "name": "Sunita Rao",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 279,
+    "personId": "KA-P0203",
+    "name": "Geeta Hiremath",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 280,
+    "personId": "KA-P0204",
+    "name": "Ashok Khan",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 281,
+    "personId": "KA-P0205",
+    "name": "Sneha Patil",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 284,
+    "personId": "KA-P0206",
+    "name": "Manoj Achar",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 285,
+    "personId": "KA-P0207",
+    "name": "Yogesh Sait",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 285,
+    "personId": "KA-P0208",
+    "name": "Vidya Nayak",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 286,
+    "personId": "KA-P0209",
+    "name": "Arjun Shetty",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 287,
+    "personId": "KA-P0210",
+    "name": "Kavya Merchant",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 288,
+    "personId": "KA-P0211",
+    "name": "Prakash Hiremath",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 291,
+    "personId": "KA-P0119",
+    "name": "Ravi Rao",
+    "caseCount": 3,
+    "linked": false
+  },
+  {
+    "caseMasterId": 294,
+    "personId": "KA-P0212",
+    "name": "Rekha Reddy",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 297,
+    "personId": "KA-P0213",
+    "name": "Anil Gowda",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 298,
+    "personId": "KA-P0214",
+    "name": "Deepa D'Souza",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 298,
+    "personId": "KA-P0215",
+    "name": "Imran Poojary",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 299,
+    "personId": "KA-P0216",
+    "name": "Anthony Hiremath",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 301,
+    "personId": "KA-P0217",
+    "name": "Naveen Pinto",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 302,
+    "personId": "KA-P0218",
+    "name": "Anil Pinto",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 305,
+    "personId": "KA-P0219",
+    "name": "Anthony Desai",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 306,
+    "personId": "KA-P0220",
+    "name": "Suresh Gowda",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 307,
+    "personId": "KA-P0221",
+    "name": "Girish Merchant",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 309,
+    "personId": "KA-P0129",
+    "name": "Rekha Achar",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 309,
+    "personId": "KA-P0222",
+    "name": "Manoj D'Souza",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 310,
+    "personId": "KA-P0109",
+    "name": "Naveen Gowda",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 311,
+    "personId": "KA-P0211",
+    "name": "Prakash Hiremath",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 313,
+    "personId": "KA-P0223",
+    "name": "Suresh Gowda",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 318,
+    "personId": "KA-P0224",
+    "name": "Yogesh Naik",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 319,
+    "personId": "KA-P0225",
+    "name": "Kiran D'Souza",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 321,
+    "personId": "KA-P0226",
+    "name": "Anita Reddy",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 324,
+    "personId": "KA-P0227",
+    "name": "Arjun Kumar",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 325,
+    "personId": "KA-P0228",
+    "name": "Vinod Pinto",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 327,
+    "personId": "KA-P0229",
+    "name": "Kiran Patil",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 329,
+    "personId": "KA-P0230",
+    "name": "Anthony Merchant",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 330,
+    "personId": "KA-P0231",
+    "name": "Suresh Achar",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 330,
+    "personId": "KA-P0232",
+    "name": "Vijay Hiremath",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 331,
+    "personId": "KA-P0233",
+    "name": "Sneha Pinto",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 332,
+    "personId": "KA-P0234",
+    "name": "Dinesh Khan",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 333,
+    "personId": "KA-P0235",
+    "name": "Vijay Bhat",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 335,
+    "personId": "KA-P0236",
+    "name": "Ravi Merchant",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 336,
+    "personId": "KA-P0237",
+    "name": "Srinivas D'Souza",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 337,
+    "personId": "KA-P0238",
+    "name": "Kavya Naik",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 339,
+    "personId": "KA-P0239",
+    "name": "Joseph Nayak",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 339,
+    "personId": "KA-P0240",
+    "name": "Geeta Khan",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 340,
+    "personId": "KA-P0241",
+    "name": "Dinesh Bhat",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 341,
+    "personId": "KA-P0242",
+    "name": "Ravi Reddy",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 341,
+    "personId": "KA-P0243",
+    "name": "Roopa Gowda",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 344,
+    "personId": "KA-P0244",
+    "name": "Vinod Poojary",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 345,
+    "personId": "KA-P0245",
+    "name": "Lakshmi Gowda",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 349,
+    "personId": "KA-P0246",
+    "name": "Iqbal Khan",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 351,
+    "personId": "KA-P0247",
+    "name": "Naveen Achar",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 351,
+    "personId": "KA-P0127",
+    "name": "Naveen Shetty",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 353,
+    "personId": "KA-P0171",
+    "name": "Ashok Desai",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 353,
+    "personId": "KA-P0248",
+    "name": "Iqbal D'Souza",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 356,
+    "personId": "KA-P0249",
+    "name": "Sneha Rao",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 356,
+    "personId": "KA-P0250",
+    "name": "Ashok Kulkarni",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 358,
+    "personId": "KA-P0251",
+    "name": "Sowmya Merchant",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 359,
+    "personId": "KA-P0252",
+    "name": "Kavya Kumar",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 360,
+    "personId": "KA-P0253",
+    "name": "Ganesh Patil",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 361,
+    "personId": "KA-P0254",
+    "name": "Kiran Poojary",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 362,
+    "personId": "KA-P0255",
+    "name": "Harish Patil",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 363,
+    "personId": "KA-P0256",
+    "name": "Divya D'Souza",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 374,
+    "personId": "KA-P0257",
+    "name": "Imran Khan",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 375,
+    "personId": "KA-P0258",
+    "name": "Deepa Achar",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 376,
+    "personId": "KA-P0259",
+    "name": "Ganesh Khan",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 377,
+    "personId": "KA-P0260",
+    "name": "Basavaraj Poojary",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 378,
+    "personId": "KA-P0261",
+    "name": "Harish Merchant",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 379,
+    "personId": "KA-P0262",
+    "name": "Ramesh Khan",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 381,
+    "personId": "KA-P0212",
+    "name": "Rekha Reddy",
+    "caseCount": 2,
+    "linked": false
+  },
+  {
+    "caseMasterId": 382,
+    "personId": "KA-P0263",
+    "name": "Shilpa Achar",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 384,
+    "personId": "KA-P0264",
+    "name": "Nagaraj Poojary",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 385,
+    "personId": "KA-P0265",
+    "name": "Ashok Merchant",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 386,
+    "personId": "KA-P0266",
+    "name": "Sneha Shetty",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 389,
+    "personId": "KA-P0267",
+    "name": "Girish Khan",
+    "caseCount": 1,
+    "linked": false
+  },
+  {
+    "caseMasterId": 390,
+    "personId": "KA-P0268",
+    "name": "Anthony Gowda",
+    "caseCount": 1,
+    "linked": false
+  }
+]

@@ -75,9 +75,12 @@ export type PatternCluster = {
   strength: "exact" | "partial";
 };
 
-function sectionFrequency(): Map<string, number> {
+// Takes the already-bulk-filtered fact list (see getMoPatternClusters) -
+// frequency must be computed over the same 19-case universe RARE_THRESHOLD
+// was calibrated against, not diluted by P1.2's ~400 bulk cases.
+function sectionFrequency(facts: CaseFact[]): Map<string, number> {
   const freq = new Map<string, number>();
-  for (const f of Object.values(FACTS)) {
+  for (const f of facts) {
     for (const s of f.sections) freq.set(s, (freq.get(s) ?? 0) + 1);
   }
   return freq;
@@ -114,8 +117,18 @@ let cache: PatternCluster[] | null = null;
 export function getMoPatternClusters(): PatternCluster[] {
   if (cache) return cache;
 
-  const facts = Object.values(FACTS);
-  const freq = sectionFrequency();
+  // P1.2 - scoped to the 15 authored scenarios only, same as before P1.2's
+  // bulk cases existed. RARE_THRESHOLD=3 and this whole rule were verified
+  // against the real 19-case universe (see this file's header); against a
+  // ~400-case bulk pool drawn from only ~20 IPC sections, almost nothing
+  // stays "rare" and a shared section starts meaning "same broad crime
+  // type" again - exactly the mega-cluster problem this rule exists to
+  // avoid. A bulk case also has no evidence backing a claimed MO match,
+  // only a coincidental section overlap. Bulk cases carry a synthetic
+  // "BULK-<id>" scenarioId (see build_seed.mjs §6) specifically so they can
+  // be excluded this cleanly.
+  const facts = Object.values(FACTS).filter((f) => !f.scenarioId.startsWith("BULK-"));
+  const freq = sectionFrequency(facts);
 
   const adjacency = new Map<number, Set<number>>();
   const edgeSections = new Map<number, string[]>(); // caseMasterId -> every section that linked it to a neighbor

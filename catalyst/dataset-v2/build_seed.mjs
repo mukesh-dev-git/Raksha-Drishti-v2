@@ -12,6 +12,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from "fs";
 import { fileURLToPath } from "url";
 import path from "path";
+import { generateBulkCases } from "./bulk_cases.mjs";
 
 const dir = path.dirname(fileURLToPath(import.meta.url));
 const lookups = JSON.parse(readFileSync(path.join(dir, "lookups.json"), "utf-8"));
@@ -105,6 +106,7 @@ const complainantCols = ["ComplainantID", "CaseMasterID", "ComplainantName", "Ag
 const victimCols = ["VictimMasterID", "CaseMasterID", "VictimName", "AgeYear", "GenderID", "VictimPolice"];
 const accusedCols = ["AccusedMasterID", "CaseMasterID", "AccusedName", "AgeYear", "GenderID", "PersonID"];
 const actSectionCols = ["CaseMasterID", "ActID", "SectionID", "ActOrderID", "SectionOrderID"];
+const chargesheetCols = ["CSID", "CaseMasterID", "csdate", "cstype", "PolicePersonID"];
 
 const caseMasterRows = [];
 const complainantRows = [];
@@ -120,12 +122,60 @@ for (const c of dataset.cases) {
   for (const x of c.actSections || []) actSectionRows.push(x);
 }
 
+// --- 2b. P1.2 - the broad half. See bulk_cases.mjs's own header for the full
+// reasoning (real relational volume; deliberately no evidence layer). ID
+// ranges are hand-picked to never collide with the 15 scenarios' own:
+// CaseMasterID 9001-9019, AccusedMasterID 8000s, VictimMasterID 7000s,
+// ComplainantID 6000s, global PersonID up to KA-P0047 - bulk starts at 1/1/
+// 1/1/48 respectively and stays well under those floors.
+const BULK_CASE_COUNT = 390; // 19 authored + 390 bulk = 409, comfortably over P1.2's "~400" bar
+const bulk = generateBulkCases(lookups, {
+  count: BULK_CASE_COUNT,
+  startCaseMasterId: 1,
+  startAccusedMasterId: 1,
+  startVictimMasterId: 1,
+  startComplainantId: 1,
+  startPersonNumber: 48,
+  today: "2026-08-29",
+});
+caseMasterRows.push(...bulk.caseMasterRows);
+complainantRows.push(...bulk.complainantRows);
+victimRows.push(...bulk.victimRows);
+accusedRows.push(...bulk.accusedRows);
+actSectionRows.push(...bulk.actSectionRows);
+console.log(`  (+ ${bulk.caseMasterRows.length} bulk cases from bulk_cases.mjs, ${bulk.accusedRows.length} with a named accused)`);
+
 reformatDateTimeCols(caseMasterRows, ["IncidentFromDate", "IncidentToDate", "InfoReceivedPSDate"]);
 writeCsv("CaseMaster", caseMasterCols, caseMasterRows);
 writeCsv("ComplainantDetails", complainantCols, complainantRows);
 writeCsv("Victim", victimCols, victimRows);
 writeCsv("Accused", accusedCols, accusedRows);
 writeCsv("ActSectionAssociation", actSectionCols, actSectionRows);
+
+// ChargesheetDetails - a table the 15-scenario dataset never emitted at all
+// (ported the SHAPE from catalyst/seed/ChargesheetDetails.csv, per P1.2's
+// scope - not its rows, which carry the old generator's real defects, see
+// PLAN.md P1.2). One row per case whose CaseStatusID is Charge Sheeted (2),
+// scenario FIRs included - a charge-sheeted FIR without a chargesheet
+// record on file is a real inconsistency, not just a bulk-data gap.
+const chargesheetRows = [];
+let csid = 1;
+for (const row of caseMasterRows) {
+  if (row.CaseStatusID !== 2) continue;
+  // Filed a real 30-120 days after registration - deterministic per case.
+  const r = ((row.CaseMasterID * 2654435761) >>> 0) / 4294967296;
+  const delayDays = 30 + Math.floor(r * 90);
+  const csDate = new Date(row.CrimeRegisteredDate + "T00:00:00");
+  csDate.setDate(csDate.getDate() + delayDays);
+  chargesheetRows.push({
+    CSID: csid++,
+    CaseMasterID: row.CaseMasterID,
+    csdate: `${csDate.toISOString().slice(0, 10)} 10:00:00`,
+    cstype: "A", // "A" = the only chargesheet type either dataset ever used
+    PolicePersonID: row.PolicePersonID,
+  });
+}
+writeCsv("ChargesheetDetails", chargesheetCols, chargesheetRows);
 
 // --- 3. New NoSQL collections --------------------------------------------------
 // Each record gets scenarioId + caseMasterIds so it's traceable back to the
@@ -331,6 +381,34 @@ for (const c of dataset.cases) {
     };
   }
 }
+// P1.2's bulk cases, same shape - `scenarioId: "BULK-<id>"` (unique per
+// case, never shared) rather than null, so every reader that keys or groups
+// by scenarioId (getSiblingCases, the case-detail page's `meta &&` guards)
+// keeps working with no special-casing: a bulk case correctly has no
+// siblings and no scenario meta card, exactly like a real single-FIR
+// investigation with nothing else attached. moPatterns.ts filters this
+// prefix out explicitly before clustering - see its own comment on why.
+for (const fir of bulk.caseMasterRows) {
+  const sections = bulk.actSectionRows.filter((a) => a.CaseMasterID === fir.CaseMasterID).map((a) => `${a.ActID}-${a.SectionID}`);
+  const complainantNames = bulk.complainantRows.filter((x) => x.CaseMasterID === fir.CaseMasterID).map((x) => x.ComplainantName);
+  const unit = unitById.get(fir.PoliceStationID);
+  caseFacts[fir.CaseMasterID] = {
+    caseMasterId: fir.CaseMasterID,
+    scenarioId: `BULK-${fir.CaseMasterID}`,
+    crimeNo: fir.CrimeNo,
+    crimeMinorHeadId: fir.CrimeMinorHeadID,
+    districtId: unit?.DistrictID ?? unitToDistrict.get(fir.PoliceStationID) ?? null,
+    policeStationId: fir.PoliceStationID,
+    policeStationName: unit?.UnitName ?? null,
+    policePersonId: fir.PolicePersonID ?? null,
+    sections,
+    incidentFromDate: fir.IncidentFromDate,
+    crimeRegisteredDate: fir.CrimeRegisteredDate,
+    gravityOffenceId: fir.GravityOffenceID,
+    caseStatusId: fir.CaseStatusID,
+    complainantNames,
+  };
+}
 writeFileSync(
   path.join(outNoSqlDir, "caseFacts.json"),
   JSON.stringify(caseFacts, null, 2),
@@ -498,5 +576,40 @@ writeFileSync(
   "utf-8"
 );
 console.log(`employees.json`.padEnd(30), `${employees.length} officers`);
+
+// --- 9. Accused, bundled flat (P1.2) ----------------------------------------
+// personFusion.ts's fuseAllPersons() (P3.1) builds its person register
+// entirely from the evidence collections (§3 above) - real, but scoped to
+// the 15 authored scenarios, which is deliberate (see bulk_cases.mjs's top
+// comment). That leaves caseWorklist.ts with no source for a bulk case's
+// accused at all, even though real Accused rows exist for the charge-sheeted
+// /closed ones. This is that source: every Accused row, scenario and bulk
+// together, flat.
+//
+// `linked` marks whether personId falls in P1.1's original 1-47 register
+// (fully fused: aliases, cross-scenario merge, a real /persons/[personId]
+// profile) or was minted by bulk_cases.mjs (48+): a real, stable, dataset-
+// wide id and a real cross-case count, but no evidence-backed profile to
+// link to. caseWorklist.ts uses this to decide whether an accused pill is
+// clickable - never linking to a profile page that doesn't exist for them.
+const allAccused = [...accusedRows];
+const caseCountByPerson = new Map();
+for (const a of allAccused) caseCountByPerson.set(a.PersonID, (caseCountByPerson.get(a.PersonID) ?? new Set()).add(a.CaseMasterID));
+const accusedFlat = allAccused.map((a) => {
+  const num = parseInt(String(a.PersonID).replace("KA-P", ""), 10);
+  return {
+    caseMasterId: a.CaseMasterID,
+    personId: a.PersonID,
+    name: a.AccusedName,
+    caseCount: caseCountByPerson.get(a.PersonID).size,
+    linked: Number.isFinite(num) && num <= 47,
+  };
+});
+writeFileSync(
+  path.join(outNoSqlDir, "accused.json"),
+  JSON.stringify(accusedFlat, null, 2),
+  "utf-8"
+);
+console.log(`accused.json`.padEnd(30), `${accusedFlat.length} rows (${accusedFlat.filter((a) => !a.linked).length} bulk, un-linked)`);
 
 console.log(`\nDone. CSVs in ${path.relative(process.cwd(), outCsvDir)}, NoSQL JSON in ${path.relative(process.cwd(), outNoSqlDir)}.`);

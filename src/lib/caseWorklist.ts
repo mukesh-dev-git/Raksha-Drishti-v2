@@ -7,9 +7,13 @@
 // -----------------------------------------------------------------------------
 import caseFactsRaw from "./nosql-seed/caseFacts.json";
 import scenarioMeta from "./nosql-seed/scenarioMeta.json";
+import accusedRaw from "./nosql-seed/accused.json";
 import { caseTypes, districts } from "./data";
 import { fuseAllPersons } from "./personFusion";
 import { CASE_STATUS_LABEL, isCaseStatusId, type CaseStatusId } from "./caseStatus";
+
+type RawAccused = { caseMasterId: number; personId: string; name: string; caseCount: number; linked: boolean };
+const RAW_ACCUSED = accusedRaw as RawAccused[];
 
 type CaseFact = {
   caseMasterId: number;
@@ -47,8 +51,15 @@ export type WorklistCase = {
   /** Same accused, but with the real global personId attached - added for
    *  P9.3 (linking a case's accused to their real /persons/[personId]
    *  profile and repeat-subject flag). accusedNames stays as-is since
-   *  several callers already depend on the plain string[] shape. */
-  accused: { personId: string; name: string; caseCount: number }[];
+   *  several callers already depend on the plain string[] shape.
+   *
+   *  `linked` (P1.2) - whether personId resolves to a real, evidence-fused
+   *  /persons/[personId] profile. True for every one of the 15 authored
+   *  scenarios' accused (unchanged). False for a P1.2 bulk case's accused:
+   *  a real, stable, cross-case personId (see accused.json/bulk_cases.mjs),
+   *  but no evidence-backed profile exists to link to - so the UI must not
+   *  render them as a link. */
+  accused: { personId: string; name: string; caseCount: number; linked: boolean }[];
   sections: string[];
   policeStationName: string | null;
   policePersonId: number | null;
@@ -64,7 +75,7 @@ export function getCaseWorklist(): WorklistCase[] {
   // repeat-offenders/pattern-analysis already trust, rather than a third
   // way of reading Accused rows.
   const accusedByCase = new Map<number, string[]>();
-  const accusedDetailByCase = new Map<number, { personId: string; name: string; caseCount: number }[]>();
+  const accusedDetailByCase = new Map<number, { personId: string; name: string; caseCount: number; linked: boolean }[]>();
   for (const p of fuseAllPersons().values()) {
     for (const cid of p.caseMasterIds) {
       const list = accusedByCase.get(cid) ?? [];
@@ -72,9 +83,25 @@ export function getCaseWorklist(): WorklistCase[] {
       accusedByCase.set(cid, list);
 
       const detailList = accusedDetailByCase.get(cid) ?? [];
-      detailList.push({ personId: p.personId, name: p.name, caseCount: p.caseMasterIds.length });
+      detailList.push({ personId: p.personId, name: p.name, caseCount: p.caseMasterIds.length, linked: true });
       accusedDetailByCase.set(cid, detailList);
     }
+  }
+
+  // P1.2 fallback - a bulk case has no evidence records, so it's absent from
+  // fuseAllPersons() entirely (by design, see bulk_cases.mjs). Fill in from
+  // the flat, un-fused accused.json instead - real names/personIds/case
+  // counts, just not evidence-linked. Only used for cases the fused map
+  // didn't already cover, so the 15 authored scenarios are untouched.
+  for (const a of RAW_ACCUSED) {
+    if (accusedDetailByCase.has(a.caseMasterId)) continue;
+    const list = accusedByCase.get(a.caseMasterId) ?? [];
+    if (!list.includes(a.name)) list.push(a.name);
+    accusedByCase.set(a.caseMasterId, list);
+
+    const detailList = accusedDetailByCase.get(a.caseMasterId) ?? [];
+    detailList.push({ personId: a.personId, name: a.name, caseCount: a.caseCount, linked: a.linked });
+    accusedDetailByCase.set(a.caseMasterId, detailList);
   }
 
   cache = Object.values(FACTS).map((f) => {

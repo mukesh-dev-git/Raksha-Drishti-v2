@@ -87,22 +87,34 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ cas
               </p>
               {c.accused.length > 0 ? (
                 <div className="flex flex-wrap gap-1.5">
-                  {c.accused.map((a) => (
-                    <Link
-                      key={a.personId}
-                      href={`/persons/${a.personId}`}
-                      className="flex items-center gap-1.5 rounded-full border border-line bg-surface-2 py-1 pl-1 pr-2.5 text-[12.5px] text-ink transition hover:border-navy"
-                    >
-                      <span className="rounded-full bg-dash-blue-bg px-2 py-0.5 text-[11px] font-medium text-dash-blue">
-                        {a.name}
-                      </span>
-                      {a.caseCount > 1 && (
-                        <span className="flex items-center gap-0.5 text-[10.5px] font-medium text-dash-pink">
-                          <ShieldAlert size={10} aria-hidden="true" /> Repeat ({a.caseCount})
+                  {c.accused.map((a) => {
+                    const pillClass = "flex items-center gap-1.5 rounded-full border border-line bg-surface-2 py-1 pl-1 pr-2.5 text-[12.5px] text-ink";
+                    const pillContent = (
+                      <>
+                        <span className="rounded-full bg-dash-blue-bg px-2 py-0.5 text-[11px] font-medium text-dash-blue">
+                          {a.name}
                         </span>
-                      )}
-                    </Link>
-                  ))}
+                        {a.caseCount > 1 && (
+                          <span className="flex items-center gap-0.5 text-[10.5px] font-medium text-dash-pink">
+                            <ShieldAlert size={10} aria-hidden="true" /> Repeat ({a.caseCount})
+                          </span>
+                        )}
+                      </>
+                    );
+                    // P1.2 - a bulk case's accused has a real, stable
+                    // personId but no evidence-fused /persons profile (see
+                    // caseWorklist.ts's `linked`), so it renders as plain
+                    // text rather than a link that would 404.
+                    return a.linked ? (
+                      <Link key={a.personId} href={`/persons/${a.personId}`} className={`${pillClass} transition hover:border-navy`}>
+                        {pillContent}
+                      </Link>
+                    ) : (
+                      <span key={a.personId} className={pillClass} title="Named in this FIR - no cross-case evidence profile yet">
+                        {pillContent}
+                      </span>
+                    );
+                  })}
                 </div>
               ) : (
                 <p className="text-[13px] text-ink">Unidentified</p>

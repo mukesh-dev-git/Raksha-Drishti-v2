@@ -198,6 +198,25 @@ const HOUR_WEIGHTS = {
   4: [10,11,12,12,11,8, 5,2,1,1,1,1, 1,1,1,1,1,2, 3,4,5,7,8,9],
 };
 
+// P1.2 follow-through on this file's own left-open note above: rural theft
+// (cattle-lifting, farm-equipment) is a night crime, not the daytime-market/
+// evening-commute pattern urban theft (pickpocketing, vehicle theft from a
+// parking lot) shows - conflating them under one "Theft" profile blunts both.
+// Calibration source: C7 (the Shivamogga-Tumakuru cattle corridor), whose two
+// hand-authored incidents at 22:30/23:00 didn't fit HOUR_WEIGHTS[1] - not
+// bad data, a coarse taxonomy. Only Theft gets a rural variant: the other
+// three crime types' urban/rural split isn't evidenced by anything authored.
+const HOUR_WEIGHTS_RURAL_THEFT = [8,9,10,9,7,4, 2,1,1,1,1,1, 1,1,1,1,1,2, 3,4,5,6,7,8];
+
+// Stations this file's own STATION_LOCALITIES marks as rural via a wide
+// spreadKm (>=3) - policing a large sparsely-built area, not a dense PS
+// jurisdiction. Re-derived from the same table rather than a second hand-
+// maintained list, so the two can't drift apart.
+function isRuralStation(policeStationId) {
+  const station = STATION_LOCALITIES[policeStationId];
+  return !!station && station.spreadKm >= 3;
+}
+
 // Calibration check against the 15 authored scenarios: 9 of the 11 discrete
 // incidents fall at >=50% of their crime type's peak hour, i.e. the profiles
 // agree with what a human author independently thought was realistic.
@@ -213,9 +232,15 @@ const HOUR_WEIGHTS = {
 // theft profile, since the urban/rural split is the real driver.
 
 
-// Pick an hour for a discrete incident of this crime type.
-export function incidentHour(crimeMinorHeadId, seed) {
-  const weights = HOUR_WEIGHTS[crimeMinorHeadId];
+// Pick an hour for a discrete incident of this crime type. `policeStationId`
+// is optional - only Theft (see HOUR_WEIGHTS_RURAL_THEFT above) branches on
+// it; every other crime type ignores it and uses its one urban/rural-blended
+// profile, same as before this was added.
+export function incidentHour(crimeMinorHeadId, seed, policeStationId = null) {
+  const weights =
+    crimeMinorHeadId === 1 && isRuralStation(policeStationId)
+      ? HOUR_WEIGHTS_RURAL_THEFT
+      : HOUR_WEIGHTS[crimeMinorHeadId];
   if (!weights) throw new Error(`no hour profile for CrimeSubHeadID ${crimeMinorHeadId}`);
   const r = rng(`hour:${crimeMinorHeadId}:${seed}`);
   const total = weights.reduce((a, b) => a + b, 0);

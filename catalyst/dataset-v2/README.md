@@ -125,6 +125,22 @@ wipe-and-reimport happens exactly once, after the rest of P1 lands. Nothing
 in the app reads `PersonID` today, so the staleness is inert — but don't
 build a person-spine feature against the live table until P1.6 is done.
 
+**P1.2 done** (2026-08-29): `bulk_cases.mjs` generates 390 additional,
+statistically-real `CaseMaster` rows (409 total, comfortably over the "≳400"
+bar) using this same `lookups.json`/`geo_time.mjs` - real district/crime-type/
+status distributions, real coordinates and time-of-day via `placeIncident()`/
+`incidentHour()`, a real `ChargesheetDetails` table (ported from
+`catalyst/seed/`'s shape, not its rows - see PLAN.md P1.2 for why). All 19
+authored FIRs still resolve unchanged - verified, not assumed.
+Deliberately NOT merged: no calls/transactions/CCTV/statements for bulk
+cases, and P4.6 (MO-clustering)/P4.7 (repeat-offenders)/`/persons` stay
+scoped to the 15 authored scenarios - see `bulk_cases.mjs`'s own header for
+why flooding an evidence-dependent feature with statistically-generated
+cases would fabricate signal, not just add volume.
+⚠️ This is the LOCAL/bundled seed only. The live Data Store still holds just
+the 19 real FIRs - importing the other 390 is folded into **P1.6**'s
+wipe-and-reimport, same reason P1.1's PersonID fix is deferred there (do the
+wipe once, not per-fix).
+
 Still open (tracked in [`../../PLAN.md`](../../PLAN.md)): converting
-`CaseMaster`'s FK `Number` columns to real `Lookup` columns, and the P1.2
-merge of this deep 15-scenario set with a broad statistical one.
+`CaseMaster`'s FK `Number` columns to real `Lookup` columns.
