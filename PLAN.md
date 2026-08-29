@@ -23,20 +23,19 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 | **P1** Data foundation | 🔵 **in progress** | P1.1 ✅ · P1.2 ✅ (scaled to 5,000 cases 2026-08-29, see below) · P1.3 ✅ · P1.4 `[~]` built, not applied · P1.5 needs a decision · **P1.6 is next** (wipe + reimport, folds in P1.1's PersonID fix and P1.2's 4,981 bulk cases at once) |
 | **P2** Route restructure | ✅ **done, merged, deployed** | Merged to `main` and pushed to `v2/main` 2026-08-28 (17 commits) - confirmed live on Slate. P2.1+P2.1a+P2.1b+P2.1c+P2.1d+P2.2+P2.3 all real FIR Index, case/district/person pages, header search, old-URL redirects, attention-list dashboard. **P2.4's case-status write endpoint confirmed working against the live Data Store** (two real writes via curl, both directions, not just a 200 taken on faith) - the app's first-ever write, live. IO assignment/case-diary not started (diary blocked on console-only table provisioning, not a choice). One real gap surfaced: writes hit the live Data Store but every read path still serves bundled seed JSON, so a write is currently invisible in the UI - see P2.4. |
 | **P3** Person spine | ✅ **done** | P3.1+P3.3 (`589721d`) — fusion + timeline merge, 2 real bugs found and fixed. P3.2 (`/persons`) landed via the P2 restructure — see P2.1c. |
-| **P4** Real analytics | ⚪ **mixed** | **P1.2 landed 2026-08-29, scaled to 5,000 cases same day (SCRB-scale ask)** - `/cases` and `/districts` now run on real statewide volume with real per-district clearance (verified live, real pagination added to the FIR Index so 5,000 rows stays fast), unblocking P4.1-P4.3's real map/trend/hotspot work (not yet built - that's still open, P1.2 only supplied the volume). **P4.6+P4.7 done** (`f9fde9e`) — MO-clustering (3 real clusters) and the repeat-offender view (6 real people), both live, deliberately still scoped to the 15 evidence-rich scenarios only (see P1.2's note on why, still true at 5,000 - unaffected, checked). P4.8 still open. |
-| **P5** AI | 🔵 **in progress** | P5.0-P5.3, P5.2b, P5.3b ✅ — real findings now visible in the Investigation Workspace UI (2/15, honest). **P5.4 is next.** P5.8 (ask-anything chatbot, real case-file links) added, not started. |
+| **P4** Real analytics | ✅ **all 6 sub-items done, 2026-08-29** | P4.1 (real statewide hotspot map), P4.2+P4.9 (time-of-day×day-of-week heatmap), P4.3+P4.9 (control-chart trend alerts), P4.4 (chargesheet rate/heinous split), P4.6+P4.7 (done earlier, MO-clustering + repeat-offenders), P4.8 (real stat cards), P4.9 (choropleth, kernel-density, cross-district flow map, case-flow Sankey, statewide link-analysis graph). Built via 6 parallel subagents, merged and independently re-verified - see below. |
+| **P5** AI | 🔵 **in progress** | P5.0-P5.3, P5.2b, P5.3b ✅. **P5.4 done, 2026-08-29** (AI-suggested next question, citation-checked). **P5.8 done, 2026-08-29** (Ask Anything chatbot, real tool-calling, grounded citations). |
 | **P6** Zia | ✅ **closed, 2026-08-29** | Decision: no synthetic images. Track closed cleanly rather than built against fabricated source images. |
-| **P7** Kannada voice (Zia) | ⚪ **ready** | Not gated like P6 - P7.1 can start from data we already have. |
+| **P7** Kannada voice (Zia) | 🔵 **P7.1 done, 2026-08-29** | Text-to-Audio pipeline built and wired into case-detail witness statements; P7.2-P7.4 still open. |
 | **X** Cross-cutting | ✅ **done** | X1, X2, X3 all done - see below. |
 | **P9** Refined-prototype push | ✅ **done, today** | All five sub-items shipped and independently verified: P9.1+P9.1b (suspicion score + tool-schema guardrail), P9.3 (pattern/repeat cross-links), P9.2 (real IO assignment), P9.4 (relationship graph, built on a subagent's branch `feature/case-relationship-graph`, merged to `main` after review - the only real conflict was two adjacent import lines in `cases/[caseId]/page.tsx`; every other overlapping file (`caseWorklist.ts`, `contradictionDetector.ts`, `personFusion.ts`, `.gitignore`) merged clean with nothing lost, re-verified with `tsc --noEmit`, `next build`, and a live check on cases 9001+9002 showing the graph, MO-cluster card, repeat badges and IO picker all rendering together). |
 
-**Done so far:** P0.1–P0.5 · P1.1 · P1.2 · P1.3 · **P2 (whole track)** · P3.1 ·
-P3.3 · P5.0 · P5.1 · P5.2 · P5.3 · X3
+**Done so far:** P0.1–P0.5 · P1.1 · P1.2 · P1.3 · **P2 (whole track)** ·
+**P4 (whole track)** · P3.1 · P3.3 · P5.0 · P5.1 · P5.2 · P5.3 · P5.4 · P5.8 ·
+P6 (closed) · P7.1 · X1 · X2 · X3
 
 **Ready to pick up right now, no decisions needed:** **P1.6** (wipe +
-reimport - folds in P1.1 and P1.2 together) · P4.8 (→ P5.7) · P5.4 (in
-progress, subagent) · P5.8 (in progress, subagent) · P7.1 (in progress,
-subagent)
+reimport - the one remaining item) · P5.7 · P7.2 · P7.3 · P7.4
 
 **Blocked on someone, not on effort:**
 
@@ -67,10 +66,10 @@ P0  Credibility        ✅ done
 P1  Data foundation    🔵 P1.1/P1.2/P1.3 done ── P1.6 (wipe+reimport) next
 P2  Route restructure  🔵 in progress ── P2.1/1a/1b/1c done, P2.1d next
 P3  Person spine       ✅ done       ── P3.2 landed via P2.1c
-P4  Real analytics     ⚪ P4.6/P4.7 done, P1.2 unblocked P4.1-P4.3 ── still open work
-P5  AI features        🔵 P5.0-P5.3, P5.2b, P5.3b done ── P5.4 is next
+P4  Real analytics     ✅ done 2026-08-29 ── all 6 sub-items, 6 parallel subagents
+P5  AI features        🔵 P5.0-P5.4, P5.8 done ── P5.7 next
 P6  Zia                ✅ closed 2026-08-29 ── no images, decided
-P7  Kannada voice       ⚪ ready       ── not gated like P6, can start now
+P7  Kannada voice       🔵 P7.1 done 2026-08-29 ── P7.2-P7.4 open
 ```
 
 P0 and P1 can run in parallel — different files, different people.
@@ -513,17 +512,43 @@ reasons over it.*
       done), registered identity. `/repeat-offenders` now links into this
       rather than being the only place a person is reachable.
 
-## P4 — Real analytics (4 of the 6 PS asks)
+## P4 — Real analytics (4 of the 6 PS asks) ✅ done 2026-08-29
 
 *Needs P1.3 / P1.4. None of this needs an LLM.*
 
-- [ ] **P4.1** Hotspot map on real `latitude`/`longitude`.
-- [ ] **P4.2** Spatiotemporal clustering — time-of-day × location.
-- [ ] **P4.3** Emerging-trend alerts: flag a category spiking in a region
-      against its own historical baseline.
-- [ ] **P4.4** Chargesheet rate + time-to-chargesheet from
-      `ChargesheetDetails`; Heinous/Non-Heinous split from `GravityOffenceID`.
-- [ ] **P4.5** Socio-economic correlation view (gated on P1.5's framing).
+- [x] **P4.1** Done (2026-08-29, subagent, `feature/p4-hotspot-map`,
+      merged). Real statewide hotspot map at `/crime-hotspots` - real
+      `latitude`/`longitude` added to `caseFacts.json` (already existed on
+      `CaseMaster`, just wasn't carried through), H3 hex-bin clustering
+      across all 5,000 real cases, real 4-crime-type filter, real hour-of-
+      day/day-of-week filter sourced from `incidentFromDate` (not
+      randomised - verified real diurnal variation and 27.9% weekend share
+      against the true baseline). Replaces the old 16-hardcoded-Bengaluru-
+      localities demo entirely. Verified live: real hex counts render (e.g.
+      a 470-case cell near Bengaluru), zero console errors on a fresh tab.
+- [x] **P4.2** Done (2026-08-29, subagent, `feature/p4-stats-charts`,
+      merged) + P4.9 item 2. Time-of-day × day-of-week heatmap grid on
+      `/crime-count`, excluding 284 real period offences (no fabricated
+      "midnight spike" from unknown-time storage). Verified live: "4,716
+      cases with a real recorded time... Excludes 284 period offence(s)."
+- [x] **P4.3** Done (2026-08-29, subagent, `feature/p4-stats-charts`,
+      merged) + P4.9's control-chart backing. Real monthly mean+2σ
+      baseline per crime type, months that actually cross it flagged red -
+      not an arbitrary threshold. Honest finding, not fabricated: 0 months
+      currently cross the statewide 2σ line for any of the 4 crime types,
+      verified against a standalone script independent of the UI code.
+- [x] **P4.4** Done (2026-08-29, subagent, `feature/p4-stats-charts`,
+      merged). Chargesheet rate (25.9%, 1,293/5,000, real `ChargesheetDetails`
+      timing data via new `chargesheetDates.json`), time-to-chargesheet
+      histogram (median 75 days), Heinous/Non-Heinous split (27.5%/25.8%
+      chargesheet rate respectively) from real `GravityOffenceID`. Verified
+      live on `/crime-count`.
+- [ ] **P4.5** Socio-economic correlation view. **Framing resolved
+      2026-08-29** (aggregate-only, victim-side, with denominators, never
+      offender propensity - see `Decisions still open` below) - not yet
+      built. Next real step once P1.6 lands (needs real Occupation/
+      Religion/Caste lookup tables populated, which P1.6's live re-import
+      is the natural point to add alongside).
 - [x] **P4.6** ~~MO pattern-clustering / similar-case matching~~ — done,
       `/pattern-analysis` (`f9fde9e`, branch `feature/mo-patterns-and-
       repeat-offenders`). `build_seed.mjs` now emits `caseFacts.json`
@@ -549,45 +574,41 @@ reasons over it.*
       a computation that existed since P3.1 but nothing showed — verified
       live by clicking a real case link through to its investigation
       workspace, not just by reading the code.
-- [ ] **P4.8** *(added 2026-08-26 — user request)* **Fetch real aggregate
-      stats on `/crime-count` and `/crime-hotspots` themselves.**
-      Verified: both pages are currently a bare `PageShell` +
-      `MapEmbed` and nothing else — no `getSummary`/`getCaseTypes` call, no
-      chart, no stat card, on either page file. Prerequisite for P5.7
-      below (there's no "below the map" content to attach AI insights to
-      yet). Same real/fallback data pattern as everywhere else in the app.
-- [ ] **P4.9** *(added 2026-08-29 — user request, research only so far)*
-      **Candidate visualizations beyond a hotspot pin-map**, researched
-      against real crime-analytics practice (ArcGIS Crime Analysis, NCRB's
-      own CrimeAtlas, CompStat) - not yet scoped into sub-items or built.
-      Full reasoning + sources in this session's response; short list,
-      roughly priority order, all buildable on data that already exists
-      (5,000 real cases, real dates/coords/time-of-day/sections/status):
-      1. **District choropleth** (shade `/districts` as a map, not just a
-         list) - the state/range rollup a hotspot pin-map can't give.
-      2. **Time-of-day × day-of-week heatmap grid** - the literal
-         "spatiotemporal" ask, as a matrix rather than folded into the map;
-         complements P4.2 rather than replacing it.
-      3. **Kernel-density heatmap layer**, distinct from a hotspot
-         cluster/pin map (real, common confusion - see sources) - a
-         smoothed concentration surface on `/crime-hotspots`.
-      4. **Case-flow Sankey**: crime type → status → chargesheeted/closed -
-         where the pendency pipeline actually leaks, using real
-         `ChargesheetDetails` timing (P4.4's data, a different view of it).
-      5. **Statewide link-analysis graph** - the per-case relationship
-         graph (P9.4) generalised across cases for the 47 evidence-linked
-         people, not just within one FIR - closer to what "Network &
-         Behavioral Analysis" actually asked for than a list view is.
-      6. **Cross-district flow map** - arcs between districts a scenario's
-         FIRs actually span (e.g. C1's Bengaluru→Tumakuru) - directly
-         useful for the Range tier (`RESEARCH_AND_PLAN.md` §1.4a).
-      7. **Control-chart trend alerts** - the statistical technique P4.3
-         should use (a computed baseline ± band) rather than an arbitrary
-         "spike" threshold.
-      Deliberately NOT proposed: a raw word-cloud from free text, or
-      anything the P5.0-era "analytics theatre" caution
-      (`RESEARCH_AND_PLAN.md` §2.4) would flag as decorative rather than
-      load-bearing.
+- [x] **P4.8** Done (2026-08-29, subagent, `feature/p4-stats-charts`,
+      merged). Real stat cards on `/crime-count`: total (5,000), per-crime-
+      type breakdown (Theft 1,973/Fraud 1,105/Assault 1,093/Burglary 829 -
+      real counts via `getCaseWorklist()`, not `data.ts`'s stale
+      placeholders), per-status breakdown. Prerequisite for P5.7, now
+      satisfied - there's real content on the page to attach AI insight to.
+- [x] **P4.9** Done (2026-08-29, subagents across both map/stats tracks).
+      All 7 researched candidates built, not just proposed:
+      1. **District choropleth** - `/crime-hotspots`, real per-district
+         volume/clearance via `getDistrictStats()`, positions honestly
+         labeled "illustrative... not an official boundary map" (no real
+         Karnataka GeoJSON in this repo).
+      2. **Time-of-day × day-of-week heatmap** - see P4.2.
+      3. **Kernel-density heatmap layer** - `/crime-hotspots`, a
+         Clusters/Density toggle on the same real coordinates.
+      4. **Case-flow Sankey** - `/crime-count`, crime type → status →
+         outcome, band width proportional to real counts, verified to
+         balance 5,000→5,000→5,000.
+      5. **Statewide link-analysis graph** - new `/pattern-analysis/network`
+         page + sidebar link. Bipartite Person↔Case graph, the real 47
+         evidence-linked people and 19 FIRs, 53 real edges. Deliberately no
+         person-to-person edges - no real record ever names two people
+         from different cases together, so drawing one would be fabricated.
+      6. **Cross-district flow map** - `/crime-hotspots`, sourced from the
+         15 authored scenarios only (never the 5,000 single-FIR bulk
+         cases) - real result, 4 of 15 scenarios span two districts.
+      7. **Control-chart trend alerts** - see P4.3.
+      **A real bug found and fixed during verification, not by the
+      subagents' own testing:** two of the new `/crime-count` chart
+      components (`TrendControlChart.tsx`, `CaseFlowSankey.tsx`) built each
+      SVG `<title>` tooltip as multiple JSX children, which threw a real
+      React hydration error on every page load - found via a live browser
+      check post-merge, not assumed clean from a green build. Fixed by
+      collapsing each into one template-literal string; confirmed clean on
+      a fresh tab afterward.
 
 ## P5 — AI 🚧
 
@@ -722,12 +743,23 @@ reasons over it.*
         temporarily pointing the fetch at a fixture route (C1 = match, C5 =
         none, C15 = independent-not-a-full-match), then reverted before
         commit - a real screenshot-equivalent check, not just a typecheck.
-- [ ] **P5.4** "Next question to ask" — phrasing layer on P5.2/P5.2b's output.
-- [ ] **P5.5** Suspicion score — deterministic weighted signals feed the
-      existing `RiskGauge`; the LLM writes only the explanation, never the
-      number.
-- [ ] **P5.6** Citation guardrail enforced **in the tool schema**: no finding
-      renders without a real record ID.
+- [x] **P5.4** Done (2026-08-29, subagent, `feature/p5-4-next-question`,
+      merged). "Next question to ask" - real GLM tool-call grounded in
+      `getScenarioTimeline()`'s evidence, following `contradictionDetector.ts`'s
+      exact tool-schema-guarded pattern: any cited record ID not actually
+      present in that case's evidence gets the whole suggestion discarded,
+      never rendered. Only attempted for the 15 evidence-rich scenarios -
+      the 5,000 P1.2 bulk cases correctly show no card (no evidence to
+      ground a suggestion in). New teal-accented card on `/cases/[caseId]`,
+      visually distinct from the existing red/purple contradiction cards.
+      Live-verified the evidence-gating and honest no-credential
+      degradation (missing env var caught, no card rendered, no crash);
+      the live LLM call itself is unverified for the same reason every
+      other P5 live call is (no Catalyst credentials in local dev).
+- [x] **P5.5** ~~Suspicion score~~ — done as **P9.1** (see below), same
+      item, different label.
+- [x] **P5.6** ~~Citation guardrail in the tool schema~~ — done as **P9.1b**
+      (see below), same item, different label.
 - [ ] **P5.7** *(added 2026-08-26 — user request)* **AI insights panel below
       the map on `/crime-count` and `/crime-hotspots`** (needs P4.8's real
       stats to exist first). Plain narrative prose via `llm.ts` (no
@@ -742,23 +774,27 @@ reasons over it.*
       narrate convincingly. Worth shipping now regardless (labelled
       "generated once" like P5.3b, same pattern), and gets materially
       better the moment P1.2 lands, not blocked on it.
-- [ ] **P5.8** *(added 2026-08-26 — user request)* **Ask-anything chatbot** —
-      a persistent Q&A widget (site-wide, not page-scoped) an officer can ask
-      a free-text question ("which cases involve Suresh Naik", "what's the
-      status of FIR-1002", "any repeat offenders in Ballari") and get an
-      answer grounded in the real seeded data, not a general-knowledge guess.
-      Not scoped anywhere before now — checked `features.md` and the rest of
-      this file, genuinely missing.
-      **The standout requirement, per the user's own framing: every case it
-      references must come with a real, clickable navigation link to that
-      case's actual page** (`/cases/[caseType]/[district]/investigation-
-      workspace` or `case-files/[caseId]`, via `scenarioLink()` /
-      `dashboardData.ts`'s existing resolvers) — not just a name or FIR
-      number in prose. This is the same citation-grounding discipline P5.6
-      already exists to enforce for AI findings (no finding renders without
-      a real record ID); here the "citation" is a working link, and a
-      version of this that answers in prose without one is a worse, not
-      equal, version of the feature.
+- [x] **P5.8** Done (2026-08-29, subagent, `feature/p5-8-chatbot`, merged).
+      Site-wide "Ask Anything" floating chat widget - `src/lib/askTools.ts`
+      (6 real read tools wrapping `caseWorklist.ts`/`personFusion.ts`/
+      `districtStats.ts`/`moPatterns.ts` - `search_cases`, `get_case`,
+      `get_person`, `get_district_stats`, `list_mo_patterns`,
+      `list_repeat_offenders`), `/api/ask` (a real multi-round GLM tool-
+      calling loop - the first multi-round one in the codebase,
+      `contradictionDetector.ts`'s is single-round), `AskAnything.tsx`
+      (mounted once, site-wide, in `(site)/layout.tsx`).
+      **The standout requirement met, not just attempted:** every case/
+      person the model claims is checked against the real universe of ids
+      before becoming a citation (a real `<Link>` in the answer) -
+      hallucinated ids are dropped and counted, same discipline P5.6
+      already established. Falls back to regex-extracted, still-validated
+      citations if GLM answers in plain text instead of calling the
+      terminal `respond_to_user` tool.
+      Live-verified: opens correctly, a real question triggers a real POST
+      to `/api/ask` (confirmed via network log) - fails honestly (504, no
+      Catalyst credentials locally) rather than faking an answer. The full
+      happy path (GLM actually calling tools and responding) is unverified
+      for the same reason every other P5 live call is.
       Natural fit for `llm.ts`'s existing tool-calling (P5.1 done, verified
       live) — give GLM tools that query `personFusion.ts` / `caseFacts.json`
       / `dashboardData.ts` (find-person, find-case, list-repeat-offenders-in-
@@ -796,10 +832,25 @@ policing signal), face recognition, barcode scanning, and now all of P6.
 synthesized from prose we already have, so P7 can start independently of
 P6.0's decision.*
 
-- [ ] **P7.1** Text-to-Audio on `WitnessStatements[].statementText` -
-      real spoken Kannada/English playback in the Investigation Workspace.
-      Cheapest item in this track: pure input from data that already exists,
-      no new authoring.
+- [x] **P7.1** Done (2026-08-29, subagent, `feature/p7-1-kannada-tts`,
+      merged). Text-to-Audio on real witness statements, wired into
+      `/cases/[caseId]` right after the cross-source timeline - per-
+      statement play/pause, 4 named Kannada voices, an English-text/
+      Kannada-voice toggle, real loading/error UI with Retry. Reuses
+      `llm.ts`'s already-verified `getAccessToken()`/`CATALYST-ORG` auth,
+      no new token logic.
+      ⚠️ **Honest, flagged gap, not silently assumed:** the Text-to-Audio
+      endpoint path itself (`.../models/zia/audio/synthesize`) was never
+      exercised against a live 200 - `RESEARCH_AND_PLAN.md` §2.1's own
+      entry for it says "path inferred, confirm in console," unlike GLM's
+      endpoint which was read straight off the console. Built against the
+      best-documented contract, every assumption commented inline; a 200
+      response that isn't real `audio/*` is treated as "the inferred
+      contract is wrong," never papered over with fake/fallback audio.
+      Live-verified the full pipeline short of that one hop: clicking Play
+      makes a real request, fails with a precise, honest error (missing
+      config), surfaced with a Retry button - confirmed via the
+      accessibility tree, not just visually.
 - [ ] **P7.2** Audio-to-Text intake - let an officer dictate a
       complaint/witness statement in Kannada and get back transcribed text.
       This is a genuine answer to the PS's "Excel-based reporting" complaint,
