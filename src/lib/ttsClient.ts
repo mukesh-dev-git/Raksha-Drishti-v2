@@ -7,48 +7,49 @@
 // `QuickML.deployment.READ` scope - RESEARCH_AND_PLAN.md §2.1 confirms Zia's
 // Trained NLP Models share GLM's auth) instead of minting a second token.
 //
-// ⚠️ HONEST VERIFICATION STATUS (read before trusting this file):
-// Unlike llm.ts's `/glm/chat`, this endpoint has NOT been exercised against
-// a live 200 response. RESEARCH_AND_PLAN.md §2.1 records it as:
-//   `.../models/zia/audio/synthesize` (path inferred, confirm in console)
-// - inferred by analogy with the two *confirmed* sibling endpoints on the
-// same table (`.../models/zia/audio/transcribe`, `.../models/zia/translate`),
-// not read off the console's own API Details tab the way GLM's contract was
-// (RESEARCH_AND_PLAN.md §2.2). There is no live Catalyst request context in
-// local dev to confirm it here - the same limitation every other live-API
-// feature in this project already has (no .env.local, no QuickML secrets
-// checked into this worktree). The request/response shapes below are this
-// module's best-documented guess (POST application/json in -> audio/wav
-// out, per the §2.1 inventory table), not a verified contract:
-//   - request field names (`text`, `lang`, `voice`) are inferred from GLM's
-//     naming convention and the table's own "kn, incl. named Kannada voices
-//     (Suresh/Chetan/Anu/Vidya)" wording, not read from a real sample.
-//   - a non-audio/wav 200 (e.g. a JSON wrapper instead of raw bytes) is
-//     treated as a shape mismatch and surfaced as a real error, not guessed
-//     at further.
-// Every failure mode below - network error, timeout, non-200, wrong
-// content-type, empty body - resolves to `{ ok: false }` with a real error
-// message. There is no synthetic/fallback audio anywhere in this module: a
-// caller that gets `ok: false` must show that honestly, not play silence or
-// a canned clip.
+// CONFIRMED CONTRACT (2026-08-29, read directly off the Catalyst console's
+// own "API Details" tab for this model - the endpoint path this file
+// originally guessed, `.../models/zia/audio/synthesize`, was live-verified
+// wrong: a real 404 from Zoho's own infra, not a config/auth problem. The
+// real path is `.../models/zia/tts/synthesize`):
+//   POST https://api.catalyst.zoho.in/quickml/api/v1/models/zia/tts/synthesize
+//   Headers: CATALYST-ORG, Authorization: Zoho-oauthtoken <token>
+//   Body (application/json): { text, language, speaker, pitch, speed, emotion }
+//     - language: ISO code ("hi"/"en"/"kn" - not "lang", the field this file
+//       originally guessed)
+//     - speaker: a named voice ("Divya" in the console's own sample; the
+//       Kannada names this module already used - Suresh/Chetan/Anu/Vidya -
+//       matched the console's real inventory exactly, so those needed no
+//       change), not "voice" as originally guessed
+//     - pitch/speed/emotion: optional, "low"|"moderate"|"high" /
+//       "slow"|"moderate"|"fast" / "neutral"|"happy"|"sad"|"angry"
+//   Response: 200, `audio/wav` binary body, plus an informational
+//   `X-Audio-Info` header ({language, speaker, duration_seconds,
+//   sample_rate, processing_time_ms}) - not required to parse the audio,
+//   logged here since it's free.
+// Everything else in this module (error handling, no-fake-audio-ever
+// guarantee) predates this confirmation and needed no change - only the
+// URL and the three renamed/added request fields did.
 // -----------------------------------------------------------------------------
 import { getAccessToken } from "./llm";
 
-// Confirmed sibling endpoints live under `quickml/api/v1/models/zia/...`
-// (not the `quickml/v1/project/{id}/...` shape GLM/VLM use) - see
-// RESEARCH_AND_PLAN.md §2.1's table. Text-to-Audio's own path is the one
-// entry in that table marked "path inferred, confirm in console".
-const TTS_URL = "https://api.catalyst.zoho.in/quickml/api/v1/models/zia/audio/synthesize";
+const TTS_URL = "https://api.catalyst.zoho.in/quickml/api/v1/models/zia/tts/synthesize";
 const REQUEST_TIMEOUT_MS = 30_000;
 
 export type TtsVoice = "Suresh" | "Chetan" | "Anu" | "Vidya";
 export type TtsLanguage = "kn" | "en";
+export type TtsPitch = "low" | "moderate" | "high";
+export type TtsSpeed = "slow" | "moderate" | "fast";
+export type TtsEmotion = "neutral" | "happy" | "sad" | "angry";
 
 export type TtsOptions = {
   /** Kannada is the point of P7.1 (RESEARCH_AND_PLAN.md §2.1) - default "kn". */
   language?: TtsLanguage;
-  /** Named Kannada voices per the §2.1 inventory table. */
+  /** Named Kannada voices per the console's real inventory. */
   voice?: TtsVoice;
+  pitch?: TtsPitch;
+  speed?: TtsSpeed;
+  emotion?: TtsEmotion;
 };
 
 export type TtsResult =
@@ -72,6 +73,9 @@ export async function synthesizeSpeech(text: string, opts: TtsOptions = {}): Pro
   const orgId = requireEnv("QUICKML_ORG_ID");
   const language = opts.language ?? "kn";
   const voice = opts.voice ?? "Vidya";
+  const pitch = opts.pitch ?? "moderate";
+  const speed = opts.speed ?? "moderate";
+  const emotion = opts.emotion ?? "neutral";
 
   let accessToken: string;
   try {
@@ -90,16 +94,18 @@ export async function synthesizeSpeech(text: string, opts: TtsOptions = {}): Pro
       method: "POST",
       headers: {
         // Same scheme llm.ts settled on for GLM (RESEARCH_AND_PLAN.md
-        // §2.2's "✅ Resolved 2026-08-26" note) - not independently
-        // re-verified against this endpoint.
+        // §2.2's "✅ Resolved 2026-08-26" note), confirmed also correct for
+        // this endpoint via the console's own API Details tab.
         Authorization: `Zoho-oauthtoken ${accessToken}`,
         "CATALYST-ORG": orgId,
         "Content-Type": "application/json",
         // Ask explicitly for audio bytes back; harmless if the endpoint
-        // ignores Accept and returns audio/wav regardless (per §2.1).
+        // ignores Accept and returns audio/wav regardless.
         Accept: "audio/wav, application/json",
       },
-      body: JSON.stringify({ text, lang: language, voice }),
+      // Field names/shape per the console's own sample request - see this
+      // file's header comment.
+      body: JSON.stringify({ text, language, speaker: voice, pitch, speed, emotion }),
       signal: controller.signal,
     });
   } catch (e) {
@@ -143,11 +149,12 @@ export async function synthesizeSpeech(text: string, opts: TtsOptions = {}): Pro
   }
 
   if (!contentType.includes("audio/")) {
-    // A 200 that isn't audio means the inferred contract above is wrong in
-    // some way (e.g. a JSON wrapper `{ audioBase64 }` instead of raw
-    // bytes). Surface that honestly rather than guessing at a second shape.
+    // The confirmed contract (see header comment) is a raw audio/wav body -
+    // a 200 that isn't audio means something changed server-side or a
+    // request field was rejected silently. Surface that honestly rather
+    // than guessing at a second shape.
     const rawText = await res.text();
-    console.error("[ttsClient.ts] Text-to-Audio returned 200 with an unexpected content-type - inferred contract may be wrong", {
+    console.error("[ttsClient.ts] Text-to-Audio returned 200 with an unexpected content-type", {
       contentType,
       bodyPreview: rawText.slice(0, 300),
     });
@@ -159,7 +166,11 @@ export async function synthesizeSpeech(text: string, opts: TtsOptions = {}): Pro
     return { ok: false, status: res.status, error: "empty audio body on a 200 response" };
   }
 
-  console.log("[ttsClient.ts] Text-to-Audio call ok", { textLength: text.length, language, voice, contentType, bytes: audio.byteLength });
+  // X-Audio-Info is documented, informational-only (duration/sample rate/
+  // processing time) - logged since it's free, never required to use the
+  // audio bytes themselves.
+  const audioInfo = res.headers.get("x-audio-info");
+  console.log("[ttsClient.ts] Text-to-Audio call ok", { textLength: text.length, language, voice, contentType, bytes: audio.byteLength, audioInfo });
 
   return { ok: true, audio, contentType };
 }

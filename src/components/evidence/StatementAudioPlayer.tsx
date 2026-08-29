@@ -28,13 +28,29 @@ import { Volume2, Loader2, AlertTriangle, Pause, Play } from "lucide-react";
 // not a translation of it.
 // -----------------------------------------------------------------------------
 
-type Voice = "Suresh" | "Chetan" | "Anu" | "Vidya";
-const VOICES: { id: Voice; label: string }[] = [
-  { id: "Vidya", label: "Vidya" },
-  { id: "Anu", label: "Anu" },
-  { id: "Suresh", label: "Suresh" },
-  { id: "Chetan", label: "Chetan" },
-];
+// Speakers are language-specific on Zia's side - confirmed live, not
+// assumed: picking a Kannada-only voice (e.g. "Vidya") with language "en"
+// gets a real, clean rejection from the API itself ("Speaker 'Vidya' is
+// not available for language 'en'"), not a synthesis error. Two separate
+// voice lists per the console's own real inventory, keyed by language, so
+// the UI can never construct that invalid combination in the first place.
+type Voice = "Suresh" | "Chetan" | "Anu" | "Vidya" | "Thomas" | "Adam" | "Brian" | "Mary" | "Anna" | "Beth";
+const VOICES_BY_LANGUAGE: Record<"en" | "kn", { id: Voice; label: string }[]> = {
+  kn: [
+    { id: "Vidya", label: "Vidya" },
+    { id: "Anu", label: "Anu" },
+    { id: "Suresh", label: "Suresh" },
+    { id: "Chetan", label: "Chetan" },
+  ],
+  en: [
+    { id: "Mary", label: "Mary" },
+    { id: "Anna", label: "Anna" },
+    { id: "Beth", label: "Beth" },
+    { id: "Thomas", label: "Thomas" },
+    { id: "Adam", label: "Adam" },
+    { id: "Brian", label: "Brian" },
+  ],
+};
 
 type Status = "idle" | "loading" | "ready" | "playing" | "error";
 
@@ -49,8 +65,22 @@ export default function StatementAudioPlayer({
 }) {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
-  const [voice, setVoice] = useState<Voice>("Vidya");
   const [language, setLanguage] = useState<"en" | "kn">("en");
+  // Default voice matches the default language - a Kannada-only voice as
+  // the initial value here (with language defaulting to "en") would have
+  // failed the very first synthesis attempt, before the user touched
+  // anything. See VOICES_BY_LANGUAGE's comment.
+  const [voice, setVoice] = useState<Voice>(VOICES_BY_LANGUAGE.en[0].id);
+
+  function changeLanguage(next: "en" | "kn") {
+    setLanguage(next);
+    // Snap the voice selection to the new language's own list - never
+    // leave a stale Kannada speaker selected under "English text" (or vice
+    // versa), which the API correctly rejects (confirmed live: "Speaker
+    // 'Vidya' is not available for language 'en'").
+    const stillValid = VOICES_BY_LANGUAGE[next].some((v) => v.id === voice);
+    if (!stillValid) setVoice(VOICES_BY_LANGUAGE[next][0].id);
+  }
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const objectUrlRef = useRef<string | null>(null);
 
@@ -150,13 +180,13 @@ export default function StatementAudioPlayer({
         </span>
 
         <div className="ml-auto flex items-center gap-1">
-          <LanguageToggle value={language} onChange={setLanguage} disabled={isBusy} />
+          <LanguageToggle value={language} onChange={changeLanguage} disabled={isBusy} />
         </div>
       </div>
 
       <div className="mt-2 flex flex-wrap items-center gap-1.5">
         <span className="text-[10.5px] uppercase tracking-[0.08em] text-muted/80">Voice</span>
-        {VOICES.map((v) => (
+        {VOICES_BY_LANGUAGE[language].map((v) => (
           <button
             key={v.id}
             type="button"
