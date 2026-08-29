@@ -1,18 +1,20 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { FolderKanban, MapPin, Building2, Calendar, Users, ShieldAlert, AlertTriangle, Sparkles, CheckCircle2, Waypoints, MessageCircleQuestion } from "lucide-react";
+import { FolderKanban, MapPin, Building2, Calendar, Users, ShieldAlert, AlertTriangle, Sparkles, CheckCircle2, Waypoints, MessageCircleQuestion, MessageSquareQuote } from "lucide-react";
 import PageShell from "@/components/PageShell";
 import CaseStatusPill from "@/components/CaseStatusPill";
 import CaseStatusEditor from "@/components/cases/CaseStatusEditor";
 import IOAssignmentEditor from "@/components/cases/IOAssignmentEditor";
 import CrossSourceTimeline from "@/components/CrossSourceTimeline";
 import CaseRelationshipGraph from "@/components/cases/CaseRelationshipGraph";
+import StatementAudioPlayer from "@/components/evidence/StatementAudioPlayer";
 import { getWorklistCase, getSiblingCases, caseDetailLink } from "@/lib/caseWorklist";
 import { getScenarioTimeline } from "@/lib/personFusion";
 import { getMoPatternClusters } from "@/lib/moPatterns";
 import { getEmployeesByDistrict } from "@/lib/employees";
 import { getCaseRelationshipGraph } from "@/lib/relationshipGraph";
 import { suggestNextQuestion } from "@/lib/nextQuestion";
+import { getWitnessStatementsForScenario } from "@/lib/witnessStatements";
 import scenarioMeta from "@/lib/nosql-seed/scenarioMeta.json";
 import contradictionsSeed from "@/lib/nosql-seed/Contradictions.json";
 import aiContradictionsSeed from "@/lib/nosql-seed/AIContradictions.json";
@@ -67,6 +69,9 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ cas
   // failure (missing config, network/timeout, or a fully-hallucinated
   // citation dropped by nextQuestion.ts's own guardrail).
   const nextQuestion = evidence.length > 0 ? await suggestNextQuestion(c.scenarioId) : null;
+  // P7.1 - real witness statements for this case's scenario, wired to Zia's
+  // Trained NLP Models Text-to-Audio via StatementAudioPlayer/api/tts.
+  const witnessStatements = getWitnessStatementsForScenario(c.scenarioId);
 
   return (
     <PageShell
@@ -279,6 +284,33 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ cas
               <p className="text-[13px] text-muted">No evidence records linked to this case yet.</p>
             )}
           </div>
+
+          {/* P7.1 - Kannada Text-to-Audio on real witness statements (Zia
+              Trained NLP Models). New, self-contained section - see
+              StatementAudioPlayer.tsx / /api/tts for the honest
+              verification-status note on this endpoint. */}
+          {witnessStatements.length > 0 && (
+            <div className="rounded-xl border border-line bg-surface p-5 shadow-sm">
+              <p className="mb-1 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-muted">
+                <MessageSquareQuote size={12} aria-hidden="true" /> Witness statements · Kannada audio ({witnessStatements.length})
+              </p>
+              <p className="mb-3 text-[12px] text-muted">
+                Real statement text from this case, read aloud via Zia&apos;s Trained NLP Models Text-to-Audio Synthesis - Karnataka&apos;s official language, spoken.
+              </p>
+              <div className="space-y-3">
+                {witnessStatements.map((w) => (
+                  <div key={w.id} className="rounded-lg border border-line/70 p-3">
+                    <div className="mb-2 flex items-center justify-between gap-2">
+                      <p className="text-[12.5px] font-semibold text-ink">{w.witnessName}</p>
+                      <span className="font-mono text-[10.5px] text-muted">{w.id} · {w.statementDate}</span>
+                    </div>
+                    <p className="mb-2 text-[13px] leading-relaxed text-ink">&ldquo;{w.statementText}&rdquo;</p>
+                    <StatementAudioPlayer statementId={w.id} text={w.statementText} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </PageShell>
