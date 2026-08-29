@@ -156,3 +156,29 @@ textarea:focus-visible,
     var(--green) 66.66% 100%
   );
 }
+
+/* Ask Anything's trigger button (P5.8) — a slowly flowing gradient marks it
+   as the AI entry point, distinct from every solid-navy button elsewhere in
+   the app. Oversized background + animated position, not a spinning hue, so
+   it reads as a calm ambient wash rather than a distracting loop. Colors
+   per direct request: teal (#0b8793) to wine (#360033); mirrored to a third
+   stop so the animation loops back to its start seamlessly instead of
+   snapping. Plain `background` fallback first for older browsers that don't
+   parse the gradient value at all, same pattern as the reference snippet. */
+.ai-flow-gradient {
+  background: #360033;
+  background: linear-gradient(115deg, #0b8793, #360033, #0b8793);
+  background-size: 300% 300%;
+  animation: ai-flow 8s ease-in-out infinite;
+}
+@keyframes ai-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ai-flow-gradient {
+    animation: none;
+    background-position: 35% 50%; /* a fixed frame, not just the first stop */
+  }
+}

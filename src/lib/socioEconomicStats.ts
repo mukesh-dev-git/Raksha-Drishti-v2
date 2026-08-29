@@ -85,9 +85,31 @@ function allReligionIds(cases: WorklistCase[]): number[] {
   return cases.flatMap((c) => c.complainantReligionIds);
 }
 
+/** Cases (not complainants) by district — real, needs no demographic field,
+ *  just the district every case already carries. Capped to the top N so a
+ *  crowded 8-district bar list doesn't compete with the two demographic
+ *  panels for attention; the cap is a display choice, not a data limit. */
+function districtBreakdown(cases: WorklistCase[], topN = 10): { totalKnown: number; notSpecified: number; categories: { id: number; name: string; count: number; pct: number }[] } {
+  const counts = new Map<number, { name: string; count: number }>();
+  let notSpecified = 0;
+  for (const c of cases) {
+    if (c.districtId == null) { notSpecified++; continue; }
+    const e = counts.get(c.districtId) ?? { name: c.districtName, count: 0 };
+    e.count++;
+    counts.set(c.districtId, e);
+  }
+  const totalKnown = cases.length - notSpecified;
+  const categories = [...counts.entries()]
+    .map(([id, e]) => ({ id, name: e.name, count: e.count, pct: totalKnown > 0 ? Math.round((1000 * e.count) / totalKnown) / 10 : 0 }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, topN);
+  return { totalKnown, notSpecified, categories };
+}
+
 export type SocioEconomicView = {
   occupation: CategoryBreakdown;
   religion: CategoryBreakdown;
+  district: CategoryBreakdown;
   /** Cases counted for this view - distinct from complainant N (a case can
    *  have >1 complainant, or 0 if the FIR predates any complainant record). */
   caseCount: number;
@@ -103,6 +125,7 @@ export function getSocioEconomicView(filters: SocioEconomicFilters = {}): SocioE
   return {
     occupation: breakdown(allOccupationIds(cases), OCCUPATION_LABELS),
     religion: breakdown(allReligionIds(cases), RELIGION_LABELS),
+    district: districtBreakdown(cases),
     caseCount: cases.length,
     filterOptions: {
       crimeTypes: caseTypes.map((t) => ({ slug: t.slug, name: t.name })),

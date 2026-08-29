@@ -577,6 +577,17 @@ reasons over it.*
       `socioEconomicStats.ts` returns or accepts a single person's value —
       only category counts. **Caste is not in this view** — see P1.5, the
       taxonomy itself is still an open question.
+      **Redesigned same day** on direct feedback — the first pass rendered
+      every bar in flat navy, monochrome and hard to read. Now reuses the
+      app's own existing `--dash-blue/purple/orange/teal/pink` categorical
+      palette (already used by the crime-type charts, not new colors) for
+      per-category bars plus a multi-segment donut ring per breakdown. Added
+      a real **district breakdown** (top 10, needs no new demographic
+      field — district is already on every case) and 4 colorful stat chips.
+      Deliberately not built: a header illustration (needs a real asset,
+      not fabricated) and a "Download Report" button (no real export
+      exists — same P0.2 rule against dead affordances applies to buttons,
+      not just nav links).
 - [x] **P4.6** ~~MO pattern-clustering / similar-case matching~~ — done,
       `/pattern-analysis` (`f9fde9e`, branch `feature/mo-patterns-and-
       repeat-offenders`). `build_seed.mjs` now emits `caseFacts.json`

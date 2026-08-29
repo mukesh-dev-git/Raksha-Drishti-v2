@@ -187,7 +187,7 @@ export default function AskAnything() {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2 rounded-full bg-navy px-4 py-3 text-navy-ink shadow-md hover:bg-navy-hover"
+        className="ai-flow-gradient flex items-center gap-2 rounded-full px-4 py-3 text-white shadow-md transition-shadow hover:shadow-lg"
         aria-expanded={open}
         aria-label={open ? "Close Ask Anything" : "Open Ask Anything"}
       >

@@ -19,10 +19,10 @@ export const metadata = { title: "Socio-Economic Correlation" };
 export default function SocioEconomicPage() {
   const all = getSocioEconomicView();
   const series: SocioEconomicSeries[] = [
-    { crimeTypeSlug: null, crimeTypeName: "Statewide", caseCount: all.caseCount, occupation: all.occupation, religion: all.religion },
+    { crimeTypeSlug: null, crimeTypeName: "Statewide", caseCount: all.caseCount, occupation: all.occupation, religion: all.religion, district: all.district },
     ...all.filterOptions.crimeTypes.map((t) => {
       const v = getSocioEconomicView({ crimeTypeSlug: t.slug });
-      return { crimeTypeSlug: t.slug, crimeTypeName: t.name, caseCount: v.caseCount, occupation: v.occupation, religion: v.religion };
+      return { crimeTypeSlug: t.slug, crimeTypeName: t.name, caseCount: v.caseCount, occupation: v.occupation, religion: v.religion, district: v.district };
     }),
   ];
 
