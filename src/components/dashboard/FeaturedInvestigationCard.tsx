@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { AlertTriangle, ArrowRight, Landmark } from "lucide-react";
 import type { getFeaturedScenario } from "@/lib/dashboardData";
-import MiniRelationshipGraph from "./MiniRelationshipGraph";
+import CaseBoardSummary from "./CaseBoardSummary";
 
 type Scenario = NonNullable<ReturnType<typeof getFeaturedScenario>>;
 
@@ -50,7 +50,7 @@ export default function FeaturedInvestigationCard({ scenario }: { scenario: Scen
       </div>
 
       <div className="flex flex-col justify-center border-t border-line pt-4 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
-        <MiniRelationshipGraph counts={scenario.counts} />
+        <CaseBoardSummary counts={scenario.counts} />
       </div>
     </div>
   );
