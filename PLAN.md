@@ -555,6 +555,38 @@ reasons over it.*
       chart, no stat card, on either page file. Prerequisite for P5.7
       below (there's no "below the map" content to attach AI insights to
       yet). Same real/fallback data pattern as everywhere else in the app.
+- [ ] **P4.9** *(added 2026-08-29 — user request, research only so far)*
+      **Candidate visualizations beyond a hotspot pin-map**, researched
+      against real crime-analytics practice (ArcGIS Crime Analysis, NCRB's
+      own CrimeAtlas, CompStat) - not yet scoped into sub-items or built.
+      Full reasoning + sources in this session's response; short list,
+      roughly priority order, all buildable on data that already exists
+      (5,000 real cases, real dates/coords/time-of-day/sections/status):
+      1. **District choropleth** (shade `/districts` as a map, not just a
+         list) - the state/range rollup a hotspot pin-map can't give.
+      2. **Time-of-day × day-of-week heatmap grid** - the literal
+         "spatiotemporal" ask, as a matrix rather than folded into the map;
+         complements P4.2 rather than replacing it.
+      3. **Kernel-density heatmap layer**, distinct from a hotspot
+         cluster/pin map (real, common confusion - see sources) - a
+         smoothed concentration surface on `/crime-hotspots`.
+      4. **Case-flow Sankey**: crime type → status → chargesheeted/closed -
+         where the pendency pipeline actually leaks, using real
+         `ChargesheetDetails` timing (P4.4's data, a different view of it).
+      5. **Statewide link-analysis graph** - the per-case relationship
+         graph (P9.4) generalised across cases for the 47 evidence-linked
+         people, not just within one FIR - closer to what "Network &
+         Behavioral Analysis" actually asked for than a list view is.
+      6. **Cross-district flow map** - arcs between districts a scenario's
+         FIRs actually span (e.g. C1's Bengaluru→Tumakuru) - directly
+         useful for the Range tier (`RESEARCH_AND_PLAN.md` §1.4a).
+      7. **Control-chart trend alerts** - the statistical technique P4.3
+         should use (a computed baseline ± band) rather than an arbitrary
+         "spike" threshold.
+      Deliberately NOT proposed: a raw word-cloud from free text, or
+      anything the P5.0-era "analytics theatre" caution
+      (`RESEARCH_AND_PLAN.md` §2.4) would flag as decorative rather than
+      load-bearing.
 
 ## P5 — AI 🚧
 
