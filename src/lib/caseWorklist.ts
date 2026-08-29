@@ -31,6 +31,14 @@ type CaseFact = {
   gravityOffenceId: number;
   caseStatusId: number;
   complainantNames: string[];
+  /** P4.5 - parallel array to complainantNames, same index. Victim/
+   *  complainant side only, by construction: Accused has no demographic
+   *  columns at all (DATA_STORE_SCHEMA.md), so there is nowhere an
+   *  offender-side value could land even by mistake. 0 = not specified
+   *  (a bulk case pre-P1.5, or an institutional complainant like a bank's
+   *  nodal officer, where a personal religion doesn't apply). */
+  complainantOccupationIds: number[];
+  complainantReligionIds: number[];
   /** Real per-FIR incident coordinates (P4.1) - straight from CaseMaster's
    *  latitude/longitude, added to caseFacts.json by build_seed.mjs. Nullable
    *  because a handful of hand-authored rows predating this field could in
@@ -81,6 +89,9 @@ export type WorklistCase = {
   gravityOffenceId: number;
   incidentFromDate: string | null;
   incidentToDate: string | null;
+  /** P4.5 - see CaseFact above. */
+  complainantOccupationIds: number[];
+  complainantReligionIds: number[];
   /** Real per-FIR incident coordinates (P4.1) - see CaseFact above. */
   latitude: number | null;
   longitude: number | null;
@@ -152,6 +163,8 @@ export function getCaseWorklist(): WorklistCase[] {
       gravityOffenceId: f.gravityOffenceId,
       incidentFromDate: f.incidentFromDate,
       incidentToDate: f.incidentToDate,
+      complainantOccupationIds: f.complainantOccupationIds ?? [],
+      complainantReligionIds: f.complainantReligionIds ?? [],
       latitude: f.latitude ?? null,
       longitude: f.longitude ?? null,
     };

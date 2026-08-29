@@ -122,5 +122,30 @@
     { "ActCode": "IPC", "SectionCode": "34", "SectionDescription": "Acts done by several persons in furtherance of common intention", "Active": true },
     { "ActCode": "ITACT", "SectionCode": "66D", "SectionDescription": "Cheating by personation using a computer resource", "Active": true },
     { "ActCode": "ITACT", "SectionCode": "66C", "SectionDescription": "Identity theft", "Active": true }
-  ]
+  ],
+  "OccupationMaster": [
+    { "OccupationID": 1, "OccupationName": "Business / Shop Owner" },
+    { "OccupationID": 2, "OccupationName": "Farmer" },
+    { "OccupationID": 3, "OccupationName": "Government Employee" },
+    { "OccupationID": 4, "OccupationName": "Private Employee" },
+    { "OccupationID": 5, "OccupationName": "Driver" },
+    { "OccupationID": 6, "OccupationName": "Homemaker" },
+    { "OccupationID": 7, "OccupationName": "Student" },
+    { "OccupationID": 8, "OccupationName": "Daily Wage Worker" },
+    { "OccupationID": 9, "OccupationName": "Self-employed / Professional" },
+    { "OccupationID": 10, "OccupationName": "Retired" },
+    { "OccupationID": 0, "OccupationName": "Not specified" }
+  ],
+  "_note_OccupationID": "IDs 1-10 match the numbering already hand-authored into the 19 scenarios' ComplainantDetails rows in cases.json (see its _code_conventions.OccupationID note) - this table formalises that existing convention, not a renumbering. 0 = not specified, used by bulk-generated complainants until P1.5's distribution is applied.",
+  "ReligionMaster": [
+    { "ReligionID": 1, "ReligionName": "Hindu" },
+    { "ReligionID": 2, "ReligionName": "Muslim" },
+    { "ReligionID": 3, "ReligionName": "Christian" },
+    { "ReligionID": 4, "ReligionName": "Jain" },
+    { "ReligionID": 5, "ReligionName": "Sikh" },
+    { "ReligionID": 6, "ReligionName": "Buddhist" },
+    { "ReligionID": 7, "ReligionName": "Other" },
+    { "ReligionID": 0, "ReligionName": "Not specified" }
+  ],
+  "_note_ReligionID": "Standard Census of India categories, the same set NCRB's own Crime in India reports use. 0 = not specified."
 }

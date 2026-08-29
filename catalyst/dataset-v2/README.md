@@ -19,6 +19,20 @@ interconnected, multi-source data to render, per
   `isPeriodOffence()` marks the crimes that legitimately have no time of day
   — **P4.2 must exclude those**, or their stored `00:00` becomes a fake
   midnight spike.
+- **`demographics.mjs`** — victim/complainant occupation and religion
+  (P1.5). `assignOccupation()`/`assignReligion()` draw from a Karnataka-
+  representative distribution (Census 2011 proportions for religion),
+  deterministically in `ComplainantID` — a statistical population draw, not
+  a narrative choice about any named individual; see the file's header for
+  why that distinction matters. Only ever touches `ComplainantDetails` — the
+  `Accused` table has no demographic columns in the schema at all, so there
+  is nowhere an offender-side value could land even by mistake.
+  `CasteID`/`CasteMaster` deliberately absent — see `DATA_STORE_SCHEMA.md`'s
+  "Extended tables" for why that one's still an open decision, not a gap in
+  this file.
+- ⚠️ *`bulk_cases.mjs` (P1.2, generates the 4,981 bulk cases) belongs in this
+  list and isn't yet documented here — pre-existing gap, not introduced by
+  this entry, flagged rather than silently left.*
 - **`lookups.json`** — fresh reference/taxonomy data for all 15 Data Store
   lookup tables (State, District, UnitType, Unit, Rank, Designation,
   Employee, Court, CaseCategory, GravityOffence, CaseStatusMaster,

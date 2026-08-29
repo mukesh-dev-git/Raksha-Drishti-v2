@@ -380,9 +380,8 @@ for (const c of dataset.cases) {
           .map((a) => `${a.ActID}-${a.SectionID}`)
       ),
     ];
-    const complainantNames = (c.complainants || [])
-      .filter((x) => x.CaseMasterID === fir.CaseMasterID)
-      .map((x) => x.ComplainantName);
+    const firComplainants = (c.complainants || []).filter((x) => x.CaseMasterID === fir.CaseMasterID);
+    const complainantNames = firComplainants.map((x) => x.ComplainantName);
     const unit = unitById.get(fir.PoliceStationID);
     caseFacts[fir.CaseMasterID] = {
       caseMasterId: fir.CaseMasterID,
@@ -404,6 +403,13 @@ for (const c of dataset.cases) {
       gravityOffenceId: fir.GravityOffenceID,
       caseStatusId: fir.CaseStatusID,
       complainantNames,
+      // P4.5 - same parallel-array convention as complainantNames, same
+      // index. Victim/complainant side only - Accused has no demographic
+      // columns at all (see DATA_STORE_SCHEMA.md), so there is nowhere an
+      // offender-side value could end up even by mistake. CasteID isn't
+      // carried yet - that taxonomy is still an open decision (PLAN.md P1.5).
+      complainantOccupationIds: firComplainants.map((x) => x.OccupationID),
+      complainantReligionIds: firComplainants.map((x) => x.ReligionID),
       // P4.1 (hotspot map) - the real per-FIR coordinates were already on
       // CaseMaster (see caseMasterCols above) but never carried into the
       // bundled facts file, so nothing in src/ could plot a real map. Same
@@ -423,7 +429,8 @@ for (const c of dataset.cases) {
 // prefix out explicitly before clustering - see its own comment on why.
 for (const fir of bulk.caseMasterRows) {
   const sections = bulk.actSectionRows.filter((a) => a.CaseMasterID === fir.CaseMasterID).map((a) => `${a.ActID}-${a.SectionID}`);
-  const complainantNames = bulk.complainantRows.filter((x) => x.CaseMasterID === fir.CaseMasterID).map((x) => x.ComplainantName);
+  const firComplainants = bulk.complainantRows.filter((x) => x.CaseMasterID === fir.CaseMasterID);
+  const complainantNames = firComplainants.map((x) => x.ComplainantName);
   const unit = unitById.get(fir.PoliceStationID);
   caseFacts[fir.CaseMasterID] = {
     caseMasterId: fir.CaseMasterID,
@@ -442,6 +449,8 @@ for (const fir of bulk.caseMasterRows) {
     caseStatusId: fir.CaseStatusID,
     complainantNames,
     // See the authored-case loop above - same field, same reasoning.
+    complainantOccupationIds: firComplainants.map((x) => x.OccupationID),
+    complainantReligionIds: firComplainants.map((x) => x.ReligionID),
     latitude: fir.latitude ?? null,
     longitude: fir.longitude ?? null,
   };

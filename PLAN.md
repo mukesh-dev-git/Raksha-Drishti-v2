@@ -15,27 +15,27 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 
 ## Where the work stands
 
-*Last swept 2026-08-25.*
+*Last swept 2026-08-30.*
 
 | Track | State | Where it's at |
 |---|---|---|
 | **P0** Credibility | ✅ **done** | All 5. App no longer promises what it can't do. |
-| **P1** Data foundation | 🔵 **in progress** | P1.1 ✅ · P1.2 ✅ (scaled to 5,000 cases 2026-08-29, see below) · P1.3 ✅ · P1.4 `[~]` built, not applied · P1.5 needs a decision · **P1.6 is next** (wipe + reimport, folds in P1.1's PersonID fix and P1.2's 4,981 bulk cases at once) |
+| **P1** Data foundation | 🔵 **in progress** | P1.1 ✅ · P1.2 ✅ (scaled to 5,000 cases 2026-08-29) · P1.3 ✅ · P1.4 `[~]` built, not applied · **P1.5** `[~]` occupation + religion done 2026-08-30, caste taxonomy still an open question · **P1.6 is next** (wipe + reimport, folds in P1.1's PersonID fix, P1.2's bulk cases, and P1.5's demographics at once) |
 | **P2** Route restructure | ✅ **done, merged, deployed** | Merged to `main` and pushed to `v2/main` 2026-08-28 (17 commits) - confirmed live on Slate. P2.1+P2.1a+P2.1b+P2.1c+P2.1d+P2.2+P2.3 all real FIR Index, case/district/person pages, header search, old-URL redirects, attention-list dashboard. **P2.4's case-status write endpoint confirmed working against the live Data Store** (two real writes via curl, both directions, not just a 200 taken on faith) - the app's first-ever write, live. IO assignment/case-diary not started (diary blocked on console-only table provisioning, not a choice). One real gap surfaced: writes hit the live Data Store but every read path still serves bundled seed JSON, so a write is currently invisible in the UI - see P2.4. |
 | **P3** Person spine | ✅ **done** | P3.1+P3.3 (`589721d`) — fusion + timeline merge, 2 real bugs found and fixed. P3.2 (`/persons`) landed via the P2 restructure — see P2.1c. |
-| **P4** Real analytics | ✅ **all 6 sub-items done, 2026-08-29** | P4.1 (real statewide hotspot map), P4.2+P4.9 (time-of-day×day-of-week heatmap), P4.3+P4.9 (control-chart trend alerts), P4.4 (chargesheet rate/heinous split), P4.6+P4.7 (done earlier, MO-clustering + repeat-offenders), P4.8 (real stat cards), P4.9 (choropleth, kernel-density, cross-district flow map, case-flow Sankey, statewide link-analysis graph). Built via 6 parallel subagents, merged and independently re-verified - see below. |
+| **P4** Real analytics | ✅ **all 7 sub-items done, 2026-08-30** | P4.1 (real statewide hotspot map), P4.2+P4.9 (time-of-day×day-of-week heatmap), P4.3+P4.9 (control-chart trend alerts), P4.4 (chargesheet rate/heinous split), P4.5 (socio-economic breakdown, `/socio-economic`, 2026-08-30 - occupation + religion, caste withheld pending taxonomy decision), P4.6+P4.7 (MO-clustering + repeat-offenders), P4.8 (real stat cards), P4.9 (choropleth, kernel-density, cross-district flow map, case-flow Sankey, statewide link-analysis graph). P4.1-P4.4/P4.6-P4.9 built via 6 parallel subagents 2026-08-29; P4.5 built directly 2026-08-30. |
 | **P5** AI | 🔵 **in progress** | P5.0-P5.3, P5.2b, P5.3b ✅. **P5.4 done, 2026-08-29** (AI-suggested next question, citation-checked). **P5.8 done, 2026-08-29** (Ask Anything chatbot, real tool-calling, grounded citations). |
 | **P6** Zia | ✅ **closed, 2026-08-29** | Decision: no synthetic images. Track closed cleanly rather than built against fabricated source images. |
 | **P7** Kannada voice (Zia) | 🔵 **P7.1 done, 2026-08-29** | Text-to-Audio pipeline built and wired into case-detail witness statements; P7.2-P7.4 still open. |
 | **X** Cross-cutting | ✅ **done** | X1, X2, X3 all done - see below. |
 | **P9** Refined-prototype push | ✅ **done, today** | All five sub-items shipped and independently verified: P9.1+P9.1b (suspicion score + tool-schema guardrail), P9.3 (pattern/repeat cross-links), P9.2 (real IO assignment), P9.4 (relationship graph, built on a subagent's branch `feature/case-relationship-graph`, merged to `main` after review - the only real conflict was two adjacent import lines in `cases/[caseId]/page.tsx`; every other overlapping file (`caseWorklist.ts`, `contradictionDetector.ts`, `personFusion.ts`, `.gitignore`) merged clean with nothing lost, re-verified with `tsc --noEmit`, `next build`, and a live check on cases 9001+9002 showing the graph, MO-cluster card, repeat badges and IO picker all rendering together). |
 
-**Done so far:** P0.1–P0.5 · P1.1 · P1.2 · P1.3 · **P2 (whole track)** ·
-**P4 (whole track)** · P3.1 · P3.3 · P5.0 · P5.1 · P5.2 · P5.3 · P5.4 · P5.8 ·
-P6 (closed) · P7.1 · X1 · X2 · X3
+**Done so far:** P0.1–P0.5 · P1.1 · P1.2 · P1.3 · P1.5 (occupation + religion)
+· **P2 (whole track)** · **P4 (whole track)** · P3.1 · P3.3 · P5.0 · P5.1 ·
+P5.2 · P5.3 · P5.4 · P5.8 · P6 (closed) · P7.1 · X1 · X2 · X3
 
 **Ready to pick up right now, no decisions needed:** **P1.6** (wipe +
-reimport - the one remaining item) · P5.7 · P7.2 · P7.3 · P7.4
+reimport) · P5.7 · P7.2 · P7.3 · P7.4
 
 **Blocked on someone, not on effort:**
 
@@ -44,7 +44,7 @@ reimport - the one remaining item) · P5.7 · P7.2 · P7.3 · P7.4
 | ~~All of P2~~ | ~~PR #1 — merge or close~~ — **unblocked 2026-08-27**, resolved by decision (proceed independently) |
 | ~~All of P5~~ | ~~a working access token~~ — **unblocked**, `src/lib/llm.ts` verified live |
 | ~~All of P6~~ | ~~P6.0 — do we generate images at all?~~ — **resolved 2026-08-29: no**, track closed |
-| P1.5, P4.5 | **Agreement on the caste/religion framing** — **resolved 2026-08-29: aggregate-only, victim-side, with denominators, never offender propensity** - build proceeding under this framing |
+| ~~P1.5, P4.5~~ | ~~Agreement on the caste/religion framing~~ — **resolved 2026-08-29** (aggregate-only, victim-side, with denominators, never offender propensity). **Built 2026-08-30**: occupation + religion done, `/socio-economic` live. **Caste specifically still open** — the framing resolved *how* to present it, not *what taxonomy* to use (official SC/ST/OBC/General vs. omitting caste entirely) — see P1.5. |
 
 **The honest read on P4:** it's the biggest remaining prize — 4 of the PS's 6
 capabilities — and as of P1.2 (2026-08-29, scaled to 5,000 the same day) it
@@ -228,9 +228,28 @@ locally, then wipe + re-import **once**. See `RESEARCH_AND_PLAN.md` §5.*
       ⚠️ **P4.2 must exclude period offences** rather than read their
       `00:00` as midnight — see `isPeriodOffence()`. Counting them would
       manufacture a midnight spike that is purely a storage artefact.
-- [ ] **P1.5** Populate `OccupationID`/`ReligionID`/`CasteID` + build the 3
+- [~] **P1.5** Populate `OccupationID`/`ReligionID`/`CasteID` + build the 3
       lookup tables. **Framing agreed first** — victim/complainant
       demographics with explicit denominators, never offender propensity.
+      **Occupation + Religion done, 2026-08-30** — `OccupationMaster` and
+      `ReligionMaster` built in `lookups.json`; `catalyst/dataset-v2/
+      demographics.mjs` assigns both via a deterministic, Karnataka-
+      representative statistical draw (Census 2011 proportions for religion;
+      not a narrative choice about any named individual — see that file's
+      header). Applied to all 22 authored complainants and all ~4,981 bulk
+      ones — 5,003 total, verified against the source weights at N=20,000
+      (Hindu 83.2% vs 84% target, Muslim 13.1% vs 13%, no bias). Institutional
+      complainants (a bank's nodal officer, a forest-department officer)
+      deliberately excluded from religion — they represent an organisation,
+      not a person, so "not specified" is correct, not a gap.
+      **`CasteID` still 0 for everyone — genuinely open, not an oversight.**
+      The "aggregate-only, victim-side" agreement resolved the *presentation*
+      framing; it did not pin down the caste *taxonomy* itself (official SC/
+      ST/OBC/General categories, used in NCRB's own reporting and required
+      for Prevention of Atrocities Act enforcement, vs. omitting caste
+      entirely and reporting only religion + occupation). That is a separate
+      decision worth a direct answer before generating any values — asked,
+      not yet answered.
 - [ ] **P1.6** Wipe the Data Store and re-import cleanly. Record row counts in
       `catalyst/README.md`. Now carries two real fixes at once, which is
       exactly why this was deferred to one wipe rather than done per-fix:
@@ -543,12 +562,21 @@ reasons over it.*
       histogram (median 75 days), Heinous/Non-Heinous split (27.5%/25.8%
       chargesheet rate respectively) from real `GravityOffenceID`. Verified
       live on `/crime-count`.
-- [ ] **P4.5** Socio-economic correlation view. **Framing resolved
-      2026-08-29** (aggregate-only, victim-side, with denominators, never
-      offender propensity - see `Decisions still open` below) - not yet
-      built. Next real step once P1.6 lands (needs real Occupation/
-      Religion/Caste lookup tables populated, which P1.6's live re-import
-      is the natural point to add alongside).
+- [x] **P4.5** ~~Socio-economic correlation view~~ — done, 2026-08-30,
+      `/socio-economic` (`socioEconomicStats.ts` + `SocioEconomicPanel.tsx`).
+      Occupation + religion breakdown, statewide and per-crime-type, over
+      all 5,000 real cases — real N, real %, denominator shown alongside
+      every chart, "not specified" shown as its own line rather than
+      silently dropped. Doesn't need P1.6 after all: like every other P4
+      view, it reads the bundled `caseFacts.json` (P1.2's pattern), not the
+      live Data Store, so it didn't have to wait on the live re-import.
+      The framing is enforced structurally, not just by convention: the
+      source fields are on the complainant side only, `Accused` has no
+      demographic columns in the schema at all so there is nowhere an
+      offender-side value could land even by mistake, and no function in
+      `socioEconomicStats.ts` returns or accepts a single person's value —
+      only category counts. **Caste is not in this view** — see P1.5, the
+      taxonomy itself is still an open question.
 - [x] **P4.6** ~~MO pattern-clustering / similar-case matching~~ — done,
       `/pattern-analysis` (`f9fde9e`, branch `feature/mo-patterns-and-
       repeat-offenders`). `build_seed.mjs` now emits `caseFacts.json`
@@ -918,12 +946,24 @@ P6.0's decision.*
    proceeded independently, PR #1 left for the user to close/discuss with
    the author directly. No longer gates anything.
 2. ~~**P1.5 framing**~~ — resolved 2026-08-29: aggregate-only, victim-side,
-   with denominators, never offender propensity.
+   with denominators, never offender propensity. Built 2026-08-30 for
+   occupation + religion — `/socio-economic`.
 3. ~~**P6.0** — images, yes or no?~~ — resolved 2026-08-29: no, P6 closed.
-4. **Show the P5.3 eval in the UI?** "Found 11 of 15, here are the 4 it
+4. **Caste taxonomy, specifically.** Item 2's resolution covers *how* to
+   present caste/religion/occupation, not *what categories* to use for
+   caste. Two real options, both used in actual Indian government crime
+   reporting: (a) the official SC/ST/OBC/General categories — legally
+   standard, and the basis for Prevention of Atrocities Act enforcement, so
+   there's a real policy argument for including them; (b) skip caste
+   entirely and report only religion + occupation, which sidesteps the
+   sensitivity at the cost of one of the three PS-named categories.
+   `CasteMaster` isn't built and no `CasteID` value has been generated
+   either way — nothing is blocked on this being decided quickly, it's just
+   real and worth a direct answer rather than a default.
+5. **Show the P5.3 eval in the UI?** "Found 11 of 15, here are the 4 it
    missed" is a far stronger claim to a panel than a silent AI panel.
       *Recommend yes.*
-5. **Real Catalyst Auth?** Resolved in part by P0.5 — there is no scope cookie
+6. **Real Catalyst Auth?** Resolved in part by P0.5 — there is no scope cookie
    any more, so nothing pretends to be access control. If per-officer views are
    ever wanted, they need real Catalyst Authentication first, and the district
    would come from the signed-in identity rather than a dropdown.

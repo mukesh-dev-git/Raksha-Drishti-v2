@@ -146,12 +146,37 @@ generator, do not reintroduce per-scenario numbering here — see
 `catalyst/dataset-v2/README.md` for the token/index/glossary distinction and
 `RESEARCH_AND_PLAN.md` §5.3(a).
 
-## Extended tables — not yet built
+## Extended tables
 
 6 more tables the ER diagram defines beyond the 21-table backbone above.
-Not required by the current UI, so deferred — but if/when they're needed
-(arrest tracking or complainant demographic detail), build these exact
-columns rather than re-deriving from `Police_FIR_ER_Diagram.pdf`:
+
+**Built in the generator, not yet live** (P1.5, 2026-08-30 — see
+`catalyst/dataset-v2/lookups.json` and `demographics.mjs`; live import is
+P1.6, same as everything else in `catalyst/README.md`'s drift table):
+
+**OccupationMaster** — `OccupationID`(Num,PK) · `OccupationName`(Text). 11
+rows (10 categories + "Not specified"). Referenced by
+`ComplainantDetails.OccupationID`, populated for all ~5,003 complainants.
+
+**ReligionMaster** — `ReligionID`(Num,PK) · `ReligionName`(Text). 8 rows
+(Census of India categories + "Not specified"). Referenced by
+`ComplainantDetails.ReligionID`, populated via a Karnataka-representative
+statistical draw for all complainants except institutional ones (a bank's
+nodal officer, a forest-department officer) where a personal religion
+doesn't apply.
+
+**Still not built — genuinely undecided, not deferred by oversight:**
+
+**CasteMaster** — `caste_master_id`(Num,PK) · `caste_master_name`(Text).
+Referenced by `ComplainantDetails.CasteID` (currently a plain Number column
+with no lookup target). The "aggregate-only, victim-side, with
+denominators" framing agreed in PLAN.md P1.5 resolved how to *present*
+caste data, not what taxonomy to use for it — official SC/ST/OBC/General
+categories (the basis for Prevention of Atrocities Act enforcement, and what
+NCRB's own reporting uses) versus omitting caste from the dataset entirely.
+See PLAN.md's "Decisions still open" for the actual choice.
+
+**Not required by the current UI, so deferred:**
 
 **ArrestSurrender** — `ArrestSurrenderID`(Num,PK) · `CaseMasterID`(Lookup→CaseMaster)
 · `ArrestSurrenderTypeID`(Num — arrest vs voluntary surrender, lookup value)
@@ -168,15 +193,8 @@ columns rather than re-deriving from `Police_FIR_ER_Diagram.pdf`:
 **CrimeHeadActSection** — `CrimeHeadID`(Lookup→CrimeHead) · `ActCode`(Lookup→Act)
 · `SectionCode`(Text) — maps a major crime head to its applicable act-sections.
 
-**CasteMaster** — `caste_master_id`(Num,PK) · `caste_master_name`(Text).
-Referenced by `ComplainantDetails.CasteID` (currently a plain Number column
-with no lookup target — wire it up when this table exists).
-
-**ReligionMaster** — `ReligionID`(Num,PK) · `ReligionName`(Text). Referenced
-by `ComplainantDetails.ReligionID` (same caveat as above).
-
-**OccupationMaster** — `OccupationID`(Num,PK) · `OccupationName`(Text).
-Referenced by `ComplainantDetails.OccupationID` (same caveat as above).
+If/when any of these three are needed, build these exact columns rather
+than re-deriving from `Police_FIR_ER_Diagram.pdf`.
 
 ## How the current UI maps onto these tables
 | UI element | Source |
@@ -187,6 +205,11 @@ Referenced by `ComplainantDetails.OccupationID` (same caveat as above).
 | District clearance rate | `COUNT(CaseStatusID IN chargesheeted/closed) / COUNT(*)` per district |
 | Year trend sparkline | `COUNT(*)` grouped by `YEAR(CrimeRegisteredDate)` + district |
 | Sections invoked (379 IPC…) | `ActSectionAssociation` → `Section` |
+| `/socio-economic` occupation/religion breakdown | `ComplainantDetails.OccupationID/ReligionID` → `OccupationMaster`/`ReligionMaster` |
+
+*This table predates the P2/P4 rebuild and is otherwise stale (still
+describes the old mock `FIR-1001…` case files) — the row above is accurate,
+the rest needs a proper re-sweep, not attempted here.*
 
 The investigation-board evidence/graph/AI data has **no** table in this FIR
 schema — keep it in **Catalyst NoSQL** (document-shaped) or as mock.

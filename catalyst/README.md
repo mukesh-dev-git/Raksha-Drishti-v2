@@ -71,21 +71,47 @@ yet (still plain numbers, not enforced relationships) — that's still open.
 6 more tables (arrest tracking + demographic lookups) are spec'd but not
 built — see `DATA_STORE_SCHEMA.md`'s "Extended tables" section.
 
-⚠️ **The live tables are behind the generated CSVs in two places.** Both are
-landed in `catalyst/dataset-v2/` and in the regenerated CSVs under
-`out/csv/`, but **not re-imported** — P1.6 does the wipe-and-reimport once,
-after the rest of P1, so it happens exactly once rather than per change:
+⚠️ **The live Data Store is now substantially behind `catalyst/dataset-v2/`'s
+generated output — updated 2026-08-30, and this section had gone stale
+enough (still framing it as "19 rows either way") to be actively
+misleading, worth calling out explicitly rather than just quietly fixing.**
+Everything below is landed in the generator and in `out/csv/`, but **not
+re-imported**. P1.6 does the wipe-and-reimport once, deliberately, rather
+than per change:
 
-| Table · column | Live holds | CSVs hold | From |
+| Table · column | Live holds | Generated CSVs hold | From |
 |---|---|---|---|
+| `CaseMaster` (row count) | **19 rows** | **5,000 rows** | P1.2 |
 | `Accused.PersonID` | `A1`…`A4` (one ID covered 17 people) | `KA-P0001`…`KA-P0047` | P1.1 |
-| `CaseMaster.latitude/longitude` | 14 points across 19 rows | 19 distinct, per-incident | P1.3 |
+| `CaseMaster.latitude/longitude` | 14 points across 19 rows | 5,000 distinct, per-incident | P1.3 |
+| `ChargesheetDetails` | doesn't exist as data (table provisioned, empty) | 1,293 rows | P1.2 |
+| `ComplainantDetails.OccupationID/ReligionID` | 0 ("not specified") for all | populated, Karnataka-representative | P1.5 |
+| `ComplainantDetails.CasteID` | 0 | still 0 — genuinely unresolved, not deferred by oversight (see PLAN.md P1.5) | — |
 
-Neither column is read by the app today — nothing in `src/` touches
-`PersonID` or `latitude`/`longitude` — so the drift is inert. Just don't
-build a person-spine or hotspot feature against the **live** tables until
-P1.6 has run. Details: `DATA_STORE_SCHEMA.md` → "Accused.PersonID — the
-person register", and `dataset-v2/geo_time.mjs` for the coordinates.
+**This is not inert the way it was when this section last said so.** Most of
+the app reads a bundled JSON snapshot of the generator's output
+(`src/lib/nosql-seed/*.json`, primarily `caseFacts.json` — see §3b's note on
+keeping this copy in sync) specifically so it doesn't have to wait on a live
+re-import. `/cases`,
+`/crime-count`, `/socio-economic`, `/pattern-analysis`, `/repeat-offenders`,
+and `/persons` all read that bundled snapshot and correctly show the real
+5,000-case dataset today.
+
+**But a handful of routes still query the live Data Store directly**, and
+those genuinely do see the stale 19-row dataset: `/api/summary` and
+`/api/casetypes` (both queried by `/dashboard`'s `CrimeTrendChart` and
+`CategoryDonut`), `/api/district-stats`, and `/api/investigation`'s
+scenario-resolution join. **The practical consequence: `/dashboard`'s trend
+chart and category donut are very likely showing totals out of ~19 cases
+right now, while every other analytics page on the same site shows totals
+out of 5,000.** Worth confirming directly against the deployed Slate app
+rather than assuming either way — but if you notice the Dashboard's numbers
+don't match `/crime-count`'s, this is why, and P1.6 is the actual fix, not a
+UI bug.
+
+Details: `DATA_STORE_SCHEMA.md` → "Accused.PersonID — the person register",
+`dataset-v2/geo_time.mjs` for the coordinates, `dataset-v2/demographics.mjs`
+for occupation/religion.
 
 ## 2b. NoSQL (investigation-intelligence collections) — ✅ created and seeded
 

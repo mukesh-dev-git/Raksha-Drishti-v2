@@ -66,69 +66,75 @@ and is the source of truth for what's done and what's next.
 domain research, the AI capability survey, and the Data Store audit. This
 section is just the orientation summary; when the two disagree, PLAN.md wins.
 
-*Last swept 2026-08-28.*
+*Last swept 2026-08-30.*
 
-**Done**
+**Done — P0, P2, P3, P4 (whole tracks), most of P5 and P9, P6 closed, X1–X3**
 
-- **P2 — the cases restructure (whole track), merged and live.** The old
-  `/cases/[caseType]/[district]/...` route tree (investigation-workspace,
-  case-files, district-wise) is retired — Next.js won't let it coexist with
-  the replacement anyway, two differently-named dynamic segments at the same
-  path level is a hard build error. In its place: a real FIR Index
-  (`/cases`), a real single-case detail page (`/cases/[caseId]`), a district
-  lens (`/districts`), a full person register (`/persons`), a working header
-  search, an attention-list dashboard surfacing cross-district pattern
-  signals for the first time, and the app's first real write endpoint
-  (`PATCH /api/cases/[caseId]/status`, confirmed against the live Data
-  Store). Full writeup, including two real bugs found and fixed along the
-  way and what's deliberately *not* built yet (IO assignment, case-diary —
-  the latter genuinely blocked on a table only a human can create in the
-  Catalyst console): `PLAN.md` P2.
-- **P0 — credibility.** Removed 11 login-bypass links from Home (plus 4 more
-  in the shared footer), deleted 12 dead "Soon" nav items, made the maps
-  responsive, reframed the state scope as **SCRB**, and demoted district from
-  a login-time role to a URL filter. Every visible nav item now goes
-  somewhere real.
-- **P1.1 — one person identity.** `Accused.PersonID` went from scenario-local
-  labels (where a single ID covered 17 different people) to a global register,
-  `KA-P0001`–`KA-P0047`. Fixed alongside it: the evidence layer's person
-  citations resolved **0 of 47** — the two ID spaces never met — now 107/107.
-- **P1.3 — per-incident coordinates.** 19 FIRs shared 14 points because five
-  station centroids each served two cases. Now 19/19 distinct, each anchored
-  on its authored location so scenarios stay in the neighbourhood their
-  narrative names.
-- **P3.1/P3.3 — the person spine.** Entity fusion + cross-source timeline
-  merge across all 15 scenarios — the engine behind `/persons` and
+- **P2 — the cases restructure, merged and live.** The old
+  `/cases/[caseType]/[district]/...` route tree is retired. In its place: a
+  real FIR Index (`/cases`, 5,000 real FIRs), a single-case detail page
+  (`/cases/[caseId]`), a district lens (`/districts`), a full person register
+  (`/persons`), a working header search, an attention-list dashboard, and the
+  app's first real write endpoint (`PATCH /api/cases/[caseId]/status`,
+  confirmed against the live Data Store).
+- **P1.2 — the seed scaled to 5,000 cases**, real dates spanning 2022–2026,
+  real per-incident coordinates and time-of-day (P1.3/geo_time.mjs), plus
+  1,293 `ChargesheetDetails` rows. Bulk cases deliberately carry no evidence
+  records and are excluded from every evidence-dependent feature (entity
+  fusion, MO-clustering) — a documented scope boundary, not an oversight.
+- **P1.5 — victim/complainant occupation and religion**, a Karnataka-
+  representative statistical draw (`demographics.mjs`), populated for all
+  ~5,003 complainants. **Caste is not built** — see "Blocked" below.
+- **P3 — the person spine.** Entity fusion + cross-source timeline merge
+  across all 15 authored scenarios, surfaced through `/persons` and
   `/repeat-offenders`.
-- **P4.6/P4.7 — pattern analysis + repeat offenders.** Deterministic MO
-  clustering (`/pattern-analysis`) and the statewide repeat-offender view
-  (`/repeat-offenders`), both real, both now also surfaced on the dashboard.
-- **P5.0–P5.3, P5.2b, P5.3b — AI contradiction detection**, visible in the
-  Investigation Workspace's successor, `/cases/[caseId]` (verified vs.
-  AI-detected findings, kept honestly distinct).
+- **P4 — real analytics, all 7 sub-items.** Statewide hotspot map with
+  choropleth/kernel-density/flow layers, a time-of-day×day-of-week heatmap,
+  control-chart trend anomaly detection, chargesheet-rate analytics, MO
+  pattern-clustering (`/pattern-analysis`), repeat-offender detection, and a
+  socio-economic breakdown (`/socio-economic`) — none of this needs an LLM,
+  all of it real aggregate math over the 5,000-case dataset.
+- **P5 — AI, mostly done.** `src/lib/llm.ts` verified live against the real
+  Catalyst QuickML endpoint. Contradiction detection with citation
+  guardrails, an AI-suggested next question, and an "Ask Anything" chatbot
+  with grounded, checkable citations — all shipped and independently
+  re-verified. `P5.7` (an AI panel on the crime-count/hotspots pages) is
+  still open.
+- **P7.1 — Kannada text-to-audio** on witness statements, live-verified
+  against the real Zia TTS endpoint. `P7.2–P7.4` (audio-to-text, translation,
+  the full pipeline) are still open.
+- **P9 — the refined-prototype push.** Suspicion scoring with a tool-schema
+  guardrail, pattern/repeat cross-links, real IO assignment, and a
+  case-relationship graph.
+- **X1–X3.** Real Karnataka Ranges as a coarser district filter, the
+  commissionerate-vs-district shortcut documented, and CID assignment fixed
+  to be order/category-based rather than derived from district count.
+- **P6 — closed.** Decision: no synthetic case-document images. Closed
+  cleanly rather than built against fabricated source material.
+
+Full detail, dates, and commit references for all of the above: `PLAN.md`.
 
 **Next up**
 
-**P1.2 — merge the two seeds** into one generator that is both broad and
-deep. This is the highest-value unblocked item: `P4.1–P4.3` (real
-hotspot/trend/time-of-day analytics) are waiting on case volume, not on AI
-and not on anyone's decision. 19 cases across 8 districts cannot show a
-hotspot, a trend, or a time-of-day distribution. **Note:** this is a
-separate, larger decision from everything above — it ends in a one-time
-wipe-and-reimport of the *live* Data Store (P1.6), not something to start on
-momentum from an unrelated branch.
+**P1.6 — wipe the live Data Store and re-import cleanly.** The generator's
+output (`catalyst/dataset-v2/out/csv/`) is already correct and ready — 5,000
+cases, real PersonIDs, real coordinates, real occupation/religion. The *live*
+Data Store still has the old 19-row, `A1`-style, reused-coordinate dataset,
+and a few routes (`/api/summary`, `/api/casetypes`, feeding `/dashboard`'s
+trend chart and category donut) query it directly rather than the bundled
+snapshot everything else reads — so `/dashboard`'s totals likely don't match
+`/crime-count`'s right now. **This needs a careful plan and explicit
+sign-off before it runs** — it's the live database behind the deployed app,
+and there's no documented `ds:delete`/truncate in the Catalyst CLI.
 
-Also unblocked and needing nothing from anyone: **P2.2's IO assignment /
-case-diary** follow-ups (diary genuinely needs a human to create a table in
-the Catalyst console first), plus the two cross-cutting items X1 and X2.
+Also ready, no decisions needed: **P5.7**, **P7.2–P7.4**.
 
 **Blocked on a decision, not on effort**
 
 | Blocked | Waiting on |
 |---|---|
-| All of **P5** (AI) *(the parts not already shipped)* | Ongoing — P5.4/P5.8 open |
-| All of **P6** (Zia) | Whether we generate case-document images at all |
-| **P1.5** / **P4.5** | Agreeing the caste/religion presentation first |
+| **P1.5's caste taxonomy** | Official SC/ST/OBC/General categories (used in NCRB reporting and Prevention of Atrocities Act enforcement) vs. omitting caste from the dataset entirely — the "aggregate-only, victim-side" framing resolved *how* to present it, not *what taxonomy* to use |
+| **P1.6** | Explicit sign-off — see above |
 
 ## Getting started
 

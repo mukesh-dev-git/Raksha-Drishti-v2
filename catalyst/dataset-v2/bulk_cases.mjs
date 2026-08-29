@@ -28,6 +28,7 @@
 // follow, so re-running this never renumbers or relocates a case.
 // -----------------------------------------------------------------------------
 import { placeIncident, incidentHour, isPeriodOffence } from "./geo_time.mjs";
+import { assignOccupation, assignReligion } from "./demographics.mjs";
 
 // mulberry32 on a hashed seed - identical approach to geo_time.mjs's private
 // rng(), just needed here too for case-level decisions (district, crime
@@ -298,11 +299,13 @@ export function generateBulkCases(lookups, opts) {
       CaseMasterID: caseMasterId,
       ComplainantName: sameAsVictim ? victimName : randomName(r, complainantGender),
       AgeYear: sameAsVictim ? victimAge : 20 + Math.floor(r() * 50),
-      // OccupationID/ReligionID/CasteID: P1.5 hasn't landed (framing not yet
-      // agreed - see PLAN.md), so these stay unpopulated, same as every
-      // authored-scenario complainant's ReligionID/CasteID today.
-      OccupationID: 0,
-      ReligionID: 0,
+      // OccupationID/ReligionID: P1.5, a Karnataka-representative statistical
+      // draw (demographics.mjs), deterministic in ComplainantID. CasteID
+      // stays 0 - that taxonomy is a separate, still-open decision (PLAN.md
+      // P1.5), not resolved by the "aggregate-only, victim-side" framing
+      // agreement alone.
+      OccupationID: assignOccupation(complainantId),
+      ReligionID: assignReligion(complainantId),
       CasteID: 0,
       GenderID: complainantGender,
     });

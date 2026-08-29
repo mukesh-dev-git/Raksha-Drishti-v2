@@ -35,8 +35,8 @@
         }
       ],
       "complainants": [
-        { "ComplainantID": 6001, "CaseMasterID": 9001, "ComplainantName": "Ramesh K", "AgeYear": 41, "OccupationID": 4, "ReligionID": 0, "CasteID": 0, "GenderID": 1 },
-        { "ComplainantID": 6002, "CaseMasterID": 9002, "ComplainantName": "Girish Patel", "AgeYear": 35, "OccupationID": 1, "ReligionID": 0, "CasteID": 0, "GenderID": 1 }
+        { "ComplainantID": 6001, "CaseMasterID": 9001, "ComplainantName": "Ramesh K", "AgeYear": 41, "OccupationID": 4, "ReligionID": 1, "CasteID": 0, "GenderID": 1 },
+        { "ComplainantID": 6002, "CaseMasterID": 9002, "ComplainantName": "Girish Patel", "AgeYear": 35, "OccupationID": 1, "ReligionID": 1, "CasteID": 0, "GenderID": 1 }
       ],
       "victims": [],
       "accused": [
@@ -112,7 +112,7 @@
         }
       ],
       "complainants": [
-        { "ComplainantID": 6003, "CaseMasterID": 9003, "ComplainantName": "Nataraj Shetty (shop owner)", "AgeYear": 52, "OccupationID": 1, "ReligionID": 0, "CasteID": 0, "GenderID": 1 }
+        { "ComplainantID": 6003, "CaseMasterID": 9003, "ComplainantName": "Nataraj Shetty (shop owner)", "AgeYear": 52, "OccupationID": 1, "ReligionID": 1, "CasteID": 0, "GenderID": 1 }
       ],
       "victims": [
         { "VictimMasterID": 7001, "CaseMasterID": 9003, "VictimName": "Anil Kumar (shop assistant)", "AgeYear": 22, "GenderID": 1, "VictimPolice": "No" }
@@ -191,9 +191,9 @@
         }
       ],
       "complainants": [
-        { "ComplainantID": 6004, "CaseMasterID": 9004, "ComplainantName": "Vinayak Desai", "AgeYear": 30, "OccupationID": 4, "ReligionID": 0, "CasteID": 0, "GenderID": 1 },
-        { "ComplainantID": 6005, "CaseMasterID": 9005, "ComplainantName": "Farida Banu", "AgeYear": 26, "OccupationID": 6, "ReligionID": 0, "CasteID": 0, "GenderID": 2 },
-        { "ComplainantID": 6006, "CaseMasterID": 9005, "ComplainantName": "Rohit Shetty", "AgeYear": 34, "OccupationID": 4, "ReligionID": 0, "CasteID": 0, "GenderID": 1 }
+        { "ComplainantID": 6004, "CaseMasterID": 9004, "ComplainantName": "Vinayak Desai", "AgeYear": 30, "OccupationID": 4, "ReligionID": 1, "CasteID": 0, "GenderID": 1 },
+        { "ComplainantID": 6005, "CaseMasterID": 9005, "ComplainantName": "Farida Banu", "AgeYear": 26, "OccupationID": 6, "ReligionID": 1, "CasteID": 0, "GenderID": 2 },
+        { "ComplainantID": 6006, "CaseMasterID": 9005, "ComplainantName": "Rohit Shetty", "AgeYear": 34, "OccupationID": 4, "ReligionID": 1, "CasteID": 0, "GenderID": 1 }
       ],
       "victims": [
         { "VictimMasterID": 7002, "CaseMasterID": 9004, "VictimName": "Vinayak Desai", "AgeYear": 30, "GenderID": 1, "VictimPolice": "No" },
@@ -268,7 +268,7 @@
         }
       ],
       "complainants": [
-        { "ComplainantID": 6007, "CaseMasterID": 9006, "ComplainantName": "Basavaraj Patil (actual owner)", "AgeYear": 55, "OccupationID": 2, "ReligionID": 0, "CasteID": 0, "GenderID": 1 }
+        { "ComplainantID": 6007, "CaseMasterID": 9006, "ComplainantName": "Basavaraj Patil (actual owner)", "AgeYear": 55, "OccupationID": 2, "ReligionID": 1, "CasteID": 0, "GenderID": 1 }
       ],
       "victims": [
         { "VictimMasterID": 7004, "CaseMasterID": 9006, "VictimName": "Basavaraj Patil", "AgeYear": 55, "GenderID": 1, "VictimPolice": "No" }
@@ -334,7 +334,7 @@
         }
       ],
       "complainants": [
-        { "ComplainantID": 6008, "CaseMasterID": 9007, "ComplainantName": "Melvin D'Souza (warehouse manager)", "AgeYear": 40, "OccupationID": 4, "ReligionID": 0, "CasteID": 0, "GenderID": 1 }
+        { "ComplainantID": 6008, "CaseMasterID": 9007, "ComplainantName": "Melvin D'Souza (warehouse manager)", "AgeYear": 40, "OccupationID": 4, "ReligionID": 1, "CasteID": 0, "GenderID": 1 }
       ],
       "victims": [],
       "accused": [
@@ -395,7 +395,7 @@
         }
       ],
       "complainants": [
-        { "ComplainantID": 6009, "CaseMasterID": 9008, "ComplainantName": "Hanumantha Naik", "AgeYear": 34, "OccupationID": 8, "ReligionID": 0, "CasteID": 0, "GenderID": 1 }
+        { "ComplainantID": 6009, "CaseMasterID": 9008, "ComplainantName": "Hanumantha Naik", "AgeYear": 34, "OccupationID": 8, "ReligionID": 1, "CasteID": 0, "GenderID": 1 }
       ],
       "victims": [
         { "VictimMasterID": 7005, "CaseMasterID": 9008, "VictimName": "Hanumantha Naik", "AgeYear": 34, "GenderID": 1, "VictimPolice": "No" }
@@ -469,8 +469,8 @@
         }
       ],
       "complainants": [
-        { "ComplainantID": 6010, "CaseMasterID": 9009, "ComplainantName": "Shivappa Gowda", "AgeYear": 58, "OccupationID": 2, "ReligionID": 0, "CasteID": 0, "GenderID": 1 },
-        { "ComplainantID": 6011, "CaseMasterID": 9010, "ComplainantName": "Nagaraju H", "AgeYear": 49, "OccupationID": 2, "ReligionID": 0, "CasteID": 0, "GenderID": 1 }
+        { "ComplainantID": 6010, "CaseMasterID": 9009, "ComplainantName": "Shivappa Gowda", "AgeYear": 58, "OccupationID": 2, "ReligionID": 1, "CasteID": 0, "GenderID": 1 },
+        { "ComplainantID": 6011, "CaseMasterID": 9010, "ComplainantName": "Nagaraju H", "AgeYear": 49, "OccupationID": 2, "ReligionID": 1, "CasteID": 0, "GenderID": 1 }
       ],
       "victims": [],
       "accused": [
@@ -535,8 +535,8 @@
         }
       ],
       "complainants": [
-        { "ComplainantID": 6012, "CaseMasterID": 9011, "ComplainantName": "Margaret Fernandes (victim, complainant)", "AgeYear": 68, "OccupationID": 10, "ReligionID": 0, "CasteID": 0, "GenderID": 2 },
-        { "ComplainantID": 6013, "CaseMasterID": 9011, "ComplainantName": "K.S. Venkataraman (victim, complainant)", "AgeYear": 71, "OccupationID": 10, "ReligionID": 0, "CasteID": 0, "GenderID": 1 }
+        { "ComplainantID": 6012, "CaseMasterID": 9011, "ComplainantName": "Margaret Fernandes (victim, complainant)", "AgeYear": 68, "OccupationID": 10, "ReligionID": 1, "CasteID": 0, "GenderID": 2 },
+        { "ComplainantID": 6013, "CaseMasterID": 9011, "ComplainantName": "K.S. Venkataraman (victim, complainant)", "AgeYear": 71, "OccupationID": 10, "ReligionID": 1, "CasteID": 0, "GenderID": 1 }
       ],
       "victims": [
         { "VictimMasterID": 7006, "CaseMasterID": 9011, "VictimName": "Margaret Fernandes", "AgeYear": 68, "GenderID": 2, "VictimPolice": "No" },
@@ -606,7 +606,7 @@
         }
       ],
       "complainants": [
-        { "ComplainantID": 6014, "CaseMasterID": 9012, "ComplainantName": "Rekha Iyengar", "AgeYear": 31, "OccupationID": 6, "ReligionID": 0, "CasteID": 0, "GenderID": 2 }
+        { "ComplainantID": 6014, "CaseMasterID": 9012, "ComplainantName": "Rekha Iyengar", "AgeYear": 31, "OccupationID": 6, "ReligionID": 3, "CasteID": 0, "GenderID": 2 }
       ],
       "victims": [
         { "VictimMasterID": 7008, "CaseMasterID": 9012, "VictimName": "Rekha Iyengar", "AgeYear": 31, "GenderID": 2, "VictimPolice": "No" }
@@ -665,7 +665,7 @@
         }
       ],
       "complainants": [
-        { "ComplainantID": 6015, "CaseMasterID": 9013, "ComplainantName": "Ajay Kulkarni", "AgeYear": 27, "OccupationID": 4, "ReligionID": 0, "CasteID": 0, "GenderID": 1 }
+        { "ComplainantID": 6015, "CaseMasterID": 9013, "ComplainantName": "Ajay Kulkarni", "AgeYear": 27, "OccupationID": 4, "ReligionID": 1, "CasteID": 0, "GenderID": 1 }
       ],
       "victims": [],
       "accused": [
@@ -725,7 +725,7 @@
         }
       ],
       "complainants": [
-        { "ComplainantID": 6016, "CaseMasterID": 9014, "ComplainantName": "Savitri Deshmukh (guest, victim)", "AgeYear": 45, "OccupationID": 6, "ReligionID": 0, "CasteID": 0, "GenderID": 2 }
+        { "ComplainantID": 6016, "CaseMasterID": 9014, "ComplainantName": "Savitri Deshmukh (guest, victim)", "AgeYear": 45, "OccupationID": 6, "ReligionID": 1, "CasteID": 0, "GenderID": 2 }
       ],
       "victims": [
         { "VictimMasterID": 7009, "CaseMasterID": 9014, "VictimName": "Savitri Deshmukh", "AgeYear": 45, "GenderID": 2, "VictimPolice": "No" },
@@ -790,8 +790,8 @@
         }
       ],
       "complainants": [
-        { "ComplainantID": 6017, "CaseMasterID": 9015, "ComplainantName": "Vincent Lobo", "AgeYear": 50, "OccupationID": 9, "ReligionID": 0, "CasteID": 0, "GenderID": 1 },
-        { "ComplainantID": 6018, "CaseMasterID": 9015, "ComplainantName": "Shwetha Kamath", "AgeYear": 37, "OccupationID": 4, "ReligionID": 0, "CasteID": 0, "GenderID": 2 }
+        { "ComplainantID": 6017, "CaseMasterID": 9015, "ComplainantName": "Vincent Lobo", "AgeYear": 50, "OccupationID": 9, "ReligionID": 1, "CasteID": 0, "GenderID": 1 },
+        { "ComplainantID": 6018, "CaseMasterID": 9015, "ComplainantName": "Shwetha Kamath", "AgeYear": 37, "OccupationID": 4, "ReligionID": 1, "CasteID": 0, "GenderID": 2 }
       ],
       "victims": [
         { "VictimMasterID": 7011, "CaseMasterID": 9015, "VictimName": "Vincent Lobo", "AgeYear": 50, "GenderID": 1, "VictimPolice": "No" },
@@ -991,7 +991,7 @@
         }
       ],
       "complainants": [
-        { "ComplainantID": 6021, "CaseMasterID": 9019, "ComplainantName": "Arjun Reddy (victim, complainant)", "AgeYear": 20, "OccupationID": 7, "ReligionID": 0, "CasteID": 0, "GenderID": 1 }
+        { "ComplainantID": 6021, "CaseMasterID": 9019, "ComplainantName": "Arjun Reddy (victim, complainant)", "AgeYear": 20, "OccupationID": 7, "ReligionID": 1, "CasteID": 0, "GenderID": 1 }
       ],
       "victims": [
         { "VictimMasterID": 7014, "CaseMasterID": 9019, "VictimName": "Arjun Reddy", "AgeYear": 20, "GenderID": 1, "VictimPolice": "No" },
