@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { FolderKanban, MapPin, Building2, Calendar, Users, ShieldAlert, AlertTriangle, Sparkles, CheckCircle2, Waypoints } from "lucide-react";
+import { FolderKanban, MapPin, Building2, Calendar, Users, ShieldAlert, AlertTriangle, Sparkles, CheckCircle2, Waypoints, MessageCircleQuestion } from "lucide-react";
 import PageShell from "@/components/PageShell";
 import CaseStatusPill from "@/components/CaseStatusPill";
 import CaseStatusEditor from "@/components/cases/CaseStatusEditor";
@@ -12,6 +12,7 @@ import { getScenarioTimeline } from "@/lib/personFusion";
 import { getMoPatternClusters } from "@/lib/moPatterns";
 import { getEmployeesByDistrict } from "@/lib/employees";
 import { getCaseRelationshipGraph } from "@/lib/relationshipGraph";
+import { suggestNextQuestion } from "@/lib/nextQuestion";
 import scenarioMeta from "@/lib/nosql-seed/scenarioMeta.json";
 import contradictionsSeed from "@/lib/nosql-seed/Contradictions.json";
 import aiContradictionsSeed from "@/lib/nosql-seed/AIContradictions.json";
@@ -57,6 +58,15 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ cas
   // does this specific FIR belong to a real pattern cluster?
   const patternCluster = getMoPatternClusters().find((cl) => cl.members.some((m) => m.caseMasterId === caseMasterId));
   const officers = getEmployeesByDistrict(c.districtId);
+  // P5.4 - "next question to ask", a live GLM call grounded in this case's
+  // own evidence (see src/lib/nextQuestion.ts). Only attempted for the
+  // scenarios that have real fused evidence at all (the 15 authored
+  // scenarios - see personFusion.getScenarioTimeline) - the 5,000 bulk P1.2
+  // cases have none, so this is skipped for them rather than showing a fake
+  // "no suggestion available" card. Never throws; renders nothing on any
+  // failure (missing config, network/timeout, or a fully-hallucinated
+  // citation dropped by nextQuestion.ts's own guardrail).
+  const nextQuestion = evidence.length > 0 ? await suggestNextQuestion(c.scenarioId) : null;
 
   return (
     <PageShell
@@ -222,6 +232,25 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ cas
                   <p className="mt-2 font-mono text-[11px] text-muted">{f.recordIds.join(" · ")}</p>
                 </div>
               ))}
+            </div>
+          )}
+
+          {/* P5.4 - AI-suggested next question, kept visibly distinct from
+              both the "Verified contradiction" (red) and "AI-detected
+              contradiction" (purple) cards above - own accent (teal) so all
+              three read as separate claims at a glance, same "AI vs authored
+              ground truth, kept visibly distinct" discipline. A live call
+              (src/lib/nextQuestion.ts), not a seeded finding like
+              AIContradictions.json, so the caption says so explicitly. */}
+          {nextQuestion?.ok && (
+            <div className="rounded-xl border border-dash-teal bg-dash-teal-bg p-4">
+              <p className="mb-1 flex items-center gap-1.5 text-[12px] font-semibold text-dash-teal">
+                <MessageCircleQuestion size={14} aria-hidden="true" /> AI-suggested next question — GLM-4.7-Flash
+              </p>
+              <p className="text-[13px] leading-relaxed text-ink">{nextQuestion.question}</p>
+              <p className="mt-1.5 text-[12px] text-muted">{nextQuestion.rationale}</p>
+              <p className="mt-2 font-mono text-[11px] text-muted">{nextQuestion.citedRecordIds.join(" · ")}</p>
+              <p className="mt-2 text-[10.5px] text-muted">Generated live for this page, grounded in this case&apos;s own evidence - not a stored finding.</p>
             </div>
           )}
 
