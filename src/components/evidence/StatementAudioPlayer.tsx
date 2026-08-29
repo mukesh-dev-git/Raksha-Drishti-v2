@@ -185,7 +185,12 @@ export default function StatementAudioPlayer({
         <div className="mt-2 flex items-start gap-1.5 rounded-md border border-danger bg-danger-bg px-2 py-1.5 text-[11.5px] text-danger">
           <AlertTriangle size={13} className="mt-0.5 shrink-0" aria-hidden="true" />
           <div className="min-w-0">
-            <p className="break-words">Audio synthesis failed: {error}</p>
+            {/* Defense in depth on top of ttsClient.ts's own HTML-detection
+                fix: whatever reaches here, never let a huge/unbounded
+                string (a raw error page, a giant stack trace) render
+                verbatim - cap it so a malformed upstream response degrades
+                to "long error, truncated" rather than a wall of markup. */}
+            <p className="break-words">Audio synthesis failed: {error.length > 200 ? `${error.slice(0, 200)}…` : error}</p>
             <button type="button" onClick={synthesizeAndPlay} className="mt-1 font-semibold underline underline-offset-2">
               Retry
             </button>

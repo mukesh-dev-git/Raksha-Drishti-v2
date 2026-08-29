@@ -117,13 +117,26 @@ export async function synthesizeSpeech(text: string, opts: TtsOptions = {}): Pro
     // reliable in practice (an empty 401 body, live). Same discipline here:
     // read as text first, only parse as JSON if it looks like JSON, never
     // assume a shape.
+    //
+    // A non-JSON, non-empty body is very often an HTML error page (a plain
+    // 404/502 from the edge/app-server in front of the real API, not the
+    // API's own error format) - confirmed live, the inferred endpoint path
+    // below returns exactly this. Dumping that raw HTML into `error` means
+    // a caller that renders it verbatim (StatementAudioPlayer.tsx does)
+    // shows a whole <html><head><style>... document to the officer using
+    // the page. Detect that shape specifically and fall back to a short,
+    // real status line instead - still honest (still says the call
+    // failed, still carries the real HTTP status), just not a raw dump.
     const rawText = await res.text();
     let errMsg = rawText || `HTTP ${res.status} (empty body)`;
     try {
       const parsed = JSON.parse(rawText) as { code?: string; message?: string; details?: { reason?: string } };
       errMsg = parsed.message ?? parsed.code ?? errMsg;
     } catch {
-      // non-JSON error body - use the raw text/status as-is
+      const looksLikeHtml = /^\s*<(!doctype|html)/i.test(rawText);
+      errMsg = looksLikeHtml
+        ? `HTTP ${res.status} ${res.statusText || ""}`.trim() + " (non-API error page, not the Zia service itself)"
+        : rawText.slice(0, 300);
     }
     console.error("[ttsClient.ts] Text-to-Audio call failed", { status: res.status, contentType, body: rawText.slice(0, 500) });
     return { ok: false, status: res.status, error: errMsg };
