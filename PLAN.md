@@ -839,18 +839,36 @@ P6.0's decision.*
       Kannada-voice toggle, real loading/error UI with Retry. Reuses
       `llm.ts`'s already-verified `getAccessToken()`/`CATALYST-ORG` auth,
       no new token logic.
-      ⚠️ **Honest, flagged gap, not silently assumed:** the Text-to-Audio
-      endpoint path itself (`.../models/zia/audio/synthesize`) was never
-      exercised against a live 200 - `RESEARCH_AND_PLAN.md` §2.1's own
-      entry for it says "path inferred, confirm in console," unlike GLM's
-      endpoint which was read straight off the console. Built against the
-      best-documented contract, every assumption commented inline; a 200
-      response that isn't real `audio/*` is treated as "the inferred
-      contract is wrong," never papered over with fake/fallback audio.
-      Live-verified the full pipeline short of that one hop: clicking Play
-      makes a real request, fails with a precise, honest error (missing
-      config), surfaced with a Retry button - confirmed via the
-      accessibility tree, not just visually.
+      ✅ **Contract confirmed and live-verified, 2026-08-29 (same day, after
+      merge).** The subagent's inferred endpoint (`.../models/zia/audio/
+      synthesize`) was live-confirmed WRONG - a real 404 from Zoho's own
+      infra, found via the user clicking Play in the deployed app and
+      seeing a raw HTML error page rendered (a real UI bug, fixed
+      separately - see below). User then pulled the real contract straight
+      off the Catalyst console's API Details tab: real path is
+      `.../models/zia/tts/synthesize`; request fields are `language`/
+      `speaker` (not the guessed `lang`/`voice`), plus optional `pitch`/
+      `speed`/`emotion`. Fixed and **live-verified end to end** with real
+      local `QUICKML_*` credentials (present in `.env.local`, which
+      subagent worktrees don't inherit - that's why it was unverified
+      until this point): a direct `curl` to `/api/tts` returned a real
+      200, `audio/wav`, 129,890 bytes of real synthesized speech; the
+      actual UI Play button confirmed working in-browser too.
+      **Two real bugs found live and fixed, not just the endpoint:**
+      (1) `ttsClient.ts` was dumping a raw HTML error-page body verbatim
+      into the UI on a non-JSON error response (confirmed by the user's
+      screenshot) - now detects HTML and falls back to a short status
+      line; `StatementAudioPlayer.tsx` also caps whatever string does
+      reach it at 200 chars as defense in depth.
+      (2) Speakers are language-specific on Zia's side (confirmed via a
+      real, clean API error: `"Speaker 'Vidya' is not available for
+      language 'en'"`) - the player offered the same 4 Kannada-named
+      voices regardless of the language toggle, including as its own
+      default (voice defaulted to "Vidya" while language defaulted to
+      "en" - broken on first render, before any user interaction). Added
+      the real English voice set (Mary/Anna/Beth/Thomas/Adam/Brian, per
+      the console's own inventory) and snap the voice selection to a
+      valid one whenever the language toggle changes.
 - [ ] **P7.2** Audio-to-Text intake - let an officer dictate a
       complaint/witness statement in Kannada and get back transcribed text.
       This is a genuine answer to the PS's "Excel-based reporting" complaint,
