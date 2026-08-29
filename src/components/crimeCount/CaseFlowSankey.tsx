@@ -127,9 +127,7 @@ export default function CaseFlowSankey({ data }: { data: CaseFlowSankeyData }) {
               fill={crimeTypeColor(NAME_TO_SLUG[l.source])}
               opacity={0.38}
             >
-              <title>
-                {l.source} → {l.target}: {l.value.toLocaleString("en-IN")} cases
-              </title>
+              <title>{`${l.source} → ${l.target}: ${l.value.toLocaleString("en-IN")} cases`}</title>
             </path>
           );
         })}
@@ -151,9 +149,7 @@ export default function CaseFlowSankey({ data }: { data: CaseFlowSankeyData }) {
               fill={STATUS_COLOR[l.source] ?? "var(--muted)"}
               opacity={0.38}
             >
-              <title>
-                {l.source} → {l.target}: {l.value.toLocaleString("en-IN")} cases
-              </title>
+              <title>{`${l.source} → ${l.target}: ${l.value.toLocaleString("en-IN")} cases`}</title>
             </path>
           );
         })}
@@ -164,9 +160,7 @@ export default function CaseFlowSankey({ data }: { data: CaseFlowSankeyData }) {
           return (
             <g key={name}>
               <rect x={p.x} y={p.y} width={NODE_W0} height={Math.max(p.h, 1)} fill={crimeTypeColor(NAME_TO_SLUG[name])} rx={2}>
-                <title>
-                  {name}: {(crimeTotals.get(name) ?? 0).toLocaleString("en-IN")} cases
-                </title>
+                <title>{`${name}: ${(crimeTotals.get(name) ?? 0).toLocaleString("en-IN")} cases`}</title>
               </rect>
               <text x={p.x - 8} y={p.y + p.h / 2} dy="0.35em" textAnchor="end" fontSize={11} fill="var(--ink)">
                 {name}
@@ -182,9 +176,7 @@ export default function CaseFlowSankey({ data }: { data: CaseFlowSankeyData }) {
           return (
             <g key={name}>
               <rect x={p.x} y={p.y} width={NODE_W1} height={Math.max(p.h, 1)} fill={STATUS_COLOR[name] ?? "var(--muted)"} rx={2}>
-                <title>
-                  {name}: {(statusTotals.get(name) ?? 0).toLocaleString("en-IN")} cases
-                </title>
+                <title>{`${name}: ${(statusTotals.get(name) ?? 0).toLocaleString("en-IN")} cases`}</title>
               </rect>
               {showInline ? (
                 <text x={p.x + NODE_W1 / 2} y={p.y + p.h / 2} dy="0.35em" textAnchor="middle" fontSize={10.5} fill="var(--navy-ink)" fontWeight={600}>
@@ -205,9 +197,7 @@ export default function CaseFlowSankey({ data }: { data: CaseFlowSankeyData }) {
           return (
             <g key={name}>
               <rect x={p.x} y={p.y} width={NODE_W2} height={Math.max(p.h, 1)} fill={BUCKET_COLOR[name] ?? "var(--muted)"} rx={2}>
-                <title>
-                  {name}: {(bucketTotals.get(name) ?? 0).toLocaleString("en-IN")} cases
-                </title>
+                <title>{`${name}: ${(bucketTotals.get(name) ?? 0).toLocaleString("en-IN")} cases`}</title>
               </rect>
               <text x={p.x + NODE_W2 + 8} y={p.y + p.h / 2} dy="0.35em" textAnchor="start" fontSize={11} fill="var(--ink)">
                 {name} ({(bucketTotals.get(name) ?? 0).toLocaleString("en-IN")})

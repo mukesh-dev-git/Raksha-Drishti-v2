@@ -85,9 +85,7 @@ export default function TrendControlChart({ series }: { series: ControlChartSeri
               fill={flagged ? "var(--danger)" : color}
               rx={1}
             >
-              <title>
-                {m}: {s.counts[i]} cases{flagged ? " — flagged: >2σ above baseline" : ""}
-              </title>
+              <title>{`${m}: ${s.counts[i]} cases${flagged ? " — flagged: >2σ above baseline" : ""}`}</title>
             </rect>
           );
         })}
