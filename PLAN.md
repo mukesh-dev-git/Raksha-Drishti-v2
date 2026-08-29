@@ -28,6 +28,7 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 | **P6** Zia | 🚧 **gated** | Needs the P6.0 yes/no on generating images. |
 | **P7** Kannada voice (Zia) | ⚪ **ready** | Not gated like P6 - P7.1 can start from data we already have. |
 | **X** Cross-cutting | 🔵 | X3 ✅ · X1, X2 open |
+| **P9** Refined-prototype push | 🔵 **in progress, today** | P9.4 (relationship graph) on a subagent's branch, `feature/case-relationship-graph`. P9.1+P9.1b (suspicion score) and P9.3 (wire pattern/repeat signals into case detail) direct. P9.2 (IO assignment) only if time remains. |
 
 **Done so far:** P0.1–P0.5 · P1.1 · P1.3 · **P2 (whole track)** · P3.1 ·
 P3.3 · P5.0 · P5.1 · P5.2 · P5.3 · X3
@@ -709,7 +710,9 @@ P6.0's decision.*
 
 ## Decisions still open
 
-1. **PR #1 — merge or close?** Gates all of P2.
+1. ~~**PR #1 — merge or close?** Gates all of P2.~~ Resolved 2026-08-27 - P2
+   proceeded independently, PR #1 left for the user to close/discuss with
+   the author directly. No longer gates anything.
 2. **P1.5 framing** — agree the caste/religion presentation before building it.
 3. **P6.0** — images, yes or no?
 4. **Show the P5.3 eval in the UI?** "Found 11 of 15, here are the 4 it
@@ -719,3 +722,63 @@ P6.0's decision.*
    any more, so nothing pretends to be access control. If per-officer views are
    ever wanted, they need real Catalyst Authentication first, and the district
    would come from the signed-in identity rather than a dropdown.
+
+---
+
+## P9 — Refined-prototype push (2026-08-28, deadline: today)
+
+*User's explicit priority order: **1 (AI) → 3 (investigation analysis) → 4
+(advanced visualizations) → 2 (CRUD)**, lowest to highest already covered
+by P2.4. Not a "finish 1 before starting 3" gate - real effort in this
+order, parallelized where the work is genuinely independent.*
+
+**Split of labor:** P9.4 (the relationship graph) handed to a subagent on
+its own branch (`feature/case-relationship-graph`) so it can run
+independently while P9.1/P9.3 happen directly. Not merged to `main`
+without review - report back before merging, same discipline as
+everything else this session.
+
+- [ ] **P9.1** *(= P5.5)* **Suspicion score, for real.** Deterministic
+      weighted signals (contradiction count, cross-district case count,
+      repeat-subject flag, evidence volume) feed a real formula in
+      `src/lib/suspicionScore.ts`; the LLM (`llm.ts`, already verified
+      live) writes *only* the plain-language explanation of a score
+      it didn't compute - same "LLM never invents the number" discipline
+      `PLAN.md`'s original P5.5 framing already committed to. New
+      `RiskGauge.tsx` UI, surfaced on `/persons/[personId]` (a person's
+      risk, not a case's - matches how the signals are actually computed,
+      per-person). No such score exists anywhere in the UI today -
+      confirmed while auditing for this push.
+- [ ] **P9.1b** *(= P5.6)* Citation guardrail formalized **in the tool
+      schema** passed to GLM (`recordIds` required + non-empty), not just
+      convention - quick, do alongside P9.1 since both touch
+      `contradictionDetector.ts`.
+      *(P5.4 "next question to ask" and P5.8 the chatbot are explicitly
+      NOT attempted today - real, more open-ended builds, noted as
+      next-session work rather than rushed.)*
+- [ ] **P9.3** *(investigation analysis enrichment)* Wire P4.6/P4.7's
+      already-real signals INTO `/cases/[caseId]` instead of leaving them
+      siloed on their own pages: if this case is part of a real MO
+      cluster, show it (link to `/pattern-analysis`); if an accused person
+      is a real repeat subject, flag it inline (link to their
+      `/persons/[personId]`). Low-risk, high-value - both signals already
+      exist and are verified, this is a real cross-link, not new
+      computation.
+- [ ] **P9.4** *(= advanced visualization, subagent)* **A real
+      relationship/network graph on `/cases/[caseId]`**, replacing what
+      the deleted `EvidenceBoard.tsx` used to show on mock data. Real
+      nodes/edges only, derived from the same evidence already on that
+      page (`resolvedPersons`, calls, transactions, CCTV sightings,
+      witness statements) - accused/victims/witnesses/locations/phones/
+      banks as nodes, an edge per real record connecting two of them.
+      New `src/lib/relationshipGraph.ts` (extraction) +
+      `CaseRelationshipGraph.tsx` (render - `d3-force` is already a
+      dependency, reuse it rather than hand-rolling physics). Must degrade
+      honestly for a case with few records (no graph invented where there's
+      nothing to show), and must not fabricate an edge/relationship type
+      not actually evidenced by a real record.
+- [ ] **P9.2** *(= CRUD, lowest priority)* IO assignment endpoint - same
+      `updateRow()` pattern P2.4's status editor already proved live. Only
+      if time remains after P9.1/P9.3/P9.4; explicitly not case-diary
+      (still blocked on console table provisioning) or case creation
+      (bigger, not scoped for today).
