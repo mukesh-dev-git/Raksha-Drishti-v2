@@ -125,13 +125,19 @@ wipe-and-reimport happens exactly once, after the rest of P1 lands. Nothing
 in the app reads `PersonID` today, so the staleness is inert — but don't
 build a person-spine feature against the live table until P1.6 is done.
 
-**P1.2 done** (2026-08-29): `bulk_cases.mjs` generates 390 additional,
-statistically-real `CaseMaster` rows (409 total, comfortably over the "≳400"
-bar) using this same `lookups.json`/`geo_time.mjs` - real district/crime-type/
-status distributions, real coordinates and time-of-day via `placeIncident()`/
+**P1.2 done** (2026-08-29), scaled to SCRB volume same day: `bulk_cases.mjs`
+generates additional, statistically-real `CaseMaster` rows using this same
+`lookups.json`/`geo_time.mjs` - real district/crime-type/status
+distributions, real coordinates and time-of-day via `placeIncident()`/
 `incidentHour()`, a real `ChargesheetDetails` table (ported from
-`catalyst/seed/`'s shape, not its rows - see PLAN.md P1.2 for why). All 19
-authored FIRs still resolve unchanged - verified, not assumed.
+`catalyst/seed/`'s shape, not its rows - see PLAN.md P1.2 for why). First
+landed at 409 total (over the original "≳400" bar); scaled the same day to
+**5,000 total** (`BULK_CASE_COUNT` in `build_seed.mjs`) on direct request -
+19 real FIRs plus 4,981 generated is closer to what a statewide bureau
+actually handles. `caseFacts.json`/`accused.json` write minified JSON at
+this size (the two files that scale with case count; everything else stays
+pretty-printed). All 19 authored FIRs still resolve unchanged - verified,
+not assumed, at both scales.
 Deliberately NOT merged: no calls/transactions/CCTV/statements for bulk
 cases, and P4.6 (MO-clustering)/P4.7 (repeat-offenders)/`/persons` stay
 scoped to the 15 authored scenarios - see `bulk_cases.mjs`'s own header for

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import SearchInput from "@/components/ui/SearchInput";
 import CaseStatusPill from "@/components/CaseStatusPill";
@@ -13,7 +13,15 @@ import { caseTypes, districts } from "@/lib/data";
 // (search / crime type / district / status), replacing the old "pick a
 // crime type, then a district" gate as the way to reach a case. Filters are
 // query state on this one page, not path segments - matches PLAN.md P2.1.
+//
+// P1.2 follow-up: real volume went from 19 to 5,000 cases, and this table
+// used to render every filtered row into the DOM at once - fine at 19,
+// genuinely bad at 5,000 (a huge DOM, sluggish scroll/search on a slower
+// device). Paginated client-side, same as the filtering itself - `cases` is
+// already the full array as a prop, so this is a render-window slice, not a
+// new data-fetching concern.
 // -----------------------------------------------------------------------------
+const PAGE_SIZE = 50;
 export default function CaseWorklistClient({
   cases,
   hideDistrictFilter = false,
@@ -28,6 +36,7 @@ export default function CaseWorklistClient({
   const [type, setType] = useState("");
   const [district, setDistrict] = useState("");
   const [status, setStatus] = useState<CaseStatusId | "">("");
+  const [page, setPage] = useState(1);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -42,6 +51,15 @@ export default function CaseWorklistClient({
       return true;
     });
   }, [cases, query, type, district, status]);
+
+  // A narrower filter can leave the current page past the new end - snap
+  // back to page 1 rather than rendering an empty table with live results
+  // one click away.
+  useEffect(() => setPage(1), [query, type, district, status]);
+
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const pageStart = (page - 1) * PAGE_SIZE;
+  const paged = filtered.slice(pageStart, pageStart + PAGE_SIZE);
 
   const counts = useMemo(() => {
     const byStatus: Record<CaseStatusId, number> = { 1: 0, 2: 0, 3: 0, 4: 0 };
@@ -113,7 +131,7 @@ export default function CaseWorklistClient({
             </tr>
           </thead>
           <tbody>
-            {filtered.map((c) => (
+            {paged.map((c) => (
               <tr key={c.caseMasterId} className="border-b border-line last:border-0 hover:bg-dash-blue-bg/40">
                 <td className="px-4 py-3">
                   <Link href={caseDetailLink(c.caseMasterId)} className="font-mono text-[11.5px] text-muted hover:text-navy hover:underline">
@@ -144,6 +162,34 @@ export default function CaseWorklistClient({
           </tbody>
         </table>
       </div>
+
+      {filtered.length > 0 && (
+        <div className="flex flex-wrap items-center justify-between gap-3 text-[12.5px] text-muted">
+          <p>
+            Showing <span className="font-medium text-ink">{pageStart + 1}–{Math.min(pageStart + PAGE_SIZE, filtered.length)}</span> of{" "}
+            <span className="font-medium text-ink">{filtered.length}</span> cases
+          </p>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page <= 1}
+              className="rounded-sm border border-line px-3 py-1.5 font-medium text-ink transition hover:border-navy disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              Previous
+            </button>
+            <span className="tabular-nums">Page {page} of {pageCount}</span>
+            <button
+              type="button"
+              onClick={() => setPage((p) => Math.min(pageCount, p + 1))}
+              disabled={page >= pageCount}
+              className="rounded-sm border border-line px-3 py-1.5 font-medium text-ink transition hover:border-navy disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

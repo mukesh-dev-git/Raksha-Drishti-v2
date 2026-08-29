@@ -128,7 +128,14 @@ for (const c of dataset.cases) {
 // CaseMasterID 9001-9019, AccusedMasterID 8000s, VictimMasterID 7000s,
 // ComplainantID 6000s, global PersonID up to KA-P0047 - bulk starts at 1/1/
 // 1/1/48 respectively and stays well under those floors.
-const BULK_CASE_COUNT = 390; // 19 authored + 390 bulk = 409, comfortably over P1.2's "~400" bar
+// 4981 bulk + 19 authored = 5000 total - scaled up from the original 390/409
+// per user request: SCRB handles statewide volume, and 409 cases undersold
+// that. 5,000 was picked as the largest step that stays comfortably inside
+// "bundle a JSON file" (a few MB, still fast to build/parse) rather than
+// needing a paginated API/DB read - see PLAN.md P1.2 for the full tradeoff
+// (~20k+ would mean minified JSON and a closer look at build time; ~100k+
+// stops being a static-bundle problem at all).
+const BULK_CASE_COUNT = 4981;
 const bulk = generateBulkCases(lookups, {
   count: BULK_CASE_COUNT,
   startCaseMasterId: 1,
@@ -409,9 +416,15 @@ for (const fir of bulk.caseMasterRows) {
     complainantNames,
   };
 }
+// Minified, not pretty-printed - this is the one file whose size scales
+// directly with case count (5000 FIRs = ~2.4MB pretty vs ~1.3MB minified),
+// and it's bundled straight into the Next.js app, not just a build
+// artefact meant for manual reading like scenarioMeta.json/employees.json
+// stay pretty. Re-run build_seed.mjs and diff the CSVs if you need to
+// inspect a specific case's facts by hand.
 writeFileSync(
   path.join(outNoSqlDir, "caseFacts.json"),
-  JSON.stringify(caseFacts, null, 2),
+  JSON.stringify(caseFacts),
   "utf-8"
 );
 console.log(`caseFacts.json`.padEnd(30), `${Object.keys(caseFacts).length} FIRs`);
@@ -607,7 +620,7 @@ const accusedFlat = allAccused.map((a) => {
 });
 writeFileSync(
   path.join(outNoSqlDir, "accused.json"),
-  JSON.stringify(accusedFlat, null, 2),
+  JSON.stringify(accusedFlat), // minified - same reasoning as caseFacts.json above
   "utf-8"
 );
 console.log(`accused.json`.padEnd(30), `${accusedFlat.length} rows (${accusedFlat.filter((a) => !a.linked).length} bulk, un-linked)`);
