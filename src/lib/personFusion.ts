@@ -55,7 +55,10 @@ import transactions from "./nosql-seed/Transactions.json";
 // exactly the bug P1.1 fixed for Accused - so victims are skipped (see
 // isFusable below), not guessed at. Real follow-up work, not done here:
 // give Victim/Complainant the same global-id treatment P1.1 gave Accused.
-type ResolvedPerson = {
+// Exported (not just module-local) so P9.4's relationshipGraph.ts can build
+// person nodes off the exact same shape every evidence collection already
+// carries, instead of redeclaring it.
+export type ResolvedPerson = {
   type: "Accused" | "Victim" | "Complainant" | string;
   id: number;
   name: string;
@@ -63,7 +66,7 @@ type ResolvedPerson = {
   aliases?: string[];
   caseMasterIds?: number[];
 };
-type ResolvedPersonsMap = Record<string, ResolvedPerson>;
+export type ResolvedPersonsMap = Record<string, ResolvedPerson>;
 
 type FusableResolvedPerson = ResolvedPerson & { personId: string; aliases: string[]; caseMasterIds: number[] };
 function isFusable(rp: ResolvedPerson): rp is FusableResolvedPerson {
@@ -126,8 +129,12 @@ function push(map: Map<string, FusedPerson>, resolved: ResolvedPersonsMap, scena
 /** Matches free text against every resolvedPerson's name/aliases for this
  *  record - the fallback join used where a field embeds a name instead of
  *  citing a clean P-token (transactions always; CCTV sometimes - see
- *  extractCctvToken, whose C1-CC-2 comment is the reason this exists). */
-function matchTextToPerson(text: string, resolved: ResolvedPersonsMap): string | undefined {
+ *  extractCctvToken, whose C1-CC-2 comment is the reason this exists).
+ *  Exported for P9.4's relationshipGraph.ts, which needs this same fallback
+ *  for transaction from/to accounts AND for witness-statement `witnessName`
+ *  (some "witnesses" are actually the accused's own recorded statement -
+ *  see relationshipGraph.ts's own comment on that). */
+export function matchTextToPerson(text: string, resolved: ResolvedPersonsMap): string | undefined {
   for (const [token, rp] of Object.entries(resolved)) {
     if (text.includes(rp.name) || (rp.aliases ?? []).some((a) => text.includes(a))) return token;
   }
@@ -142,7 +149,7 @@ function matchTextToPerson(text: string, resolved: ResolvedPersonsMap): string |
  *  fallback was added), or genuinely no person at all (an unidentified
  *  vehicle/plate with nothing to attribute). Try the token first since it's
  *  unambiguous when present, then fall back to a name match. */
-function extractCctvToken(personOrVehicle: string, resolved: ResolvedPersonsMap): string | undefined {
+export function extractCctvToken(personOrVehicle: string, resolved: ResolvedPersonsMap): string | undefined {
   const m = /^P\d+/.exec(personOrVehicle.trim());
   if (m) return m[0];
   return matchTextToPerson(personOrVehicle, resolved);

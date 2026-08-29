@@ -6,10 +6,12 @@ import CaseStatusPill from "@/components/CaseStatusPill";
 import CaseStatusEditor from "@/components/cases/CaseStatusEditor";
 import IOAssignmentEditor from "@/components/cases/IOAssignmentEditor";
 import CrossSourceTimeline from "@/components/CrossSourceTimeline";
+import CaseRelationshipGraph from "@/components/cases/CaseRelationshipGraph";
 import { getWorklistCase, getSiblingCases, caseDetailLink } from "@/lib/caseWorklist";
 import { getScenarioTimeline } from "@/lib/personFusion";
 import { getMoPatternClusters } from "@/lib/moPatterns";
 import { getEmployeesByDistrict } from "@/lib/employees";
+import { getCaseRelationshipGraph } from "@/lib/relationshipGraph";
 import scenarioMeta from "@/lib/nosql-seed/scenarioMeta.json";
 import contradictionsSeed from "@/lib/nosql-seed/Contradictions.json";
 import aiContradictionsSeed from "@/lib/nosql-seed/AIContradictions.json";
@@ -48,6 +50,7 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ cas
   const meta = META[c.scenarioId];
   const siblings = getSiblingCases(caseMasterId);
   const evidence = getScenarioTimeline(c.scenarioId);
+  const graph = getCaseRelationshipGraph(c.scenarioId);
   const authoredContradiction = CONTRADICTIONS.find((x) => x.scenarioId === c.scenarioId);
   const aiFinding = AI_CONTRADICTIONS.scenarios[c.scenarioId];
   // P9.3 - real cross-link into P4.6's already-verified MO clustering:
@@ -209,6 +212,17 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ cas
               ))}
             </div>
           )}
+
+          {/* Relationship graph - real nodes/edges only, see relationshipGraph.ts */}
+          <div className="min-w-0 rounded-xl border border-line bg-surface p-5 shadow-sm">
+            <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.1em] text-muted">
+              Relationship graph · {graph.nodes.length} entities, {graph.edges.length} linked records
+            </p>
+            <p className="mb-3 text-[12px] text-muted">
+              Every person, location and record actually named in this case&apos;s evidence - one edge per real call, transaction, sighting or statement.
+            </p>
+            <CaseRelationshipGraph key={c.scenarioId} nodes={graph.nodes} edges={graph.edges} />
+          </div>
 
           {/* Cross-source timeline */}
           <div className="rounded-xl border border-line bg-surface p-5 shadow-sm">
