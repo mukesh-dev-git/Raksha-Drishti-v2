@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import Breadcrumb, { type Crumb } from "@/components/ui/Breadcrumb";
-import { BASE_PATH } from "@/lib/basePath";
+import HeroImage from "@/components/ui/HeroImage";
 
 // -----------------------------------------------------------------------------
 // PageShell — standard page scaffold: breadcrumb + page-title band + content.
@@ -9,14 +9,12 @@ import { BASE_PATH } from "@/lib/basePath";
 //
 // heroImageSrc (added 2026-08-30, on request) - an optional top-right
 // illustration for the title band, path relative to public/ (e.g.
-// "/page-hero/socio-economic.png"; the component prefixes BASE_PATH). Plain
-// <img>, not next/image, same reasoning as OffenderAvatar.tsx: these are
-// externally-generated files dropped into public/ with no dimensions known
-// ahead of build time. onError hides the element rather than showing a
-// broken-image icon, so a page can pass a src before the file exists on
-// disk without ever surfacing a broken image to a user - important here
-// because the file for a given page may land after the code that
-// references it does.
+// "/page-hero/socio-economic.png"). Rendered via HeroImage.tsx, a Client
+// Component - it needs an onError handler (hide the element rather than
+// show a broken-image icon, since the file for a given page can land after
+// the code that references it), and PageShell itself is a Server Component,
+// which cannot pass an event handler into its own JSX. All 8 pages now wire
+// this in (public/page-hero/README.md has the asset spec).
 // -----------------------------------------------------------------------------
 export default function PageShell({
   title,
@@ -49,17 +47,7 @@ export default function PageShell({
               <p className="mt-2 max-w-2xl text-muted">{description}</p>
             )}
           </div>
-          {heroImageSrc && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={`${BASE_PATH}${heroImageSrc}`}
-              alt={heroImageAlt ?? ""}
-              className="hidden h-[104px] w-auto shrink-0 select-none md:block"
-              onError={(e) => {
-                (e.currentTarget as HTMLImageElement).style.display = "none";
-              }}
-            />
-          )}
+          {heroImageSrc && <HeroImage src={heroImageSrc} alt={heroImageAlt ?? ""} />}
         </div>
         {actions && <div className="shrink-0">{actions}</div>}
       </div>

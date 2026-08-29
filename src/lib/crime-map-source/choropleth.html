@@ -1,0 +1,200 @@
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<title>Raksha Drishti — District Choropleth</title>
+
+<!-- P4.9 item 1, rebuilt on a real basemap (2026-08-30, direct feedback: the
+     prior SVG-schematic version had no real geography at all). Same free,
+     token-free CARTO dark-matter style the other crime-map pages use.
+
+     Still honest about what's real and what isn't: there is no Karnataka
+     district-BOUNDARY GeoJSON bundled here, and none is fabricated - see
+     districtGeo.ts's own comment on that. What IS real and plotted exactly
+     as computed: each district's centroid is the mean lat/lng of its own
+     real case coordinates (getDistrictCentroids()), and circle size/color
+     encode real totalCases/clearanceRate from getDistrictStats(). This is a
+     standard, honest cartographic form - a proportional symbol map - not a
+     boundary choropleth, because we don't have boundary data to draw one
+     without inventing it. -->
+<link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+
+<style>
+  :root {
+    --panel: rgba(17,22,30,0.94); --border: #2b3340; --ink: #e6edf3; --dim: #93a1b0; --accent: #2e90e5;
+  }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #0a0d12; color: var(--ink);
+    font-family: Inter, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
+  #map { position: absolute; inset: 0; }
+  .card { position: absolute; z-index: 10; background: var(--panel); border: 1px solid var(--border);
+    border-radius: 12px; backdrop-filter: blur(8px); box-shadow: 0 8px 30px rgba(0,0,0,.55); }
+  #left { top: 14px; left: 14px; width: 240px; }
+  #left .sect { padding: 13px 15px; }
+  .sect h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .6px; color: var(--dim); margin: 0 0 10px; }
+  .seg { display: flex; gap: 6px; }
+  .seg button { flex: 1; font-size: 11px; padding: 7px 0; border-radius: 7px; cursor: pointer;
+    border: 1px solid var(--border); background: #10151d; color: var(--dim); }
+  .seg button.active { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; }
+  #legend { bottom: 14px; left: 14px; padding: 12px 14px; font-size: 11.5px; }
+  #legend .row { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+  #legend .sw { width: 11px; height: 11px; border-radius: 50%; flex: none; }
+  #note { top: 14px; right: 14px; max-width: 260px; padding: 12px 14px; font-size: 11.5px; color: var(--dim); }
+  .maplibregl-popup-content { background: var(--panel); color: var(--ink); border: 1px solid var(--border);
+    border-radius: 10px; font-family: inherit; font-size: 12.5px; padding: 10px 12px; }
+  .maplibregl-popup-tip { border-top-color: var(--panel) !important; }
+  .pop-title { font-weight: 700; margin-bottom: 4px; }
+  .pop-row { display: flex; justify-content: space-between; gap: 12px; color: var(--dim); }
+  .pop-row b { color: var(--ink); font-variant-numeric: tabular-nums; }
+</style>
+
+<div id="map"></div>
+
+<div class="card" id="left">
+  <div class="sect">
+    <h2>Shade by</h2>
+    <div class="seg" id="metric">
+      <button data-metric="volume" class="active">Case volume</button>
+      <button data-metric="clearance">Clearance rate</button>
+    </div>
+  </div>
+</div>
+
+<div class="card" id="legend"></div>
+<div class="card" id="note">
+  Real case data. Each circle is a district's real mean case coordinate — there is no boundary
+  file bundled, so district shapes are not drawn to avoid inventing one.
+</div>
+
+<script>
+const CARTO_STYLE = "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json";
+
+const map = new maplibregl.Map({
+  container: "map", style: CARTO_STYLE,
+  center: [76.3, 14.9], zoom: 6.1, minZoom: 5.5, maxZoom: 12,
+});
+map.addControl(new maplibregl.NavigationControl(), "top-right");
+
+let DISTRICTS = [];
+let metric = "volume";
+
+function clearanceColor(rate) {
+  if (rate >= 60) return "#1a7f37";
+  if (rate >= 35) return "#b45309";
+  return "#b3261e";
+}
+
+function renderLegend() {
+  const el = document.getElementById("legend");
+  if (metric === "clearance") {
+    el.innerHTML = `<div style="font-weight:600;margin-bottom:4px">Clearance rate</div>
+      <div class="row"><span class="sw" style="background:#1a7f37"></span>&ge; 60%</div>
+      <div class="row"><span class="sw" style="background:#b45309"></span>35&ndash;59%</div>
+      <div class="row"><span class="sw" style="background:#b3261e"></span>&lt; 35%</div>`;
+  } else {
+    el.innerHTML = `<div style="font-weight:600;margin-bottom:4px">Case volume</div>
+      <div style="color:var(--dim)">Circle area scales with real registered case count.</div>`;
+  }
+}
+
+function toFeatureCollection() {
+  const maxCases = Math.max(...DISTRICTS.map(d => d.totalCases), 1);
+  return {
+    type: "FeatureCollection",
+    features: DISTRICTS.map(d => ({
+      type: "Feature",
+      geometry: { type: "Point", coordinates: [d.lng, d.lat] },
+      properties: {
+        slug: d.slug, name: d.name, totalCases: d.totalCases,
+        clearanceRate: d.clearanceRate, repeatSubjectCount: d.repeatSubjectCount,
+        // Precomputed here (not in a MapLibre expression) since sqrt-of-ratio
+        // needs maxCases, which isn't a per-feature property.
+        volumeRadius: 10 + Math.sqrt(d.totalCases / maxCases) * 26,
+        clearanceRadius: 14 + (d.clearanceRate / 100) * 18,
+        clearanceFill: clearanceColor(d.clearanceRate),
+      },
+    })),
+  };
+}
+
+function addLayers() {
+  map.addSource("districts", { type: "geojson", data: toFeatureCollection() });
+  map.addLayer({
+    id: "district-circles", type: "circle", source: "districts",
+    paint: {
+      "circle-radius": ["case", ["==", ["literal", metric], "clearance"], ["get", "clearanceRadius"], ["get", "volumeRadius"]],
+      "circle-color": ["case", ["==", ["literal", metric], "clearance"], ["get", "clearanceFill"], "#2563eb"],
+      "circle-opacity": 0.75,
+      "circle-stroke-width": 1.5,
+      "circle-stroke-color": "#e6edf3",
+      "circle-stroke-opacity": 0.6,
+    },
+  });
+  map.addLayer({
+    id: "district-labels", type: "symbol", source: "districts",
+    layout: {
+      "text-field": ["get", "name"],
+      "text-size": 12, "text-offset": [0, -2.2], "text-anchor": "bottom",
+      "text-font": ["Noto Sans Regular"],
+    },
+    paint: { "text-color": "#e6edf3", "text-halo-color": "#0a0d12", "text-halo-width": 1.4 },
+  });
+  map.addLayer({
+    id: "district-values", type: "symbol", source: "districts",
+    layout: {
+      "text-field": metric === "clearance" ? ["concat", ["to-string", ["get", "clearanceRate"]], "%"] : ["to-string", ["get", "totalCases"]],
+      "text-size": 11, "text-font": ["Noto Sans Regular"],
+    },
+    paint: { "text-color": "#0a0d12" },
+  });
+}
+
+function refresh() {
+  const src = map.getSource("districts");
+  if (src) src.setData(toFeatureCollection());
+  if (map.getLayer("district-circles")) {
+    map.setPaintProperty("district-circles", "circle-radius",
+      ["case", ["==", ["literal", metric], "clearance"], ["get", "clearanceRadius"], ["get", "volumeRadius"]]);
+    map.setPaintProperty("district-circles", "circle-color",
+      ["case", ["==", ["literal", metric], "clearance"], ["get", "clearanceFill"], "#2563eb"]);
+  }
+  if (map.getLayer("district-values")) {
+    map.setLayoutProperty("district-values", "text-field",
+      metric === "clearance" ? ["concat", ["to-string", ["get", "clearanceRate"]], "%"] : ["to-string", ["get", "totalCases"]]);
+  }
+  renderLegend();
+}
+
+document.querySelectorAll("#metric button").forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll("#metric button").forEach(x => x.classList.remove("active"));
+    btn.classList.add("active");
+    metric = btn.dataset.metric;
+    refresh();
+  };
+});
+
+map.on("load", () => {
+  fetch("/crime-map/data/districts.json").then(r => r.json()).then(data => {
+    DISTRICTS = data.districts || [];
+    addLayers();
+    renderLegend();
+
+    const popup = new maplibregl.Popup({ closeButton: false, offset: 14 });
+    map.on("mouseenter", "district-circles", (e) => {
+      map.getCanvas().style.cursor = "pointer";
+      const p = e.features[0].properties;
+      popup.setLngLat(e.lngLat).setHTML(
+        `<div class="pop-title">${p.name}</div>` +
+        `<div class="pop-row"><span>Total cases</span><b>${Number(p.totalCases).toLocaleString("en-IN")}</b></div>` +
+        `<div class="pop-row"><span>Clearance rate</span><b>${p.clearanceRate}%</b></div>` +
+        (p.repeatSubjectCount > 0 ? `<div class="pop-row"><span>Repeat subjects</span><b>${p.repeatSubjectCount}</b></div>` : "")
+      ).addTo(map);
+    });
+    map.on("mouseleave", "district-circles", () => { map.getCanvas().style.cursor = ""; popup.remove(); });
+  }).catch(err => {
+    document.getElementById("note").textContent = "Couldn't load district data: " + err.message;
+  });
+});
+</script>

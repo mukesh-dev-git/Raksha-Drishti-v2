@@ -41,6 +41,7 @@ export default function StatewideNetworkPage() {
         { label: "Pattern Analysis", href: "/pattern-analysis" },
         { label: "Statewide Network", href: "/pattern-analysis/network" },
       ]}
+      heroImageSrc="/page-hero/network.png"
     >
       <div className="space-y-5">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">

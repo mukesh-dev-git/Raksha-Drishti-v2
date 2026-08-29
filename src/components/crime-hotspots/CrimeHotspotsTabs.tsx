@@ -3,9 +3,6 @@
 import { useState } from "react";
 import { Map as MapIcon, Grid3x3, Waypoints } from "lucide-react";
 import MapEmbed from "@/components/MapEmbed";
-import DistrictChoropleth, { type ChoroplethDistrict } from "@/components/crime-hotspots/DistrictChoropleth";
-import CrossDistrictFlowMap, { type FlowDistrictPoint } from "@/components/crime-hotspots/CrossDistrictFlowMap";
-import type { CrossDistrictFlow } from "@/lib/crossDistrictFlows";
 
 type Tab = "map" | "choropleth" | "flows";
 
@@ -18,19 +15,26 @@ const TABS: { id: Tab; label: string; icon: typeof MapIcon }[] = [
 // -----------------------------------------------------------------------------
 // P4.1 + P4.9 - the three real-data crime-geography views live behind one
 // tab switcher so /crime-hotspots stays a single page rather than three, and
-// only the active tab's content mounts (the maplibre iframe in particular is
-// heavy - no reason to load it while a user is on the choropleth tab).
+// only the active tab's content mounts (each maplibre iframe is heavy - no
+// reason to load three at once).
+//
+// All three tabs are now real MapLibre basemaps (2026-08-30) - choropleth
+// and flows used to be plain SVG schematics with no real geography at all
+// (DistrictChoropleth.tsx/CrossDistrictFlowMap.tsx, since deleted). They now
+// plot the exact same real data (district centroids from getDistrictCentroids(),
+// cross-district flows from getCrossDistrictFlows()) on the same free CARTO
+// basemap the hotspot map already uses - see choropleth.html/flows.html for
+// why no district-boundary shape is drawn (no such data is bundled, and none
+// was fabricated to fill the gap).
 // -----------------------------------------------------------------------------
 export default function CrimeHotspotsTabs({
   mapSrc,
-  choroplethDistricts,
-  flowDistricts,
-  flows,
+  choroplethSrc,
+  flowsSrc,
 }: {
   mapSrc: string;
-  choroplethDistricts: ChoroplethDistrict[];
-  flowDistricts: FlowDistrictPoint[];
-  flows: CrossDistrictFlow[];
+  choroplethSrc: string;
+  flowsSrc: string;
 }) {
   const [tab, setTab] = useState<Tab>("map");
 
@@ -56,11 +60,9 @@ export default function CrimeHotspotsTabs({
         ))}
       </div>
 
-      {tab === "map" && (
-        <MapEmbed src={mapSrc} title="Karnataka crime hotspots — real registered FIRs" />
-      )}
-      {tab === "choropleth" && <DistrictChoropleth districts={choroplethDistricts} />}
-      {tab === "flows" && <CrossDistrictFlowMap districts={flowDistricts} flows={flows} />}
+      {tab === "map" && <MapEmbed src={mapSrc} title="Karnataka crime hotspots — real registered FIRs" />}
+      {tab === "choropleth" && <MapEmbed src={choroplethSrc} title="Karnataka district choropleth — real case volume and clearance rate" />}
+      {tab === "flows" && <MapEmbed src={flowsSrc} title="Karnataka cross-district investigation flows" />}
     </div>
   );
 }

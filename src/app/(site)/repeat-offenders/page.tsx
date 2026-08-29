@@ -92,6 +92,7 @@ export default function RepeatOffendersPage() {
       title="Repeat Offenders"
       description="People named across more than one case file, ranked by how many. Every link below traces back to a real record id — not a name match."
       breadcrumbs={[{ label: "Repeat Offenders", href: "/repeat-offenders" }]}
+      heroImageSrc="/page-hero/repeat-offenders.png"
     >
       {enriched.length === 0 ? (
         <div className="rounded-xl border border-dashed border-line bg-surface p-8 text-center text-sm text-muted">

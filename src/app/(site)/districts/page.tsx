@@ -19,6 +19,7 @@ export default function DistrictsIndexPage() {
       title="Districts"
       description="Pendency and clearance across every district, real cases only. Open one for its full case list."
       breadcrumbs={[{ label: "Districts", href: "/districts" }]}
+      heroImageSrc="/page-hero/districts.png"
     >
       <div className="space-y-1.5">
         {districts.map((d) => (

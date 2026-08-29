@@ -31,6 +31,7 @@ export default function SocioEconomicPage() {
       title="Socio-Economic Correlation"
       description="Victim and complainant demographic profile across the real 5,000-case FIR Index — for victim-support and outreach planning, never as an offender signal."
       breadcrumbs={[{ label: "Socio-Economic Correlation", href: "/socio-economic" }]}
+      heroImageSrc="/page-hero/socio-economic.png"
     >
       <SocioEconomicPanel series={series} />
     </PageShell>

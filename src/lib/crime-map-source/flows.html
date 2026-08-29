@@ -1,0 +1,157 @@
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<title>Raksha Drishti — Cross-District Flows</title>
+
+<!-- P4.9 item 2, rebuilt on a real basemap (2026-08-30, direct feedback: the
+     prior SVG-schematic version had no real geography at all). Same free
+     CARTO dark-matter style as the other crime-map pages, same honesty
+     constraint as choropleth.html: real district centroids
+     (getDistrictCentroids()), no fabricated boundaries. Arcs are a real
+     investigation each - one of the 15 authored scenarios whose FIRs were
+     registered in 2+ districts (crossDistrictFlows.ts) - drawn as a curve
+     (not a straight line) purely for legibility where two arcs share an
+     endpoint; the curvature carries no data of its own. -->
+<link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+
+<style>
+  :root {
+    --panel: rgba(17,22,30,0.94); --border: #2b3340; --ink: #e6edf3; --dim: #93a1b0;
+  }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #0a0d12; color: var(--ink);
+    font-family: Inter, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
+  #map { position: absolute; inset: 0; }
+  .card { position: absolute; z-index: 10; background: var(--panel); border: 1px solid var(--border);
+    border-radius: 12px; backdrop-filter: blur(8px); box-shadow: 0 8px 30px rgba(0,0,0,.55); }
+  #legend { top: 14px; left: 14px; padding: 12px 14px; font-size: 11.5px; width: 200px; }
+  #legend h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .6px; color: var(--dim); margin: 0 0 10px; }
+  #legend .row { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+  #legend .sw { width: 16px; height: 3px; border-radius: 2px; flex: none; }
+  #note { top: 14px; right: 14px; max-width: 260px; padding: 12px 14px; font-size: 11.5px; color: var(--dim); }
+  #empty { top: 50%; left: 50%; transform: translate(-50%,-50%); padding: 16px 20px; font-size: 13px; display: none; }
+  .maplibregl-popup-content { background: var(--panel); color: var(--ink); border: 1px solid var(--border);
+    border-radius: 10px; font-family: inherit; font-size: 12.5px; padding: 10px 12px; max-width: 260px; }
+  .maplibregl-popup-tip { border-top-color: var(--panel) !important; }
+  .pop-title { font-weight: 700; margin-bottom: 4px; }
+  .pop-row { color: var(--dim); margin-top: 2px; }
+  .pop-row b { color: var(--ink); }
+</style>
+
+<div id="map"></div>
+<div class="card" id="legend"><h2>Crime type</h2><div id="legend-rows"></div></div>
+<div class="card" id="note">
+  Each line is one real investigation whose FIRs were registered in two different districts —
+  not every case, only the ones that actually crossed a district line.
+</div>
+<div class="card" id="empty">No cross-district investigations in the current dataset.</div>
+
+<script>
+const CARTO_STYLE = "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json";
+// Same crime-type palette as colors.ts's CRIME_TYPE_COLOR, kept in sync by hand
+// since this is a standalone static page with no access to the TS module.
+const CRIME_COLOR = { Theft: "#2563eb", Assault: "#db2777", Fraud: "#7c3aed", Burglary: "#ea8a1f" };
+function colorFor(crimeTypeName) { return CRIME_COLOR[crimeTypeName] || "#93a1b0"; }
+
+const map = new maplibregl.Map({
+  container: "map", style: CARTO_STYLE,
+  center: [76.3, 14.9], zoom: 6.1, minZoom: 5.5, maxZoom: 12,
+});
+map.addControl(new maplibregl.NavigationControl(), "top-right");
+
+// Quadratic-bezier arc between two real points, bowed perpendicular to the
+// line so two flows sharing an endpoint are visually distinguishable rather
+// than fully overlapping. The curve is a rendering choice, not a claim
+// about the path an investigation actually took.
+function arcCoords(lng1, lat1, lng2, lat2, steps = 48) {
+  const mx = (lng1 + lng2) / 2, my = (lat1 + lat2) / 2;
+  const dx = lng2 - lng1, dy = lat2 - lat1;
+  const dist = Math.hypot(dx, dy);
+  const bow = dist * 0.12;
+  const cx = mx - dy * (bow / (dist || 1));
+  const cy = my + dx * (bow / (dist || 1));
+  const coords = [];
+  for (let i = 0; i <= steps; i++) {
+    const t = i / steps;
+    const x = (1 - t) * (1 - t) * lng1 + 2 * (1 - t) * t * cx + t * t * lng2;
+    const y = (1 - t) * (1 - t) * lat1 + 2 * (1 - t) * t * cy + t * t * lat2;
+    coords.push([x, y]);
+  }
+  return coords;
+}
+
+map.on("load", () => {
+  fetch("/crime-map/data/flows.json").then(r => r.json()).then(data => {
+    const flows = data.flows || [];
+    const points = data.points || [];
+
+    if (flows.length === 0) {
+      document.getElementById("empty").style.display = "block";
+      return;
+    }
+
+    const lineFeatures = flows.map(f => ({
+      type: "Feature",
+      geometry: { type: "LineString", coordinates: arcCoords(f.fromLng, f.fromLat, f.toLng, f.toLat) },
+      properties: { title: f.title, crimeTypeName: f.crimeTypeName, fromName: f.fromName, toName: f.toName,
+        assignedTo: f.assignedTo, assignmentReason: f.assignmentReason, color: colorFor(f.crimeTypeName) },
+    }));
+    const pointFeatures = points.map(p => ({
+      type: "Feature",
+      geometry: { type: "Point", coordinates: [p.lng, p.lat] },
+      properties: { name: p.name },
+    }));
+
+    map.addSource("flow-lines", { type: "geojson", data: { type: "FeatureCollection", features: lineFeatures } });
+    map.addSource("flow-points", { type: "geojson", data: { type: "FeatureCollection", features: pointFeatures } });
+
+    map.addLayer({
+      id: "flow-lines-glow", type: "line", source: "flow-lines",
+      paint: { "line-color": ["get", "color"], "line-width": 6, "line-opacity": 0.18, "line-blur": 2 },
+    });
+    map.addLayer({
+      id: "flow-lines", type: "line", source: "flow-lines",
+      layout: { "line-cap": "round" },
+      paint: { "line-color": ["get", "color"], "line-width": 2.5, "line-opacity": 0.9 },
+    });
+    map.addLayer({
+      id: "flow-points", type: "circle", source: "flow-points",
+      paint: { "circle-radius": 6, "circle-color": "#e6edf3", "circle-stroke-width": 2, "circle-stroke-color": "#0a0d12" },
+    });
+    map.addLayer({
+      id: "flow-labels", type: "symbol", source: "flow-points",
+      layout: { "text-field": ["get", "name"], "text-size": 12, "text-offset": [0, -1.4], "text-anchor": "bottom",
+        "text-font": ["Noto Sans Regular"] },
+      paint: { "text-color": "#e6edf3", "text-halo-color": "#0a0d12", "text-halo-width": 1.4 },
+    });
+
+    // Legend: one row per crime type actually present, not the full fixed set.
+    const present = [...new Set(flows.map(f => f.crimeTypeName))];
+    document.getElementById("legend-rows").innerHTML = present
+      .map(name => `<div class="row"><span class="sw" style="background:${colorFor(name)}"></span>${name}</div>`)
+      .join("");
+
+    const popup = new maplibregl.Popup({ closeButton: false, offset: 10 });
+    map.on("mouseenter", "flow-lines", (e) => {
+      map.getCanvas().style.cursor = "pointer";
+      const p = e.features[0].properties;
+      popup.setLngLat(e.lngLat).setHTML(
+        `<div class="pop-title">${p.title}</div>` +
+        `<div class="pop-row">${p.fromName} &rarr; ${p.toName} &middot; ${p.crimeTypeName}</div>` +
+        `<div class="pop-row" style="margin-top:6px"><b>${p.assignedTo}</b>: ${p.assignmentReason}</div>`
+      ).addTo(map);
+    });
+    map.on("mouseleave", "flow-lines", () => { map.getCanvas().style.cursor = ""; popup.remove(); });
+
+    if (pointFeatures.length) {
+      const lngs = pointFeatures.map(f => f.geometry.coordinates[0]);
+      const lats = pointFeatures.map(f => f.geometry.coordinates[1]);
+      map.fitBounds([[Math.min(...lngs) - 0.6, Math.min(...lats) - 0.6], [Math.max(...lngs) + 0.6, Math.max(...lats) + 0.6]], { padding: 40, duration: 0 });
+    }
+  }).catch(err => {
+    document.getElementById("note").textContent = "Couldn't load flow data: " + err.message;
+  });
+});
+</script>

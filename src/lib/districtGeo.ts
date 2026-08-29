@@ -1,17 +1,15 @@
 // -----------------------------------------------------------------------------
-// P4.9 - real district centroids + a schematic 2D projection, shared by the
-// district choropleth and the cross-district flow map on /crime-hotspots.
+// P4.9 - real district centroids for /crime-hotspots's choropleth and
+// cross-district flow map (both real MapLibre basemaps as of 2026-08-30 -
+// see crime-map-source/choropleth.html and flows.html).
 //
-// There is no Karnataka district-boundary GeoJSON bundled into this app (and
-// none was fabricated for this - see PLAN.md P4.9's own note on not faking
-// precise boundaries). What we DO have is real per-FIR latitude/longitude
-// (P4.1, caseFacts.json) for all 5,000 cases. getDistrictCentroids() takes
-// the mean of each district's real case coordinates - a genuine, data-derived
-// point per district, not an invented one - and projectSchematic() lays those
-// 8 points out on a simple 0-100 grid that preserves real relative
-// north-south/east-west ordering (a plain linear scale, not a map
-// projection). Both consuming views must label this as illustrative, not a
-// real boundary map.
+// There is no Karnataka district-boundary GeoJSON bundled into this app, and
+// none is fabricated to fill that gap. What IS real: per-FIR latitude/
+// longitude (P4.1, caseFacts.json) for all 5,000 cases. getDistrictCentroids()
+// takes the mean of each district's real case coordinates - a genuine,
+// data-derived point per district, not an invented one - and both map pages
+// plot it directly via /crime-map/data/districts.json and flows.json rather
+// than a schematic projection.
 // -----------------------------------------------------------------------------
 import { getCaseWorklist } from "./caseWorklist";
 import { districts } from "./data";
@@ -44,35 +42,4 @@ export function getDistrictCentroids(): DistrictPoint[] {
     return { slug: d.slug, name: d.name, dbId: d.dbId, lat, lng, sampleSize: n };
   });
   return cache;
-}
-
-export type SchematicPoint = { x: number; y: number };
-
-/** Projects real lat/lng points into a 0-100 x 0-100 box, padded, with
- *  latitude inverted (north = up, matching how a map reads). Simple linear
- *  min-max scaling - not equirectangular, not any real projection - fine for
- *  8 widely-separated points laid out schematically, not for precision. */
-export function projectSchematic(
-  points: DistrictPoint[],
-  padding = 14
-): Map<string, SchematicPoint> {
-  const withCoords = points.filter((p) => p.sampleSize > 0);
-  const lats = withCoords.map((p) => p.lat);
-  const lngs = withCoords.map((p) => p.lng);
-  const latMin = Math.min(...lats);
-  const latMax = Math.max(...lats);
-  const lngMin = Math.min(...lngs);
-  const lngMax = Math.max(...lngs);
-  const latSpan = latMax - latMin || 1;
-  const lngSpan = lngMax - lngMin || 1;
-
-  const out = new Map<string, SchematicPoint>();
-  for (const p of points) {
-    if (p.sampleSize === 0) continue;
-    out.set(p.slug, {
-      x: padding + ((p.lng - lngMin) / lngSpan) * (100 - 2 * padding),
-      y: padding + ((latMax - p.lat) / latSpan) * (100 - 2 * padding),
-    });
-  }
-  return out;
 }

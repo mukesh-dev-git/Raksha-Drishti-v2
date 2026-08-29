@@ -35,6 +35,7 @@ export default function PersonsPage() {
       title="Persons"
       description="Every person in the criminal record register, searchable by name. Repeat subjects (2+ cases) are flagged automatically."
       breadcrumbs={[{ label: "Persons", href: "/persons" }]}
+      heroImageSrc="/page-hero/persons.png"
     >
       <PersonSearchClient people={rows} />
     </PageShell>

@@ -23,6 +23,7 @@ export default function CasesPage() {
       title="Cases"
       description="Every registered case, searchable and filterable — open a row for the full case record. Not a category picker."
       breadcrumbs={[{ label: "Cases", href: "/cases" }]}
+      heroImageSrc="/page-hero/cases.png"
     >
       <CaseWorklistClient cases={cases} />
     </PageShell>

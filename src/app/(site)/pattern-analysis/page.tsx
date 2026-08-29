@@ -23,6 +23,7 @@ export default function PatternAnalysisPage() {
       title="Pattern Analysis"
       description="Cases from different investigations that share a distinctive method — same combination of charged sections, not just the same crime type. Every cluster below links records that were never compared to each other until now."
       breadcrumbs={[{ label: "Pattern Analysis", href: "/pattern-analysis" }]}
+      heroImageSrc="/page-hero/pattern-analysis.png"
     >
       {clusters.length === 0 ? (
         <div className="rounded-xl border border-dashed border-line bg-surface p-8 text-center text-sm text-muted">
