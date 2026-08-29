@@ -26,6 +26,7 @@ type CaseFact = {
   policePersonId: number | null;
   sections: string[];
   incidentFromDate: string | null;
+  incidentToDate: string | null;
   crimeRegisteredDate: string | null;
   gravityOffenceId: number;
   caseStatusId: number;
@@ -63,6 +64,17 @@ export type WorklistCase = {
   sections: string[];
   policeStationName: string | null;
   policePersonId: number | null;
+  /** P4 analytics additions - real fields straight from caseFacts.json that
+   *  nothing read before now. crimeMinorHeadId is the raw CrimeSubHeadID
+   *  (1 Theft/2 Assault/3 Fraud/4 Burglary) alongside the existing name/slug,
+   *  for grouping without a second lookup. gravityOffenceId is 1 Heinous/
+   *  2 Non-Heinous. incidentFromDate/incidentToDate are the raw stored
+   *  datetimes - isPeriodOffence() in incidentTime.ts must be checked before
+   *  treating incidentFromDate as a real time-of-day (see that file). */
+  crimeMinorHeadId: number;
+  gravityOffenceId: number;
+  incidentFromDate: string | null;
+  incidentToDate: string | null;
 };
 
 let cache: WorklistCase[] | null = null;
@@ -127,6 +139,10 @@ export function getCaseWorklist(): WorklistCase[] {
       sections: f.sections,
       policeStationName: f.policeStationName,
       policePersonId: f.policePersonId,
+      crimeMinorHeadId: f.crimeMinorHeadId,
+      gravityOffenceId: f.gravityOffenceId,
+      incidentFromDate: f.incidentFromDate,
+      incidentToDate: f.incidentToDate,
     };
   }).sort((a, b) => (b.registeredDate ?? "").localeCompare(a.registeredDate ?? ""));
 

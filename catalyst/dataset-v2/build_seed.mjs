@@ -184,6 +184,20 @@ for (const row of caseMasterRows) {
 }
 writeCsv("ChargesheetDetails", chargesheetCols, chargesheetRows);
 
+// P4.4 - the same chargesheetRows bundled for src/ as a small NoSQL-style
+// lookup (CaseMasterID -> csdate), so the app can compute chargesheet rate +
+// time-to-chargesheet without shipping the whole CSV or re-deriving the
+// delay-days formula client-side. One row per case actually charge-sheeted
+// (CaseStatusID 2) - a case absent from this map was never charge-sheeted.
+const chargesheetDates = {};
+for (const row of chargesheetRows) chargesheetDates[row.CaseMasterID] = row.csdate;
+writeFileSync(
+  path.join(outNoSqlDir, "chargesheetDates.json"),
+  JSON.stringify(chargesheetDates),
+  "utf-8"
+);
+console.log(`chargesheetDates.json`.padEnd(30), `${Object.keys(chargesheetDates).length} charge-sheeted cases`);
+
 // --- 3. New NoSQL collections --------------------------------------------------
 // Each record gets scenarioId + caseMasterIds so it's traceable back to the
 // FIR(s) it belongs to (citation-grounding, features.md #5), and resolvedPersons
@@ -381,6 +395,11 @@ for (const c of dataset.cases) {
       policePersonId: fir.PolicePersonID ?? null,
       sections,
       incidentFromDate: fir.IncidentFromDate,
+      // P4.2 - needed alongside incidentFromDate so src/ can call the same
+      // isPeriodOffence(from, to) test geo_time.mjs uses at generation time,
+      // without which a multi-week offence's stored 00:00 would look like a
+      // real midnight incident to any hour-of-day analysis.
+      incidentToDate: fir.IncidentToDate,
       crimeRegisteredDate: fir.CrimeRegisteredDate,
       gravityOffenceId: fir.GravityOffenceID,
       caseStatusId: fir.CaseStatusID,
@@ -410,6 +429,7 @@ for (const fir of bulk.caseMasterRows) {
     policePersonId: fir.PolicePersonID ?? null,
     sections,
     incidentFromDate: fir.IncidentFromDate,
+    incidentToDate: fir.IncidentToDate,
     crimeRegisteredDate: fir.CrimeRegisteredDate,
     gravityOffenceId: fir.GravityOffenceID,
     caseStatusId: fir.CaseStatusID,
