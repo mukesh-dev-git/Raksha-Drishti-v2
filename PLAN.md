@@ -25,17 +25,18 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 | **P3** Person spine | ✅ **done** | P3.1+P3.3 (`589721d`) — fusion + timeline merge, 2 real bugs found and fixed. P3.2 (`/persons`) landed via the P2 restructure — see P2.1c. |
 | **P4** Real analytics | ⚪ **mixed** | **P1.2 landed 2026-08-29, scaled to 5,000 cases same day (SCRB-scale ask)** - `/cases` and `/districts` now run on real statewide volume with real per-district clearance (verified live, real pagination added to the FIR Index so 5,000 rows stays fast), unblocking P4.1-P4.3's real map/trend/hotspot work (not yet built - that's still open, P1.2 only supplied the volume). **P4.6+P4.7 done** (`f9fde9e`) — MO-clustering (3 real clusters) and the repeat-offender view (6 real people), both live, deliberately still scoped to the 15 evidence-rich scenarios only (see P1.2's note on why, still true at 5,000 - unaffected, checked). P4.8 still open. |
 | **P5** AI | 🔵 **in progress** | P5.0-P5.3, P5.2b, P5.3b ✅ — real findings now visible in the Investigation Workspace UI (2/15, honest). **P5.4 is next.** P5.8 (ask-anything chatbot, real case-file links) added, not started. |
-| **P6** Zia | 🚧 **gated** | Needs the P6.0 yes/no on generating images. |
+| **P6** Zia | ✅ **closed, 2026-08-29** | Decision: no synthetic images. Track closed cleanly rather than built against fabricated source images. |
 | **P7** Kannada voice (Zia) | ⚪ **ready** | Not gated like P6 - P7.1 can start from data we already have. |
-| **X** Cross-cutting | 🔵 | X3 ✅ · X1, X2 open |
+| **X** Cross-cutting | ✅ **done** | X1, X2, X3 all done - see below. |
 | **P9** Refined-prototype push | ✅ **done, today** | All five sub-items shipped and independently verified: P9.1+P9.1b (suspicion score + tool-schema guardrail), P9.3 (pattern/repeat cross-links), P9.2 (real IO assignment), P9.4 (relationship graph, built on a subagent's branch `feature/case-relationship-graph`, merged to `main` after review - the only real conflict was two adjacent import lines in `cases/[caseId]/page.tsx`; every other overlapping file (`caseWorklist.ts`, `contradictionDetector.ts`, `personFusion.ts`, `.gitignore`) merged clean with nothing lost, re-verified with `tsc --noEmit`, `next build`, and a live check on cases 9001+9002 showing the graph, MO-cluster card, repeat badges and IO picker all rendering together). |
 
 **Done so far:** P0.1–P0.5 · P1.1 · P1.2 · P1.3 · **P2 (whole track)** · P3.1 ·
 P3.3 · P5.0 · P5.1 · P5.2 · P5.3 · X3
 
 **Ready to pick up right now, no decisions needed:** **P1.6** (wipe +
-reimport - folds in P1.1 and P1.2 together) · P4.8 (→ P5.7) · P5.4 · P5.8 ·
-P7.1 · X1 · X2
+reimport - folds in P1.1 and P1.2 together) · P4.8 (→ P5.7) · P5.4 (in
+progress, subagent) · P5.8 (in progress, subagent) · P7.1 (in progress,
+subagent)
 
 **Blocked on someone, not on effort:**
 
@@ -43,8 +44,8 @@ P7.1 · X1 · X2
 |---|---|
 | ~~All of P2~~ | ~~PR #1 — merge or close~~ — **unblocked 2026-08-27**, resolved by decision (proceed independently) |
 | ~~All of P5~~ | ~~a working access token~~ — **unblocked**, `src/lib/llm.ts` verified live |
-| All of P6 | **P6.0 — do we generate images at all?** "No" closes the track cleanly |
-| P1.5, P4.5 | **Agreement on the caste/religion framing** before anything is built |
+| ~~All of P6~~ | ~~P6.0 — do we generate images at all?~~ — **resolved 2026-08-29: no**, track closed |
+| P1.5, P4.5 | **Agreement on the caste/religion framing** — **resolved 2026-08-29: aggregate-only, victim-side, with denominators, never offender propensity** - build proceeding under this framing |
 
 **The honest read on P4:** it's the biggest remaining prize — 4 of the PS's 6
 capabilities — and as of P1.2 (2026-08-29, scaled to 5,000 the same day) it
@@ -68,7 +69,7 @@ P2  Route restructure  🔵 in progress ── P2.1/1a/1b/1c done, P2.1d next
 P3  Person spine       ✅ done       ── P3.2 landed via P2.1c
 P4  Real analytics     ⚪ P4.6/P4.7 done, P1.2 unblocked P4.1-P4.3 ── still open work
 P5  AI features        🔵 P5.0-P5.3, P5.2b, P5.3b done ── P5.4 is next
-P6  Zia                🚧 gated on P6.0 ── only if we get images
+P6  Zia                ✅ closed 2026-08-29 ── no images, decided
 P7  Kannada voice       ⚪ ready       ── not gated like P6, can start now
 ```
 
@@ -770,18 +771,22 @@ reasons over it.*
       Investigation Workspace) - the "which cases involve X" example above
       needs the former; a per-case assistant is a smaller, easier v1.
 
-## P6 — Zia (gated)
+## P6 — Zia ✅ closed (2026-08-29, decision: no synthetic images)
 
-- [ ] **P6.0** Decide: do we generate synthetic case-document scans / CCTV
-      stills at all? **If no, close P6 and say so.**
-- [ ] **P6.1** OCR a scanned FIR → text → GLM structuring. Good demo of
-      "paper record → queryable intelligence."
-- [ ] **P6.2** Qwen-VL on a CCTV still, cross-checked against the
-      `CCTVSightings` record.
-- [ ] **P6.3** Zia NER on `BriefFacts` as a cheap cross-check on P3.1.
+- [x] **P6.0** Decided: **no** synthetic case-document scans / CCTV stills.
+      Closing P6 cleanly rather than building against fabricated source
+      images - same discipline as everywhere else in this project (no
+      invented evidence, no analytics theatre).
+- [x] **P6.1** ~~OCR a scanned FIR~~ — not built. Needs a synthetic scanned
+      document image, which P6.0 ruled out.
+- [x] **P6.2** ~~Qwen-VL on a CCTV still~~ — not built. Needs a synthetic
+      CCTV still, which P6.0 ruled out.
+- [x] **P6.3** ~~Zia NER on `BriefFacts`~~ — not built. Genuinely didn't
+      need an image (pure text), but closing the whole track per the
+      decision rather than cherry-picking one item out of a "closed" track.
 
 **Explicitly not building:** sentiment analysis on crime complaints (not a
-policing signal), face recognition, barcode scanning.
+policing signal), face recognition, barcode scanning, and now all of P6.
 
 ## P7 — Kannada voice pipeline (Zia Trained NLP Models)
 
@@ -810,13 +815,29 @@ P6.0's decision.*
 
 ## Cross-cutting
 
-- [ ] **X1** Add the 7 Ranges as coarser options in the district drill-down
-      filter (`DistrictFilter.tsx`), each resolving to its 3–6 districts;
-      generalise `scenarioInDistrict()` to a district-**set** test. A Range
-      IGP is a real rank, and this is a filter option now, not a third role.
-      (`RESEARCH_AND_PLAN.md` §1.4a)
-- [ ] **X2** Document the commissionerate-vs-district modeling shortcut in
-      `DATA_STORE_SCHEMA.md`. (§1.4c)
+- [x] **X1** Done (2026-08-29). Real 7 Ranges (`src/lib/ranges.ts`, sourced
+      from ksp.karnataka.gov.in - same source `RESEARCH_AND_PLAN.md` §1.5
+      already cites) added as `<optgroup>` options in the district drill-down
+      filter (`DistrictFilter.tsx`), each resolving to its seeded districts.
+      **Honest limitation stated explicitly, not glossed over:** the seed
+      only covers 8 of Karnataka's ~30 real districts, so every Range here
+      is partially represented (1-2 seeded districts, not each range's real
+      3-6) - `ranges.ts`'s own header comment says so, and
+      `districtSetLabel()` never claims more coverage than the seed has.
+      `scenarioInDistrict()` generalised from a single optional `districtId`
+      to an optional `districtIds` array (a district-**set** test) -
+      threaded through `dashboardData.ts`'s `getFeaturedScenario`/
+      `getRealAlerts`/`getRealEvidenceFeed`, `api.ts`'s `getSummary`/
+      `getCaseTypes`, and the live `/api/summary`/`/api/casetypes` route
+      handlers (comma-separated `?district=` query param, backward-
+      compatible with a single value). Typecheck + production build clean -
+      confirms no other call site broke on the signature change.
+- [x] **X2** Done (2026-08-29). Commissionerate-vs-district modeling
+      shortcut documented explicitly in `catalyst/DATA_STORE_SCHEMA.md`
+      right on the `District` table's own reference line, not buried
+      elsewhere - states plainly that `/districts`, `districtStats.ts`, and
+      `caseFacts.json`'s `districtId` are reporting revenue-district totals,
+      Bengaluru Urban included, not a true commissionerate split. (§1.4c)
 - [x] **X3** ~~CID assignment derived from district count~~ — fixed, commit
       `38853d5`. (§1.4b)
 
@@ -827,8 +848,9 @@ P6.0's decision.*
 1. ~~**PR #1 — merge or close?** Gates all of P2.~~ Resolved 2026-08-27 - P2
    proceeded independently, PR #1 left for the user to close/discuss with
    the author directly. No longer gates anything.
-2. **P1.5 framing** — agree the caste/religion presentation before building it.
-3. **P6.0** — images, yes or no?
+2. ~~**P1.5 framing**~~ — resolved 2026-08-29: aggregate-only, victim-side,
+   with denominators, never offender propensity.
+3. ~~**P6.0** — images, yes or no?~~ — resolved 2026-08-29: no, P6 closed.
 4. **Show the P5.3 eval in the UI?** "Found 11 of 15, here are the 4 it
    missed" is a far stronger claim to a panel than a silent AI panel.
       *Recommend yes.*

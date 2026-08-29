@@ -17,23 +17,26 @@ const CLEARED_STATUS = new Set([2, 3]);
 // granularity the data actually supports instead of interpolating a false
 // monthly shape.
 //
-// `district` scopes every count to one real district (via the same
-// CaseMaster/Unit PoliceStationID join used by /api/district-stats) - the
-// Dashboard's "Viewing as: District Officer" mode uses this so the numbers
-// shown are genuinely that district's, not the whole state's with a label
-// change. crimeCategories stays statewide (categories are a fixed lookup
-// table, not something a district "has fewer of"); districtsCovered
-// becomes 1 when scoped, since that's literally true.
+// `district` scopes every count to one OR MORE real districts, comma-
+// separated (via the same CaseMaster/Unit PoliceStationID join used by
+// /api/district-stats) - the Dashboard's drill-down filter uses this, now
+// including X1's Range option (a Range resolves to its 1-2 seeded
+// districts), so the numbers shown are genuinely that district/Range's, not
+// the whole state's with a label change. crimeCategories stays statewide
+// (categories are a fixed lookup table, not something a district "has fewer
+// of"); districtsCovered becomes the real scoped count when filtered.
 export async function GET(req: NextRequest) {
   const districtParam = req.nextUrl.searchParams.get("district");
-  const districtId = districtParam ? parseInt(districtParam, 10) : null;
+  const districtIds = districtParam
+    ? districtParam.split(",").map((s) => parseInt(s, 10)).filter((n) => Number.isFinite(n))
+    : [];
 
   try {
     const [cases, cats, dists, units] = await Promise.all([
       zcqlAll(req, "SELECT CaseMasterID, CrimeRegisteredDate, CaseStatusID, PoliceStationID FROM CaseMaster"),
       zcqlAll(req, "SELECT CrimeSubHeadID FROM CrimeSubHead"),
       zcqlAll(req, "SELECT DistrictID FROM District"),
-      districtId ? zcqlAll(req, "SELECT UnitID, DistrictID FROM Unit") : Promise.resolve([]),
+      districtIds.length > 0 ? zcqlAll(req, "SELECT UnitID, DistrictID FROM Unit") : Promise.resolve([]),
     ]);
 
     const districtByUnit = new Map<number, number>(
@@ -49,7 +52,7 @@ export async function GET(req: NextRequest) {
     const solvedByYear: Record<number, number> = {};
     for (const row of cases) {
       const cm = pick(row, "CaseMaster");
-      if (districtId && districtByUnit.get(Number(cm.PoliceStationID)) !== districtId) continue;
+      if (districtIds.length > 0 && !districtIds.includes(districtByUnit.get(Number(cm.PoliceStationID)) ?? -1)) continue;
       totalCases += 1;
       const year = parseInt(String(cm.CrimeRegisteredDate).slice(0, 4), 10);
       const cleared = CLEARED_STATUS.has(Number(cm.CaseStatusID));
@@ -63,7 +66,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       totalCases,
       crimeCategories: cats.length,
-      districtsCovered: districtId ? 1 : dists.length,
+      districtsCovered: districtIds.length > 0 ? districtIds.length : dists.length,
       solvedCases,
       activeInvestigations: totalCases - solvedCases,
       detectionRate: totalCases ? Math.round((solvedCases / totalCases) * 1000) / 10 : 0,

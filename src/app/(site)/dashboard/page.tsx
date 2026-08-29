@@ -9,7 +9,7 @@ import FeaturedInvestigationCard from "@/components/dashboard/FeaturedInvestigat
 import AlertsPanel from "@/components/dashboard/AlertsPanel";
 import EvidenceFeedStrip from "@/components/dashboard/EvidenceFeedStrip";
 import { getSummary, getCaseTypes } from "@/lib/api";
-import { getFeaturedScenario, getRealAlerts, getRealEvidenceFeed, districtLabel } from "@/lib/dashboardData";
+import { getFeaturedScenario, getRealAlerts, getRealEvidenceFeed, districtSetLabel } from "@/lib/dashboardData";
 import { getMoPatternClusters } from "@/lib/moPatterns";
 import { getRepeatCaseSuspects } from "@/lib/personFusion";
 import DistrictFilter from "@/components/dashboard/DistrictFilter";
@@ -26,11 +26,13 @@ import DistrictFilter from "@/components/dashboard/DistrictFilter";
 // can't back.
 //
 // The default view is statewide - this is SCRB's screen (see
-// RESEARCH_AND_PLAN.md 1.2). `?district=<DistrictID>` narrows the totals,
-// the featured case, alerts and the evidence feed to one district - the
-// PS's "District-Level Drill-down" ask. The two attention-list pattern
-// signals stay statewide regardless of the filter (see AttentionSignals.tsx
-// for why - a cross-district finding scoped to one district isn't one).
+// RESEARCH_AND_PLAN.md 1.2). `?district=<DistrictID>[,<DistrictID>...]`
+// narrows the totals, the featured case, alerts and the evidence feed to
+// one district (PS's "District-Level Drill-down") OR a Range's districts
+// (X1, RESEARCH_AND_PLAN.md §1.4a - "a coarser filter option", comma-
+// separated, not a third role). The two attention-list pattern signals stay
+// statewide regardless of the filter (see AttentionSignals.tsx for why - a
+// cross-district finding scoped to one district isn't one).
 //
 // District is a FILTER in the URL, not a role in a cookie - see git history/
 // PLAN.md for why a login-time scope was rejected.
@@ -44,14 +46,22 @@ export default async function DashboardPage({
   searchParams: Promise<{ district?: string }>;
 }) {
   const { district } = await searchParams;
-  const parsed = Number(district);
-  const districtId = Number.isFinite(parsed) && parsed > 0 ? parsed : undefined;
+  // X1 - comma-separated for a Range selection (e.g. "4401,4406"), still a
+  // single value for a plain district pick (e.g. "4401") - one parse path
+  // for both, per RESEARCH_AND_PLAN.md §1.4a's "district-set test".
+  const districtIds = district
+    ? district.split(",").map(Number).filter((n) => Number.isFinite(n) && n > 0)
+    : [];
+  const hasFilter = districtIds.length > 0;
 
-  const [summary, caseTypes] = await Promise.all([getSummary(districtId), getCaseTypes(districtId)]);
+  const [summary, caseTypes] = await Promise.all([
+    getSummary(hasFilter ? districtIds : undefined),
+    getCaseTypes(hasFilter ? districtIds : undefined),
+  ]);
 
-  const featured = getFeaturedScenario(districtId);
-  const alerts = getRealAlerts(3, districtId);
-  const evidenceFeed = getRealEvidenceFeed(8, districtId);
+  const featured = getFeaturedScenario(hasFilter ? districtIds : undefined);
+  const alerts = getRealAlerts(3, hasFilter ? districtIds : undefined);
+  const evidenceFeed = getRealEvidenceFeed(8, hasFilter ? districtIds : undefined);
 
   const clusters = getMoPatternClusters();
   const exactClusters = clusters.filter((c) => c.strength === "exact").length;
@@ -88,7 +98,7 @@ export default async function DashboardPage({
 
   return (
     <div className="mx-auto max-w-[1400px] space-y-6 p-6">
-      <DistrictFilter districtId={districtId} />
+      <DistrictFilter districtIds={districtIds} />
 
       {/* Attention list - alerts and cross-district pattern signals first */}
       <div className="space-y-3">
@@ -100,7 +110,7 @@ export default async function DashboardPage({
             ) : (
               <div className="flex items-center justify-center rounded-xl border border-dashed border-line bg-surface p-8 text-center text-sm text-muted">
                 No case currently on record as this district&apos;s own investigation in the seeded dataset — cases
-                touching {districtId ? districtLabel(districtId) : "this district"} may be assigned to CID, or run
+                touching {hasFilter ? districtSetLabel(districtIds) : "this district"} may be assigned to CID, or run
                 jointly with a neighbouring district (see Alerts).
               </div>
             )}

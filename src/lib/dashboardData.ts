@@ -7,6 +7,7 @@
 // not fabricated - no invented deltas, alert counts, or call volumes.
 // -----------------------------------------------------------------------------
 import { caseTypes, districts } from "./data";
+import { ranges } from "./ranges";
 import scenarioMeta from "./nosql-seed/scenarioMeta.json";
 import callRecords from "./nosql-seed/CallRecords.json";
 import transactions from "./nosql-seed/Transactions.json";
@@ -33,12 +34,19 @@ const META: Record<string, ScenarioMeta> = scenarioMeta as Record<string, Scenar
 // "visualize crime patterns across districts and specific police stations" -
 // i.e. one statewide viewer narrowing the view, not a district officer with
 // a restricted login. `districtId` undefined = statewide, the default.
-// A scenario passes the filter if that district is one of the (possibly
-// several - see build_seed.mjs) real districts its FIRs touch.
-export function scenarioInDistrict(scenarioId: string, districtId?: number): boolean {
-  if (districtId === undefined) return true;
+// A scenario passes the filter if any of its real districts (possibly
+// several - see build_seed.mjs) intersects the filter's district set.
+//
+// X1 - generalised from a single optional districtId to an optional
+// districtId ARRAY, per RESEARCH_AND_PLAN.md §1.4a: the Range tier is "a
+// coarser filter option... scenarioInDistrict(id, districtId?) generalises
+// to a district-set test." A single-district filter is just a one-element
+// array now - every existing call site passing one number still works,
+// wrapped as `[districtId]`.
+export function scenarioInDistrict(scenarioId: string, districtIds?: number[]): boolean {
+  if (districtIds === undefined || districtIds.length === 0) return true;
   const meta = META[scenarioId];
-  return !!meta && meta.districtIds.includes(districtId);
+  return !!meta && meta.districtIds.some((id) => districtIds.includes(id));
 }
 
 // The real districts the drill-down filter offers,
@@ -46,6 +54,19 @@ export function scenarioInDistrict(scenarioId: string, districtId?: number): boo
 // from data.ts's real district table, not hand-maintained here.
 export function districtLabel(districtId: number): string {
   return districts.find((d) => d.dbId === districtId)?.name ?? `District ${districtId}`;
+}
+
+// X1 - the multi-district label for a Range selection, e.g. "Central Range
+// (Bengaluru Urban, Tumakuru)". Falls back to a comma-joined district list
+// if the set doesn't match a known Range exactly (still honest, just less
+// pretty) - never silently drops a district from the label.
+export function districtSetLabel(districtIds: number[]): string {
+  const names = districtIds.map(districtLabel);
+  if (names.length === 1) return names[0];
+  const match = ranges.find(
+    (r) => r.districtDbIds.length === districtIds.length && r.districtDbIds.every((id) => districtIds.includes(id))
+  );
+  return match ? `${match.name} (${names.join(", ")})` : names.join(", ");
 }
 
 // scenarioId -> real /cases/[caseId] URL (P2 restructure - the real,
@@ -68,14 +89,14 @@ export function scenarioLink(scenarioId: string): string | null {
 // drilling into a district wants that district's whole picture, not just
 // what its own unit runs. Unfiltered, prefer a CID case as the more
 // state-level-relevant one, falling back to any.
-function pickFeaturedScenarioId(districtId?: number): string | null {
-  const ids = Object.keys(META).filter((id) => scenarioInDistrict(id, districtId));
-  if (districtId !== undefined) return ids[0] ?? null;
+function pickFeaturedScenarioId(districtIds?: number[]): string | null {
+  const ids = Object.keys(META).filter((id) => scenarioInDistrict(id, districtIds));
+  if (districtIds !== undefined && districtIds.length > 0) return ids[0] ?? null;
   return ids.find((id) => META[id].assignedTo === "CID") ?? ids[0] ?? null;
 }
 
-export function getFeaturedScenario(districtId?: number) {
-  const scenarioId = pickFeaturedScenarioId(districtId);
+export function getFeaturedScenario(districtIds?: number[]) {
+  const scenarioId = pickFeaturedScenarioId(districtIds);
   if (!scenarioId) return null;
   const meta = META[scenarioId];
   const link = scenarioLink(scenarioId);
@@ -133,9 +154,9 @@ export type Alert = {
 
 // Real evidence contradictions only - no fabricated "crime spike" style
 // alerts, since there's no real anomaly-detection signal behind them.
-export function getRealAlerts(limit = 3, districtId?: number): Alert[] {
+export function getRealAlerts(limit = 3, districtIds?: number[]): Alert[] {
   return (contradictions as { id: string; scenarioId: string; description: string }[])
-    .filter((c) => scenarioInDistrict(c.scenarioId, districtId))
+    .filter((c) => scenarioInDistrict(c.scenarioId, districtIds))
     .slice(0, limit)
     .map((c) => {
       const meta = META[c.scenarioId];
@@ -171,7 +192,7 @@ function personLabel(rec: { resolvedPersons?: Record<string, { name?: string }> 
 }
 
 // Most recent real evidence items across every seeded scenario, newest first.
-export function getRealEvidenceFeed(limit = 6, districtId?: number): EvidenceFeedItem[] {
+export function getRealEvidenceFeed(limit = 6, districtIds?: number[]): EvidenceFeedItem[] {
   const items: EvidenceFeedItem[] = [
     ...(callRecords as any[]).map((r) => ({
       id: r.id,
@@ -205,7 +226,7 @@ export function getRealEvidenceFeed(limit = 6, districtId?: number): EvidenceFee
       timestamp: `${r.statementDate}T00:00:00`,
       link: scenarioLink(r.scenarioId),
     })),
-  ].filter((item) => scenarioInDistrict(item.scenarioId, districtId));
+  ].filter((item) => scenarioInDistrict(item.scenarioId, districtIds));
   items.sort((a, b) => (a.timestamp < b.timestamp ? 1 : -1));
   return items.slice(0, limit);
 }
