@@ -68,8 +68,8 @@ statewide questions from them.
 <tr>
 <td width="50%">
 
-<!-- SWAP: replace assets/demo-hotspots.svg with assets/demo-hotspots.gif -->
-<img src="assets/demo-hotspots.svg" alt="Statewide hotspots — choropleth, kernel density and cross-district flow layers" width="100%">
+<!-- Static screenshot for now (kernel-density mode, all 8 districts) - see assets/README.md for the animated-GIF upgrade path -->
+<img src="assets/demo-hotspots.png" alt="Statewide hotspots — real kernel-density surface across all 8 districts, 5,000 plotted FIRs" width="100%">
 
 **Statewide hotspots**
 Choropleth, kernel density and cross-district flow layers over 5,000 georeferenced incidents, scrubbable across 2022–2026.
@@ -77,8 +77,8 @@ Choropleth, kernel density and cross-district flow layers over 5,000 georeferenc
 </td>
 <td width="50%">
 
-<!-- SWAP: replace assets/demo-case.svg with assets/demo-case.gif -->
-<img src="assets/demo-case.svg" alt="FIR Index to case detail to a contradiction flagged with its cited record IDs" width="100%">
+<!-- Static screenshot for now - see assets/README.md for the animated-GIF upgrade path -->
+<img src="assets/demo-case.png" alt="Case detail with a verified contradiction and its cited record IDs, plus the AI-detected match and relationship graph" width="100%">
 
 **FIR → case → contradiction**
 The FIR Index down to one case: facts, sections, sibling FIRs, the evidence timeline, and contradictions **shown with their citations**.
@@ -88,8 +88,8 @@ The FIR Index down to one case: facts, sections, sibling FIRs, the evidence time
 <tr>
 <td width="50%">
 
-<!-- SWAP: replace assets/demo-fusion.svg with assets/demo-fusion.gif -->
-<img src="assets/demo-fusion.svg" alt="One person's profile assembled from call records, CCTV, transactions and statements" width="100%">
+<!-- Static screenshot for now - see assets/README.md for the animated-GIF upgrade path -->
+<img src="assets/demo-fusion.png" alt="One person's profile — suspicion score with its real factor breakdown, and a cross-source timeline assembled from calls, CCTV and transactions" width="100%">
 
 **Person fusion**
 One individual assembled from calls, CCTV, transactions and statements — across scenarios, not just within one.
@@ -97,11 +97,11 @@ One individual assembled from calls, CCTV, transactions and statements — acros
 </td>
 <td width="50%">
 
-<!-- SWAP: replace assets/demo-ask.svg with assets/demo-ask.gif -->
-<img src="assets/demo-ask.svg" alt="Ask Anything answering a question with clickable citations to real cases" width="100%">
+<!-- Static screenshot for now - see assets/README.md for the animated-GIF upgrade path -->
+<img src="assets/demo-ask.png" alt="Ask Anything mid-query, showing the real tool-calling round in progress, not a canned response" width="100%">
 
 **Ask Anything**
-A tool-calling agent over the whole dataset — not a prompt stuffed with 5,000 rows — answering with clickable, checkable citations.
+A tool-calling agent over the whole dataset — not a prompt stuffed with 5,000 rows — every citation checked against the real register before it can render. Multi-round tool calls can take real time (or occasionally give up rather than guess); shown here mid-query, not a canned response.
 
 </td>
 </tr>
