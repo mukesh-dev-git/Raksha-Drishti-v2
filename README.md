@@ -1,341 +1,364 @@
-# Raksha-Drishti
+<div align="center">
 
-**Karnataka State Police — Crime Analytics & Investigation Portal.**
+<img src="assets/hero.svg" alt="Raksha-Drishti — Crime Analytics & Investigation Portal, Karnataka State Crime Records Bureau" width="100%">
 
-A Next.js (App Router) portal for viewing crime counts and hotspots,
-searching cases/persons/districts directly, working a real FIR Index down to
-one case's full record, and surfacing cross-district patterns and repeat
-offenders statewide. Built with a dignified, accessible government-portal
-design system.
+<br>
 
-## Project status — read before deploying or touching the Data Store
+![Next.js 15](https://img.shields.io/badge/Next.js-15-0B2E59?style=flat-square&logo=nextdotjs&logoColor=white)
+![React 19](https://img.shields.io/badge/React-19-0B2E59?style=flat-square&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-strict-0B2E59?style=flat-square&logo=typescript&logoColor=3178C6)
+![Zoho Catalyst](https://img.shields.io/badge/Zoho%20Catalyst-Slate%20%C2%B7%20Data%20Store%20%C2%B7%20NoSQL-C8202F?style=flat-square)
+![GLM-4.7-Flash](https://img.shields.io/badge/AI-GLM--4.7--Flash%20via%20QuickML-B36BD8?style=flat-square)
+![WCAG 2.1 AA](https://img.shields.io/badge/WCAG-2.1%20AA-138808?style=flat-square)
+![Live Demo](https://img.shields.io/badge/●_LIVE-raksha--drishti--v2.onslate.in-138808?style=flat-square)
 
-This is the **private** continuation repo for KSP Datathon26 (team Apex
-Analytics). The original submitted repo (public,
-`github.com/mukesh-dev-git/Raksha-Drishti-final`) is **frozen** — don't push
-there, don't change its visibility. This repo's `main` tracks a separate
-private remote.
+### **[▶ Open the live prototype](https://raksha-drishti-v2-byahjtre.onslate.in/)**
 
-Same split on the backend: **two Zoho Catalyst projects** exist —
-`RakshaDrishti` (original, frozen, only 4 Data Store tables) and
-`Raksha-Dhrishti-v2` (active, all continued work). **Always confirm the
-active project** (`catalyst.cmd project:list`) before running `deploy` or
-any `ds:import`/`ds:export`. The app is hosted on **Catalyst Slate**
-(git-push-based auto-deploy, not the old Web Client Hosting path) at
-`https://raksha-drishti-v2-byahjtre.onslate.in/`.
+<i>Raksha-Drishti — "protection through vision."</i>
+<br>
+<b>A statewide crime-records intelligence portal for the Karnataka State Crime Records Bureau.</b>
 
-**[`catalyst/README.md`](catalyst/README.md) is the source of truth for
-everything backend** — Slate hosting/deploy gotchas, the full 21-table Data
-Store schema build status, the 6 seeded NoSQL investigation-intelligence
-collections, and every live API route. **Read it before touching the Data
-Store, NoSQL, or deploy config** — don't re-derive the schema from
-`Police_FIR_ER_Diagram.pdf` by hand, and don't assume a Slate quirk is a
-platform bug before checking there (several "bugs" turned out to be our own
-code — see that file's notes on `dynamicParams`/`force-dynamic` and
-`X-Frame-Options`). Column-level schema reference:
-[`catalyst/DATA_STORE_SCHEMA.md`](catalyst/DATA_STORE_SCHEMA.md).
+<br>
 
-**Live data status:** as of the P2 cases restructure (2026-08-28), **every
-page under `/cases`, `/districts`, `/persons`, `/repeat-offenders`,
-`/pattern-analysis`, and the dashboard's attention list is built from real
-seeded data** — the bundled seed JSON under `src/lib/nosql-seed/`, not a
-mock generator. There is no fallback-to-fake-data path left in this part of
-the app; the old `data.ts` placeholder rows (`caseFiles`) and the RNG mock
-generator (`investigationData.ts`) were deleted along with everything that
-only they fed once nothing reachable used them any more.
+<img src="assets/stats.svg" alt="5,000 FIRs · 47 fused persons · 21 Data Store tables · 8 districts · 15 authored scenarios" width="100%">
 
-Dashboard summary and Crime Count/Crime Hotspots' underlying stats
-separately pull **live** data through `/api/*` Route Handlers (real Data
-Store queries, not seed JSON) — see
-[`catalyst/README.md` §3](catalyst/README.md#3-api--️-route-handlers-rd_api-function-retired).
-(`/cases`'s FIR Index used to be one of these live-query pages too, before
-the P2 restructure moved it onto the seed-JSON path described above.)
+</div>
 
-**The app also has its first real write endpoint**: `PATCH
-/api/cases/[caseId]/status`, confirmed working against the live Data Store
-(not just locally typechecked) — see `catalyst/README.md` §5. One honest
-gap: that endpoint writes live, but every read path above still serves the
-bundled seed JSON snapshot, so a live write doesn't show up anywhere in the
-UI yet.
+---
 
-## Where the work stands
+## The problem, as SCRB actually experiences it
 
-**[`PLAN.md`](PLAN.md) is the tracker** — it holds the live checkbox state
-and is the source of truth for what's done and what's next.
-[`RESEARCH_AND_PLAN.md`](RESEARCH_AND_PLAN.md) holds the *why*: the KSP
-domain research, the AI capability survey, and the Data Store audit. This
-section is just the orientation summary; when the two disagree, PLAN.md wins.
+The State Crime Records Bureau is the custodian of crime data for the whole
+state — and is precisely where fragmentation hurts most. Records arrive from
+district units in incompatible shapes; the Bureau is expected to answer
+statewide questions from them.
 
-*Last swept 2026-08-30.*
+<table>
+<tr><th width="50%">What SCRB faces today</th><th width="50%">What Raksha-Drishti does about it</th></tr>
+<tr>
+<td><b>Records are fragmented.</b> FIRs, station registers and evidence artefacts sit in separate systems with no join key. The same person is four different rows.</td>
+<td><b>Entity fusion.</b> One person is resolved to one canonical <code>KA-Pxxxx</code> identity across five source shapes — including sources that carry no ID at all, only a name buried in a free-text account label.</td>
+</tr>
+<tr>
+<td><b>Statewide patterns surface late.</b> A series running across three districts looks like three unrelated local cases until someone happens to notice.</td>
+<td><b>Cross-district pattern detection.</b> MO clustering on shared and rare Act+Section signatures, cross-district flow mapping, and a repeat-offender register that spans jurisdictions rather than stopping at a district line.</td>
+</tr>
+<tr>
+<td><b>Trend reporting is retrospective.</b> Monthly compilations tell you what already happened; abnormal movement is judged by eye.</td>
+<td><b>Statistical trend anomaly detection.</b> Control charts flag movement outside expected variation, alongside a time-of-day × day-of-week concentration heatmap and per-district pendency and clearance rates.</td>
+</tr>
+<tr>
+<td><b>Investigators cross-reference by hand.</b> Checking a statement against a call log, a transaction and a camera sighting is manual, slow, and easy to skip.</td>
+<td><b>One merged timeline per person, and a detector over it.</b> Contradictions across sources are flagged automatically — and every flag cites the exact record IDs it came from.</td>
+</tr>
+</table>
 
-**Done — P0, P2, P3, P4 (whole tracks), most of P5 and P9, P6 closed, X1–X3**
+> [!IMPORTANT]
+> **The design rule this whole project is built around:** the AI never produces
+> a number, and never makes a claim it cannot cite. Scores, counts, clusters and
+> rates are computed arithmetic over real records. The model writes explanations
+> and questions — and any finding whose cited record ID is not present in the
+> data handed to it is **dropped before it can render**.
 
-- **P2 — the cases restructure, merged and live.** The old
-  `/cases/[caseType]/[district]/...` route tree is retired. In its place: a
-  real FIR Index (`/cases`, 5,000 real FIRs), a single-case detail page
-  (`/cases/[caseId]`), a district lens (`/districts`), a full person register
-  (`/persons`), a working header search, an attention-list dashboard, and the
-  app's first real write endpoint (`PATCH /api/cases/[caseId]/status`,
-  confirmed against the live Data Store).
-- **P1.2 — the seed scaled to 5,000 cases**, real dates spanning 2022–2026,
-  real per-incident coordinates and time-of-day (P1.3/geo_time.mjs), plus
-  1,293 `ChargesheetDetails` rows. Bulk cases deliberately carry no evidence
-  records and are excluded from every evidence-dependent feature (entity
-  fusion, MO-clustering) — a documented scope boundary, not an oversight.
-- **P1.5 — victim/complainant occupation and religion**, a Karnataka-
-  representative statistical draw (`demographics.mjs`), populated for all
-  ~5,003 complainants. **Caste is not built** — see "Blocked" below.
-- **P3 — the person spine.** Entity fusion + cross-source timeline merge
-  across all 15 authored scenarios, surfaced through `/persons` and
-  `/repeat-offenders`.
-- **P4 — real analytics, all 7 sub-items.** Statewide hotspot map with
-  choropleth/kernel-density/flow layers, a time-of-day×day-of-week heatmap,
-  control-chart trend anomaly detection, chargesheet-rate analytics, MO
-  pattern-clustering (`/pattern-analysis`), repeat-offender detection, and a
-  socio-economic breakdown (`/socio-economic`) — none of this needs an LLM,
-  all of it real aggregate math over the 5,000-case dataset.
-- **P5 — AI, mostly done.** `src/lib/llm.ts` verified live against the real
-  Catalyst QuickML endpoint. Contradiction detection with citation
-  guardrails, an AI-suggested next question, and an "Ask Anything" chatbot
-  with grounded, checkable citations — all shipped and independently
-  re-verified. `P5.7` (an AI panel on the crime-count/hotspots pages) is
-  still open.
-- **P7.1 — Kannada text-to-audio** on witness statements, live-verified
-  against the real Zia TTS endpoint. `P7.2–P7.4` (audio-to-text, translation,
-  the full pipeline) are still open.
-- **P9 — the refined-prototype push.** Suspicion scoring with a tool-schema
-  guardrail, pattern/repeat cross-links, real IO assignment, and a
-  case-relationship graph.
-- **X1–X3.** Real Karnataka Ranges as a coarser district filter, the
-  commissionerate-vs-district shortcut documented, and CID assignment fixed
-  to be order/category-based rather than derived from district count.
-- **P6 — closed.** Decision: no synthetic case-document images. Closed
-  cleanly rather than built against fabricated source material.
+---
 
-Full detail, dates, and commit references for all of the above: `PLAN.md`.
+## See it running
 
-**Next up**
+<table>
+<tr>
+<td width="50%">
 
-**P1.6 — wipe the live Data Store and re-import cleanly.** The generator's
-output (`catalyst/dataset-v2/out/csv/`) is already correct and ready — 5,000
-cases, real PersonIDs, real coordinates, real occupation/religion. The *live*
-Data Store still has the old 19-row, `A1`-style, reused-coordinate dataset,
-and a few routes (`/api/summary`, `/api/casetypes`, feeding `/dashboard`'s
-trend chart and category donut) query it directly rather than the bundled
-snapshot everything else reads — so `/dashboard`'s totals likely don't match
-`/crime-count`'s right now. **This needs a careful plan and explicit
-sign-off before it runs** — it's the live database behind the deployed app,
-and there's no documented `ds:delete`/truncate in the Catalyst CLI.
+<!-- SWAP: replace assets/demo-hotspots.svg with assets/demo-hotspots.gif -->
+<img src="assets/demo-hotspots.svg" alt="Statewide hotspots — choropleth, kernel density and cross-district flow layers" width="100%">
 
-Also ready, no decisions needed: **P5.7**, **P7.2–P7.4**.
+**Statewide hotspots**
+Choropleth, kernel density and cross-district flow layers over 5,000 georeferenced incidents, scrubbable across 2022–2026.
 
-**Blocked on a decision, not on effort**
+</td>
+<td width="50%">
 
-| Blocked | Waiting on |
+<!-- SWAP: replace assets/demo-case.svg with assets/demo-case.gif -->
+<img src="assets/demo-case.svg" alt="FIR Index to case detail to a contradiction flagged with its cited record IDs" width="100%">
+
+**FIR → case → contradiction**
+The FIR Index down to one case: facts, sections, sibling FIRs, the evidence timeline, and contradictions **shown with their citations**.
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+<!-- SWAP: replace assets/demo-fusion.svg with assets/demo-fusion.gif -->
+<img src="assets/demo-fusion.svg" alt="One person's profile assembled from call records, CCTV, transactions and statements" width="100%">
+
+**Person fusion**
+One individual assembled from calls, CCTV, transactions and statements — across scenarios, not just within one.
+
+</td>
+<td width="50%">
+
+<!-- SWAP: replace assets/demo-ask.svg with assets/demo-ask.gif -->
+<img src="assets/demo-ask.svg" alt="Ask Anything answering a question with clickable citations to real cases" width="100%">
+
+**Ask Anything**
+A tool-calling agent over the whole dataset — not a prompt stuffed with 5,000 rows — answering with clickable, checkable citations.
+
+</td>
+</tr>
+</table>
+
+---
+
+## What is built
+
+| | Capability | Backed by |
+|---|---|---|
+| 🗺️ | **Hotspot mapping** — choropleth, kernel density, spatiotemporal and cross-district flow layers | `crime-map/*`, `districtGeo.ts`, `crossDistrictFlows.ts` |
+| 📊 | **Crime analytics** — category and district counts, 5-year trend with control-chart anomaly detection, time-of-day × day-of-week heatmap, chargesheet-rate analysis, case-flow Sankey | `crimeCountStats.ts`, `components/crimeCount/*` |
+| 🗂️ | **FIR Index** — all 5,000 FIRs, filterable by type, district, status and free text; the daily-use worklist screen | `caseWorklist.ts`, `/cases` |
+| 📁 | **Case record** — facts, sections, sibling FIRs, cross-source evidence timeline, relationship graph, IO assignment, and a **real status write** to the live Data Store | `/cases/[caseId]`, `PATCH /api/cases/[caseId]/status` |
+| 🧬 | **Entity fusion** — one canonical person across five record shapes and multiple scenarios, with a merged chronological timeline | `personFusion.ts` |
+| 👤 | **Person register & repeat offenders** — every subject, searchable; anyone named in 2+ cases surfaced as a cross-jurisdiction repeat subject | `/persons`, `/repeat-offenders` |
+| 🔗 | **Pattern analysis** — MO clustering on shared/rare Act+Section signatures, plus a statewide relationship network | `moPatterns.ts`, `statewideNetwork.ts` |
+| ⚖️ | **Suspicion scoring** — weighted, fully itemised, **evidence-derived and never demographic**; the model never generates the number | `suspicionScore.ts` |
+| 🤖 | **Contradiction detection** — person-level *and* scenario-level, sharing one tool schema and one citation guardrail | `contradictionDetector.ts` |
+| ❓ | **Next question to ask** — a specific follow-up tied to a detected discrepancy, for interrogation | `nextQuestion.ts` |
+| 💬 | **Ask Anything** — multi-round tool-calling agent over the whole dataset, answers carry validated citations | `askTools.ts`, `/api/ask` |
+| 🔊 | **Kannada text-to-audio** on witness statements, via Zia TTS | `ttsClient.ts`, `/api/tts` |
+| 🏛️ | **Socio-economic breakdown** — occupation and religion distribution, aggregate-only and victim-side by design | `socioEconomicStats.ts` |
+| ♿ | **WCAG 2.1 AA** — font-size stepper, high-contrast mode, skip link, visible focus, status never by colour alone | `AccessibilityControls.tsx` |
+
+---
+
+## How it works
+
+<div align="center">
+<img src="assets/architecture.svg" alt="Architecture: Data Store and NoSQL evidence feed entity fusion, which feeds the analytics engine and the guarded AI layer, surfaced through the portal" width="100%">
+</div>
+
+**The hard part is the second box.** One person appears in five different
+record shapes, and only two of them are cooperative:
+
+| Source | How it names a person |
 |---|---|
-| **P1.5's caste taxonomy** | Official SC/ST/OBC/General categories (used in NCRB reporting and Prevention of Atrocities Act enforcement) vs. omitting caste from the dataset entirely — the "aggregate-only, victim-side" framing resolved *how* to present it, not *what taxonomy* to use |
-| **P1.6** | Explicit sign-off — see above |
+| `CallRecords` | clean person token, both ends |
+| `WitnessStatements` | clean person token |
+| `CCTVSightings` | token as a **prefix inside free text** — and sometimes absent entirely (vehicle-only sighting) |
+| `Transactions` | **no token at all** — the name is embedded in an account label like `"Suresh Naik - Canara xx1190"`, joined by name/alias, not ID |
+| `TimelineEvents` | **no person field** — it points at *another* record and inherits that record's people |
 
-## Getting started
+Fusing these is deterministic engineering, not a model call — which is exactly
+why it is trustworthy enough to build the AI layer on top of.
+
+### Route map
+
+```mermaid
+graph TD
+    H["/ — public sign-in"] --> D["/dashboard — attention list"]
+    D --> S{{"header search — cases · persons · districts"}}
+    D --> CC["/crime-count"]
+    D --> CH["/crime-hotspots"]
+    D --> PA["/pattern-analysis"]
+    D --> SE["/socio-economic"]
+    D --> C["/cases — the FIR Index"]
+    C --> CD["/cases/:caseId — one FIR"]
+    D --> DI["/districts"]
+    DI --> DD["/districts/:district"]
+    D --> P["/persons"]
+    P --> PD["/persons/:personId"]
+    D --> RO["/repeat-offenders"]
+    CD -.->|"cited evidence"| PD
+    PA -.->|"shared MO"| CD
+
+    classDef live fill:#0B2E59,stroke:#FF9933,stroke-width:2px,color:#fff
+    classDef page fill:#123f74,stroke:#2a5f9e,color:#fff
+    class H,D live
+    class CC,CH,PA,SE,C,CD,DI,DD,P,PD,RO,S page
+```
+
+Search-first, with a flat FIR worklist as the daily screen — grounded in how
+CCTNS and Karnataka police software actually behave, not an arbitrary
+redesign. There is deliberately **no** "pick a category, then a district" gate
+between an officer and a case.
+
+---
+
+## Design language
+
+A dignified state-portal aesthetic — authority over flash.
+
+| | |
+|---|---|
+| **Colour** | Deep navy `#0B2E59` on an off-white base · one saffron/white/green tricolor rule per screen · muted functional status colours (green verified, amber pending, red alert only) |
+| **Type** | Inter throughout, 1.6 line-height, emphasis by weight and colour — no italics, no display faces |
+| **Layout** | Grid-based and symmetrical, generous whitespace, solid cards with soft shadows, barely-rounded buttons |
+| **Access** | Font-size stepper (A / A+ / A++) and high-contrast toggle, both persisted; skip link; visible focus rings; `aria-current` on active nav |
+
+---
+
+## What is real, and what is not
+
+Stated plainly, because a jury should not have to guess.
+
+| | Status |
+|---|---|
+| ✅ | **5,000 FIRs across 8 districts and 13 police stations, 2022–2026** — real dates, real per-incident coordinates, real time-of-day, 1,293 chargesheet records |
+| ✅ | **All analytics are genuine arithmetic** over that dataset — no RNG, no mock generator. The old placeholder rows and mock generator were deleted, not hidden |
+| ✅ | **The Data Store is real** — 21 tables on the actual Karnataka FIR schema, queried live over ZCQL |
+| ✅ | **The write path is real** — `PATCH /api/cases/[caseId]/status`, confirmed against the live Data Store, not just typechecked |
+| ✅ | **The LLM is real and verified live** — GLM-4.7-Flash on Catalyst QuickML; contradiction detection with the citation guardrail is shipped and independently re-verified |
+| ✅ | **Kannada TTS verified live** against the real Zia endpoint |
+| ⚠️ | **The dataset is synthetic** — generated to the real schema, with 15 hand-authored investigation scenarios carrying ground-truth evidence. Identity fields (Aadhaar, phone, address) are synthetic and labelled as such in the UI |
+| ⚠️ | **Read paths serve a bundled snapshot** of the generator's output; four routes still query the live Data Store, which holds an older, smaller import. Dashboard totals can therefore disagree with `/crime-count`. The re-import is written up and waiting on sign-off — see the operational brief below |
+| ⚠️ | **Bulk cases carry no evidence records** by design, and are excluded from every evidence-dependent feature. A documented scope boundary, not an oversight |
+| ⚠️ | **Officer auth is scaffolded, not enforced** — Catalyst Authentication is wired behind a flag, off in this deployment |
+| 🚫 | **Caste is not in the dataset.** Deliberately unresolved: the choice between official SC/ST/OBC/General categories and omitting caste entirely is a policy decision for the department, not one to make silently in a prototype |
+| 🚫 | **No synthetic case-document images.** Closed as a decision rather than built against fabricated source material |
+
+---
+
+<details>
+<summary><b>📘 Operational brief — run it, deploy it, and what is behind the two ⚠️ rows above</b></summary>
+
+<br>
+
+### Run locally
 
 ```bash
 npm install
-npm run dev
+npm run dev     # → http://localhost:3000
 ```
 
-Open http://localhost:3000 → the Home welcome page.
+Local dev has **no Catalyst request context**, so every `/api/*` live Data
+Store and NoSQL call fails. This is expected, not a bug:
 
-Local `npm run dev` has no real Catalyst request context, so every `/api/*`
-route's live Data Store/NoSQL call fails (`"Failed to parse object"`) — this
-is expected, not a bug. The read-side `/api/*` routes (summary, casetypes,
-districts, district-stats) transparently fall back to bundled sample data in
-`src/lib/data.ts` on any error, so the site never breaks from this locally.
-The **write** endpoint (`PATCH /api/cases/[caseId]/status`) has no fallback
-by design — a write either really happens or it clearly fails; it cannot be
-exercised end-to-end locally at all, only on the deployed Slate app. Every
-page under `/cases`, `/districts`, `/persons`, `/repeat-offenders`,
-`/pattern-analysis` reads bundled *seed* JSON directly (not a mock, not a
-live call) and works identically local or deployed.
+- **Read routes** (`summary`, `casetypes`, `districts`, `district-stats`)
+  fall back transparently to bundled sample data — the site never breaks.
+- **The write route** (`PATCH /api/cases/[caseId]/status`) has **no
+  fallback by design** — a write either really happens or it clearly fails.
+  It can only be exercised on the deployed app.
+- **Everything under** `/cases`, `/districts`, `/persons`,
+  `/repeat-offenders`, `/pattern-analysis` reads bundled seed JSON directly
+  and behaves identically local or deployed.
 
-## Navigation flow
+Configuration is entirely optional — see [`.env.example`](.env.example). With
+nothing set, the app builds and runs on bundled data with no auth gate.
+`NEXT_PUBLIC_RD_AUTH=on` enables the Catalyst sign-in gate; `QUICKML_*`
+secrets enable the AI and TTS routes and are read **server-side only**.
 
-Grounded in real CCTNS/Karnataka-police workflow research (`PLAN.md` P2's
-own note), not an arbitrary redesign: real police software is search-first
-(FIR number / person / district), with a flat FIR Index worklist as the
-daily-use screen — not a mandatory "pick a category, then a district" gate
-to reach one case. As of the P2 restructure:
+### Deployment
 
-```
-/                          -> Home (public welcome screen, no sidebar)
-/dashboard                 -> analytics home (attention list: alerts + cross-district
-                               pattern signals first, totals demoted to a strip)
-   |- header search        -> real, searches cases + persons + districts at once
-   |- /crime-count
-   |- /crime-hotspots
-   |- /pattern-analysis    -> real MO-clustering across all 19 seeded FIRs
-   |- /cases               -> the FIR Index: every real case, filterable by
-   |    |                     type/district/status/text - not a category picker
-   |    \- /cases/[caseId] -> one real case: facts, sections, evidence timeline,
-   |                          contradiction findings, status editor (real write)
-   |- /districts           -> pendency + clearance per district
-   |    \- /districts/[district] -> that district's real case list
-   |- /persons             -> every person in the register, searchable
-   |    \- /persons/[personId]   -> a real profile: identity, cases, timeline
-   \- /repeat-offenders    -> filtered view into /persons (2+ cases)
-```
+Hosted on **Catalyst Slate** (not the older Web Client Hosting path). Slate
+runs the app through OpenNext, giving a real Next.js server — SSR, image
+optimisation, middleware — rather than a static file host. Deploys are
+git-based and automatic: a push to `main` builds and ships.
 
-The old `/cases/[caseType]/[district]/investigation-workspace` /
-`case-files` / `case-files/[caseId]` / `district-wise` tree 301/308-redirects
-to its closest real equivalent (`next.config.mjs`) — nothing bookmarked
-against the old shape just 404s.
+Three platform behaviours worth knowing, each found the hard way:
 
-## Design system
+- **No `output: "export"`.** It broke OpenNext's routing entirely — every
+  nested dynamic route 404'd.
+- **`dynamicParams = false` without `dynamic = "force-dynamic"`** silently
+  kills a dynamic page's live-render fallback; a manifest mismatch then 404s
+  forever with no rescue. Every dynamic page sets `force-dynamic`.
+- **Slate injects `X-Frame-Options: DENY` on every response**, including
+  static files, and *adds* it alongside your own headers rather than
+  replacing them. The map embeds therefore fetch their HTML client-side and
+  load it via a `blob:` URL — not a real HTTP request, so there is nothing
+  for the edge layer to inject into.
 
-The visual language models an official Indian State Police portal — calm,
-trustworthy authority over flash.
+> [!WARNING]
+> **Two Catalyst projects exist.** `RakshaDrishti` is the original submitted
+> project and is **frozen** — do not deploy to it or modify it. All continued
+> work is on `Raksha-Dhrishti-v2`. Always confirm the active project before
+> running `deploy` or any `ds:import` / `ds:export`.
 
-- **Colour**: deep navy (`#0B2E59`) primary on an off-white base; a single
-  saffron/white/green tricolor divider per screen; muted, functional status
-  colours (green verified, amber pending, red alert only).
-- **Type**: Inter throughout, generous 1.6 line-height, weight/colour for
-  emphasis (no italics, no display fonts).
-- **Layout**: grid-based, symmetrical, generous whitespace; solid cards with
-  soft shadows and 6–10px radius; barely-rounded rectangular buttons.
-- **Chrome**: two shells (see "Home + sidebar shell" below) — the Home
-  sign-in page (`/`) has a minimal header (emblem + Emergency 112) and
-  deliberately **no navigation**; every other page runs a persistent
-  sidebar + top bar. Both end in the same `SiteFooter`, which hides its
-  "Quick links" column on Home for the same reason.
+### The live-vs-snapshot split
 
-### Accessibility (WCAG 2.1 AA)
+The generator's output (5,000 cases, real person IDs, real coordinates,
+populated occupation and religion) is correct and committed. The **live**
+Data Store still holds an older, smaller import.
 
-- Visible **font-size** stepper (A / A+ / A++) and **high-contrast** toggle in
-  the header, persisted to `localStorage` and applied via `<html>` data-attrs.
-- Skip link, visible focus rings on every interactive element, `aria-current`
-  on the active nav/breadcrumb, and status never conveyed by colour alone.
+Most of the app reads a bundled JSON snapshot of the generator's output
+specifically so it did not have to wait on that re-import — `/cases`,
+`/crime-count`, `/socio-economic`, `/pattern-analysis`, `/repeat-offenders`
+and `/persons` all show the correct 5,000-case dataset today.
 
-### Design tokens
+But `/api/summary`, `/api/casetypes` and `/api/district-stats` query the live
+store directly, so the dashboard's trend chart and category donut may show
+totals from the smaller dataset while every other page shows the full one.
+**This is the known cause of any Dashboard-vs-Crime-Count mismatch — it is a
+data-sync state, not a UI bug.**
 
-Semantic CSS variables in [`globals.css`](src/app/globals.css) (surfaces, ink,
-navy, tricolor, status, focus) are exposed to Tailwind in
-[`tailwind.config.ts`](tailwind.config.ts) as `paper`, `surface`, `line`,
-`ink`, `muted`, `navy`, `saffron`, `success`, `warning`, `danger`. High-contrast
-and font-size modes override the same variables.
+The fix is a single deliberate wipe-and-reimport, planned rather than done
+piecemeal. It is **held pending explicit sign-off**: it targets the live
+database behind the deployed app, and there is no documented truncate in the
+Catalyst CLI. Holding a destructive migration for approval is the intended
+behaviour here.
 
-## Screens
+### Where the work stands
 
-| Page | File | Notes |
-|------|------|-------|
-| Home | `src/app/page.tsx` | Public welcome screen (see below) — **live** (`/api/summary`) |
-| Dashboard | `src/app/(site)/dashboard/page.tsx` | Attention-list home — real alerts + cross-district pattern signals first, totals demoted to a strip (`StatStrip.tsx`) — **live** (`/api/summary`, `/api/casetypes`) + real seeded scenario data |
-| Crime Count | `src/app/(site)/crime-count/page.tsx` | District/crime-type stats + charts — **live** (`/api/casetypes`, `/api/districts`) |
-| Crime Hotspots | `src/app/(site)/crime-hotspots/page.tsx` | MapLibre spatiotemporal heatmap, embedded via `MapEmbed.tsx` (see its comments for the Slate `X-Frame-Options` workaround) |
-| Pattern Analysis | `src/app/(site)/pattern-analysis/page.tsx` | Real MO-clustering (shared/rare Act+Section signatures) across all 19 real FIRs — `src/lib/moPatterns.ts` |
-| Cases | `src/app/(site)/cases/page.tsx` | The real FIR Index — every seeded case, filterable by type/district/status/text — `src/lib/caseWorklist.ts` |
-| Case detail | `src/app/(site)/cases/[caseId]/page.tsx` | One real case, keyed by `CaseMasterID`: facts, sections, sibling-FIR cross-links, cross-source evidence timeline, verified + AI-detected contradiction findings, and a real status editor (`PATCH /api/cases/[caseId]/status`) |
-| Districts | `src/app/(site)/districts/page.tsx` | Real pendency/clearance/repeat-subject count per district — `src/lib/districtStats.ts` |
-| District detail | `src/app/(site)/districts/[district]/page.tsx` | That district's real case list (reuses the FIR Index's own table component) |
-| Persons | `src/app/(site)/persons/page.tsx` | Every person in the global register (47), searchable by name |
-| Person detail | `src/app/(site)/persons/[personId]/page.tsx` | A real profile: photo/initials, registered identity (Aadhaar/phone/address — synthetic, documented as such), every case, cross-source timeline |
-| Repeat Offenders | `src/app/(site)/repeat-offenders/page.tsx` | Filtered view into Persons: subjects named across 2+ cases, master-detail layout |
+**Complete:** the cases restructure and the FIR Index · the 5,000-case
+dataset with real geography and time · the person spine (fusion + merged
+timeline) · all seven analytics sub-items · the AI layer with its citation
+guardrail · Kannada text-to-audio · suspicion scoring, relationship graph and
+IO assignment · Karnataka Ranges as a coarser filter.
 
-Sample/fallback data for the **live Data Store `/api/*` routes only**
-(summary, casetypes, districts, district-stats) lives in
-[`src/lib/data.ts`](src/lib/data.ts). Everything in the table above reads
-**bundled seed JSON** (`src/lib/nosql-seed/`) directly, not a mock and not a
-live call — see `catalyst/README.md` §2b/§3b for how that seed data is
-generated and kept in sync. The old case-type-scoped route tree, its mock
-generator (`investigationData.ts`), and everything that only fed it
-(`AIPanel.tsx`, `EvidenceBoard.tsx`, `flipbook/*`, and more) were deleted in
-the P2 restructure — confirmed unreachable with a full transitive import
-check, not just a page-level grep.
+**Ready, no decisions needed:** an AI panel on the crime-count and hotspot
+pages; audio-to-text, translation and the full speech pipeline.
 
-### Home + sidebar shell (site-wide)
+**Blocked on a decision, not on effort:** the caste taxonomy, and the live
+re-import sign-off. Both are described above and neither is an
+implementation gap.
 
-The app has two distinct shells:
+**Known dead code, not yet removed:** three components under
+`src/components/investigation/` and the one API route they alone called are
+unreachable since the cases restructure. Confirmed with a transitive import
+scan rather than a directory grep; left in place pending a dedicated cleanup
+pass.
 
-- **Home** (`/`, `src/app/page.tsx`) — the **sign-in screen**, kept
-  deliberately *outside* the sidebar: `HomeHeader` (emblem + Emergency
-  112, no nav), `HomeHero` with a live stat overview, a descriptive
-  `FeatureGrid`, `MissionStrip`, `SiteFooter`, and the `LoginPanel`
-  sidebar. **Nothing here links past the sign-in** — the header nav, the
-  five feature-card links, the two hero CTAs and the footer quick links
-  were all removed, because a landing page that routes around its own
-  sign-in makes signing in decorative. The one forward action is
-  "Continue to Dashboard".
-- **Everything else** (Dashboard, Cases, Crime Count, Crime Hotspots, and
-  everything under them) — a persistent sidebar + top bar shell instead of
-  the horizontal nav. Structurally this is a Next.js route-group split:
-  every one of those pages lives under `src/app/(site)/`, whose
-  `layout.tsx` renders `DashboardSidebar` + `DashboardTopbar` (+ the same
-  `SiteFooter` Home uses, kept on every page). Route groups don't affect
-  URLs, so no page's path changed — this was originally a dashboard-only
-  shell, widened to site-wide by a later request; see git history on
-  `(site)/layout.tsx` for both steps.
+### Repository map
 
-**Every sidebar item navigates somewhere real** — Home, Dashboard, Crime
-Overview, Crime Hotspots, Pattern Analysis, Cases, Districts, Persons,
-Repeat Offenders. Twelve entries (Investigation Workspace, Evidence Feed,
-Persons & Entities, Alerts & Leads, all of Reports and System) used to
-render disabled with a "Soon" pill against three that worked, advertising a
-product four times the size of the real one — removed in P0. `Item.href` is
-required, so a dead entry is a type error rather than a grey row. Every one
-of P0's placeholder gaps that PLAN.md flagged as "add back once real" now
-has a real page and is in the sidebar (Districts and Persons landed with the
-P2 restructure). Every number in either shell is either live
-(`getSummary`/`getCaseTypes`, same fallback pattern as elsewhere) or real
-seeded data (Featured Investigation, Alerts & Leads, the two attention-list
-pattern signals — see `src/lib/dashboardData.ts`, `moPatterns.ts`,
-`personFusion.ts`); nothing is fabricated, including no invented "vs. last
-month" deltas (stat cards show a real year-over-year sparkline instead).
-The dashboard's colourful accent palette (`--dash-*` tokens in
-`globals.css`) is deliberately scoped to the sidebar shell — Home keeps the
-muted navy/saffron system unchanged.
+| Path | What lives there |
+|---|---|
+| `src/app/(site)/` | Every signed-in page — route group, so no URL is affected by the shell split |
+| `src/app/api/` | Route Handlers: live Data Store reads, the status write, `ask`, `tts` |
+| `src/lib/` | The whole analytics and fusion layer — the substance of the project |
+| `src/lib/nosql-seed/` | Bundled seed JSON: 5,000 case facts, 15 scenarios, all evidence collections |
+| `src/components/` | UI, grouped by surface (`cases/`, `dashboard/`, `persons/`, `crimeCount/`) |
+| `catalyst/` | Backend source of truth — schema, dataset generator, deploy notes |
+| `assets/` | The animated brief assets used by this README |
 
-The Crime Hotspots mini-map preview shares its source with the full
-`/crime-hotspots` map. That map's "flaky CDN" failures turned out to be a
-real bug in our own code (a hardcoded, outdated glyphs URL that 404'd
-unconditionally) rather than actual network flakiness — fixed, see
-`catalyst/README.md` §5 for the full story. Both map files also gained
-automatic retry-with-backoff as a defensive measure for genuine transient
-failures.
+### Further documentation
 
-## Shared building blocks
+| Document | Holds |
+|---|---|
+| [`PLAN.md`](PLAN.md) | **The tracker** — live status, source of truth for what is done. Wins over this README on any conflict |
+| [`RESEARCH_AND_PLAN.md`](RESEARCH_AND_PLAN.md) | The *why* — KSP domain research, AI capability survey, Data Store audit, live verification logs |
+| [`catalyst/README.md`](catalyst/README.md) | **Backend source of truth** — Slate gotchas, schema build status, every live API route |
+| [`catalyst/DATA_STORE_SCHEMA.md`](catalyst/DATA_STORE_SCHEMA.md) | Column-level schema reference |
+| [`features.md`](features.md) | The investigation-intelligence feature evaluation and build order |
 
-- `src/components/layout/` — `SiteHeader`, `EmergencyBar`, `SiteNav`,
-  `SiteFooter`, `AccessibilityControls`
-- `src/components/ui/` — `Breadcrumb`, `StatTile`, `StatusBadge`
-- `src/components/` — `PageShell`, `LinkCard`, `Placeholder`,
-  `CaseStatusPill`, `CrossSourceTimeline` (the real evidence timeline graph,
-  used on case/person detail pages)
-- `src/components/cases/` — `CaseWorklistClient` (the FIR Index table,
-  reused as-is on district detail), `CaseStatusEditor` (the real write
-  control)
-- `src/components/dashboard/` — `AttentionSignals`, `StatStrip` (the P2.3
-  dashboard rebuild), `DashboardTopbar` (real search)
-- `src/lib/caseWorklist.ts`, `districtStats.ts`, `searchIndex.ts`,
-  `caseStatus.ts` — the P2 restructure's data layer, all built from bundled
-  seed JSON (`src/lib/nosql-seed/`), no live calls
-- `src/lib/api.ts` — same-origin `fetch("/api/...")` helpers with automatic
-  fallback to `data.ts`, for the **live Data Store** routes only
-  (summary/casetypes/districts/district-stats); `src/lib/zcql.ts` — shared
-  ZCQL read helpers + the Data Store write helper (`updateRow()`) used by
-  every Route Handler under `src/app/api/`
+</details>
 
-**Known dead code, not yet removed**: `src/components/investigation/`
-(`RealEvidenceFeed.tsx`, `PinnedCard.tsx`, `SectionHeading.tsx`) and the
-`/api/investigation` Route Handler it alone called are unreachable from any
-page as of the P2 restructure — case-detail's evidence timeline now reads
-`personFusion.ts`'s `getScenarioTimeline()` directly instead. Left in place
-pending a dedicated cleanup pass; see `PLAN.md`'s dead-code note for the
-full, verified list (checked with a transitive import scan, not a
-single-directory grep).
+---
 
-## Assets
+## Impact
 
-The masthead emblem is served from `public/karnataka-state-police.png`. Replace
-it with a clean, licensed asset before any non-demo use.
+| Who | What changes |
+|---|---|
+| **State Crime Records Bureau** | Statewide records stop being a compilation exercise and become a queryable, cross-district intelligence surface — patterns and repeat subjects surface from the data instead of from someone noticing |
+| **Command staff & analysts** | Where crime is trending, by district, category and hour, in one view — patrol and resource decisions made against evidence |
+| **Investigating officers** | Every linked entity, the merged timeline, and cited contradictions in one place, instead of hours of manual cross-referencing |
+| **The department** | A serverless, pay-as-you-go foundation, extensible with more sources, alerting, evidence storage and scheduled reporting without re-architecting |
+| **Citizens** *(future)* | The same aggregate statistics can be safely surfaced publicly for transparency, in the same portal language |
 
-## Tech
+<div align="center">
+<br>
 
-Next.js 15 · React 19 · TypeScript · Tailwind CSS · d3-force · Framer Motion.
+<b>Raksha-Drishti</b> — <i>protection through vision.</i>
+<br>
+A public-safety utility of the State Government · Karnataka State Police · built on Zoho Catalyst
+
+<sub>The masthead emblem in `public/` should be replaced with a cleanly licensed asset before any non-demo use.</sub>
+
+</div>

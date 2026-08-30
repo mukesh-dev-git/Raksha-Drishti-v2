@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="320" viewBox="0 0 1200 320" role="img" aria-label="Raksha-Drishti — Crime Analytics and Investigation Portal for the Karnataka State Crime Records Bureau">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#08213F"/>
+      <stop offset="55%" stop-color="#0B2E59"/>
+      <stop offset="100%" stop-color="#123f74"/>
+    </linearGradient>
+    <radialGradient id="sweep" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF9933" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#FF9933" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="tri" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#FF9933"/>
+      <stop offset="50%" stop-color="#F4F6F9"/>
+      <stop offset="100%" stop-color="#138808"/>
+    </linearGradient>
+    <clipPath id="frame"><rect x="0" y="0" width="1200" height="320" rx="10"/></clipPath>
+    <clipPath id="typeMask">
+      <rect x="60" y="90" width="0" height="70">
+        <animate attributeName="width" values="0;470;470" keyTimes="0;0.45;1" dur="4.5s" repeatCount="indefinite"/>
+      </rect>
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#frame)">
+    <rect width="1200" height="320" fill="url(#bg)"/>
+
+    <!-- district grid: the statewide field -->
+    <g fill="#7FB3E8" opacity="0.22">
+      <g>
+        <circle cx="880" cy="70" r="3"/><circle cx="935" cy="112" r="3"/><circle cx="1010" cy="64" r="3"/>
+        <circle cx="1075" cy="128" r="3"/><circle cx="905" cy="196" r="3"/><circle cx="1002" cy="228" r="3"/>
+        <circle cx="1108" cy="212" r="3"/><circle cx="845" cy="150" r="3"/><circle cx="962" cy="268" r="3"/>
+        <circle cx="1140" cy="76" r="3"/><circle cx="820" cy="248" r="3"/><circle cx="1058" cy="286" r="3"/>
+      </g>
+    </g>
+
+    <!-- hotspots: three pulsing incident clusters -->
+    <g fill="#FF9933">
+      <circle cx="935" cy="112" r="6" opacity="0.9"/>
+      <circle cx="935" cy="112" r="6" fill="none" stroke="#FF9933" stroke-width="1.6">
+        <animate attributeName="r" values="6;30" dur="3s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.8;0" dur="3s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="1058" cy="196" r="5" opacity="0.85"/>
+      <circle cx="1058" cy="196" r="5" fill="none" stroke="#FF9933" stroke-width="1.6">
+        <animate attributeName="r" values="5;26" dur="3s" begin="1s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.8;0" dur="3s" begin="1s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="878" cy="242" r="5" opacity="0.85"/>
+      <circle cx="878" cy="242" r="5" fill="none" stroke="#FF9933" stroke-width="1.6">
+        <animate attributeName="r" values="5;26" dur="3s" begin="2s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.8;0" dur="3s" begin="2s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+
+    <!-- cross-district link, drawn then held -->
+    <path d="M935 112 Q1000 160 1058 196" fill="none" stroke="#7FB3E8" stroke-width="1.6"
+          stroke-dasharray="180" stroke-dashoffset="180" opacity="0.75">
+      <animate attributeName="stroke-dashoffset" values="180;0;0;180" keyTimes="0;0.35;0.8;1" dur="6s" repeatCount="indefinite"/>
+    </path>
+    <path d="M1058 196 Q970 240 878 242" fill="none" stroke="#7FB3E8" stroke-width="1.6"
+          stroke-dasharray="200" stroke-dashoffset="200" opacity="0.75">
+      <animate attributeName="stroke-dashoffset" values="200;200;0;0;200" keyTimes="0;0.25;0.55;0.85;1" dur="6s" repeatCount="indefinite"/>
+    </path>
+
+    <!-- radar sweep over the field -->
+    <g opacity="0.85">
+      <circle cx="980" cy="170" r="150" fill="url(#sweep)">
+        <animate attributeName="opacity" values="0.15;0.55;0.15" dur="5s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+
+    <!-- wordmark -->
+    <g clip-path="url(#typeMask)">
+      <text x="60" y="146" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="62" font-weight="700" fill="#FFFFFF" letter-spacing="0.5">Raksha-Drishti</text>
+    </g>
+    <rect x="60" y="92" width="3" height="64" fill="#FF9933">
+      <animate attributeName="x" values="60;533;533" keyTimes="0;0.45;1" dur="4.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="1;1;0;1;1" keyTimes="0;0.5;0.62;0.74;1" dur="4.5s" repeatCount="indefinite"/>
+    </rect>
+
+    <text x="62" y="186" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="21" fill="#C9DEF5" letter-spacing="0.4">Crime Analytics &amp; Investigation Portal</text>
+
+    <!-- tricolor rule, self-drawing -->
+    <rect x="60" y="212" width="0" height="5" rx="2.5" fill="url(#tri)">
+      <animate attributeName="width" values="0;520" dur="1.6s" begin="0.4s" fill="freeze"/>
+    </rect>
+
+    <text x="62" y="252" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="16" font-weight="600" fill="#FF9933" letter-spacing="2.4">STATE CRIME RECORDS BUREAU  ·  KARNATAKA STATE POLICE</text>
+    <text x="62" y="280" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="14" fill="#8FB4DC" letter-spacing="0.6">Built on Zoho Catalyst  ·  5,000 FIRs  ·  8 districts  ·  2022–2026</text>
+  </g>
+  <rect x="0.5" y="0.5" width="1199" height="319" rx="10" fill="none" stroke="#1d4d85"/>
+</svg>
