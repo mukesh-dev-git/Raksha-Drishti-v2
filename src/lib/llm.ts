@@ -29,6 +29,15 @@
 // thinking-mode call proves otherwise. NEVER render `reasoning` - it's the
 // model's scratchpad (hedging, discarded hypotheses), which is precisely
 // what P5.6's citation guardrail exists to keep out of the UI. Log it.
+//
+// A SECOND, separate reasoning leak found live 2026-08-31: when a call is
+// made with no `tools` in the request, GLM-4.7 emits its chain-of-thought
+// INLINE in `response` as a literal `<think>...</think>` block ahead of the
+// real text - not via the `reasoning` field above. callGlm() strips this
+// before returning `text`, folding it into `reasoning` instead. Every
+// caller before that fix happened to always pass `tools`, which is why this
+// went unnoticed until src/app/api/ask/route.ts's forced-final-answer round
+// (P5.8) started calling without them.
 // -----------------------------------------------------------------------------
 
 const TOKEN_URL = "https://accounts.zoho.in/oauth/v2/token";
@@ -316,6 +325,35 @@ export async function callGlm(opts: GlmChatOptions): Promise<LlmResult> {
     }
   }
 
+  // Found live 2026-08-31 (askTools.ts's route.ts, its forced-final-answer
+  // round which calls with no `tools` at all): with no tools in the
+  // request, GLM-4.7 emits its chain-of-thought INLINE in `response` as a
+  // literal `<think>...</think>` block ahead of the real answer - not via
+  // the separate top-level `reasoning` field this module already knows
+  // about and already withholds from callers. Every earlier live call this
+  // session happened to have `tools` present, which is almost certainly why
+  // this was never seen before now: undocumented, and the console's sample
+  // response doesn't show it either. Same "never render reasoning" rule as
+  // the module header applies here - strip it before `text` ever reaches a
+  // caller, log it (truncated) for audit, never surface it in the UI.
+  let text = parsed.response ?? "";
+  let inlineThinking: string | null = null;
+  const thinkMatch = /^\s*<think>([\s\S]*?)<\/think>\s*/i.exec(text);
+  if (thinkMatch) {
+    inlineThinking = thinkMatch[1];
+    text = text.slice(thinkMatch[0].length);
+  } else if (/^\s*<think>/i.test(text)) {
+    // Opened but never closed - budget ran out mid-thought (same class of
+    // truncation already documented below for a missing `response`
+    // entirely). Nothing after the tag is a real answer; treat as empty
+    // rather than dumping raw scratchpad text to a caller.
+    inlineThinking = text;
+    text = "";
+  }
+  if (inlineThinking) {
+    console.log("[llm.ts] GLM emitted inline <think> reasoning - stripped from text, logged only", { length: inlineThinking.length, preview: inlineThinking.slice(0, 300) });
+  }
+
   return {
     ok: true,
     // Defaulted, not trusted as-is: found live 2026-08-26 that `response`
@@ -326,9 +364,9 @@ export async function callGlm(opts: GlmChatOptions): Promise<LlmResult> {
     // reasonably trusted the type (contradictionDetector.ts's error-path
     // .slice()). Never let an external response's shape violate what this
     // module promises its own callers.
-    text: parsed.response ?? "",
+    text,
     toolCalls,
-    reasoning: parsed.reasoning ?? null,
+    reasoning: parsed.reasoning ?? inlineThinking,
     usage: parsed.usage,
   };
 }

@@ -20,11 +20,11 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 | Track | State | Where it's at |
 |---|---|---|
 | **P0** Credibility | ✅ **done** | All 5. App no longer promises what it can't do. |
-| **P1** Data foundation | 🔵 **in progress** | P1.1 ✅ · P1.2 ✅ (scaled to 5,000 cases 2026-08-29) · P1.3 ✅ · P1.4 `[~]` built, not applied · **P1.5** `[~]` occupation + religion done 2026-08-30, caste taxonomy still an open question · **P1.6 is next** (wipe + reimport, folds in P1.1's PersonID fix, P1.2's bulk cases, and P1.5's demographics at once) |
+| **P1** Data foundation | 🔵 **in progress** | P1.1 ✅ · P1.2 ✅ (scaled to 5,000 cases 2026-08-29) · P1.3 ✅ · P1.4 `[~]` built, not applied · **P1.5** `[~]` occupation + religion done 2026-08-30, caste taxonomy still an open question · **P1.7 new, 2026-08-31** (expand from 8 to all 31 real Karnataka districts, user-requested) · **P1.6 is next** (wipe + reimport, now also the natural place to fold in P1.7's new districts, P1.1's PersonID fix, P1.2's bulk cases, and P1.5's demographics all at once) |
 | **P2** Route restructure | ✅ **done, merged, deployed** | Merged to `main` and pushed to `v2/main` 2026-08-28 (17 commits) - confirmed live on Slate. P2.1+P2.1a+P2.1b+P2.1c+P2.1d+P2.2+P2.3 all real FIR Index, case/district/person pages, header search, old-URL redirects, attention-list dashboard. **P2.4's case-status write endpoint confirmed working against the live Data Store** (two real writes via curl, both directions, not just a 200 taken on faith) - the app's first-ever write, live. IO assignment/case-diary not started (diary blocked on console-only table provisioning, not a choice). One real gap surfaced: writes hit the live Data Store but every read path still serves bundled seed JSON, so a write is currently invisible in the UI - see P2.4. |
 | **P3** Person spine | ✅ **done** | P3.1+P3.3 (`589721d`) — fusion + timeline merge, 2 real bugs found and fixed. P3.2 (`/persons`) landed via the P2 restructure — see P2.1c. |
 | **P4** Real analytics | ✅ **all 7 sub-items done, 2026-08-30** | P4.1 (real statewide hotspot map), P4.2+P4.9 (time-of-day×day-of-week heatmap), P4.3+P4.9 (control-chart trend alerts), P4.4 (chargesheet rate/heinous split), P4.5 (socio-economic breakdown, `/socio-economic`, 2026-08-30 - occupation + religion, caste withheld pending taxonomy decision), P4.6+P4.7 (MO-clustering + repeat-offenders), P4.8 (real stat cards), P4.9 (choropleth, kernel-density, cross-district flow map, case-flow Sankey, statewide link-analysis graph). P4.1-P4.4/P4.6-P4.9 built via 6 parallel subagents 2026-08-29; P4.5 built directly 2026-08-30. |
-| **P5** AI | 🔵 **in progress** | P5.0-P5.3, P5.2b, P5.3b ✅. **P5.4 done, 2026-08-29** (AI-suggested next question, citation-checked). **P5.8 done, 2026-08-29** (Ask Anything chatbot, real tool-calling, grounded citations). |
+| **P5** AI | 🔵 **in progress** | P5.0-P5.3, P5.2b, P5.3b ✅. **P5.4 done, 2026-08-29** (AI-suggested next question, citation-checked). **P5.8 done, 2026-08-29** (Ask Anything chatbot, real tool-calling, grounded citations); **3 real bugs found + fixed + live-verified 2026-08-31** — it used to give up on any 3-round question (loop off-by-one) and silently ignore fed-back tool results (`role:"tool"` never actually read by the model) — now answers correctly with real, hallucination-checked citations end-to-end through the UI. |
 | **P6** Zia | ✅ **closed, 2026-08-29** | Decision: no synthetic images. Track closed cleanly rather than built against fabricated source images. |
 | **P7** Kannada voice (Zia) | 🔵 **P7.1 done, 2026-08-29** | Text-to-Audio pipeline built and wired into case-detail witness statements; P7.2-P7.4 still open. |
 | **X** Cross-cutting | ✅ **done** | X1, X2, X3 all done - see below. |
@@ -35,7 +35,8 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 P5.2 · P5.3 · P5.4 · P5.8 · P6 (closed) · P7.1 · X1 · X2 · X3
 
 **Ready to pick up right now, no decisions needed:** **P1.6** (wipe +
-reimport) · P5.7 · P7.2 · P7.3 · P7.4
+reimport) · **P1.7** (expand to all 31 real Karnataka districts) · P5.7 ·
+P7.2 · P7.3 · P7.4
 
 **Blocked on someone, not on effort:**
 
@@ -250,6 +251,27 @@ locally, then wipe + re-import **once**. See `RESEARCH_AND_PLAN.md` §5.*
       entirely and reporting only religion + occupation). That is a separate
       decision worth a direct answer before generating any values — asked,
       not yet answered.
+- [ ] **P1.7** Expand district coverage to all real Karnataka districts.
+      `catalyst/dataset-v2/lookups.json` currently seeds only **8** of
+      Karnataka's real 31 districts (Bengaluru Urban, Mysuru, Belagavi,
+      Kalaburagi, Dakshina Kannada, Tumakuru, Ballari, Shivamogga -
+      `DistrictID` 4401-4408) - every `districtName`/`districtSlug` value
+      across the whole seeded dataset (`CaseMaster`, `caseWorklist.ts`,
+      `districtStats.ts`, `/districts`, the hotspot map, `askTools.ts`'s
+      `get_district_stats`/`search_cases`, etc.) is downstream of this one
+      table, so it's the single real place to fix, not a per-page change.
+      User-requested (2026-08-31): add the remaining ~23 real districts
+      (real `DistrictID`s/PIN prefixes, same shape as the existing 8 rows -
+      `build_seed.mjs`'s PIN-prefix map and `geo_time.mjs`'s per-district
+      geo/time config both need matching new entries, not just
+      `lookups.json` alone) so every real Karnataka district is
+      representable, not just the current 8. Not started - needs the same
+      "real data, no invented case volume" discipline as P1.2/P1.5: new
+      districts should get real case rows generated for them (via
+      `bulk_cases.mjs`), not just an empty entry in a dropdown that returns
+      zero cases everywhere. Natural to fold into **P1.6**'s wipe-and-
+      reimport (same "one wipe, not per-fix" reasoning P1.6 already uses)
+      rather than a second separate re-import.
 - [ ] **P1.6** Wipe the Data Store and re-import cleanly. Record row counts in
       `catalyst/README.md`. Now carries two real fixes at once, which is
       exactly why this was deferred to one wipe rather than done per-fix:
@@ -866,6 +888,51 @@ reasons over it.*
       is scoped per-page (e.g. only the case currently open in the
       Investigation Workspace) - the "which cases involve X" example above
       needs the former; a per-case assistant is a smaller, easier v1.
+      **✅ Real functional bug found + fixed, live-verified, 2026-08-31.**
+      "The full happy path is unverified" above turned out to hide 3 real
+      bugs, all confirmed via a local production build against the real
+      Catalyst QuickML endpoint with real `.env.local` credentials (same
+      method as P7.1's verification):
+        1. **Loop off-by-one (`src/app/api/ask/route.ts`)** — the "final
+           nudge" message telling the model to stop looking things up and
+           answer was built and pushed onto `messages` AFTER the last
+           allowed `callGlm()` call had already happened, then discarded
+           when the loop exited - no 4th call ever sent it. Any question
+           needing a 3rd tool round hit the `504 "Gave up..."` error
+           deterministically. This is what the officer-facing bug reports
+           (and `assets/demo-ask.png`'s loading-state screenshot) were
+           actually seeing.
+        2. **`role:"tool"` silently ignored by the model.** The module's own
+           original comment flagged this as an unexercised design (no
+           `tool_call_id` correlation, plain content-only messages) - live-
+           confirmed broken: the model re-issued the identical, empty-arg
+           first tool call on every single round, completely blind to the
+           real results already fed back. Fixed by feeding tool results
+           back as `role:"user"` instead (the one role every chat template
+           reliably reads) - immediately made the model correctly read and
+           cite prior results.
+        3. **Forcing `tool_choice` to a specific function 400s outright**
+           (`MORE_THAN_MAX_LENGTH` / "Error in processing `zoho-inputstream`
+           parameter" - not an actual length problem) - a second previously
+           -unexercised llm.ts path. And trimming `tools` to just
+           `[RESPOND_TOOL]` doesn't stop the model calling a *different*
+           tool name not even in that list - the API doesn't enforce the
+           request's own tools array. Also found: with no `tools` in the
+           request at all, GLM-4.7 emits its chain-of-thought inline as a
+           literal `<think>...</think>` block ahead of the real answer -
+           `llm.ts`'s `callGlm()` now strips this before returning `text`
+           (same "never render reasoning" rule as the top-level `reasoning`
+           field already had).
+      Full trace and the working final design (offer `[RESPOND_TOOL]` only
+      on the forced final round, bumped `maxTokens` for that round) is
+      documented inline at the fix site. Re-verified live end-to-end
+      through the actual UI (screenshot: real formatted answer, real
+      clickable citation chips, `droppedHallucinated: 0`) on both a
+      3-round question ("Which cases involve a repeat offender?" - the
+      exact one that used to fail) and a 1-round question ("Cases in
+      Ballari?"). `assets/demo-ask.png`/`assets/README.md`'s "not yet
+      fixed" note is now stale - worth a fresh capture next time the demo
+      assets are touched.
 
 ## P6 — Zia ✅ closed (2026-08-29, decision: no synthetic images)
 
