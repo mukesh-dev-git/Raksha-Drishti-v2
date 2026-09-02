@@ -27,10 +27,10 @@ driven directly (Puppeteer), not a manual screenshot tool.
 
 | File | Shot | Real finding while capturing |
 |---|---|---|
-| `demo-hotspots.png` | Kernel-density mode, statewide | ⚠️ **Stale.** Captured pre-P1.7, so it shows 5,000 FIRs across 8 districts; the app now renders 12,000 across all 31. Recapture before the next submission. |
+| `demo-hotspots.png` | Kernel-density mode, statewide — **recaptured 2026-09-02** after P1.7, all 31 districts and 12,000 plotted FIRs | The pre-P1.7 shot showed 8 isolated clusters; the same view now carries a continuous density surface across the whole state. |
 | `demo-case.png` | Case 9001, scrolled to the verified + AI-detected contradiction cards, cited record IDs legible | — |
 | `demo-fusion.png` | KA-P0001 (Suresh Naik), scrolled to show the suspicion score's real factor breakdown *and* the full cross-source timeline in one frame | — |
-| `demo-ask.png` | Ask Anything, **mid-query** (loading state), not a completed answer | Captured when the real question ("Which cases involve a repeat offender?") didn't complete: the multi-round tool-calling loop gave up after too many rounds (a real, honest error message, not a crash or a fake answer). **Fixed and live-verified 2026-08-31** — see PLAN.md's P5.8 entry for the 3 real bugs found (a loop off-by-one, and `role:"tool"` messages the model was silently ignoring, plus a broken `tool_choice` path). The exact same question now returns a real, correctly-cited answer end to end. This screenshot is stale as of the fix — worth a fresh capture (a real completed answer with visible citation chips) next time the demo assets are touched, rather than the loading state. |
+| `demo-ask.png` | Ask Anything with a **completed, cited answer** — recaptured 2026-09-02 | Replaces the old loading-state shot, which was captured while the multi-round loop was still broken (3 real bugs, fixed 2026-08-31 — see PLAN.md P5.8). The same question now returns 2 tool rounds, 6 repeat offenders across 12 cases, and 14 validated citation chips with zero hallucinated ids. |
 
 **Still open: upgrade these to real animated GIFs.** The shot list originally
 planned for each (layer transitions + time scrub for hotspots, the full FIR

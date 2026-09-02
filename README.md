@@ -98,10 +98,10 @@ One individual assembled from calls, CCTV, transactions and statements — acros
 <td width="50%">
 
 <!-- Static screenshot for now - see assets/README.md for the animated-GIF upgrade path -->
-<img src="assets/demo-ask.png" alt="Ask Anything mid-query, showing the real tool-calling round in progress, not a canned response" width="100%">
+<img src="assets/demo-ask.png" alt="Ask Anything answering a real question with 14 validated, clickable citations" width="100%">
 
 **Ask Anything**
-A tool-calling agent over the whole dataset — not a prompt stuffed with 12,000 rows — every citation checked against the real register before it can render. Multi-round tool calls can take real time (or occasionally give up rather than guess); shown here mid-query, not a canned response.
+A tool-calling agent over the whole dataset — not a prompt stuffed with 12,000 rows — every citation checked against the real register before it can render. This is one real, unedited round trip: two tool rounds, six repeat offenders found across twelve cases, **fourteen clickable citations, none hallucinated**.
 
 </td>
 </tr>
