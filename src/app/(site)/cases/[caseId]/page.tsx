@@ -239,9 +239,8 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ cas
         </div>
 
         <div className="min-w-0 space-y-5">
-          {/* Contradiction findings - kept visibly distinct, same discipline
-              RealEvidenceFeed uses: authored ground truth vs an independent
-              AI read, never conflated. */}
+          {/* Contradiction findings - kept visibly distinct: authored
+              ground truth vs an independent AI read, never conflated. */}
           {(authoredContradiction || (aiFinding && aiFinding.contradictions.length > 0)) && (
             <div className="space-y-3">
               {authoredContradiction && (

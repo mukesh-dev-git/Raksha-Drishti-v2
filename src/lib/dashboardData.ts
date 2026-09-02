@@ -1,10 +1,10 @@
 // -----------------------------------------------------------------------------
 // Server-side helpers that derive the Dashboard's "Featured Investigation",
-// "Alerts & Leads", and "Verified Evidence Feed" widgets from the same
-// bundled NoSQL seed JSON that /api/investigation reads (src/lib/nosql-seed/
-// *.json - see catalyst/README.md §2b/§3b for why this is bundled JSON
-// rather than a live NoSQL query). Everything here is real seeded case data,
-// not fabricated - no invented deltas, alert counts, or call volumes.
+// "Alerts & Leads", and "Verified Evidence Feed" widgets from the bundled
+// NoSQL seed JSON (src/lib/nosql-seed/*.json - see catalyst/README.md
+// §2b/§3b for why this is bundled JSON rather than a live NoSQL query).
+// Everything here is real seeded case data, not fabricated - no invented
+// deltas, alert counts, or call volumes.
 // -----------------------------------------------------------------------------
 import { caseTypes, districts } from "./data";
 import { ranges } from "./ranges";

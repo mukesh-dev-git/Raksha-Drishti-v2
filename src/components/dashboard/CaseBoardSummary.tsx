@@ -7,8 +7,8 @@ import { Users, HeartHandshake, Eye, Phone, Camera } from "lucide-react";
 // as-is), but as a dashboard-card glance summary it read as a toy. This
 // favours the same "encode state in form, not just number" idea - a
 // proportion bar per row, tabular counts, icon chips in a tinted square -
-// the convention already established by RealEvidenceFeed.tsx's live-source
-// pulse dot, reused here rather than inventing a new one.
+// the same live-source pulse-dot convention used elsewhere in the app,
+// reused here rather than inventing a new one.
 const ROWS: { key: string; label: string; icon: typeof Users; color: string; bg: string }[] = [
   { key: "suspects", label: "Suspects", icon: Users, color: "var(--dash-pink)", bg: "var(--dash-pink-bg)" },
   { key: "victims", label: "Victims", icon: HeartHandshake, color: "var(--dash-orange)", bg: "var(--dash-orange-bg)" },

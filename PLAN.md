@@ -511,17 +511,25 @@ needed by `HeroLiveOverview.tsx` - kept. The real backstop either way was
 pages still build at identical sizes, confirming nothing reachable was
 actually removed.
 
-**One more found since, not yet deleted:** `RealEvidenceFeed.tsx` (+ its
-two sub-components, `PinnedCard.tsx`/`SectionHeading.tsx`) and the
-`/api/investigation` Route Handler it alone called are now orphaned too -
+**One more found since, ✅ deleted 2026-09-03.** `RealEvidenceFeed.tsx` (+
+its two sub-components, `PinnedCard.tsx`/`SectionHeading.tsx`) and the
+`/api/investigation` Route Handler it alone called were orphaned -
 `/cases/[caseId]` reads evidence a different way
 (`personFusion.ts`'s `getScenarioTimeline()`, direct from bundled JSON,
 keyed by the exact `CaseMasterID`) rather than through that
 component/route. Found while updating `README.md`/`catalyst/README.md` to
-match current status (2026-08-28), confirmed via the same transitive-check
-discipline as above. The route still responds if hit directly; nothing in
-the UI calls it. Left in place - same "flag it, don't chase it mid-task"
-call as before.
+match current status (2026-08-28), left in place at the time ("flag it,
+don't chase it mid-task"); actually deleted once the user asked directly.
+Verified via the same transitive-import-check discipline as the original
+P2 cleanup: no other file imported `RealEvidenceFeed`/`PinnedCard`/
+`SectionHeading`, and of `/api/investigation`'s own seed-JSON imports only
+`TimelineEvents.json` was exclusively its own (every other collection it
+read is also read by `personFusion.ts`/`dashboardData.ts`/etc.) - that one
+JSON file was deleted too. `tsc --noEmit` + `npm run build` clean after,
+all other routes/pages unaffected. Stale comments elsewhere referencing
+the deleted files by name (`zcql.ts`, `dashboardData.ts`,
+`CrossSourceTimeline.tsx`, `CaseBoardSummary.tsx`,
+`cases/[caseId]/page.tsx`) updated in the same pass, not left dangling.
 
 ## P3 — The person spine
 
@@ -1304,13 +1312,22 @@ Two consequences that mattered to a reviewer, both now fixed:
       delete/withdraw endpoint (`deleteRow`/`deleteRows` exist and are
       verified working, just not wired to a route) — real, scoped, smaller
       follow-up work, not started.
-- [ ] **P10.5** Not done. `/api/districts` and `/api/district-stats` are
-      still dead routes (confirmed nothing calls them, unchanged from
-      before this track) — delete or wire up, either is fine. The bundled
-      snapshot itself was never retired (it's the fallback on any live
-      failure now, a deliberate design, not leftover debt) — "retire" was
-      the wrong framing from the start; "keep as an explicit fallback" is
-      what actually happened and is correct.
+- [x] **P10.5** ✅ **Done 2026-09-03.** `/api/districts` and
+      `/api/district-stats` deleted — confirmed dead first (grepped for
+      real `fetch("/api/districts")`/`fetch("/api/district-stats")` calls,
+      found none, only comment mentions), then removed both route files.
+      `tsc --noEmit` + `npm run build` clean after; build's own route list
+      confirms both are gone and every other route is unaffected.
+      **The bundled snapshot itself was correctly never retired** — it's
+      the fallback on any live failure (and the only thing local dev ever
+      serves), a deliberate design, not leftover debt. "Retire the
+      snapshot" was the wrong framing from the original P10 write-up;
+      "keep it as an explicit fallback" is what actually happened and is
+      correct — restated directly 2026-09-03 in response to a user
+      question asking whether the bundled JSON should be deleted too: no,
+      it's load-bearing, not dead code, and deleting it would break every
+      live-backed page's fallback path (plus all of local dev, which has
+      no Catalyst request context to run live queries against at all).
 
 ### What makes this genuinely hard — read before estimating
 

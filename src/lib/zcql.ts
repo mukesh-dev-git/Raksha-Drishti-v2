@@ -197,12 +197,18 @@ export function fail(e: unknown) {
 // EQUALS lookups do work fine (per the SDK's own docs); a real prefix scan
 // would need either an index or the tables recreated with a sort key.
 //
-// src/app/api/investigation/route.ts therefore reads this data from the
-// bundled seed JSON (src/lib/nosql-seed/*.json, filtered by each record's
-// own embedded scenarioId field) instead of a live query - the content is
-// identical to what's seeded in NoSQL, and NoSQL remains the system of
-// record for exact-key operations (a future edit/delete endpoint would use
+// Every evidence-reading path in this app (personFusion.ts's
+// getScenarioTimeline(), dashboardData.ts, contradictionEval.ts, etc.)
+// therefore reads this data from the bundled seed JSON
+// (src/lib/nosql-seed/*.json, filtered by each record's own embedded
+// scenarioId field) instead of a live query - the content is identical to
+// what's seeded in NoSQL, and NoSQL remains the system of record for
+// exact-key operations (a future edit/delete endpoint would use
 // EQUALS-based fetchItem/updateItems/deleteItems here, which do work).
+// (A first attempt at a live-query evidence endpoint, src/app/api/
+// investigation/route.ts, was built on this same prefix-scan limitation
+// and later found to be unreachable from the UI - deleted 2026-09-03, see
+// PLAN.md P2's cleanup note.)
 //
 // queryTable() returns a NoSQLResponse whose `.get` is Array<{ item:
 // NoSQLItem }> - NOT plain objects - so each hit needs `.item.to()` to get a

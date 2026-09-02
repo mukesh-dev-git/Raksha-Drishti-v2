@@ -5,10 +5,9 @@ import type { FusedEvidenceItem } from "@/lib/personFusion";
 
 // -----------------------------------------------------------------------------
 // A real timeline GRAPH - a connected track of icon nodes, not a bullet
-// list of paragraphs. Same icon-per-evidence-kind convention
-// RealEvidenceFeed.tsx already uses (PhoneCall/Landmark/Video/
-// MessageSquareQuote), so a call reads as a call everywhere in the app, not
-// just here.
+// list of paragraphs. Same icon-per-evidence-kind convention used
+// elsewhere in the app (PhoneCall/Landmark/Video/MessageSquareQuote), so a
+// call reads as a call everywhere, not just here.
 //
 // Horizontal + scrollable, not vertical: this is deliberately modeled on
 // the reference design's "Activity Timeline (Cross-Source)" track (a
