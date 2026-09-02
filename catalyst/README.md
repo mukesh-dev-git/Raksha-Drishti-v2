@@ -55,61 +55,117 @@ gotchas discovered the hard way:
   `about:srcdoc` document, silently, with no error. `blob:` avoids both
   problems. See `MapEmbed.tsx`'s comments for the full chain.)
 
-## 2. Data Store (FIR schema) — ✅ 21-table backbone imported
+## 2. Data Store (FIR schema) — ✅ 21-table backbone, **re-imported at full scale 2026-09-02 (P1.6)**
 
 See [`DATA_STORE_SCHEMA.md`](./DATA_STORE_SCHEMA.md) for the full table
-reference. **Status in `Raksha-Dhrishti-v2`** (as of 2026-08-24): all 21
-backbone tables are built, schema-verified, and **seeded** — imported via
+reference. All 21 backbone tables are built, schema-verified and seeded via
 `catalyst ds:import --table <Name> catalyst/dataset-v2/out/csv/<Name>.csv`.
-`CaseMaster` is individually confirmed clean (19/19 rows, zero import
-errors); the other 20 tables were scheduled/imported successfully but not
-all re-verified row-by-row after the fact — worth a spot-check with
-`catalyst ds:export --table <Name>` before relying on any specific one.
 
-FK `Number` columns have **not** been converted to proper `Lookup` columns
-yet (still plain numbers, not enforced relationships) — that's still open.
-6 more tables (arrest tracking + demographic lookups) are spec'd but not
-built — see `DATA_STORE_SCHEMA.md`'s "Extended tables" section.
+**P1.6 is done.** The live Data Store had been stuck at the original 19-case
+seed while the generator moved on to 5,000 and then 12,000 cases. It now
+matches the generator, verified row-by-row against the source CSVs by
+re-exporting every table afterwards (not by trusting the import’s own
+success message):
 
-⚠️ **The live Data Store is now substantially behind `catalyst/dataset-v2/`'s
-generated output — updated 2026-08-30, and this section had gone stale
-enough (still framing it as "19 rows either way") to be actively
-misleading, worth calling out explicitly rather than just quietly fixing.**
-Everything below is landed in the generator and in `out/csv/`, but **not
-re-imported**. P1.6 does the wipe-and-reimport once, deliberately, rather
-than per change:
+| Table | Was live | Now live | Source CSV | Verified |
+|---|---|---|---|---|
+| `District` | 8 | **31** | 31 | every field matches |
+| `Unit` | 13 | **59** | 59 | count matches |
+| `Court` | 8 | **31** | 31 | count matches |
+| `Employee` | 12 | **58** | 58 | count matches |
+| `CaseMaster` | 19 | **12,000** | 12,000 | every field matches¹ |
+| `ComplainantDetails` | 22 | **12,003** | 12,003 | every field matches |
+| `Victim` | 14 | **11,995** | 11,995 | count matches |
+| `Accused` | 53 | **7,129** | 7,129 | every field matches (real `KA-Pnnnn` PersonIDs now live) |
+| `ChargesheetDetails` | 0 | **2,962** | 2,962 | count matches |
+| `ActSectionAssociation` | 0 | 16,395 rows present but **NOT correct** | 16,395 | ⚠️ see below |
 
-| Table · column | Live holds | Generated CSVs hold | From |
-|---|---|---|---|
-| `CaseMaster` (row count) | **19 rows** | **5,000 rows** | P1.2 |
-| `Accused.PersonID` | `A1`…`A4` (one ID covered 17 people) | `KA-P0001`…`KA-P0047` | P1.1 |
-| `CaseMaster.latitude/longitude` | 14 points across 19 rows | 5,000 distinct, per-incident | P1.3 |
-| `ChargesheetDetails` | doesn't exist as data (table provisioned, empty) | 1,293 rows | P1.2 |
-| `ComplainantDetails.OccupationID/ReligionID` | 0 ("not specified") for all | populated, Karnataka-representative | P1.5 |
-| `ComplainantDetails.CasteID` | 0 | still 0 — genuinely unresolved, not deferred by oversight (see PLAN.md P1.5) | — |
+¹ `latitude`/`longitude` round-trip at 4 decimal places, not the 6 the
+generator emits — that’s the live Decimal column’s precision. Worst-case
+ground error is **11 m**, which is immaterial for a hotspot map. Not a data
+defect, but don’t be surprised by the diff.
 
-**This is not inert the way it was when this section last said so.** Most of
-the app reads a bundled JSON snapshot of the generator's output
-(`src/lib/nosql-seed/*.json`, primarily `caseFacts.json` — see §3b's note on
-keeping this copy in sync) specifically so it doesn't have to wait on a live
-re-import. `/cases`,
-`/crime-count`, `/socio-economic`, `/pattern-analysis`, `/repeat-offenders`,
-and `/persons` all read that bundled snapshot and correctly show the real
-5,000-case dataset today.
+### How it was done — no wipe was needed
 
-**But a handful of routes still query the live Data Store directly**, and
-those genuinely do see the stale 19-row dataset: `/api/summary` and
-`/api/casetypes` (both queried by `/dashboard`'s `CrimeTrendChart` and
-`CategoryDonut`), `/api/district-stats`, and `/api/investigation`'s
-scenario-resolution join. **The practical consequence: `/dashboard`'s trend
-chart and category donut are very likely showing totals out of ~19 cases
-right now, while every other analytics page on the same site shows totals
-out of 5,000.** Worth confirming directly against the deployed Slate app
-rather than assuming either way — but if you notice the Dashboard's numbers
-don't match `/crime-count`'s, this is why, and P1.6 is the actual fix, not a
-UI bug.
+P1.6 was originally written as “wipe the Data Store and re-import cleanly”.
+There is **no wipe command**: the CLI has `ds:import`/`ds:export`/`ds:status`
+and nothing else, ZCQL is SELECT-only, and the SDK’s `deleteRows()` needs a
+Catalyst request context that only exists in a deployed function.
 
-Details: `DATA_STORE_SCHEMA.md` → "Accused.PersonID — the person register",
+It turned out not to matter. Every ID already live was also present in the
+new dataset (checked explicitly, per table, before importing anything), so an
+**upsert** reaches exactly the same end state as a wipe-and-reimport with no
+stale rows left behind — and without a destructive step. Verified by
+re-importing an identical file and confirming the row count did not move.
+
+```
+# per table, find_by = that table's primary key
+echo '{ "operation": "upsert", "find_by": "CaseMasterID" }' > cfg.json
+catalyst ds:import --table CaseMaster --config cfg.json <csv>
+```
+
+Three practical gotchas, all real, all cost time:
+
+- **The CLI prompts, and the prompt breaks non-interactive use.** `ds:import`
+  asks which Stratus bucket to upload to, and `ds:export`/`ds:status` ask
+  whether to download the report; unanswered, the command dies with
+  “An unexpected error has occurred” *after* the job is already scheduled.
+  Pipe an answer in (`printf '
+' |` for the bucket list, `echo y |` for the
+  report download). The bucket in this project is `rd-import-staging`.
+- **Object keys must be unique per upload.** Re-uploading a file with the same
+  basename returns `HTTP Error: 409`. Copy the CSV to a timestamped name first.
+- **Imports are asynchronous.** A table can still read 0 rows for several
+  minutes after a “successfully scheduled” message — `ChargesheetDetails`
+  looked like a total failure until it suddenly held all 2,962 rows. Re-export
+  and count before concluding anything failed.
+
+### ⚠️ `ActSectionAssociation` is imported but wrong — needs a console fix
+
+This table has **no primary key**, so it can’t be upserted, and it was empty
+live, so it was imported as a plain insert. Both attempts were wrong, and the
+second one left bad data:
+
+1. Importing the generator’s own CSV (`ActID: "IPC"`, `SectionID: "379"`)
+   failed **all 16,395 rows** with `Invalid input value for ActID. int value
+   expected`. `ActID`/`SectionID` are Lookup columns and want the referenced
+   row’s ROWID, not the semantic code. This is why the table had sat at 0
+   rows since the beginning — a pre-existing gap, not a P1.7 regression.
+2. Resolving the codes to real live ROWIDs (`prep_asa_import.mjs`, written
+   for exactly this) made the import *succeed* — but the column silently
+   **truncated every 17-digit ROWID to 10 digits**, so all 16,395 rows now
+   hold the same meaningless value `5680600000` in both lookup columns.
+
+**Nothing in the app reads this table** (`grep ActSectionAssociation src/`
+returns only a comment; case sections come from the bundled
+`caseFacts.json`), so nothing user-facing is broken. But the rows are wrong
+and cannot be repaired in place: no PK means no upsert, and there is no
+delete path outside the console.
+
+**To fix, in the Catalyst console:** truncate `ActSectionAssociation`, change
+`ActID` and `SectionID` from int to **Text**, then re-import the generator’s
+portable CSV directly (no ROWID mapping, no `prep_asa_import.mjs`). Schema
+changes are console-only on this Data Store — same constraint that forced
+every other table to be hand-built.
+
+### Known live-read bug found by the scale-up
+
+`zcqlAll()` (`src/lib/zcql.ts`) returns **exactly one duplicate row** when it
+walks 12,000 rows in 300-row pages. Every live figure is inflated by one:
+`/api/summary` reports `totalCases: 12001` against 12,000 real rows,
+`solvedCases: 6159` against 6,158. It is deterministic (four calls, same
+numbers) and was invisible at 19 rows because that fit in a single page. The
+paginator issues `LIMIT {offset},300` with no `ORDER BY`, so page boundaries
+aren’t stable. Not yet fixed — it needs a live deploy to test, since ZCQL
+can’t run locally.
+
+Also surfaced: **5 cases are dated 2021**, but `/api/summary` hardcodes
+`TREND_YEARS = [2022…2026]`, so the dashboard’s trend chart silently drops
+them. Cosmetic, but it means the trend series doesn’t sum to the headline
+total.
+
+Details: `DATA_STORE_SCHEMA.md` → “`Accused.PersonID` — the person register”,
+`dataset-v2/karnataka_districts.mjs` for the 31-district roster,
 `dataset-v2/geo_time.mjs` for the coordinates, `dataset-v2/demographics.mjs`
 for occupation/religion.
 

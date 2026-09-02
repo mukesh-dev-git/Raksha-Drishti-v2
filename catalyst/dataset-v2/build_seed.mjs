@@ -13,10 +13,76 @@ import { readFileSync, writeFileSync, mkdirSync } from "fs";
 import { fileURLToPath } from "url";
 import path from "path";
 import { generateBulkCases } from "./bulk_cases.mjs";
+import { KA_DISTRICTS, NEW_DISTRICTS, DISTRICT_PIN_PREFIX } from "./karnataka_districts.mjs";
 
 const dir = path.dirname(fileURLToPath(import.meta.url));
 const lookups = JSON.parse(readFileSync(path.join(dir, "lookups.json"), "utf-8"));
 const dataset = JSON.parse(readFileSync(path.join(dir, "cases.json"), "utf-8"));
+
+// Synthetic officer names for the 46 new stations' IOs (P1.7). Same nature as
+// the 12 hand-authored ones in lookups.json - plausible Karnataka names, not
+// real officers. Never present these as a real KSP roster.
+const OFFICER_NAMES = [
+  "Shivakumar B", "Rekha Patil", "Mahantesh S", "Jyothi Kulkarni", "Nagaraj H",
+  "Vani Shetty", "Prakash Gowda", "Sushma Rao", "Umesh Naik", "Bhavana Hegde",
+  "Ravindra Desai", "Chaitra Bhat", "Santhosh Kumar", "Lalitha M", "Vishwanath J",
+  "Nayana Poojary", "Mallikarjun G", "Asha Nayak", "Harsha Vardhan", "Shobha Reddy",
+  "Anand Hiremath", "Priyanka Achar", "Gopalakrishna N",
+];
+
+// --- P1.7 · all 31 Karnataka districts ---------------------------------------
+// lookups.json still holds only the ORIGINAL 8 districts (and their
+// hand-authored stations/courts/officers, which the 19 authored scenarios
+// reference by ID and must not move). The other 23 are merged in here from
+// karnataka_districts.mjs so there is exactly one place to edit a district -
+// see that module's header for why. Everything downstream (the lookup-table
+// CSVs at §1, unitByDistrict/courtByDistrict in bulk_cases.mjs, districtById
+// at §7) reads `lookups`, so merging at load time is enough; nothing else
+// needs to know the roster grew.
+{
+  const knownDistrictIds = new Set(lookups.District.map((d) => d.DistrictID));
+  // Court/Employee IDs continue the existing sequences (3001-3008, 5001-5012)
+  // rather than restarting, so no ID collides with an authored scenario's.
+  let nextCourtId = Math.max(...lookups.Court.map((c) => c.CourtID)) + 1;
+  let nextEmployeeId = Math.max(...lookups.Employee.map((e) => e.EmployeeID)) + 1;
+
+  for (const d of NEW_DISTRICTS) {
+    if (knownDistrictIds.has(d.id)) {
+      throw new Error(`karnataka_districts.mjs: DistrictID ${d.id} (${d.name}) already exists in lookups.json - IDs must not collide`);
+    }
+    lookups.District.push({ DistrictID: d.id, DistrictName: d.name, StateID: 29, Active: true });
+    lookups.Court.push({
+      CourtID: nextCourtId++,
+      CourtName: `${d.name} District & Sessions Court`,
+      DistrictID: d.id,
+      StateID: 29,
+      Active: true,
+    });
+    for (const s of d.stations) {
+      lookups.Unit.push({ UnitID: s.id, UnitName: s.name, TypeID: 1, DistrictID: d.id, StateID: 29, Active: true });
+      // One Investigating Officer per station. Names are synthetic (same
+      // convention as the original 12 in lookups.json); the KGID prefix is
+      // derived from the district slug so it's at least internally consistent.
+      const kgidTag = d.slug.replace(/-/g, "").slice(0, 3).toUpperCase();
+      lookups.Employee.push({
+        EmployeeID: nextEmployeeId,
+        DistrictID: d.id,
+        UnitID: s.id,
+        RankID: s.name.includes("Rural") ? 4 : 5, // SI rural / Inspector town
+        DesignationID: 1, // Investigating Officer
+        KGID: `KA-${kgidTag}-${nextEmployeeId}`,
+        FirstName: OFFICER_NAMES[(nextEmployeeId - 5013) % OFFICER_NAMES.length],
+        EmployeeDOB: "1986-01-01",
+        GenderID: nextEmployeeId % 2 === 0 ? 2 : 1,
+        AppointmentDate: "2010-01-01",
+      });
+      nextEmployeeId++;
+    }
+  }
+  if (lookups.District.length !== KA_DISTRICTS.length) {
+    throw new Error(`expected ${KA_DISTRICTS.length} districts after merge, got ${lookups.District.length}`);
+  }
+}
 
 const outCsvDir = path.join(dir, "out", "csv");
 const outNoSqlDir = path.join(dir, "out", "nosql");
@@ -123,27 +189,54 @@ for (const c of dataset.cases) {
 }
 
 // --- 2b. P1.2 - the broad half. See bulk_cases.mjs's own header for the full
-// reasoning (real relational volume; deliberately no evidence layer). ID
-// ranges are hand-picked to never collide with the 15 scenarios' own:
-// CaseMasterID 9001-9019, AccusedMasterID 8000s, VictimMasterID 7000s,
-// ComplainantID 6000s, global PersonID up to KA-P0047 - bulk starts at 1/1/
-// 1/1/48 respectively and stays well under those floors.
-// 4981 bulk + 19 authored = 5000 total - scaled up from the original 390/409
-// per user request: SCRB handles statewide volume, and 409 cases undersold
-// that. 5,000 was picked as the largest step that stays comfortably inside
-// "bundle a JSON file" (a few MB, still fast to build/parse) rather than
-// needing a paginated API/DB read - see PLAN.md P1.2 for the full tradeoff
-// (~20k+ would mean minified JSON and a closer look at build time; ~100k+
-// stops being a static-bundle problem at all).
-const BULK_CASE_COUNT = 4981;
+// reasoning (real relational volume; deliberately no evidence layer).
+//
+// ID BASE — READ BEFORE CHANGING BULK_CASE_COUNT. The 15 authored scenarios
+// occupy fixed ID ranges: CaseMasterID 9001-9019, AccusedMasterID up to 8053,
+// VictimMasterID/ComplainantID up to 9019, PersonID up to KA-P0047. Bulk used
+// to start every sequence at 1 and "stay well under those floors" - which was
+// only true because 4,981 bulk cases never reached 9001.
+//
+// P1.7's scale-up to 11,981 broke that silently and destructively: bulk cases
+// 9001-9019 collided with the 19 authored ones, and because caseFacts.json is
+// keyed by CaseMasterID the bulk rows OVERWROTE all 19 authored scenarios -
+// the entire evidence layer (contradictions, entity fusion, MO clusters, the
+// Investigation Workspace's showcase cases) silently vanished from the
+// bundled seed while the CSVs still looked plausible at 12,000 rows.
+// ComplainantID and VictimMasterID collided the same way (22 and 14 reused
+// ids). Caught by the row-count mismatch in the build log (12,000 CaseMaster
+// rows -> 11,981 caseFacts entries), not by anything failing loudly.
+//
+// The fix is a base far above every authored range rather than a bigger
+// "stays under" gap, so this cannot silently re-break at any future count:
+// bulk now starts at 100001 and is separated from authored IDs by ~91k.
+// Verified after every build by the assertions below - do not remove them.
+const BULK_ID_BASE = 100001;
+// 11,981 bulk + 19 authored = 12,000 total.
+//
+// History: 390/409 originally -> 4,981/5,000 (P1.2, statewide volume) ->
+// 11,981/12,000 (P1.7, 2026-09-01). The last step is a direct consequence of
+// going from 8 districts to 31: holding the total at 5,000 while tripling the
+// district count would have left the smallest districts near 40 cases, which
+// looks empty on a district page and is too thin to plot a trend from. 12,000
+// keeps every district plottable (Kodagu, the smallest, lands ~100) without
+// leaving the "bundle a JSON file" regime - caseFacts.json is already
+// minified (see §6) and lands around 3 MB at this count. ~20k+ would mean a
+// closer look at build time; ~100k+ stops being a static-bundle problem at
+// all and needs a paginated API/DB read. See PLAN.md P1.2/P1.7.
+const BULK_CASE_COUNT = 11981;
 const bulk = generateBulkCases(lookups, {
   count: BULK_CASE_COUNT,
-  startCaseMasterId: 1,
-  startAccusedMasterId: 1,
-  startVictimMasterId: 1,
-  startComplainantId: 1,
+  startCaseMasterId: BULK_ID_BASE,
+  startAccusedMasterId: BULK_ID_BASE,
+  startVictimMasterId: BULK_ID_BASE,
+  startComplainantId: BULK_ID_BASE,
   startPersonNumber: 48,
   today: "2026-08-29",
+  // The 19 authored rows, pushed above - lets the generator continue each
+  // station-year's FIR serial rather than restarting it and minting a
+  // CrimeNo an authored case already owns. See bulk_cases.mjs's stationSeq.
+  existingCaseMasterRows: caseMasterRows,
 });
 caseMasterRows.push(...bulk.caseMasterRows);
 complainantRows.push(...bulk.complainantRows);
@@ -151,6 +244,44 @@ victimRows.push(...bulk.victimRows);
 accusedRows.push(...bulk.accusedRows);
 actSectionRows.push(...bulk.actSectionRows);
 console.log(`  (+ ${bulk.caseMasterRows.length} bulk cases from bulk_cases.mjs, ${bulk.accusedRows.length} with a named accused)`);
+
+// --- 2c. ID-collision assertions (P1.7) --------------------------------------
+// The bug these exist to catch destroyed all 19 authored scenarios while every
+// row count still looked right - see the BULK_ID_BASE comment above. Fail the
+// build loudly rather than emit a plausible-looking but gutted dataset.
+function assertUniqueIds(label, rows, key) {
+  const seen = new Set();
+  const dupes = [];
+  for (const r of rows) {
+    const v = r[key];
+    if (v === undefined || v === null) continue;
+    if (seen.has(v)) dupes.push(v);
+    seen.add(v);
+  }
+  if (dupes.length) {
+    throw new Error(
+      `${label}: ${dupes.length} duplicate ${key}(s) - bulk IDs are colliding with the authored scenarios' reserved ranges. ` +
+      `First few: ${dupes.slice(0, 5).join(", ")}. Raise BULK_ID_BASE above every authored ID.`
+    );
+  }
+}
+assertUniqueIds("CaseMaster", caseMasterRows, "CaseMasterID");
+// CrimeNo is the real FIR number - two cases sharing one is a data defect, not
+// a cosmetic one. (CaseNo deliberately ISN'T unique: it's the station-scoped
+// serial, so the same YYYY+serial recurs across stations exactly as it does in
+// real CCTNS - the 19 already-live rows contain duplicates and imported fine.)
+assertUniqueIds("CaseMaster", caseMasterRows, "CrimeNo");
+assertUniqueIds("ComplainantDetails", complainantRows, "ComplainantID");
+assertUniqueIds("Victim", victimRows, "VictimMasterID");
+assertUniqueIds("Accused", accusedRows, "AccusedMasterID");
+// The 19 authored FIRs must all still be present and un-overwritten.
+const authoredIds = dataset.cases.flatMap((c) => c.firs.map((f) => f.CaseMasterID));
+const presentIds = new Set(caseMasterRows.map((r) => r.CaseMasterID));
+const missing = authoredIds.filter((id) => !presentIds.has(id));
+if (missing.length) {
+  throw new Error(`${missing.length} authored scenario FIR(s) missing from CaseMaster: ${missing.join(", ")}`);
+}
+console.log(`  ID check: ${caseMasterRows.length} unique CaseMasterIDs, all ${authoredIds.length} authored FIRs intact`);
 
 reformatDateTimeCols(caseMasterRows, ["IncidentFromDate", "IncidentToDate", "InfoReceivedPSDate"]);
 writeCsv("CaseMaster", caseMasterCols, caseMasterRows);
@@ -468,6 +599,66 @@ writeFileSync(
 );
 console.log(`caseFacts.json`.padEnd(30), `${Object.keys(caseFacts).length} FIRs`);
 
+// --- 6b. summaryFallback.json (P1.7) -----------------------------------------
+// Real statewide + per-district aggregates, precomputed here so src/lib/api.ts
+// has something REAL to fall back on when /api/summary is unreachable.
+//
+// Why this file exists at all: api.ts runs in the BROWSER (it fetches relative
+// `/api/...` URLs), so it cannot import caseWorklist.ts - that would pull the
+// 6 MB caseFacts.json into the client bundle. Until P1.7 its fallback instead
+// summed data.ts's invented placeholder `count`/`trend`/`clearanceRate`
+// fields, i.e. the dashboard could silently render fabricated statewide
+// totals whenever the live Data Store hiccupped, with nothing in the UI
+// saying so. Those fields are now deleted; this is their real replacement -
+// a few KB of genuine aggregates over the same 12,000 cases every other page
+// counts, cheap enough to ship to the client.
+//
+// "Cleared" = CaseStatusID 2 (Charge Sheeted) or 3 (Closed) - the same
+// definition rd_api/districtStats.ts already use. Don't renumber those
+// without updating both (see lookups.json's _note_CaseStatusID).
+const CLEARED_STATUS = new Set([2, 3]);
+const fallbackYears = [2022, 2023, 2024, 2025, 2026];
+const perDistrict = new Map();
+for (const fir of caseMasterRows) {
+  const did = unitToDistrict.get(fir.PoliceStationID) ?? null;
+  if (did == null) continue;
+  if (!perDistrict.has(did)) {
+    perDistrict.set(did, {
+      dbId: did,
+      totalCases: 0,
+      solvedCases: 0,
+      yearlyTrend: fallbackYears.map(() => 0),
+      yearlySolved: fallbackYears.map(() => 0),
+    });
+  }
+  const agg = perDistrict.get(did);
+  const cleared = CLEARED_STATUS.has(fir.CaseStatusID);
+  const yi = fallbackYears.indexOf(Number(String(fir.CrimeRegisteredDate).slice(0, 4)));
+  agg.totalCases++;
+  if (cleared) agg.solvedCases++;
+  if (yi >= 0) {
+    agg.yearlyTrend[yi]++;
+    if (cleared) agg.yearlySolved[yi]++;
+  }
+}
+const summaryFallback = {
+  _note:
+    "REAL aggregates over the generated case register, emitted by build_seed.mjs. Used ONLY by src/lib/api.ts when the live /api/summary route is unreachable, so a degraded dashboard shows real seeded numbers instead of nothing (and, before P1.7, instead of invented ones). Regenerate with the rest of the seed - never hand-edit.",
+  generatedAt: new Date().toISOString().slice(0, 10),
+  years: fallbackYears,
+  crimeCategories: lookups.CrimeSubHead.length,
+  districts: [...perDistrict.values()].sort((a, b) => a.dbId - b.dbId),
+};
+writeFileSync(
+  path.join(outNoSqlDir, "summaryFallback.json"),
+  JSON.stringify(summaryFallback),
+  "utf-8"
+);
+console.log(
+  `summaryFallback.json`.padEnd(30),
+  `${summaryFallback.districts.length} districts, ${summaryFallback.districts.reduce((s, d) => s + d.totalCases, 0)} cases`
+);
+
 // --- 7. Person identity - synthetic KYC-style fields (Aadhaar/phone/address) -
 // The real FIR schema has nothing to build this from: `Accused` is only
 // AccusedMasterID/CaseMasterID/AccusedName/AgeYear/GenderID/PersonID -
@@ -501,16 +692,9 @@ console.log(`caseFacts.json`.padEnd(30), `${Object.keys(caseFacts).length} FIRs`
 // illustrative, not a real locality-level lookup.
 console.log("\nPerson identity:");
 
-const DISTRICT_PIN_PREFIX = {
-  4401: "560", // Bengaluru Urban
-  4402: "570", // Mysuru
-  4403: "590", // Belagavi
-  4404: "585", // Kalaburagi
-  4405: "575", // Dakshina Kannada
-  4406: "572", // Tumakuru
-  4407: "583", // Ballari
-  4408: "577", // Shivamogga
-};
+// P1.7: now derived from karnataka_districts.mjs so all 31 districts resolve -
+// before that this was an 8-entry literal and any new district would have
+// silently produced an `undefined`-prefixed PIN.
 const LOCALITY_WORDS = [
   "Gandhi Nagar", "Kuvempu Nagar", "Vidyaranyapura", "Shanti Nagar",
   "Ashok Nagar", "Nehru Colony", "Basaveshwara Nagar", "Ganesh Layout",

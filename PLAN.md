@@ -15,12 +15,12 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 
 ## Where the work stands
 
-*Last swept 2026-08-30.*
+*Last swept 2026-09-02.*
 
 | Track | State | Where it's at |
 |---|---|---|
 | **P0** Credibility | ✅ **done** | All 5. App no longer promises what it can't do. |
-| **P1** Data foundation | 🔵 **in progress** | P1.1 ✅ · P1.2 ✅ (scaled to 5,000 cases 2026-08-29) · P1.3 ✅ · P1.4 `[~]` built, not applied · **P1.5** `[~]` occupation + religion done 2026-08-30, caste taxonomy still an open question · **P1.7 new, 2026-08-31** (expand from 8 to all 31 real Karnataka districts, user-requested) · **P1.6 is next** (wipe + reimport, now also the natural place to fold in P1.7's new districts, P1.1's PersonID fix, P1.2's bulk cases, and P1.5's demographics all at once) |
+| **P1** Data foundation | 🔵 **nearly done** | P1.1 ✅ · P1.2 ✅ · P1.3 ✅ · **P1.7 ✅ 2026-09-01** (all **31** real Karnataka districts, **12,000** FIRs) · **P1.6 ✅ 2026-09-02** (live Data Store re-imported at full scale — `CaseMaster` 19 → 12,000, every table verified against source by re-export; done by upsert, no wipe needed) · P1.4 `[~]` built, not applied · **P1.5** `[~]` occupation + religion live, caste taxonomy still an open question. Two defects found by the scale-up and left open, see `catalyst/README.md` §2: `ActSectionAssociation` lookup ROWIDs truncated (console fix needed, unread by the app), and `zcqlAll()` off-by-one inflating every live count by 1. |
 | **P2** Route restructure | ✅ **done, merged, deployed** | Merged to `main` and pushed to `v2/main` 2026-08-28 (17 commits) - confirmed live on Slate. P2.1+P2.1a+P2.1b+P2.1c+P2.1d+P2.2+P2.3 all real FIR Index, case/district/person pages, header search, old-URL redirects, attention-list dashboard. **P2.4's case-status write endpoint confirmed working against the live Data Store** (two real writes via curl, both directions, not just a 200 taken on faith) - the app's first-ever write, live. IO assignment/case-diary not started (diary blocked on console-only table provisioning, not a choice). One real gap surfaced: writes hit the live Data Store but every read path still serves bundled seed JSON, so a write is currently invisible in the UI - see P2.4. |
 | **P3** Person spine | ✅ **done** | P3.1+P3.3 (`589721d`) — fusion + timeline merge, 2 real bugs found and fixed. P3.2 (`/persons`) landed via the P2 restructure — see P2.1c. |
 | **P4** Real analytics | ✅ **all 7 sub-items done, 2026-08-30** | P4.1 (real statewide hotspot map), P4.2+P4.9 (time-of-day×day-of-week heatmap), P4.3+P4.9 (control-chart trend alerts), P4.4 (chargesheet rate/heinous split), P4.5 (socio-economic breakdown, `/socio-economic`, 2026-08-30 - occupation + religion, caste withheld pending taxonomy decision), P4.6+P4.7 (MO-clustering + repeat-offenders), P4.8 (real stat cards), P4.9 (choropleth, kernel-density, cross-district flow map, case-flow Sankey, statewide link-analysis graph). P4.1-P4.4/P4.6-P4.9 built via 6 parallel subagents 2026-08-29; P4.5 built directly 2026-08-30. |
@@ -34,9 +34,10 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 · **P2 (whole track)** · **P4 (whole track)** · P3.1 · P3.3 · P5.0 · P5.1 ·
 P5.2 · P5.3 · P5.4 · P5.8 · P6 (closed) · P7.1 · X1 · X2 · X3
 
-**Ready to pick up right now, no decisions needed:** **P1.6** (wipe +
-reimport) · **P1.7** (expand to all 31 real Karnataka districts) · P5.7 ·
-P7.2 · P7.3 · P7.4
+**Ready to pick up right now, no decisions needed:** P5.7 · P7.2 · P7.3 ·
+P7.4 · redeploy to Slate (the deployed build still bundles the old 8-district /
+5,000-case seed, while its live Data Store routes now serve 31/12,000 — see
+below)
 
 **Blocked on someone, not on effort:**
 
@@ -64,7 +65,7 @@ at all** — so it's a rewrite to read the Data Store, not a data swap.
 
 ```
 P0  Credibility        ✅ done
-P1  Data foundation    🔵 P1.1/P1.2/P1.3 done ── P1.6 (wipe+reimport) next
+P1  Data foundation    🔵 P1.1/P1.2/P1.3/P1.6/P1.7 done ── P1.4/P1.5 remain
 P2  Route restructure  🔵 in progress ── P2.1/1a/1b/1c done, P2.1d next
 P3  Person spine       ✅ done       ── P3.2 landed via P2.1c
 P4  Real analytics     ✅ done 2026-08-29 ── all 6 sub-items, 6 parallel subagents
@@ -251,7 +252,7 @@ locally, then wipe + re-import **once**. See `RESEARCH_AND_PLAN.md` §5.*
       entirely and reporting only religion + occupation). That is a separate
       decision worth a direct answer before generating any values — asked,
       not yet answered.
-- [ ] **P1.7** Expand district coverage to all real Karnataka districts.
+- [x] **P1.7** ✅ **Done 2026-09-01.** Expanded district coverage to all real Karnataka districts.
       `catalyst/dataset-v2/lookups.json` currently seeds only **8** of
       Karnataka's real 31 districts (Bengaluru Urban, Mysuru, Belagavi,
       Kalaburagi, Dakshina Kannada, Tumakuru, Ballari, Shivamogga -
@@ -272,7 +273,8 @@ locally, then wipe + re-import **once**. See `RESEARCH_AND_PLAN.md` §5.*
       zero cases everywhere. Natural to fold into **P1.6**'s wipe-and-
       reimport (same "one wipe, not per-fix" reasoning P1.6 already uses)
       rather than a second separate re-import.
-- [ ] **P1.6** Wipe the Data Store and re-import cleanly. Record row counts in
+- [x] **P1.6** ✅ **Done 2026-09-02.** Live Data Store re-imported at full scale — `CaseMaster` 19 → **12,000**, `District` 8 → **31**, plus Unit/Court/Employee/Complainant/Victim/Accused/ChargesheetDetails, every table verified by re-exporting and diffing against the source CSVs field by field (not by trusting the import's success message). The real `KA-Pnnnn` PersonIDs (P1.1) and P1.5's demographics are now live. **No wipe was needed after all** — there is no wipe command (CLI has only import/export/status, ZCQL is SELECT-only, the SDK's `deleteRows()` needs a deployed request context), but every ID already live was also in the new dataset, so an **upsert** on each table's PK reaches the identical end state with zero stale rows and no destructive step. Two real defects found and left open, both documented in `catalyst/README.md` §2: (a) `ActSectionAssociation` imported 16,395 rows whose Lookup ROWIDs were silently truncated to 10 digits — needs a console truncate + column type change to Text; nothing in the app reads that table. (b) `zcqlAll()` returns exactly one duplicate row over 12,000 rows, inflating every live count by 1 — invisible at 19 rows, needs a deploy to test a fix. Original task text below.
+- [ ] ~~**P1.6**~~ Wipe the Data Store and re-import cleanly. Record row counts in
       `catalyst/README.md`. Now carries two real fixes at once, which is
       exactly why this was deferred to one wipe rather than done per-fix:
       P1.1's real `KA-Pxxxx` PersonIDs (the live Data Store still has the

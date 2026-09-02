@@ -94,5 +94,373 @@
     "designationName": "Investigating Officer",
     "districtId": 4408,
     "districtName": "Shivamogga"
+  },
+  {
+    "employeeId": 5013,
+    "name": "Shivakumar B",
+    "rankName": "Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4409,
+    "districtName": "Bagalkote"
+  },
+  {
+    "employeeId": 5014,
+    "name": "Rekha Patil",
+    "rankName": "Sub-Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4409,
+    "districtName": "Bagalkote"
+  },
+  {
+    "employeeId": 5015,
+    "name": "Mahantesh S",
+    "rankName": "Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4410,
+    "districtName": "Bengaluru Rural"
+  },
+  {
+    "employeeId": 5016,
+    "name": "Jyothi Kulkarni",
+    "rankName": "Sub-Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4410,
+    "districtName": "Bengaluru Rural"
+  },
+  {
+    "employeeId": 5017,
+    "name": "Nagaraj H",
+    "rankName": "Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4411,
+    "districtName": "Bidar"
+  },
+  {
+    "employeeId": 5018,
+    "name": "Vani Shetty",
+    "rankName": "Sub-Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4411,
+    "districtName": "Bidar"
+  },
+  {
+    "employeeId": 5019,
+    "name": "Prakash Gowda",
+    "rankName": "Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4412,
+    "districtName": "Chamarajanagar"
+  },
+  {
+    "employeeId": 5020,
+    "name": "Sushma Rao",
+    "rankName": "Sub-Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4412,
+    "districtName": "Chamarajanagar"
+  },
+  {
+    "employeeId": 5021,
+    "name": "Umesh Naik",
+    "rankName": "Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4413,
+    "districtName": "Chikkaballapura"
+  },
+  {
+    "employeeId": 5022,
+    "name": "Bhavana Hegde",
+    "rankName": "Sub-Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4413,
+    "districtName": "Chikkaballapura"
+  },
+  {
+    "employeeId": 5023,
+    "name": "Ravindra Desai",
+    "rankName": "Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4414,
+    "districtName": "Chikkamagaluru"
+  },
+  {
+    "employeeId": 5024,
+    "name": "Chaitra Bhat",
+    "rankName": "Sub-Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4414,
+    "districtName": "Chikkamagaluru"
+  },
+  {
+    "employeeId": 5025,
+    "name": "Santhosh Kumar",
+    "rankName": "Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4415,
+    "districtName": "Chitradurga"
+  },
+  {
+    "employeeId": 5026,
+    "name": "Lalitha M",
+    "rankName": "Sub-Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4415,
+    "districtName": "Chitradurga"
+  },
+  {
+    "employeeId": 5027,
+    "name": "Vishwanath J",
+    "rankName": "Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4416,
+    "districtName": "Davanagere"
+  },
+  {
+    "employeeId": 5028,
+    "name": "Nayana Poojary",
+    "rankName": "Sub-Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4416,
+    "districtName": "Davanagere"
+  },
+  {
+    "employeeId": 5029,
+    "name": "Mallikarjun G",
+    "rankName": "Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4417,
+    "districtName": "Dharwad"
+  },
+  {
+    "employeeId": 5030,
+    "name": "Asha Nayak",
+    "rankName": "Sub-Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4417,
+    "districtName": "Dharwad"
+  },
+  {
+    "employeeId": 5031,
+    "name": "Harsha Vardhan",
+    "rankName": "Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4418,
+    "districtName": "Gadag"
+  },
+  {
+    "employeeId": 5032,
+    "name": "Shobha Reddy",
+    "rankName": "Sub-Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4418,
+    "districtName": "Gadag"
+  },
+  {
+    "employeeId": 5033,
+    "name": "Anand Hiremath",
+    "rankName": "Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4419,
+    "districtName": "Hassan"
+  },
+  {
+    "employeeId": 5034,
+    "name": "Priyanka Achar",
+    "rankName": "Sub-Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4419,
+    "districtName": "Hassan"
+  },
+  {
+    "employeeId": 5035,
+    "name": "Gopalakrishna N",
+    "rankName": "Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4420,
+    "districtName": "Haveri"
+  },
+  {
+    "employeeId": 5036,
+    "name": "Shivakumar B",
+    "rankName": "Sub-Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4420,
+    "districtName": "Haveri"
+  },
+  {
+    "employeeId": 5037,
+    "name": "Rekha Patil",
+    "rankName": "Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4421,
+    "districtName": "Kodagu"
+  },
+  {
+    "employeeId": 5038,
+    "name": "Mahantesh S",
+    "rankName": "Sub-Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4421,
+    "districtName": "Kodagu"
+  },
+  {
+    "employeeId": 5039,
+    "name": "Jyothi Kulkarni",
+    "rankName": "Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4422,
+    "districtName": "Kolar"
+  },
+  {
+    "employeeId": 5040,
+    "name": "Nagaraj H",
+    "rankName": "Sub-Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4422,
+    "districtName": "Kolar"
+  },
+  {
+    "employeeId": 5041,
+    "name": "Vani Shetty",
+    "rankName": "Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4423,
+    "districtName": "Koppal"
+  },
+  {
+    "employeeId": 5042,
+    "name": "Prakash Gowda",
+    "rankName": "Sub-Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4423,
+    "districtName": "Koppal"
+  },
+  {
+    "employeeId": 5043,
+    "name": "Sushma Rao",
+    "rankName": "Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4424,
+    "districtName": "Mandya"
+  },
+  {
+    "employeeId": 5044,
+    "name": "Umesh Naik",
+    "rankName": "Sub-Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4424,
+    "districtName": "Mandya"
+  },
+  {
+    "employeeId": 5045,
+    "name": "Bhavana Hegde",
+    "rankName": "Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4425,
+    "districtName": "Raichur"
+  },
+  {
+    "employeeId": 5046,
+    "name": "Ravindra Desai",
+    "rankName": "Sub-Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4425,
+    "districtName": "Raichur"
+  },
+  {
+    "employeeId": 5047,
+    "name": "Chaitra Bhat",
+    "rankName": "Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4426,
+    "districtName": "Ramanagara"
+  },
+  {
+    "employeeId": 5048,
+    "name": "Santhosh Kumar",
+    "rankName": "Sub-Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4426,
+    "districtName": "Ramanagara"
+  },
+  {
+    "employeeId": 5049,
+    "name": "Lalitha M",
+    "rankName": "Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4427,
+    "districtName": "Udupi"
+  },
+  {
+    "employeeId": 5050,
+    "name": "Vishwanath J",
+    "rankName": "Sub-Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4427,
+    "districtName": "Udupi"
+  },
+  {
+    "employeeId": 5051,
+    "name": "Nayana Poojary",
+    "rankName": "Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4428,
+    "districtName": "Uttara Kannada"
+  },
+  {
+    "employeeId": 5052,
+    "name": "Mallikarjun G",
+    "rankName": "Sub-Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4428,
+    "districtName": "Uttara Kannada"
+  },
+  {
+    "employeeId": 5053,
+    "name": "Asha Nayak",
+    "rankName": "Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4429,
+    "districtName": "Vijayapura"
+  },
+  {
+    "employeeId": 5054,
+    "name": "Harsha Vardhan",
+    "rankName": "Sub-Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4429,
+    "districtName": "Vijayapura"
+  },
+  {
+    "employeeId": 5055,
+    "name": "Shobha Reddy",
+    "rankName": "Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4430,
+    "districtName": "Vijayanagara"
+  },
+  {
+    "employeeId": 5056,
+    "name": "Anand Hiremath",
+    "rankName": "Sub-Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4430,
+    "districtName": "Vijayanagara"
+  },
+  {
+    "employeeId": 5057,
+    "name": "Priyanka Achar",
+    "rankName": "Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4431,
+    "districtName": "Yadgir"
+  },
+  {
+    "employeeId": 5058,
+    "name": "Gopalakrishna N",
+    "rankName": "Sub-Inspector",
+    "designationName": "Investigating Officer",
+    "districtId": 4431,
+    "districtName": "Yadgir"
   }
 ]

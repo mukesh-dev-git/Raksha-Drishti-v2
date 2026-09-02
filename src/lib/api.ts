@@ -24,6 +24,9 @@ import {
   type CaseType,
   type District,
 } from "./data";
+// ~4 KB of REAL precomputed aggregates - see getSummary()'s fallback below for
+// why this is a generated file rather than a live read of caseWorklist.ts.
+import summaryFallback from "./nosql-seed/summaryFallback.json";
 
 async function apiGet<T>(path: string): Promise<T | null> {
   try {
@@ -60,26 +63,38 @@ export async function getSummary(districtIds?: number[]): Promise<Summary> {
   const live = await apiGet<Summary>(`/summary${qs}`);
   if (live) return live;
 
-  // Fallback (local dev / Data Store error): approximate from the bundled
-  // district sample data - it has per-district trend + clearanceRate but no
-  // real yearly "solved" breakdown, so yearlySolved here is a clearanceRate-
-  // weighted estimate, not a real count. Only ever shown when the live API
-  // is unavailable (see catalyst/README.md).
-  const scoped = districtIds && districtIds.length > 0 ? districts.filter((d) => districtIds.includes(d.dbId)) : districts;
+  // Fallback (local dev / Data Store error): REAL aggregates over the same
+  // 12,000-case seeded register every other page counts, precomputed into
+  // summaryFallback.json by build_seed.mjs (§6b).
+  //
+  // P1.7 replaced what used to be here: sums over data.ts's invented
+  // `count`/`trend`/`clearanceRate` placeholders, which meant a Data Store
+  // hiccup silently swapped the dashboard's real totals for fabricated ones
+  // with nothing in the UI saying so. Those fields are gone. This file can't
+  // just import caseWorklist.ts instead - api.ts runs in the browser (note
+  // the relative `/api` fetch above) and caseFacts.json is ~6 MB; the
+  // precomputed aggregate is ~4 KB. Numbers here are real but STATIC: they
+  // reflect the seed as generated, so they won't show a status change written
+  // through /api/cases/[caseId]/status the way the live route does.
+  const scoped = districtIds && districtIds.length > 0
+    ? summaryFallback.districts.filter((d) => districtIds.includes(d.dbId))
+    : summaryFallback.districts;
   const filtered = districtIds && districtIds.length > 0;
-  const totalCases = filtered ? scoped.reduce((s, d) => s + d.count, 0) : caseTypes.reduce((s, c) => s + c.total, 0);
-  const yearlyTrend = trendYears.map((_, i) => scoped.reduce((s, d) => s + d.trend[i], 0));
-  const solvedCases = Math.round(scoped.reduce((s, d) => s + d.count * (d.clearanceRate / 100), 0));
+  const totalCases = scoped.reduce((s, d) => s + d.totalCases, 0);
+  const solvedCases = scoped.reduce((s, d) => s + d.solvedCases, 0);
+  const years = summaryFallback.years;
+  const yearlyTrend = years.map((_, i) => scoped.reduce((s, d) => s + d.yearlyTrend[i], 0));
+  const yearlySolved = years.map((_, i) => scoped.reduce((s, d) => s + d.yearlySolved[i], 0));
   return {
     totalCases,
-    crimeCategories: caseTypes.length,
+    crimeCategories: summaryFallback.crimeCategories,
     districtsCovered: filtered ? scoped.length : districts.length,
     solvedCases,
     activeInvestigations: totalCases - solvedCases,
     detectionRate: totalCases ? Math.round((solvedCases / totalCases) * 1000) / 10 : 0,
-    years: trendYears,
+    years,
     yearlyTrend,
-    yearlySolved: yearlyTrend.map((y) => Math.round(y * 0.6)),
+    yearlySolved,
   };
 }
 

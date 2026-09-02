@@ -13,6 +13,8 @@
 // referenced by anything else.
 // -----------------------------------------------------------------------------
 
+import { NEW_STATION_LOCALITIES } from "./karnataka_districts.mjs";
+
 // --- deterministic PRNG -------------------------------------------------------
 // mulberry32 on a hashed seed. Not for cryptography - just needs to be stable
 // across machines and Node versions, which Math.random() is not.
@@ -105,6 +107,15 @@ export const STATION_LOCALITIES = {
     ["Sagar", 14.1667, 75.0333], ["Talaguppa", 14.2200, 74.9500],
     ["Anandapuram", 14.0700, 75.0500], ["Heggodu", 14.1900, 75.0600],
   ]},
+
+  // --- P1.7 (2026-09-01) · the other 23 Karnataka districts ---
+  // Merged in from karnataka_districts.mjs rather than transcribed here: at
+  // 31 districts this table would be ~190 lines of coordinates maintained in
+  // parallel with the district roster, lookups.json and the case weights.
+  // The 8 districts above stay written out longhand deliberately - their
+  // localities were hand-tuned and verified live in P1.3, and re-transcribing
+  // working coordinates for tidiness would risk breaking them for no gain.
+  ...NEW_STATION_LOCALITIES,
 };
 
 const KM_PER_DEG_LAT = 110.574;

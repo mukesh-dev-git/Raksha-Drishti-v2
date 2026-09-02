@@ -29,6 +29,7 @@
 // -----------------------------------------------------------------------------
 import { placeIncident, incidentHour, isPeriodOffence } from "./geo_time.mjs";
 import { assignOccupation, assignReligion } from "./demographics.mjs";
+import { DISTRICT_WEIGHTS } from "./karnataka_districts.mjs";
 
 // mulberry32 on a hashed seed - identical approach to geo_time.mjs's private
 // rng(), just needed here too for case-level decisions (district, crime
@@ -64,15 +65,14 @@ function pad(n, len) {
   return String(n).padStart(len, "0");
 }
 
-// Real district-weight shape (roughly population/urbanisation-proportional -
-// Bengaluru Urban carries the most caseload, the two rural-leaning districts
-// the least), NOT copied from data.ts's fake placeholder counts - those were
-// invented for a UI mock before any real data existed and are exactly the
-// numbers this generator makes obsolete.
-const DISTRICT_WEIGHTS = [
-  [4401, 26], [4402, 14], [4403, 12], [4404, 10],
-  [4405, 10], [4406, 10], [4407, 9], [4408, 9],
-];
+// Real district-weight SHAPE (population-derived, with a modest urbanisation
+// multiplier - Bengaluru Urban carries the most caseload, Kodagu the least),
+// NOT copied from data.ts's fake placeholder counts - those were invented for
+// a UI mock before any real data existed and are exactly the numbers this
+// generator makes obsolete. Equally: these are not real per-district FIR
+// counts either - see karnataka_districts.mjs's header on exactly what is and
+// isn't real here. P1.7 moved this from an 8-entry literal to all 31
+// districts, derived from the one district registry.
 
 const CRIME_WEIGHTS = [[1, 40], [2, 23], [3, 21], [4, 16]]; // Theft/Assault/Fraud/Burglary
 
@@ -134,6 +134,10 @@ export function generateBulkCases(lookups, opts) {
   const {
     count, startCaseMasterId, startAccusedMasterId, startVictimMasterId,
     startComplainantId, startPersonNumber, today,
+    // The already-built authored CaseMaster rows. Used only to pre-seed the
+    // per-station-per-year FIR serial counter so a bulk CrimeNo can never
+    // duplicate an authored one - see the stationSeq comment below.
+    existingCaseMasterRows = [],
   } = opts;
 
   const unitByDistrict = new Map();
@@ -165,7 +169,24 @@ export function generateBulkCases(lookups, opts) {
   let complainantId = startComplainantId;
   let personNumber = startPersonNumber;
   const bulkPersonPool = []; // { personId, name } - for the occasional repeat subject
-  const stationSeq = new Map(); // `${stationId}:${year}` -> running sequence, mirrors real CCTNS numbering (resets per PS per year)
+  // `${stationId}:${year}` -> running FIR serial. Mirrors real CCTNS
+  // numbering, which resets per police station per year.
+  //
+  // Pre-seeded from the authored rows (P1.7): now that bulk CrimeNos use the
+  // same documented 18-digit format as the authored ones (see crimeNo below),
+  // a bulk case registered at an authored case's station in the same year
+  // would otherwise restart the serial at 1 and mint a CrimeNo already used
+  // by a real authored FIR. Starting each counter above whatever the authored
+  // data already used makes that impossible by construction rather than by
+  // luck.
+  const stationSeq = new Map();
+  for (const row of existingCaseMasterRows) {
+    const yr = String(row.CrimeRegisteredDate).slice(0, 4);
+    const key = `${row.PoliceStationID}:${yr}`;
+    // Authored CrimeNos end in the 5-digit serial.
+    const serial = Number(String(row.CrimeNo).slice(-5)) || 0;
+    stationSeq.set(key, Math.max(stationSeq.get(key) ?? 0, serial));
+  }
 
   for (let i = 0; i < count; i++) {
     const caseMasterId = startCaseMasterId + i;
@@ -221,7 +242,21 @@ export function generateBulkCases(lookups, opts) {
     const seqKey = `${policeStationId}:${yr}`;
     const seq = (stationSeq.get(seqKey) ?? 0) + 1;
     stationSeq.set(seqKey, seq);
-    const crimeNo = `${policeStationId}${yr}${pad(seq, 5)}`;
+    // Documented CCTNS CrimeNo format (DATA_STORE_SCHEMA.md §"CrimeNo format"):
+    //   1 digit CaseCategory + 4 digit District + 4 digit Unit + 4 digit Year
+    //   + 5 digit serial   ->  1 4401 0101 2026 00001 = 144010101202600001
+    //
+    // FIXED 2026-09-01 (P1.7). This used to emit
+    // `${policeStationId}${yr}${serial}` - a 15-digit number missing the
+    // category digit and using the raw 6-digit station id in place of
+    // district+unit. It was wrong from the start but invisible while only the
+    // 19 authored FIRs were on screen at once; at 12,000 cases the FIR index
+    // showed 19 correctly-formatted 18-digit numbers next to thousands of
+    // 15-digit ones. The unit segment is the station id's last 4 digits,
+    // matching how the authored rows encode it (440101 -> "0101", verified
+    // against case 9001's real CrimeNo).
+    const unitSegment = String(policeStationId).slice(-4);
+    const crimeNo = `1${districtId}${unitSegment}${yr}${pad(seq, 5)}`;
     const caseNo = `${yr}${pad(seq, 5)}`;
 
     const districtEmployees = employeesByDistrict.get(districtId) ?? lookups.Employee;
