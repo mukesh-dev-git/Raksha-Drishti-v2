@@ -22,7 +22,7 @@ export default function EvidenceFeedStrip({ items }: { items: EvidenceFeedItem[]
           const k = KIND[item.kind];
           const Icon = k.icon;
           const card = (
-            <div className="w-56 shrink-0 rounded-lg border border-line bg-surface-2/50 p-3.5 transition hover:border-dash-blue/50">
+            <div className="w-56 shrink-0 rounded-lg border border-line bg-surface-2 p-3.5 transition hover:border-dash-blue">
               <div className="flex items-center gap-2">
                 <span className="flex h-7 w-7 items-center justify-center rounded-md bg-dash-blue-bg text-dash-blue">
                   <Icon size={14} aria-hidden="true" />

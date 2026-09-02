@@ -24,10 +24,10 @@ const KIND_ICON: Record<FusedEvidenceItem["kind"], typeof PhoneCall> = {
 };
 
 const KIND_COLOR: Record<FusedEvidenceItem["kind"], { bg: string; text: string; ring: string }> = {
-  call: { bg: "bg-dash-blue-bg", text: "text-dash-blue", ring: "ring-dash-blue/30" },
-  transaction: { bg: "bg-dash-orange-bg", text: "text-dash-orange", ring: "ring-dash-orange/30" },
-  cctv: { bg: "bg-dash-purple-bg", text: "text-dash-purple", ring: "ring-dash-purple/30" },
-  statement: { bg: "bg-dash-teal-bg", text: "text-dash-teal", ring: "ring-dash-teal/30" },
+  call: { bg: "bg-dash-blue-bg", text: "text-dash-blue", ring: "ring-dash-blue" },
+  transaction: { bg: "bg-dash-orange-bg", text: "text-dash-orange", ring: "ring-dash-orange" },
+  cctv: { bg: "bg-dash-purple-bg", text: "text-dash-purple", ring: "ring-dash-purple" },
+  statement: { bg: "bg-dash-teal-bg", text: "text-dash-teal", ring: "ring-dash-teal" },
 };
 
 function formatShort(item: FusedEvidenceItem): string {

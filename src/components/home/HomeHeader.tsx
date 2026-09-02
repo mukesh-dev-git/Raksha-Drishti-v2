@@ -36,7 +36,7 @@ export default function HomeHeader() {
 
       <a
         href="tel:112"
-        className="ml-auto flex shrink-0 items-center gap-1.5 rounded-full border border-danger/40 px-3.5 py-1.5 text-sm font-semibold text-danger hover:bg-danger-bg"
+        className="ml-auto flex shrink-0 items-center gap-1.5 rounded-full border border-danger px-3.5 py-1.5 text-sm font-semibold text-danger hover:bg-danger-bg"
       >
         <Phone size={14} aria-hidden="true" /> Emergency 112
       </a>

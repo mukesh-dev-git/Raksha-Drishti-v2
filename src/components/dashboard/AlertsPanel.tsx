@@ -38,7 +38,7 @@ export default function AlertsPanel({ alerts }: { alerts: Alert[] }) {
           return (
             <li key={a.id}>
               {a.link ? (
-                <Link href={a.link} className="block transition hover:border-danger/50">
+                <Link href={a.link} className="block transition hover:border-danger">
                   {Item}
                 </Link>
               ) : (
