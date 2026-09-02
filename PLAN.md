@@ -35,10 +35,17 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 · **P2 (whole track)** · **P4 (whole track)** · P3.1 · P3.3 · P5.0 · P5.1 ·
 P5.2 · P5.3 · P5.4 · P5.8 · P6 (closed) · P7.1 · X1 · X2 · X3
 
-**Ready to pick up right now, no decisions needed:** P5.7 · P7.2 · P7.3 ·
-P7.4 · redeploy to Slate (the deployed build still bundles the old 8-district /
-5,000-case seed, while its live Data Store routes now serve 31/12,000 — see
-below)
+**Ready to pick up right now, no decisions needed:** P5.7 · P7.2 · P7.3 · P7.4
+
+**✅ Verified live in production, 2026-09-02** (Slate auto-deploys on push to
+`main`, so P1.6/P1.7 shipped themselves — there was never a manual redeploy
+step to do, and an earlier note here claiming otherwise was wrong):
+`/districts` renders all **31** districts · `/cases` reports **12,000** with
+every CrimeNo in the correct 18-digit format · `/api/summary` returns
+**31 districts** and 12,001 cases (the known `zcqlAll()` off-by-one) · authored
+scenario **9001** still renders its full evidence layer · and **Ask Anything**
+answered a real question in production for the first time since its fix —
+`ok: true`, 2 tool rounds, **12 real citations, 0 hallucinated**, 23.5 s.
 
 **Biggest known architectural debt:** **P10** — the whole app should read the live Data Store, and real CRUD is largely missing. Recorded, scoped, and deliberately not started before the deadline.
 
