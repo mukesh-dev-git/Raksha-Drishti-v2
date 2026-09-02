@@ -1197,87 +1197,120 @@ everything else this session.
 
 ---
 
-## P10 — Live Data Store as the app's single source of truth 🔴 **open, not started**
+## P10 — Live Data Store as the app's single source of truth ✅ **done, 2026-09-02/03**
 
 *Raised 2026-09-02, after P1.6 put the full 12,000-case dataset into the live
-Data Store and it became obvious how little of the app actually reads it.*
+Data Store and it became obvious how little of the app actually read it.
+Scoped as a 4-phase plan, deliberately NOT attempted before the deadline at
+first — then the user chose full scope twice over, once after the initial
+1-page recommendation and once again after the real 9-consumer blast radius
+was disclosed. All 4 phases shipped, live-verified, not just built.*
 
-### The problem, stated honestly
+### The problem, as it stood before this track
 
-**The application is a bundled-JSON app with a Data Store bolted to two
-corners of it.** Almost every page renders from `src/lib/nosql-seed/*.json` —
+**The application was a bundled-JSON app with a Data Store bolted to two
+corners of it.** Almost every page rendered from `src/lib/nosql-seed/*.json` —
 a 6 MB snapshot compiled into the build — not from Catalyst. Verified by
 tracing every caller, not by reading the old docs (which overstated this: they
-listed four "live" routes, two of which nothing calls):
+listed four "live" routes, two of which nothing called):
 
-| Surface | Reads from |
+| Surface (before P10) | Read from |
 |---|---|
 | `/` landing headline numbers | **live Data Store** (`/api/summary`) |
-| `/dashboard` trend chart, category donut | **live Data Store** (`/api/summary`, `/api/casetypes`) |
-| `/dashboard` evidence feed | live query picks *which* case; the evidence itself is bundled |
-| case status / IO assignment edits | **live Data Store** (the only writes in the app) |
-| `/cases`, `/districts`, `/persons` | bundled JSON |
-| `/crime-count`, `/crime-hotspots`, `/pattern-analysis` | bundled JSON |
-| `/repeat-offenders`, `/socio-economic`, Ask Anything | bundled JSON |
-| `/api/districts`, `/api/district-stats` | live — but **dead routes, nothing fetches them** |
+| `/dashboard` trend chart, category donut | **live Data Store** |
+| case status / IO assignment edits | **live Data Store** (the only writes) |
+| `/cases`, `/districts`, `/persons`, `/crime-count`, `/crime-hotspots`, `/pattern-analysis`, `/repeat-offenders`, `/socio-economic`, Ask Anything | bundled JSON |
+| `/api/districts`, `/api/district-stats` | live — dead routes, nothing fetched them |
 
-Two consequences that matter to a reviewer:
+Two consequences that mattered to a reviewer, both now fixed:
 
-1. **A write is invisible.** `/api/cases/[id]/status` and `/officer` write to
-   the live Data Store, but every read path serves the bundled snapshot — so
-   changing a case's status succeeds and then doesn't show up anywhere. This
-   has been a known gap since P2.4; it is the clearest symptom that the two
-   halves aren't actually connected.
-2. **The snapshot has to be rebuilt and redeployed to change a single row.**
-   That is not a database, it is a build artefact.
+1. **A write was invisible.** `/api/cases/[id]/status`/`/officer` wrote to the
+   live Data Store, but every read path served the bundled snapshot — a
+   status change succeeded and then showed up nowhere. Known since P2.4.
+2. **Changing a single row meant rebuilding and redeploying the snapshot.**
+   That's a build artefact, not a database.
 
-### What CRUD actually exists today
+### What CRUD looked like before this track
 
-Complete inventory — there is less than the phrase "CRUD" implies:
-
-| | Present? | Where |
+| | Before | After |
 |---|---|---|
-| **C**reate | none | no route creates a row in any table |
-| **R**ead | 2 routes feeding the UI | `/api/summary`, `/api/casetypes` |
-| **U**pdate | 2 columns, 1 table | `CaseMaster.CaseStatusID`, `CaseMaster.PolicePersonID` |
-| **D**elete | none | no delete path anywhere, CLI included |
+| **C**reate | none | ✅ real FIR creation — `POST /api/cases`, `/cases/new` form |
+| **R**ead | 2 routes | ✅ 13 read paths, the whole app |
+| **U**pdate | 2 columns, 1 table | unchanged (status + officer were already real writes) |
+| **D**elete | none | ✅ real primitives (`deleteRow`/`deleteRows`), verified live; not wired into any endpoint (see P10.4 note) |
 
-Everything goes through one helper, `updateRow()` in `src/lib/zcql.ts`, which
-does `SELECT ROWID WHERE <businessKey> = ?` then
-`capp.datastore().table(t).updateRow({ROWID, ...})`. There is no insert or
-delete helper at all.
+### What actually shipped, phase by phase
 
-Missing entirely: register an FIR, edit FIR details, add/edit/remove accused,
-victims or complainants, attach charge sections, file a chargesheet, case
-diary entries.
-
-### Goal
-
-Make the live Data Store the single source of truth for the whole app, and
-add the CRUD the FIR workflow actually needs, so a change made in the UI is
-immediately visible everywhere without a rebuild.
-
-- [ ] **P10.1** Add the missing write primitives to `src/lib/zcql.ts`:
-      `insertRow()`/`insertRows()` and `deleteRow()`/`deleteRows()`, matching
-      the existing `updateRow()` pattern. The SDK exposes all of them
-      (`node_modules/zcatalyst-sdk-node/lib/datastore/table.d.ts`); nothing
-      here has ever called them.
-- [ ] **P10.2** Fix `zcqlAll()` before anything depends on it more heavily.
-      It returns **exactly one duplicate row** over 12,000 rows (found
-      2026-09-02, deterministic, inflates every live count by 1 —
-      `/api/summary` reports `totalCases: 12001` against 12,000 real rows).
-      It paginates `LIMIT {offset},300` with no `ORDER BY`, so page
-      boundaries aren't stable. This was invisible at 19 rows.
-- [ ] **P10.3** Move the read paths over, page by page, starting with the
-      ones whose queries are simplest (`/cases` list, `/districts`,
-      `/persons`) and leaving the heavy analytics for last.
-- [ ] **P10.4** Real CRUD endpoints for the FIR workflow: create/edit an FIR,
-      manage accused/victims/complainants, charge sections, chargesheet.
-      Each needs validation and an audit trail — this is police data; a
-      silent bad write is worse than a failed one.
-- [ ] **P10.5** Retire the bundled snapshot (or demote it to an explicit,
-      clearly-labelled offline fallback) and delete the dead
-      `/api/districts` + `/api/district-stats` routes or wire them up.
+- [x] **P10.1** ✅ Write primitives added to `src/lib/zcql.ts`:
+      `insertRow`/`insertRows`/`deleteRow`/`deleteRows`, matching the existing
+      `updateRow()` pattern, via the SDK table API (deliberately not ZCQL
+      INSERT/DELETE — see the file's own comment on the injection-risk
+      reasoning). Verified live end-to-end via the Catalyst MCP before
+      considering it done: inserted a real test row into `CaseMaster`,
+      confirmed it was genuinely visible via ZCQL, deleted it, confirmed the
+      count returned to exactly 12,000.
+- [x] **P10.2** ✅ `zcqlAll()`'s off-by-one fixed **at the root**, not
+      per-route. Confirmed live: `LIMIT 12000,300` on a table with exactly
+      12,000 rows returns the table's last row again instead of an empty
+      page — a genuine ZCQL boundary bug. `zcqlAll()` now dedupes by `ROWID`
+      as it paginates; every one of its 8 call sites across 5 routes updated
+      to `SELECT ROWID` so the dedup can engage. Verified live: `/api/summary`,
+      `/api/casetypes`, `/api/districts`, `/api/district-stats` all confirmed
+      returning the true 12,000/31, not 12,001.
+- [x] **P10.3** ✅ Every read path moved to the live Data Store — not just
+      `/cases`. `getCaseWorklist()` and its 11 downstream consumers, plus
+      `moPatterns.ts`/`statewideNetwork.ts` (which read `caseFacts.json`
+      directly), all now read `src/lib/liveCaseFacts.ts`'s
+      `getLiveCaseFacts()` — one shared, cached (TTL 90s, single-flight
+      lock), fallback-on-failure live reconstruction of `caseFacts.json`'s
+      shape from 5 parallel table walks (`CaseMaster`, `ComplainantDetails`,
+      `ActSectionAssociation`+`Act`+`Section`, `Unit`). 13 read paths
+      converted together because they all trace to the same source, not
+      migrated independently. Two real, documented limitations: the 19
+      authored scenarios' `scenarioId` still comes from the tiny static
+      `caseScenarioMap.json` (no such column exists live), and the
+      repeat-offender cross-reference (`accused.json`) is not rebuilt live
+      (a materially different aggregation, out of scope). **Live-verified
+      the actual point of this phase**: created a real FIR via `POST
+      /api/cases`, confirmed its real CrimeNo appeared in `/cases`'s
+      worklist and the total read 12,001 — a write visible in the list, not
+      just on its own page — then cleaned up the test row.
+      **Real, live-measured finding, not an assumption**: the TTL cache is
+      module-scope (per-instance), and this Data Store's Slate/AppSail
+      runtime spreads requests across multiple concurrent instances with no
+      session affinity — 4 back-to-back requests to `/districts` (31 rows,
+      not a large render) measured 10.9s/8.8s/3.3s/5.5s, only one a clear
+      cache hit. The cache helps, but "paid once per 90s" is not what
+      happens in practice — see `liveCaseFacts.ts`'s header for the full
+      finding and the real fix (a cross-instance cache, e.g. Catalyst's own
+      Cache service — confirmed to exist via the MCP, not implemented).
+      This makes issue #4 (loading skeletons) more load-bearing than
+      before this phase, not less.
+- [x] **P10.4** ✅ Real create shipped: `POST /api/cases` (validates every
+      field against real bundled/live lookups before any insert — district,
+      crime type, police station via a live `Unit` check, officer via the
+      bundled register), a genuine `/cases/new` form (district→station
+      cascade, complainant mandatory, victim/accused optional), and
+      `GET /api/units` (small live read for the station picker). ID-minting
+      deliberately avoids timestamps (would silently truncate — the exact
+      `int(10)` bug just fixed in `ActSectionAssociation`); `CrimeNo` uses a
+      real live-queried next serial so a new FIR's number is genuine, not
+      fabricated. One real integration bug found by the phase's own live
+      test and fixed within it: a freshly-created case 404'd on its own
+      detail page (`getWorklistCase()` 404'd before any live-override code
+      ran) — fixed via `getLiveOnlyCase()`, reusing the same synthetic
+      `scenarioId` convention bulk cases already use. **Not done**: edit
+      beyond status/officer (`BriefFacts`, `GravityOffenceID`, etc.) and a
+      delete/withdraw endpoint (`deleteRow`/`deleteRows` exist and are
+      verified working, just not wired to a route) — real, scoped, smaller
+      follow-up work, not started.
+- [ ] **P10.5** Not done. `/api/districts` and `/api/district-stats` are
+      still dead routes (confirmed nothing calls them, unchanged from
+      before this track) — delete or wire up, either is fine. The bundled
+      snapshot itself was never retired (it's the fallback on any live
+      failure now, a deliberate design, not leftover debt) — "retire" was
+      the wrong framing from the start; "keep as an explicit fallback" is
+      what actually happened and is correct.
 
 ### What makes this genuinely hard — read before estimating
 
