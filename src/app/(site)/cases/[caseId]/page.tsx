@@ -9,7 +9,7 @@ import CrossSourceTimeline from "@/components/CrossSourceTimeline";
 import CaseRelationshipGraph from "@/components/cases/CaseRelationshipGraph";
 import StatementAudioPlayer from "@/components/evidence/StatementAudioPlayer";
 import { getWorklistCase, getSiblingCases, caseDetailLink } from "@/lib/caseWorklist";
-import { getLiveCaseOverrides } from "@/lib/liveCaseOverrides";
+import { getLiveCaseOverrides, getLiveOnlyCase } from "@/lib/liveCaseOverrides";
 import { getScenarioTimeline } from "@/lib/personFusion";
 import { getMoPatternClusters } from "@/lib/moPatterns";
 import { getEmployeesByDistrict } from "@/lib/employees";
@@ -41,14 +41,28 @@ const AI_CONTRADICTIONS = aiContradictionsSeed as {
 // -----------------------------------------------------------------------------
 export async function generateMetadata({ params }: { params: Promise<{ caseId: string }> }) {
   const { caseId } = await params;
-  const c = getWorklistCase(Number(caseId));
+  const caseMasterId = Number(caseId);
+  // Duplicates the live fetch the page component below does for a genuinely
+  // new case (generateMetadata and the page component don't share a request
+  // cache here) - an accepted, small redundancy rather than a bigger
+  // refactor, given this only runs for the just-created-case path, not
+  // every visit.
+  const c = getWorklistCase(caseMasterId) ?? (await getLiveOnlyCase(caseMasterId));
   return { title: c ? `${c.crimeNo} — ${c.title}` : "Case not found" };
 }
 
 export default async function CaseDetailPage({ params }: { params: Promise<{ caseId: string }> }) {
   const { caseId } = await params;
   const caseMasterId = Number(caseId);
-  const c = getWorklistCase(caseMasterId);
+  let c = getWorklistCase(caseMasterId);
+  // P10 Phase 3 - a case created via POST /api/cases has no bundled entry
+  // at all (the snapshot is compiled at build time), so without this a real
+  // create was followed by a 404 on its own page - confirmed live, case
+  // 827077, this session's actual verification case for Phase 3. Only
+  // attempted when the bundled lookup misses, so every existing case's
+  // render is untouched (one extra live round-trip only for the genuinely
+  // new-case path, not on every visit).
+  if (!c) c = await getLiveOnlyCase(caseMasterId);
   if (!c) notFound();
 
   // P10 Phase 2 - the fix for a write being invisible on the very page it
