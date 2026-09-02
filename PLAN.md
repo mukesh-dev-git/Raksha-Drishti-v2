@@ -1449,3 +1449,34 @@ it until the RSC payload arrived.*
       `read_network_requests`: no request on load, one `GET
       /api/search-index → 200` firing exactly on first focus/keystroke,
       results correctly matching ("Shivamogga" → 4 cases + the district).
+
+## P12 — Full case edit + delete ⏸ **blocked on team review, not started**
+
+*Raised 2026-09-03, directly off a user question about what CRUD actually
+exists. Answer as of today: Create (✅, P10.4) and two single-field updates
+— status and investigating officer (✅, P10.2/P2.4) — are real. Editing any
+other case field, and deleting a case at all, are not built. User's own
+call: add this to the plan now, build it after a team review — not a
+"figure out scope solo" item.*
+
+- [ ] **P12.1** General case-edit. No route accepts a change to
+      `BriefFacts`, `GravityOffenceID`, incident dates/coordinates, charge
+      sections, or any Complainant/Victim/Accused field — only
+      `CaseStatusEditor.tsx`/`IOAssignmentEditor.tsx`'s two single-field
+      PATCHes exist. Needs the same validation discipline `POST /api/cases`
+      already established (district/station/officer checks, Karnataka
+      bounding box for coordinates) applied to an update path instead of an
+      insert — and a real decision on scope: edit everything `POST
+      /api/cases` can set, or a narrower "correct a mistake" set of fields.
+      **Open question for the team review, not a default to pick alone:**
+      should a case-edit be unrestricted, or does real FIR process require
+      an audit trail / supervisor approval for post-registration changes to
+      certain fields (this is real police process, not just a UI nicety)?
+- [ ] **P12.2** Delete / withdraw a case. `deleteRow`/`deleteRows`
+      (`src/lib/zcql.ts`) exist and were live-tested during
+      P10.1 (insert-then-delete-then-confirm-count), but nothing calls
+      them — no route, no button, no admin action anywhere in the app.
+      **Open question for the team review:** a real FIR is a legal record;
+      "delete" in a live police system usually means something closer to
+      "mark withdrawn/cancelled" than a hard row delete. Decide which one
+      this app should model before building either.
