@@ -28,13 +28,19 @@ const CLEARED_STATUS = new Set([2, 3]);
 //   ... WHERE CrimeRegisteredDate >= 'x' AND <= 'y'        -> works
 //   ... WHERE PoliceStationID IN (...)                     -> works
 //
-// A SIDE EFFECT WORTH KNOWING: this also fixes a real bug. zcqlAll() returns
-// exactly one duplicate row when walking 12,000 rows in 300-row pages, so
-// every figure this route produced was inflated by one - it reported
-// totalCases 12001 against 12,000 real rows and solvedCases 6159 against
-// 6158. COUNT returns the true numbers, so the off-by-one disappears here
-// without the paginator itself being touched. zcqlAll() is still wrong and
-// still used elsewhere - that remains open as P10.2 / issue #5.
+// A SIDE EFFECT WORTH KNOWING: this also fixed a real bug, here and
+// everywhere else. zcqlAll() used to return exactly one duplicate row
+// whenever a table's row count was an exact multiple of the 300-row page
+// size (confirmed live: `LIMIT 12000,300` on a 12,000-row CaseMaster
+// returned the table's last row again instead of an empty page - a genuine
+// ZCQL boundary bug, not application code). This route no longer calls
+// zcqlAll() at all, but the root cause is now fixed IN zcqlAll() itself
+// (2026-09-02, src/lib/zcql.ts) - it dedupes by ROWID as it paginates,
+// which is correct regardless of whether this exact boundary case or some
+// other unordered-pagination hazard is the cause. Every other caller
+// (casetypes, district-stats, districts, investigation) had this same bug
+// and is fixed by the same change - P10.2 / issue #5's zcqlAll() item is
+// closed, not just worked around for this one route.
 //
 // TWO ZCQL LIMITS SHAPE THE QUERIES BELOW, both confirmed live, neither
 // worked around silently:

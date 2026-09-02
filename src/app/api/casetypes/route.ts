@@ -18,9 +18,9 @@ export async function GET(req: NextRequest) {
 
   try {
     const [subs, cases, units] = await Promise.all([
-      zcqlAll(req, "SELECT CrimeSubHeadID, CrimeHeadName FROM CrimeSubHead"),
-      zcqlAll(req, "SELECT CrimeMinorHeadID, PoliceStationID FROM CaseMaster"),
-      districtIds.length > 0 ? zcqlAll(req, "SELECT UnitID, DistrictID FROM Unit") : Promise.resolve([]),
+      zcqlAll(req, "SELECT ROWID, CrimeSubHeadID, CrimeHeadName FROM CrimeSubHead"),
+      zcqlAll(req, "SELECT ROWID, CrimeMinorHeadID, PoliceStationID FROM CaseMaster"),
+      districtIds.length > 0 ? zcqlAll(req, "SELECT ROWID, UnitID, DistrictID FROM Unit") : Promise.resolve([]),
     ]);
 
     const districtByUnit = new Map<number, number>(

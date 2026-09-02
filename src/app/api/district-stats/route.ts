@@ -15,10 +15,10 @@ export async function GET(req: NextRequest) {
   }
   try {
     const [units, cases] = await Promise.all([
-      zcqlAll(req, "SELECT UnitID, DistrictID FROM Unit"),
+      zcqlAll(req, "SELECT ROWID, UnitID, DistrictID FROM Unit"),
       zcqlAll(
         req,
-        `SELECT CaseMasterID, CrimeRegisteredDate, CaseStatusID, PoliceStationID
+        `SELECT ROWID, CaseMasterID, CrimeRegisteredDate, CaseStatusID, PoliceStationID
          FROM CaseMaster WHERE CrimeMinorHeadID = ${crime}`
       ),
     ]);

@@ -38,12 +38,60 @@ export async function zcql(req: NextRequest, query: string) {
   return capp.zcql().executeZCQLQuery(query);
 }
 
+// FIXED 2026-09-02 - root cause confirmed live via the Catalyst MCP, not
+// guessed. When a page comes back with exactly ZCQL_PAGE_SIZE rows, the old
+// loop always fired one more request at `LIMIT <rowCount>,300` to check for
+// more. That is a genuine ZCQL boundary bug, not an application error: on a
+// table with EXACTLY 12,000 rows, `LIMIT 12000,300` (offset == total row
+// count, which should be past the end) returns the table's LAST row again
+// instead of an empty page -
+//   SELECT CaseMasterID FROM CaseMaster LIMIT 12000,300 -> [{"CaseMaster":
+//     {"CaseMasterID":"111981"}}]   (111981 IS the real last CaseMasterID)
+//   SELECT CaseMasterID FROM CaseMaster LIMIT 11999,1   -> "111980" (the
+//     second-to-last row, confirming 111981 was already returned on the
+//     prior full page and this is a genuine duplicate, not a missed row)
+// Invisible whenever a table's row count isn't an exact multiple of 300 -
+// which is most tables, most of the time - and why this shipped unnoticed
+// through 19 rows, then 5,000, then only surfaced at exactly 12,000.
+//
+// The fix dedupes by ROWID as pages accumulate, which is correct regardless
+// of whether the real cause is this exact boundary case or some other
+// unordered-pagination hazard (LIMIT/OFFSET without ORDER BY has no
+// guaranteed stability in general - see zcql()'s own module note; this
+// makes zcqlAll robust to that whole class of issue, not just today's
+// specific manifestation).
+//
+// This REQUIRES every caller's query to select ROWID - content-based
+// dedup was considered and rejected: several existing callers select
+// non-unique column pairs (e.g. CrimeMinorHeadID + PoliceStationID, which
+// many real, distinct cases legitimately share), so comparing row content
+// would silently drop real rows, not just the boundary artifact. ROWID is
+// the one column guaranteed unique per row. If a query doesn't ROWID,
+// dedup is skipped for it (logged) rather than silently wrong - fix the
+// query instead of relying on this fallback.
 export async function zcqlAll(req: NextRequest, baseQuery: string) {
   let offset = 0;
-  let all: any[] = [];
+  const all: unknown[] = [];
+  const seenRowIds = new Set<string>();
+  let warnedMissingRowId = false;
+
   for (;;) {
     const page = await zcql(req, `${baseQuery} LIMIT ${offset},${ZCQL_PAGE_SIZE}`);
-    all = all.concat(page);
+    for (const row of page) {
+      // Row shape is always the single-key `{ <TableName>: {...cols} }` -
+      // grab that one value without needing to know the table name (an
+      // arbitrary baseQuery string isn't reliably parseable for it).
+      const cols = (Object.values(row as Record<string, unknown>)[0] ?? {}) as { ROWID?: string };
+      const rowId = cols.ROWID;
+      if (rowId) {
+        if (seenRowIds.has(rowId)) continue; // the exact duplicate this fix targets
+        seenRowIds.add(rowId);
+      } else if (!warnedMissingRowId) {
+        warnedMissingRowId = true;
+        console.warn("[zcql.ts] zcqlAll(): query does not SELECT ROWID, so pagination-boundary duplicates can't be filtered - add ROWID to the SELECT list.", baseQuery);
+      }
+      all.push(row);
+    }
     if (page.length < ZCQL_PAGE_SIZE) break;
     offset += ZCQL_PAGE_SIZE;
   }
