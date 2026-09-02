@@ -27,14 +27,24 @@ import { NextRequest, NextResponse } from "next/server";
 
 const ZCQL_PAGE_SIZE = 300;
 
-export function initCatalyst(req: NextRequest) {
+// Loosened from `req: NextRequest` (2026-09-02, P10 Phase 2) to `{ headers }`
+// where `headers` just needs `.entries()` - the one thing actually used.
+// NextRequest.headers (a real Headers instance) already satisfies this, so
+// every existing Route Handler call site is unaffected. What this newly
+// allows: calling from a Server Component, which has no NextRequest at all -
+// `next/headers()`'s return value is Headers-shaped too, so
+// `initCatalyst({ headers: await headers() })` works the same way. Needed
+// because /cases/[caseId] (a Server Component) has to read live CaseMaster
+// fields directly, not just Route Handlers.
+type HeadersLike = { entries(): IterableIterator<[string, string]> };
+export function initCatalyst(source: { headers: HeadersLike }) {
   const catalyst = require("zcatalyst-sdk-node");
-  const fakeReq = { headers: Object.fromEntries(req.headers.entries()) };
+  const fakeReq = { headers: Object.fromEntries(source.headers.entries()) };
   return catalyst.initialize(fakeReq as never);
 }
 
-export async function zcql(req: NextRequest, query: string) {
-  const capp = initCatalyst(req);
+export async function zcql(source: { headers: HeadersLike }, query: string) {
+  const capp = initCatalyst(source);
   return capp.zcql().executeZCQLQuery(query);
 }
 
@@ -69,7 +79,7 @@ export async function zcql(req: NextRequest, query: string) {
 // the one column guaranteed unique per row. If a query doesn't ROWID,
 // dedup is skipped for it (logged) rather than silently wrong - fix the
 // query instead of relying on this fallback.
-export async function zcqlAll(req: NextRequest, baseQuery: string) {
+export async function zcqlAll(req: { headers: HeadersLike }, baseQuery: string) {
   let offset = 0;
   const all: unknown[] = [];
   const seenRowIds = new Set<string>();
@@ -128,7 +138,7 @@ export type AggregateRow = { key: string | null; count: number };
  *                     expression, e.g. "COUNT(ROWID)"
  */
 export async function zcqlAggregate(
-  req: NextRequest,
+  req: { headers: HeadersLike },
   query: string,
   table: string,
   groupColumn: string | null = null,
@@ -147,7 +157,7 @@ export async function zcqlAggregate(
 }
 
 /** Single-value COUNT. Returns 0 if the query somehow yields no row. */
-export async function zcqlCount(req: NextRequest, query: string, table: string): Promise<number> {
+export async function zcqlCount(req: { headers: HeadersLike }, query: string, table: string): Promise<number> {
   const rows = await zcqlAggregate(req, query, table);
   return rows.length ? rows[0].count : 0;
 }

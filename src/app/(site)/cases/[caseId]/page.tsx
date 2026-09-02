@@ -9,6 +9,7 @@ import CrossSourceTimeline from "@/components/CrossSourceTimeline";
 import CaseRelationshipGraph from "@/components/cases/CaseRelationshipGraph";
 import StatementAudioPlayer from "@/components/evidence/StatementAudioPlayer";
 import { getWorklistCase, getSiblingCases, caseDetailLink } from "@/lib/caseWorklist";
+import { getLiveCaseOverrides } from "@/lib/liveCaseOverrides";
 import { getScenarioTimeline } from "@/lib/personFusion";
 import { getMoPatternClusters } from "@/lib/moPatterns";
 import { getEmployeesByDistrict } from "@/lib/employees";
@@ -50,6 +51,23 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ cas
   const c = getWorklistCase(caseMasterId);
   if (!c) notFound();
 
+  // P10 Phase 2 - the fix for a write being invisible on the very page it
+  // was made from. CaseStatusEditor/IOAssignmentEditor already call
+  // router.refresh() after a successful PATCH (P2.4) - that plumbing was
+  // always correct, it was just re-running this Server Component against
+  // `c` above, which only ever reads the bundled snapshot. Merging a live
+  // override for JUST the two columns this app can write (status, officer)
+  // means that same refresh now shows the real value. Falls back to `c`'s
+  // bundled value on any live-fetch failure (local dev, a real error) -
+  // never blocks the page, see liveCaseOverrides.ts's own note. Deliberately
+  // NOT extended to `getSiblingCases()`'s rows below (line ~181) - each
+  // would need its own live fetch, and those are a different case's status
+  // shown in a small cross-reference list, not this page's own editable
+  // state; left on bundled data as a known, scoped limitation.
+  const liveOverrides = await getLiveCaseOverrides(caseMasterId);
+  const statusId = liveOverrides?.statusId ?? c.statusId;
+  const policePersonId = liveOverrides?.policePersonId ?? c.policePersonId;
+
   const meta = META[c.scenarioId];
   const siblings = getSiblingCases(caseMasterId);
   const evidence = getScenarioTimeline(c.scenarioId);
@@ -81,7 +99,7 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ cas
         { label: "Cases", href: "/cases" },
         { label: c.crimeNo, href: caseDetailLink(caseMasterId) },
       ]}
-      actions={<CaseStatusEditor caseMasterId={caseMasterId} statusId={c.statusId} />}
+      actions={<CaseStatusEditor caseMasterId={caseMasterId} statusId={statusId} />}
     >
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1.1fr_1.4fr] lg:items-start">
         <div className="min-w-0 space-y-5">
@@ -146,7 +164,7 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ cas
               </div>
             </div>
             <div className="border-t border-surface-2 px-5 py-4">
-              <IOAssignmentEditor caseMasterId={caseMasterId} currentEmployeeId={c.policePersonId} officers={officers} />
+              <IOAssignmentEditor caseMasterId={caseMasterId} currentEmployeeId={policePersonId} officers={officers} />
             </div>
           </div>
 
