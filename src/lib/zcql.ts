@@ -5,8 +5,18 @@
 //
 //   - ZCQL caps any SELECT without its own LIMIT at 300 rows. zcqlAll()
 //     paginates past it via LIMIT {offset},300.
-//   - `COUNT(...) AS alias` silently returns 0 on this Data Store rather than
-//     erroring - use a plain SELECT + JS .length/aggregation instead.
+//   - `COUNT(...) AS alias` returns a row whose key is the UN-ALIASED
+//     expression - `COUNT(ROWID)`, not `total`. CORRECTED 2026-09-02: this
+//     file previously claimed COUNT "silently returns 0 on this Data Store",
+//     and that was wrong in a costly way. The aggregate works fine; what
+//     silently fails is the `AS` alias, which ZCQL drops. Reading
+//     `row.total` therefore gave `undefined`, which got recorded as 0 and
+//     hardened into "no aggregates" - the belief that pushed every
+//     analytics page onto the bundled JSON snapshot. Verified live against
+//     this project's own Data Store via the Catalyst MCP:
+//     `SELECT COUNT(ROWID) FROM CaseMaster` -> 12000, exactly right.
+//     Read the un-aliased key (see zcqlAggregate below) and COUNT/GROUP BY
+//     are both usable.
 //
 // catalyst.initialize(req) needs a Node-style { headers: <plain object> }
 // shape, not a Fetch API Request/NextRequest (whose .headers is a Headers
@@ -42,6 +52,57 @@ export async function zcqlAll(req: NextRequest, baseQuery: string) {
 
 // ZCQL rows come back as [{ TableName: {col: val}, ... }] - flatten a table out.
 export const pick = (row: any, table: string) => row[table] || {};
+
+// ---------------------------------------------------------------------------
+// Aggregate reads (added 2026-09-02, after COUNT/GROUP BY were verified live
+// against this project's Data Store - see the header note).
+//
+// Why this exists: counting rows by fetching them is the single most
+// expensive thing this app does over ZCQL. /api/summary used to walk all
+// 12,000 CaseMaster rows through zcqlAll() - 40 sequential paginated round
+// trips - purely to produce a handful of totals. One COUNT query replaces
+// that entire walk.
+//
+// The catch this wraps: ZCQL silently DROPS `AS` aliases, so
+// `SELECT COUNT(ROWID) AS total` yields the key `COUNT(ROWID)`, not `total`.
+// Never write an alias and read it back - use the un-aliased expression as
+// the key, which is what `countKey` defaults to.
+// ---------------------------------------------------------------------------
+
+/** One row of a GROUP BY result: the grouped column plus its count. */
+export type AggregateRow = { key: string | null; count: number };
+
+/**
+ * Runs an aggregate ZCQL query and returns `{ key, count }` rows.
+ *
+ * @param groupColumn  the column named in GROUP BY, or null for a bare COUNT
+ * @param countKey     result key holding the count - the un-aliased
+ *                     expression, e.g. "COUNT(ROWID)"
+ */
+export async function zcqlAggregate(
+  req: NextRequest,
+  query: string,
+  table: string,
+  groupColumn: string | null = null,
+  countKey = "COUNT(ROWID)"
+): Promise<AggregateRow[]> {
+  const rows = await zcql(req, query);
+  return rows.map((r: any) => {
+    const cols = pick(r, table);
+    return {
+      key: groupColumn ? String(cols[groupColumn] ?? "") : null,
+      // Comes back as a number, but never trust an external shape - this
+      // module has been burned by that before (see llm.ts's `response` note).
+      count: Number(cols[countKey] ?? 0),
+    };
+  });
+}
+
+/** Single-value COUNT. Returns 0 if the query somehow yields no row. */
+export async function zcqlCount(req: NextRequest, query: string, table: string): Promise<number> {
+  const rows = await zcqlAggregate(req, query, table);
+  return rows.length ? rows[0].count : 0;
+}
 
 // String(e) on a plain (non-Error) object just gives "[object Object]" - the
 // zcatalyst SDK throws plain error objects, not Error instances.
@@ -93,12 +154,18 @@ export function fail(e: unknown) {
 // reference for whichever future call actually uses an EQUALS key_condition.
 // -----------------------------------------------------------------------------
 // Data Store row-level writes (P2.4 - the first write endpoint anywhere in
-// this app; every prior route is read-only). ZCQL itself is SELECT-only -
-// Catalyst's Data Store DML (insert/update/delete) is a *separate* API,
+// this app; every prior route was read-only). Uses the table API,
 // `capp.datastore().table(name)`, confirmed against the SDK's own
-// table.d.ts (node_modules/zcatalyst-sdk-node/lib/datastore/table.d.ts) -
-// not guessed, since there was no existing write call anywhere in this
-// codebase to copy from.
+// table.d.ts (node_modules/zcatalyst-sdk-node/lib/datastore/table.d.ts).
+//
+// CORRECTED 2026-09-02: this comment used to assert "ZCQL itself is
+// SELECT-only" as the reason for going through the table API. That is not
+// true - ZCQL supports INSERT, UPDATE and DELETE (the Catalyst MCP's own
+// Execute_Query tool documents all four, and the official catalyst-datastore
+// skill shows the syntax). The table API is still the right choice HERE,
+// because updateRow() takes a ROWID we already have to look up anyway - but
+// the false premise mattered elsewhere: it is why this app has no insert or
+// delete path at all. See GitHub issue #5 (P10).
 //
 // updateRow() needs the table's internal ROWID, not the business key
 // (CaseMasterID) - ROWID is Catalyst's implicit system primary key on
