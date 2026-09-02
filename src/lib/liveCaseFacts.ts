@@ -28,12 +28,32 @@
 // milliseconds. This is exactly the kind of latency issue #4 (loading
 // skeletons, not yet built) exists to make legible rather than confusing.
 // Mitigated three ways: (1) module-scope cache with a TTL, so this cost is
-// paid once per window, not per request - same accepted tradeoff llm.ts's
-// token cache already documents for this app; (2) a single-flight lock, so
-// concurrent requests during a rebuild share one fetch rather than each
-// starting their own; (3) falls back to the bundled snapshot on ANY
-// failure - a live outage degrades this app to what it already was before
-// Phase 4, never to a broken one.
+// paid once per window PER INSTANCE, not per request - same accepted
+// tradeoff llm.ts's token cache already documents for this app; (2) a
+// single-flight lock, so concurrent requests hitting the SAME instance
+// during a rebuild share one fetch rather than each starting their own;
+// (3) falls back to the bundled snapshot on ANY failure - a live outage
+// degrades this app to what it already was before Phase 4, never to a
+// broken one.
+//
+// LIVE-MEASURED, NOT ASSUMED (2026-09-02, deployed): the "per instance"
+// caveat above matters more in practice than expected. Four back-to-back
+// requests to /districts (a 31-row page, not a large render) took
+// 10.9s/8.8s/3.3s/5.5s - only the 3rd request was clearly a cache hit. This
+// Data Store's Slate/AppSail runtime evidently spreads requests across
+// multiple concurrent instances without session affinity, and this cache
+// is module-scope (per-instance) - so a meaningful fraction of requests
+// land on an instance whose cache hasn't been warmed, even within the 90s
+// TTL window. The cache still helps (it is not doing nothing - some
+// requests genuinely are fast), but "TTL cache means this cost is paid
+// once per 90s" is NOT what actually happens here. A real fix would need a
+// cache shared ACROSS instances, not per-instance - Catalyst's own Cache
+// service (the "Cache" MCP tool group, confirmed to exist this session but
+// not yet used anywhere in this app) is the natural candidate, not
+// implemented here. Until then: every page reading getLiveCaseFacts() has
+// real, unavoidable multi-second latency on a meaningful fraction of
+// requests - which is exactly the case issue #4 (loading skeletons, not
+// yet built) exists for, more so now than before this phase.
 //
 // TWO REAL, DOCUMENTED LIMITATIONS OF THIS RECONSTRUCTION:
 //   - `scenarioId` for the 19 hand-authored scenarios comes from the tiny,
