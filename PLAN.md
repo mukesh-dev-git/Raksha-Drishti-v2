@@ -1284,8 +1284,8 @@ Two consequences that mattered to a reviewer, both now fixed:
       happens in practice — see `liveCaseFacts.ts`'s header for the full
       finding and the real fix (a cross-instance cache, e.g. Catalyst's own
       Cache service — confirmed to exist via the MCP, not implemented).
-      This makes issue #4 (loading skeletons) more load-bearing than
-      before this phase, not less.
+      This made loading skeletons more load-bearing than before this phase,
+      not less — addressed the next day, see P11.
 - [x] **P10.4** ✅ Real create shipped: `POST /api/cases` (validates every
       field against real bundled/live lookups before any insert — district,
       crime type, police station via a live `Unit` check, officer via the
@@ -1386,10 +1386,66 @@ project (see the `COUNT()` and `ActSectionAssociation` history in
 
 ### Scope note
 
-This is a **rearchitecture, not a task** — realistically the largest single
-item left in this plan, and it is not a candidate for the 6 Sept deadline. It
-is recorded here because the current split is a real architectural debt that a
-technical reviewer will ask about, and because P1.6 makes it tractable for the
-first time (the live store now actually holds the full dataset). Do it after
-the submission window, or scope it down to P10.1 + P10.2 + making writes
-visible, which is the part that removes the most obvious credibility gap.
+**Stale as of 2026-09-03 — kept for the record, not current status.** This
+originally called P10 "not a candidate for the 6 Sept deadline" and suggested
+scoping down to P10.1+P10.2+visible writes. The user chose full scope twice
+over instead (see the two AskUserQuestion choices in this section's own
+history) and all 4 phases shipped and were live-verified within the same
+push. The estimate here was wrong about size, not wrong about the
+architectural debt being real — see P11 for the latency consequence this
+rearchitecture had, and how that was addressed.
+
+## P11 — Loading skeletons for the live-backed pages ✅ **done, 2026-09-03**
+
+*Direct follow-up to P10's own honest finding: making 13 read paths live
+means real, multi-second latency on a meaningful fraction of requests
+(measured, not assumed — see `liveCaseFacts.ts`'s header), and before this
+pass that latency was silent — a blank paper-colored page with nothing on
+it until the RSC payload arrived.*
+
+- [x] **The actual highest-priority fix wasn't a skeleton at all.**
+      `(site)/layout.tsx` — which wraps every single page in the app — was
+      itself `await getSearchIndex()`, and a layout's own await sits
+      *outside* the Suspense boundary any child route's `loading.tsx`
+      creates. No per-route skeleton can mask a blocking layout: every
+      navigation, on every page, was paying `getSearchIndex()`'s full cost
+      (a live walk of the 12,000-case worklist) before the shell — sidebar,
+      topbar, even the loading skeleton itself — could render at all. Fixed
+      by moving the fetch out of the layout entirely: new
+      `GET /api/search-index` route, `DashboardTopbar` fetches it itself
+      client-side on first real interaction with the search box (matching
+      the "genuinely better fix" the old layout comment had already named
+      and deferred). `ShellLayout` is fully synchronous again — verified via
+      dev server + browser: no `/api/search-index` request fires on page
+      load, only on focus/typing, confirmed via network-request inspection.
+- [x] Reusable skeleton primitives added
+      (`src/components/ui/Skeleton.tsx`): `SkelBlock`, `SkelText`,
+      `SkelTitleBand`, `SkelStatRow`, `SkelFilterBar`, `SkelTable`,
+      `SkelChartCard`/`SkelChartGrid`, `SkelCard`, `SkelListRows`,
+      `SkelTwoColDetail` — pure CSS (`bg-surface-2` + `animate-pulse`),
+      `motion-reduce:animate-none` throughout, no JS, no client component,
+      so they render as part of Next.js's static `loading.tsx` fallback
+      before any data fetch (including the failure/fallback path) resolves.
+- [x] `loading.tsx` added for every route whose page actually awaits a
+      live-backed call: `/cases`, `/districts`, `/persons` (static-copy
+      pages — real `PageShell` title/description shown immediately, only
+      the data-dependent body skeletons), `/cases/[caseId]`,
+      `/districts/[district]`, `/persons/[personId]` (dynamic-title pages —
+      full skeleton title band, since the real title is itself live data),
+      `/pattern-analysis`, `/pattern-analysis/network`, `/crime-count`,
+      `/socio-economic`. Each shaped to match its real page's layout
+      (stat-row + table, chart grid, two-column detail cards, etc.) so
+      there's no layout shift when real content replaces it.
+      **Deliberately skipped**, and why: `/crime-hotspots`, `/cases/new`,
+      `/repeat-offenders` — all three page components are fully synchronous
+      (no `await` at all; they read bundled JSON or resolve client-side via
+      iframes), so they already render instantly and a skeleton would be
+      pure decoration with nothing to cover.
+- [x] Verified: `npx tsc --noEmit` clean, `npm run build` clean (all 13
+      live-backed routes correctly marked `ƒ` dynamic, no new client-bundle
+      errors), then a real dev-server pass in the browser — `/cases`,
+      `/dashboard`, `/districts/shivamogga`, `/cases/9001` all render with
+      zero console errors, and the search box's lazy fetch confirmed via
+      `read_network_requests`: no request on load, one `GET
+      /api/search-index → 200` firing exactly on first focus/keystroke,
+      results correctly matching ("Shivamogga" → 4 cases + the district).

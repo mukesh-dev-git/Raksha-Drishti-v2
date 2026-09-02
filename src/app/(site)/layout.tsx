@@ -3,7 +3,6 @@ import DashboardTopbar from "@/components/dashboard/DashboardTopbar";
 import SiteFooter from "@/components/layout/SiteFooter";
 import AskAnything from "@/components/AskAnything";
 import { getRealAlerts } from "@/lib/dashboardData";
-import { getSearchIndex } from "@/lib/searchIndex";
 
 // -----------------------------------------------------------------------------
 // (site) route group — every page EXCEPT the Home welcome screen (see
@@ -25,24 +24,26 @@ import { getSearchIndex } from "@/lib/searchIndex";
 // Route groups are purely organizational and don't affect URLs - moving
 // pages in/out of this group never changes any page's path.
 // -----------------------------------------------------------------------------
-// P10 Phase 4 (2026-09-02): getSearchIndex() is now live-backed
-// (getCaseWorklist() -> getLiveCaseFacts()), and this layout wraps every
-// page in the site - so a cold live-cache (first request after the ~90s
-// TTL expires) now costs the WHOLE SHELL, not just /cases. Stated plainly,
-// not silently absorbed: this is a real, site-wide latency consequence of
-// making the search index live, mitigated only by the same TTL cache every
-// other Phase 4 module relies on. A genuinely better fix (lazy-load search
-// client-side on first open, rather than blocking every page's shell
-// render) is real follow-up work, out of scope for this pass.
-export default async function ShellLayout({ children }: { children: React.ReactNode }) {
+// P10 Phase 4 (2026-09-02) found the problem: getSearchIndex() went live
+// (getCaseWorklist() -> getLiveCaseFacts()) and this layout wraps every
+// page in the site, so a cold live-cache cost the WHOLE SHELL, not just
+// /cases - no per-route loading.tsx skeleton can mask a slow *layout*
+// await, since a layout renders outside the Suspense boundary its own
+// child route's loading.tsx creates.
+//
+// Loading-skeleton pass (2026-09-03) fixed it: getSearchIndex() is no
+// longer called here at all. DashboardTopbar now fetches it itself, client
+// side, from /api/search-index - see that route's own comment. This
+// layout is back to purely synchronous work (getRealAlerts() is bundled,
+// not live), so the shell renders instantly on every navigation again.
+export default function ShellLayout({ children }: { children: React.ReactNode }) {
   const alertCount = getRealAlerts(3).length;
-  const searchIndex = await getSearchIndex();
 
   return (
     <div className="flex min-h-screen flex-1">
       <DashboardSidebar />
       <div className="flex min-w-0 flex-1 flex-col">
-        <DashboardTopbar alertCount={alertCount} searchIndex={searchIndex} />
+        <DashboardTopbar alertCount={alertCount} />
         <div id="main-content" className="flex-1 bg-paper">
           {children}
         </div>
