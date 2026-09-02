@@ -20,7 +20,7 @@
 // all; this doesn't touch that question.
 // -----------------------------------------------------------------------------
 import { getFusedPerson } from "./personFusion";
-import { getWorklistCase } from "./caseWorklist";
+import { getCaseWorklist } from "./caseWorklist";
 import contradictionsSeed from "./nosql-seed/Contradictions.json";
 
 const CONTRADICTIONS = contradictionsSeed as { scenarioId: string; conflictingRecords: string[] }[];
@@ -57,7 +57,7 @@ function hasCorroboratedContradiction(personId: string): boolean {
 
 const cap = (n: number, max: number) => Math.min(n, max);
 
-export function getSuspicionScore(personId: string): SuspicionScore | null {
+export async function getSuspicionScore(personId: string): Promise<SuspicionScore | null> {
   const person = getFusedPerson(personId);
   if (!person) return null;
 
@@ -69,8 +69,13 @@ export function getSuspicionScore(personId: string): SuspicionScore | null {
     factors.push({ label: `Named in ${person.caseMasterIds.length} separate cases`, points: pts });
   }
 
+  // P10 Phase 4: getWorklistCase() is now a live-backed async call - fetch
+  // the whole worklist once rather than calling it per case id inside the
+  // map below, which would otherwise be N sequential live-cache lookups.
+  const worklist = await getCaseWorklist();
+  const districtByCase = new Map(worklist.map((c) => [c.caseMasterId, c.districtSlug]));
   const districtCount = new Set(
-    person.caseMasterIds.map((id) => getWorklistCase(id)?.districtSlug).filter((s): s is string => !!s)
+    person.caseMasterIds.map((id) => districtByCase.get(id)).filter((s): s is string => !!s)
   ).size;
   const extraDistricts = districtCount - 1;
   if (extraDistricts > 0) {

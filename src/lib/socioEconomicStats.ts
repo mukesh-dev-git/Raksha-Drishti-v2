@@ -120,8 +120,8 @@ export type SocioEconomicView = {
  *  crime type and/or district. Every breakdown carries its own real N -
  *  never assume the same denominator applies across two calls with
  *  different filters. */
-export function getSocioEconomicView(filters: SocioEconomicFilters = {}): SocioEconomicView {
-  const cases = filterCases(getCaseWorklist(), filters);
+export async function getSocioEconomicView(filters: SocioEconomicFilters = {}): Promise<SocioEconomicView> {
+  const cases = filterCases(await getCaseWorklist(), filters);
   return {
     occupation: breakdown(allOccupationIds(cases), OCCUPATION_LABELS),
     religion: breakdown(allReligionIds(cases), RELIGION_LABELS),

@@ -6,7 +6,7 @@ import OffenderAvatar from "@/components/OffenderAvatar";
 import CrossSourceTimeline from "@/components/CrossSourceTimeline";
 import CaseStatusPill from "@/components/CaseStatusPill";
 import { getFusedPerson } from "@/lib/personFusion";
-import { getWorklistCase, caseDetailLink } from "@/lib/caseWorklist";
+import { getCaseWorklist, caseDetailLink } from "@/lib/caseWorklist";
 import { getOffenderPhotoUrl } from "@/lib/offenderPhotos";
 import { getPersonIdentity } from "@/lib/personIdentity";
 import { getSuspicionScore } from "@/lib/suspicionScore";
@@ -32,13 +32,17 @@ export default async function PersonDetailPage({ params }: { params: Promise<{ p
   const person = getFusedPerson(personId);
   if (!person) notFound();
 
-  const cases = person.caseMasterIds.map((id) => getWorklistCase(id)).filter((c) => c !== null);
+  // P10 Phase 4: getWorklistCase() is now a live-backed async call - fetch
+  // the whole worklist once rather than once per case id.
+  const worklist = await getCaseWorklist();
+  const worklistByCase = new Map(worklist.map((c) => [c.caseMasterId, c]));
+  const cases = person.caseMasterIds.map((id) => worklistByCase.get(id)).filter((c) => c !== undefined);
   const districtNames = [...new Set(cases.map((c) => c.districtName))];
   const crimeTypeNames = [...new Set(cases.map((c) => c.crimeTypeName))];
   const isRepeat = person.caseMasterIds.length > 1;
   const identity = getPersonIdentity(personId);
   const photoUrl = getOffenderPhotoUrl(personId);
-  const suspicion = getSuspicionScore(personId);
+  const suspicion = await getSuspicionScore(personId);
 
   return (
     <PageShell

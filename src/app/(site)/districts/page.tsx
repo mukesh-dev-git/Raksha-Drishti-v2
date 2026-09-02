@@ -11,8 +11,8 @@ import { getDistrictStats } from "@/lib/districtStats";
 // -----------------------------------------------------------------------------
 export const metadata = { title: "Districts" };
 
-export default function DistrictsIndexPage() {
-  const districts = getDistrictStats();
+export default async function DistrictsIndexPage() {
+  const districts = await getDistrictStats();
 
   return (
     <PageShell

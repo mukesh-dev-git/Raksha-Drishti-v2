@@ -25,9 +25,18 @@ import { getSearchIndex } from "@/lib/searchIndex";
 // Route groups are purely organizational and don't affect URLs - moving
 // pages in/out of this group never changes any page's path.
 // -----------------------------------------------------------------------------
-export default function ShellLayout({ children }: { children: React.ReactNode }) {
+// P10 Phase 4 (2026-09-02): getSearchIndex() is now live-backed
+// (getCaseWorklist() -> getLiveCaseFacts()), and this layout wraps every
+// page in the site - so a cold live-cache (first request after the ~90s
+// TTL expires) now costs the WHOLE SHELL, not just /cases. Stated plainly,
+// not silently absorbed: this is a real, site-wide latency consequence of
+// making the search index live, mitigated only by the same TTL cache every
+// other Phase 4 module relies on. A genuinely better fix (lazy-load search
+// client-side on first open, rather than blocking every page's shell
+// render) is real follow-up work, out of scope for this pass.
+export default async function ShellLayout({ children }: { children: React.ReactNode }) {
   const alertCount = getRealAlerts(3).length;
-  const searchIndex = getSearchIndex();
+  const searchIndex = await getSearchIndex();
 
   return (
     <div className="flex min-h-screen flex-1">

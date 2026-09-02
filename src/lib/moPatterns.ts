@@ -34,22 +34,16 @@
 // pairs - a case can chain into a cluster through a shared link even if
 // it doesn't directly match every other member.
 // -----------------------------------------------------------------------------
-import caseFacts from "./nosql-seed/caseFacts.json";
+import caseFactsRaw from "./nosql-seed/caseFacts.json";
 import scenarioMeta from "./nosql-seed/scenarioMeta.json";
 import { caseTypes, districts } from "./data";
 import { caseDetailLink } from "./caseWorklist";
+import { getLiveCaseFacts, type CaseFact } from "./liveCaseFacts";
 
-type CaseFact = {
-  caseMasterId: number;
-  scenarioId: string;
-  crimeNo: string;
-  crimeMinorHeadId: number;
-  districtId: number | null;
-  sections: string[];
-  incidentFromDate: string | null;
-  gravityOffenceId: number;
-};
-const FACTS: Record<string, CaseFact> = caseFacts as Record<string, CaseFact>;
+// Bundled fallback if the live fetch fails (local dev, a real outage) - same
+// honest-degradation pattern as every other P10 Phase 4 module. CaseFact's
+// canonical shape now lives in liveCaseFacts.ts, not redeclared here.
+const BUNDLED_FACTS: Record<string, CaseFact> = caseFactsRaw as Record<string, CaseFact>;
 
 const RARE_THRESHOLD = 3; // a section appearing in <=3 of the real cases counts as distinctive
 
@@ -109,13 +103,15 @@ function toMember(f: CaseFact): PatternMember {
   };
 }
 
-let cache: PatternCluster[] | null = null;
-
-/** Every real MO-linked cluster (size 2+) among the seeded cases. Cached -
- *  the seed JSON this reads is bundled at build time, same assumption
- *  dashboardData.ts and personFusion.ts already make. */
-export function getMoPatternClusters(): PatternCluster[] {
-  if (cache) return cache;
+// P10 Phase 4: reads the live Data Store (getLiveCaseFacts(), TTL ~90s),
+// falling back to the bundled snapshot on any failure. No module-scope
+// cache of the DERIVED clusters here any more (it used to cache forever,
+// correct only for a static source) - this graph computation runs over an
+// already-in-memory ~19-fact array (see the BULK filter below), cheap
+// enough to redo every call.
+export async function getMoPatternClusters(): Promise<PatternCluster[]> {
+  const liveFacts = await getLiveCaseFacts();
+  const FACTS = liveFacts ?? BUNDLED_FACTS;
 
   // P1.2 - scoped to the 15 authored scenarios only, same as before P1.2's
   // bulk cases existed. RARE_THRESHOLD=3 and this whole rule were verified
@@ -186,6 +182,5 @@ export function getMoPatternClusters(): PatternCluster[] {
   }
 
   clusters.sort((a, b) => b.members.length - a.members.length || (a.strength === "exact" ? -1 : 1));
-  cache = clusters;
   return clusters;
 }

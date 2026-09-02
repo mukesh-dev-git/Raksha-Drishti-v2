@@ -12,13 +12,13 @@ import { getDistrictStat } from "@/lib/districtStats";
 // -----------------------------------------------------------------------------
 export async function generateMetadata({ params }: { params: Promise<{ district: string }> }) {
   const { district } = await params;
-  const d = getDistrictStat(district);
+  const d = await getDistrictStat(district);
   return { title: d ? d.name : "District not found" };
 }
 
 export default async function DistrictDetailPage({ params }: { params: Promise<{ district: string }> }) {
   const { district } = await params;
-  const d = getDistrictStat(district);
+  const d = await getDistrictStat(district);
   if (!d) notFound();
 
   return (

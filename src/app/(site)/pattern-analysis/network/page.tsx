@@ -30,8 +30,8 @@ import { getStatewideNetwork } from "@/lib/statewideNetwork";
 // -----------------------------------------------------------------------------
 export const metadata = { title: "Statewide Network" };
 
-export default function StatewideNetworkPage() {
-  const { nodes, edges, stats } = getStatewideNetwork();
+export default async function StatewideNetworkPage() {
+  const { nodes, edges, stats } = await getStatewideNetwork();
 
   return (
     <PageShell

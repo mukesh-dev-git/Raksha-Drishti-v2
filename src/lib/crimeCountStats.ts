@@ -2,7 +2,7 @@
 // crimeCountStats.ts — P4.8/P4.4/P4.2/P4.3/P4.9 deterministic analytics for
 // /crime-count. No LLM anywhere in this file (PLAN.md P4's own framing: "none
 // of this needs an LLM") - every number here is a real aggregate computed
-// once, server-side, from getCaseWorklist() (the same real 5,000-case FIR
+// once, server-side, from await getCaseWorklist() (the same real 5,000-case FIR
 // Index every other real page reads) plus the new chargesheetDates.json
 // (P4.4). Nothing here fabricates a count, a trend, or a "spike" - the
 // control chart flags months against their own computed mean+stddev, not an
@@ -23,8 +23,8 @@ export type CrimeCountSummary = {
   byStatus: { statusId: CaseStatusId; label: string; total: number }[];
 };
 
-export function getCrimeCountSummary(): CrimeCountSummary {
-  const cases = getCaseWorklist();
+export async function getCrimeCountSummary(): Promise<CrimeCountSummary> {
+  const cases = await getCaseWorklist();
 
   const typeCounts = new Map<string, number>();
   for (const c of cases) typeCounts.set(c.crimeTypeSlug, (typeCounts.get(c.crimeTypeSlug) ?? 0) + 1);
@@ -70,8 +70,8 @@ const DAY_BUCKETS: [number, number][] = [
   [120, Infinity],
 ];
 
-export function getChargesheetAnalytics(): ChargesheetAnalytics {
-  const cases = getCaseWorklist();
+export async function getChargesheetAnalytics(): Promise<ChargesheetAnalytics> {
+  const cases = await getCaseWorklist();
   const days: number[] = [];
   let chargesheetedCases = 0;
   let chargesheetedWithoutDate = 0;
@@ -143,8 +143,8 @@ export type TimeHeatmapData = {
   excludedMissingTime: number;
 };
 
-export function getTimeHeatmapData(): TimeHeatmapData {
-  const cases = getCaseWorklist();
+export async function getTimeHeatmapData(): Promise<TimeHeatmapData> {
+  const cases = await getCaseWorklist();
   const grid: number[][] = Array.from({ length: 7 }, () => Array(24).fill(0));
   let included = 0,
     excludedPeriodOffences = 0,
@@ -202,8 +202,8 @@ function monthRange(start: string, end: string): string[] {
   return months;
 }
 
-export function getTrendControlChartData(): ControlChartSeries[] {
-  const cases = getCaseWorklist().filter((c) => c.registeredDate);
+export async function getTrendControlChartData(): Promise<ControlChartSeries[]> {
+  const cases = (await getCaseWorklist()).filter((c) => c.registeredDate);
   if (cases.length === 0) return [];
 
   const monthKeys = cases.map((c) => c.registeredDate!.slice(0, 7));
@@ -262,8 +262,8 @@ const STATUS_TO_BUCKET: Record<CaseStatusId, string> = {
   3: "Closed",
 };
 
-export function getCaseFlowSankeyData(): CaseFlowSankeyData {
-  const cases = getCaseWorklist();
+export async function getCaseFlowSankeyData(): Promise<CaseFlowSankeyData> {
+  const cases = await getCaseWorklist();
   const crimeToStatusCounts = new Map<string, number>();
   const statusToBucketCounts = new Map<string, number>();
 

@@ -42,6 +42,7 @@ import { caseDetailLink } from "./caseWorklist";
 import { caseTypes, districts } from "./data";
 import scenarioMetaRaw from "./nosql-seed/scenarioMeta.json";
 import caseFactsRaw from "./nosql-seed/caseFacts.json";
+import { getLiveCaseFacts, type CaseFact } from "./liveCaseFacts";
 
 type ScenarioMeta = {
   title: string;
@@ -52,14 +53,11 @@ type ScenarioMeta = {
 };
 const SCENARIO_META = scenarioMetaRaw as Record<string, ScenarioMeta>;
 
-type CaseFact = {
-  caseMasterId: number;
-  scenarioId: string;
-  crimeNo: string;
-  crimeMinorHeadId: number;
-  districtId: number | null;
-};
-const CASE_FACTS = caseFactsRaw as Record<string, CaseFact>;
+// P10 Phase 4: only ever looked up for the 19 authored FIRs (via
+// SCENARIO_META's own caseMasterIds arrays - bulk cases never appear here),
+// so swapping to the live register (a strict superset) is safe. Bundled
+// fallback if the live fetch fails.
+const BUNDLED_CASE_FACTS: Record<string, CaseFact> = caseFactsRaw as Record<string, CaseFact>;
 
 export type NetworkNodeKind = "Person" | "Case";
 
@@ -121,8 +119,8 @@ function caseNodeId(caseMasterId: number): string {
   return `case:${caseMasterId}`;
 }
 
-function buildCaseNode(caseMasterId: number, scenarioId: string, meta: ScenarioMeta): NetworkNode {
-  const fact = CASE_FACTS[String(caseMasterId)];
+function buildCaseNode(caseMasterId: number, scenarioId: string, meta: ScenarioMeta, facts: Record<string, CaseFact>): NetworkNode {
+  const fact = facts[String(caseMasterId)];
   const crimeType = caseTypes.find((c) => c.dbId === (fact?.crimeMinorHeadId ?? meta.crimeMinorHeadID));
   const district = districts.find((d) => d.dbId === (fact?.districtId ?? meta.districtId ?? undefined));
   return {
@@ -157,18 +155,25 @@ function buildPersonNode(p: FusedPerson, repeatIds: Set<string>): NetworkNode {
   };
 }
 
-let cache: StatewideNetwork | null = null;
-
 /**
  * The full statewide network: every one of the 47 real evidence-linked
  * people (personFusion.ts, scoped to the 15 authored scenarios only - bulk
  * cases are never touched, they carry no evidence and no personId) as
  * Person nodes, every real FIR they're named accused in as Case nodes, and
- * an edge for each real (person, FIR) pair. Cached module-scope, same
- * bundled-at-build-time assumption personFusion.ts/moPatterns.ts make.
+ * an edge for each real (person, FIR) pair.
+ *
+ * P10 Phase 4: reads the live Data Store for FIR facts (getLiveCaseFacts(),
+ * TTL ~90s), falling back to the bundled snapshot on any failure. No
+ * module-scope cache of the DERIVED network here any more (it used to
+ * cache forever, correct only for a static source) - this graph is built
+ * over the same ~19-FIR, 47-person universe every time, cheap enough to
+ * redo per call; personFusion.ts's own evidence-collection reads keep
+ * their existing bundled-at-build-time cache unchanged (Phase 4 only
+ * touches caseFacts.json's three read paths, not the NoSQL evidence layer).
  */
-export function getStatewideNetwork(): StatewideNetwork {
-  if (cache) return cache;
+export async function getStatewideNetwork(): Promise<StatewideNetwork> {
+  const liveFacts = await getLiveCaseFacts();
+  const facts = liveFacts ?? BUNDLED_CASE_FACTS;
 
   const persons = [...fuseAllPersons().values()];
   const repeatIds = new Set(getRepeatCaseSuspects().map((p) => p.personId));
@@ -177,7 +182,7 @@ export function getStatewideNetwork(): StatewideNetwork {
   for (const [scenarioId, meta] of Object.entries(SCENARIO_META)) {
     for (const caseMasterId of meta.caseMasterIds) {
       const id = caseNodeId(caseMasterId);
-      if (!caseNodes.has(id)) caseNodes.set(id, buildCaseNode(caseMasterId, scenarioId, meta));
+      if (!caseNodes.has(id)) caseNodes.set(id, buildCaseNode(caseMasterId, scenarioId, meta, facts));
     }
   }
 
@@ -189,7 +194,7 @@ export function getStatewideNetwork(): StatewideNetwork {
     for (const caseMasterId of p.caseMasterIds) {
       const targetId = caseNodeId(caseMasterId);
       if (!caseNodes.has(targetId)) continue; // real caseMasterId not among the 19 seeded FIRs - skip rather than invent a node
-      const fact = CASE_FACTS[String(caseMasterId)];
+      const fact = facts[String(caseMasterId)];
       edges.push({
         id: `${p.personId}__${targetId}`,
         source: p.personId,
@@ -209,7 +214,7 @@ export function getStatewideNetwork(): StatewideNetwork {
   const nodes = [...personNodes, ...caseNodes.values()];
   const scenarioCount = new Set(nodes.map((n) => n.scenarioId)).size;
 
-  cache = {
+  return {
     nodes,
     edges,
     stats: {
@@ -220,5 +225,4 @@ export function getStatewideNetwork(): StatewideNetwork {
       repeatSubjectCount: repeatIds.size,
     },
   };
-  return cache;
 }

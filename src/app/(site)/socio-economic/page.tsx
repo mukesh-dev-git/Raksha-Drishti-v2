@@ -16,14 +16,20 @@ import SocioEconomicPanel, { type SocioEconomicSeries } from "@/components/socio
 // -----------------------------------------------------------------------------
 export const metadata = { title: "Socio-Economic Correlation" };
 
-export default function SocioEconomicPage() {
-  const all = getSocioEconomicView();
+export default async function SocioEconomicPage() {
+  const all = await getSocioEconomicView();
+  // Each call independently awaits the same shared live cache
+  // (getLiveCaseFacts()'s single-flight lock), so running them in parallel
+  // costs one rebuild, not five sequential ones.
+  const perType = await Promise.all(
+    all.filterOptions.crimeTypes.map(async (t) => {
+      const v = await getSocioEconomicView({ crimeTypeSlug: t.slug });
+      return { crimeTypeSlug: t.slug, crimeTypeName: t.name, caseCount: v.caseCount, occupation: v.occupation, religion: v.religion, district: v.district };
+    })
+  );
   const series: SocioEconomicSeries[] = [
     { crimeTypeSlug: null, crimeTypeName: "Statewide", caseCount: all.caseCount, occupation: all.occupation, religion: all.religion, district: all.district },
-    ...all.filterOptions.crimeTypes.map((t) => {
-      const v = getSocioEconomicView({ crimeTypeSlug: t.slug });
-      return { crimeTypeSlug: t.slug, crimeTypeName: t.name, caseCount: v.caseCount, occupation: v.occupation, religion: v.religion, district: v.district };
-    }),
+    ...perType,
   ];
 
   return (

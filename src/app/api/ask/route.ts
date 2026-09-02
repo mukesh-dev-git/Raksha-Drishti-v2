@@ -132,7 +132,7 @@ export async function POST(req: NextRequest) {
     messages.push({ role: "user", content: message });
 
     const tools: ToolDef[] = [...READ_TOOLS, RESPOND_TOOL];
-    const realCaseIds = getRealCaseIds();
+    const realCaseIds = await getRealCaseIds();
     const realPersonIds = getRealPersonIds();
 
     let toolRounds = 0;
@@ -241,7 +241,7 @@ export async function POST(req: NextRequest) {
         messages.push({ role: "assistant", content: assistantContent });
         for (const call of result.toolCalls) {
           const args = (call.arguments ?? {}) as Record<string, unknown>;
-          const toolResult = executeTool(call.name, args);
+          const toolResult = await executeTool(call.name, args);
           const toolContent = `Result of ${call.name}(${JSON.stringify(args)}):\n${JSON.stringify(toolResult)}`;
           // role:"user", not role:"tool" - CONFIRMED live 2026-08-31, the
           // root cause of this whole bug. role:"tool" was never

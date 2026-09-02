@@ -18,8 +18,8 @@ import { getCaseWorklist } from "@/lib/caseWorklist";
 // -----------------------------------------------------------------------------
 export const metadata = { title: "Cases" };
 
-export default function CasesPage() {
-  const cases = getCaseWorklist();
+export default async function CasesPage() {
+  const cases = await getCaseWorklist();
   return (
     <PageShell
       title="Cases"

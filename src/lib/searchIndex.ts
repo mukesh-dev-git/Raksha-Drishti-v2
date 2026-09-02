@@ -19,12 +19,14 @@ export type SearchItem = {
   keywords: string;
 };
 
-let cache: SearchItem[] | null = null;
+// P10 Phase 4: no module-scope cache here any more, same reasoning as
+// districtGeo.ts/districtStats.ts - getCaseWorklist()'s own TTL cache
+// already covers the expensive part.
+export async function getSearchIndex(): Promise<SearchItem[]> {
+  const worklist = await getCaseWorklist();
+  const districtStats = await getDistrictStats();
 
-export function getSearchIndex(): SearchItem[] {
-  if (cache) return cache;
-
-  const cases: SearchItem[] = getCaseWorklist().map((c) => ({
+  const cases: SearchItem[] = worklist.map((c) => ({
     kind: "case",
     label: c.title,
     sublabel: `${c.crimeNo} · ${c.districtName}`,
@@ -40,7 +42,7 @@ export function getSearchIndex(): SearchItem[] {
     keywords: `${p.name} ${p.aliases.join(" ")}`.toLowerCase(),
   }));
 
-  const districtItems: SearchItem[] = getDistrictStats().map((d) => ({
+  const districtItems: SearchItem[] = districtStats.map((d) => ({
     kind: "district",
     label: d.name,
     sublabel: `${d.totalCases} case${d.totalCases === 1 ? "" : "s"}`,
@@ -48,6 +50,5 @@ export function getSearchIndex(): SearchItem[] {
     keywords: d.name.toLowerCase(),
   }));
 
-  cache = [...cases, ...persons, ...districtItems];
-  return cache;
+  return [...cases, ...persons, ...districtItems];
 }

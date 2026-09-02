@@ -13,7 +13,7 @@ import { getDistrictCentroids } from "@/lib/districtGeo";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const centroids = new Map(getDistrictCentroids().map((c) => [c.slug, c]));
+  const centroids = new Map((await getDistrictCentroids()).map((c) => [c.slug, c]));
   const flows = getCrossDistrictFlows()
     .map((f) => {
       const from = centroids.get(f.fromDistrictSlug);

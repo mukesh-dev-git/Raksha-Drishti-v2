@@ -27,12 +27,13 @@ export type DistrictPoint = {
   sampleSize: number;
 };
 
-let cache: DistrictPoint[] | null = null;
-
-export function getDistrictCentroids(): DistrictPoint[] {
-  if (cache) return cache;
-  const worklist = getCaseWorklist();
-  cache = districts.map((d) => {
+// P10 Phase 4: no module-scope cache here any more (it used to cache
+// forever, correct only for a static bundled source) - this reduce is cheap
+// synchronous JS over an already-in-memory array; getCaseWorklist()'s own
+// getLiveCaseFacts() cache (TTL ~90s) already covers the expensive part.
+export async function getDistrictCentroids(): Promise<DistrictPoint[]> {
+  const worklist = await getCaseWorklist();
+  return districts.map((d) => {
     const pts = worklist.filter(
       (c) => c.districtSlug === d.slug && c.latitude != null && c.longitude != null
     );
@@ -41,5 +42,4 @@ export function getDistrictCentroids(): DistrictPoint[] {
     const lng = n ? pts.reduce((s, c) => s + (c.longitude as number), 0) / n : 0;
     return { slug: d.slug, name: d.name, dbId: d.dbId, lat, lng, sampleSize: n };
   });
-  return cache;
 }

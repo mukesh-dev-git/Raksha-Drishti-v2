@@ -15,8 +15,8 @@ import { getMoPatternClusters } from "@/lib/moPatterns";
 // -----------------------------------------------------------------------------
 export const metadata = { title: "Pattern Analysis" };
 
-export default function PatternAnalysisPage() {
-  const clusters = getMoPatternClusters();
+export default async function PatternAnalysisPage() {
+  const clusters = await getMoPatternClusters();
 
   return (
     <PageShell

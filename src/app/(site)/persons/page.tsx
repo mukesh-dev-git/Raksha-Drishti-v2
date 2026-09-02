@@ -1,7 +1,7 @@
 import PageShell from "@/components/PageShell";
 import PersonSearchClient, { type PersonListRow } from "@/components/persons/PersonSearchClient";
 import { fuseAllPersons } from "@/lib/personFusion";
-import { getWorklistCase } from "@/lib/caseWorklist";
+import { getCaseWorklist } from "@/lib/caseWorklist";
 import { getOffenderPhotoUrl } from "@/lib/offenderPhotos";
 
 // -----------------------------------------------------------------------------
@@ -12,13 +12,19 @@ import { getOffenderPhotoUrl } from "@/lib/offenderPhotos";
 // -----------------------------------------------------------------------------
 export const metadata = { title: "Persons" };
 
-export default function PersonsPage() {
+export default async function PersonsPage() {
   const people = [...fuseAllPersons().values()]
     .sort((a, b) => b.caseMasterIds.length - a.caseMasterIds.length || a.name.localeCompare(b.name));
 
+  // P10 Phase 4: getWorklistCase() is now a live-backed async call - fetch
+  // the whole worklist once rather than once per case id inside the map
+  // below, which would otherwise be N sequential live-cache lookups.
+  const worklist = await getCaseWorklist();
+  const districtByCase = new Map(worklist.map((c) => [c.caseMasterId, c.districtName]));
+
   const rows: PersonListRow[] = people.map((p) => {
     const districtNames = [...new Set(
-      p.caseMasterIds.map((id) => getWorklistCase(id)?.districtName).filter((n): n is string => !!n)
+      p.caseMasterIds.map((id) => districtByCase.get(id)).filter((n): n is string => !!n)
     )];
     return {
       personId: p.personId,

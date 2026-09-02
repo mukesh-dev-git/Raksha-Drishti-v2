@@ -42,7 +42,7 @@ function parseIncidentTimestamp(raw: string | null): { hour: number; weekend: 0 
 }
 
 export async function GET() {
-  const worklist = getCaseWorklist();
+  const worklist = await getCaseWorklist();
   const points: Point[] = [];
   let missingCoords = 0;
 

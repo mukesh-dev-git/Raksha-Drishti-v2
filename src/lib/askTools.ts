@@ -53,8 +53,8 @@ export type SearchCasesArgs = {
   limit?: number;
 };
 
-function toolSearchCases(args: SearchCasesArgs): ToolResult {
-  const all = getCaseWorklist();
+async function toolSearchCases(args: SearchCasesArgs): Promise<ToolResult> {
+  const all = await getCaseWorklist();
   const q = args.query?.trim().toLowerCase();
   const districtQ = args.district?.trim().toLowerCase();
   const crimeTypeQ = args.crimeType?.trim().toLowerCase();
@@ -95,15 +95,16 @@ function toolSearchCases(args: SearchCasesArgs): ToolResult {
 // ---------------------------------------------------------------------------
 // get_case
 // ---------------------------------------------------------------------------
-function toolGetCase(args: { caseMasterId?: unknown }): ToolResult {
+async function toolGetCase(args: { caseMasterId?: unknown }): Promise<ToolResult> {
   const id = Number(args.caseMasterId);
   if (!Number.isFinite(id)) return { error: "caseMasterId must be a number" };
 
-  const c = getWorklistCase(id);
+  const c = await getWorklistCase(id);
   if (!c) return { error: `No case with CaseMasterID ${id} exists in the real register.` };
 
   const meta = SCENARIO_META[c.scenarioId];
-  const siblings = getSiblingCases(id).map((s) => ({ caseMasterId: s.caseMasterId, crimeNo: s.crimeNo, link: caseDetailLink(s.caseMasterId) }));
+  const siblingsRaw = await getSiblingCases(id);
+  const siblings = siblingsRaw.map((s) => ({ caseMasterId: s.caseMasterId, crimeNo: s.crimeNo, link: caseDetailLink(s.caseMasterId) }));
 
   return {
     caseMasterId: c.caseMasterId,
@@ -129,7 +130,7 @@ function toolGetCase(args: { caseMasterId?: unknown }): ToolResult {
 // ---------------------------------------------------------------------------
 // get_person
 // ---------------------------------------------------------------------------
-function toolGetPerson(args: { personIdOrName?: unknown }): ToolResult {
+async function toolGetPerson(args: { personIdOrName?: unknown }): Promise<ToolResult> {
   const q = typeof args.personIdOrName === "string" ? args.personIdOrName.trim() : "";
   if (!q) return { error: "personIdOrName is required" };
 
@@ -153,7 +154,7 @@ function toolGetPerson(args: { personIdOrName?: unknown }): ToolResult {
     person = matches[0];
   }
 
-  const worklist = getCaseWorklist();
+  const worklist = await getCaseWorklist();
   const cases = person.caseMasterIds.map((id) => {
     const c = worklist.find((x) => x.caseMasterId === id);
     return c
@@ -179,8 +180,8 @@ function toolGetPerson(args: { personIdOrName?: unknown }): ToolResult {
 // ---------------------------------------------------------------------------
 // get_district_stats
 // ---------------------------------------------------------------------------
-function toolGetDistrictStats(args: { district?: unknown }): ToolResult {
-  const all = getDistrictStats();
+async function toolGetDistrictStats(args: { district?: unknown }): Promise<ToolResult> {
+  const all = await getDistrictStats();
   const districtArg = typeof args.district === "string" ? args.district.trim() : "";
 
   if (districtArg) {
@@ -213,8 +214,8 @@ function toolGetDistrictStats(args: { district?: unknown }): ToolResult {
 // ---------------------------------------------------------------------------
 // list_mo_patterns
 // ---------------------------------------------------------------------------
-function toolListMoPatterns(): ToolResult {
-  const clusters = getMoPatternClusters();
+async function toolListMoPatterns(): Promise<ToolResult> {
+  const clusters = await getMoPatternClusters();
   return {
     clusterCount: clusters.length,
     clusters: clusters.map((c) => ({
@@ -236,8 +237,8 @@ function toolListMoPatterns(): ToolResult {
 // ---------------------------------------------------------------------------
 // list_repeat_offenders
 // ---------------------------------------------------------------------------
-function toolListRepeatOffenders(args: { district?: unknown }): ToolResult {
-  const worklist = getCaseWorklist();
+async function toolListRepeatOffenders(args: { district?: unknown }): Promise<ToolResult> {
+  const worklist = await getCaseWorklist();
   const people = getRepeatCaseSuspects();
   const dq = typeof args.district === "string" ? args.district.trim().toLowerCase() : "";
 
@@ -348,7 +349,7 @@ export const RESPOND_TOOL: ToolDef = {
   },
 };
 
-export function executeTool(name: string, args: Record<string, unknown>): ToolResult {
+export async function executeTool(name: string, args: Record<string, unknown>): Promise<ToolResult> {
   switch (name) {
     case "search_cases":
       return toolSearchCases(args as SearchCasesArgs);
@@ -370,8 +371,9 @@ export function executeTool(name: string, args: Record<string, unknown>): ToolRe
 /** The full universe of real, resolvable CaseMasterIDs - route.ts's
  *  citation guardrail checks every id the model claims against this before
  *  it ever becomes a link. */
-export function getRealCaseIds(): Set<number> {
-  return new Set(getCaseWorklist().map((c) => c.caseMasterId));
+export async function getRealCaseIds(): Promise<Set<number>> {
+  const all = await getCaseWorklist();
+  return new Set(all.map((c) => c.caseMasterId));
 }
 
 /** The full universe of real, evidence-linked personIds - same role as

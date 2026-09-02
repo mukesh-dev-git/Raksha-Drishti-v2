@@ -63,7 +63,7 @@ export default async function DashboardPage({
   const alerts = getRealAlerts(3, hasFilter ? districtIds : undefined);
   const evidenceFeed = getRealEvidenceFeed(8, hasFilter ? districtIds : undefined);
 
-  const clusters = getMoPatternClusters();
+  const clusters = await getMoPatternClusters();
   const exactClusters = clusters.filter((c) => c.strength === "exact").length;
   const repeatSubjects = getRepeatCaseSuspects();
 

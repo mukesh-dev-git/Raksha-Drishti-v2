@@ -22,12 +22,17 @@ import CaseFlowSankey from "@/components/crimeCount/CaseFlowSankey";
 // -----------------------------------------------------------------------------
 export const metadata = { title: "Crime Count" };
 
-export default function CrimeCountPage() {
-  const summary = getCrimeCountSummary();
-  const chargesheet = getChargesheetAnalytics();
-  const heatmap = getTimeHeatmapData();
-  const trend = getTrendControlChartData();
-  const sankey = getCaseFlowSankeyData();
+export default async function CrimeCountPage() {
+  // Run in parallel - each independently awaits the same underlying live
+  // fetch (getLiveCaseFacts()'s single-flight cache means five concurrent
+  // callers share one rebuild, not five).
+  const [summary, chargesheet, heatmap, trend, sankey] = await Promise.all([
+    getCrimeCountSummary(),
+    getChargesheetAnalytics(),
+    getTimeHeatmapData(),
+    getTrendControlChartData(),
+    getCaseFlowSankeyData(),
+  ]);
 
   return (
     <PageShell

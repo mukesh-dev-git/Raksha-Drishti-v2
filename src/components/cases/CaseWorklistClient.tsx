@@ -4,7 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import SearchInput from "@/components/ui/SearchInput";
 import CaseStatusPill from "@/components/CaseStatusPill";
-import { caseDetailLink, type WorklistCase } from "@/lib/caseWorklist";
+import { caseDetailLink } from "@/lib/caseLinks";
+import type { WorklistCase } from "@/lib/caseWorklist";
 import { CASE_STATUS_LABEL, type CaseStatusId } from "@/lib/caseStatus";
 import { caseTypes, districts } from "@/lib/data";
 

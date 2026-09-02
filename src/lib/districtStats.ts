@@ -30,12 +30,11 @@ export type DistrictStat = {
   repeatSubjectCount: number;
 };
 
-let cache: DistrictStat[] | null = null;
-
-export function getDistrictStats(): DistrictStat[] {
-  if (cache) return cache;
-
-  const worklist = getCaseWorklist();
+// P10 Phase 4: no module-scope cache here any more, same reasoning as
+// districtGeo.ts - this is cheap synchronous JS over an already-in-memory
+// array; getCaseWorklist()'s own TTL cache covers the expensive part.
+export async function getDistrictStats(): Promise<DistrictStat[]> {
+  const worklist = await getCaseWorklist();
 
   // Repeat subjects touching each district - a person counts toward every
   // district any of their real cases fall in, via the same worklist rows
@@ -51,7 +50,7 @@ export function getDistrictStats(): DistrictStat[] {
     }
   }
 
-  cache = districts.map((d) => {
+  return districts.map((d) => {
     const cases = worklist.filter((c) => c.districtSlug === d.slug);
     const statusCounts: Record<CaseStatusId, number> = { 1: 0, 2: 0, 3: 0, 4: 0 };
     for (const c of cases) statusCounts[c.statusId]++;
@@ -67,10 +66,9 @@ export function getDistrictStats(): DistrictStat[] {
       repeatSubjectCount: repeatByDistrict.get(d.slug)?.size ?? 0,
     };
   }).sort((a, b) => b.totalCases - a.totalCases);
-
-  return cache;
 }
 
-export function getDistrictStat(slug: string): DistrictStat | null {
-  return getDistrictStats().find((d) => d.slug === slug) ?? null;
+export async function getDistrictStat(slug: string): Promise<DistrictStat | null> {
+  const all = await getDistrictStats();
+  return all.find((d) => d.slug === slug) ?? null;
 }

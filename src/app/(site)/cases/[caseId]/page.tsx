@@ -47,14 +47,14 @@ export async function generateMetadata({ params }: { params: Promise<{ caseId: s
   // cache here) - an accepted, small redundancy rather than a bigger
   // refactor, given this only runs for the just-created-case path, not
   // every visit.
-  const c = getWorklistCase(caseMasterId) ?? (await getLiveOnlyCase(caseMasterId));
+  const c = (await getWorklistCase(caseMasterId)) ?? (await getLiveOnlyCase(caseMasterId));
   return { title: c ? `${c.crimeNo} — ${c.title}` : "Case not found" };
 }
 
 export default async function CaseDetailPage({ params }: { params: Promise<{ caseId: string }> }) {
   const { caseId } = await params;
   const caseMasterId = Number(caseId);
-  let c = getWorklistCase(caseMasterId);
+  let c = await getWorklistCase(caseMasterId);
   // P10 Phase 3 - a case created via POST /api/cases has no bundled entry
   // at all (the snapshot is compiled at build time), so without this a real
   // create was followed by a 404 on its own page - confirmed live, case
@@ -83,14 +83,15 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ cas
   const policePersonId = liveOverrides?.policePersonId ?? c.policePersonId;
 
   const meta = META[c.scenarioId];
-  const siblings = getSiblingCases(caseMasterId);
+  const siblings = await getSiblingCases(caseMasterId);
   const evidence = getScenarioTimeline(c.scenarioId);
   const graph = getCaseRelationshipGraph(c.scenarioId);
   const authoredContradiction = CONTRADICTIONS.find((x) => x.scenarioId === c.scenarioId);
   const aiFinding = AI_CONTRADICTIONS.scenarios[c.scenarioId];
   // P9.3 - real cross-link into P4.6's already-verified MO clustering:
   // does this specific FIR belong to a real pattern cluster?
-  const patternCluster = getMoPatternClusters().find((cl) => cl.members.some((m) => m.caseMasterId === caseMasterId));
+  const moPatternClusters = await getMoPatternClusters();
+  const patternCluster = moPatternClusters.find((cl) => cl.members.some((m) => m.caseMasterId === caseMasterId));
   const officers = getEmployeesByDistrict(c.districtId);
   // P5.4 - "next question to ask", a live GLM call grounded in this case's
   // own evidence (see src/lib/nextQuestion.ts). Only attempted for the

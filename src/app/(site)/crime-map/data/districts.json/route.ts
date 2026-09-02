@@ -14,8 +14,8 @@ import { getDistrictCentroids } from "@/lib/districtGeo";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const stats = getDistrictStats();
-  const centroids = new Map(getDistrictCentroids().map((c) => [c.slug, c]));
+  const [stats, centroidList] = await Promise.all([getDistrictStats(), getDistrictCentroids()]);
+  const centroids = new Map(centroidList.map((c) => [c.slug, c]));
 
   const districts = stats
     .map((d) => {
