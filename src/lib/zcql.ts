@@ -239,7 +239,7 @@ export function fail(e: unknown) {
 // SDK's own types allow; flag any live failure here first if case-status
 // updates don't work post-deploy.
 export async function updateRow(
-  req: NextRequest,
+  req: { headers: HeadersLike },
   tableName: string,
   rowId: string | number,
   columns: Record<string, unknown>
@@ -264,26 +264,37 @@ export async function updateRow(
 // objects instead, so that surface doesn't exist. Same reasoning updateRow()
 // already implicitly relied on - made explicit here since these are the
 // first INSERT/DELETE paths this file has ever had.
+//
+// Typed `{ headers }` rather than `NextRequest` (P10 Phase 3) for the same
+// reason as the read helpers above: src/lib/caseCreate.ts's createCase()
+// needs to call these from a plain `next/headers()` source, not a
+// NextRequest - it's called from a Route Handler (POST /api/cases) but
+// sources its own headers independently rather than threading `req` through
+// every helper it calls. `next/headers()` reads the same ambient request
+// context inside a Route Handler as `req.headers` would, so this is not a
+// weaker guarantee - the real constraint (writes only happen from Route
+// Handlers, never a Server Component render) is enforced by WHERE
+// createCase() is called from, not by this parameter's type.
 // ---------------------------------------------------------------------------
 
-export async function insertRow(req: NextRequest, tableName: string, row: Record<string, unknown>) {
+export async function insertRow(req: { headers: HeadersLike }, tableName: string, row: Record<string, unknown>) {
   const capp = initCatalyst(req);
   return capp.datastore().table(tableName).insertRow(row);
 }
 
 /** SDK-documented cap: 200 rows per call (catalyst-datastore skill,
  *  "BULK INSERT (up to 200 rows)"). Callers inserting more must batch. */
-export async function insertRows(req: NextRequest, tableName: string, rows: Record<string, unknown>[]) {
+export async function insertRows(req: { headers: HeadersLike }, tableName: string, rows: Record<string, unknown>[]) {
   const capp = initCatalyst(req);
   return capp.datastore().table(tableName).insertRows(rows);
 }
 
-export async function deleteRow(req: NextRequest, tableName: string, rowId: string | number) {
+export async function deleteRow(req: { headers: HeadersLike }, tableName: string, rowId: string | number) {
   const capp = initCatalyst(req);
   return capp.datastore().table(tableName).deleteRow(rowId);
 }
 
-export async function deleteRows(req: NextRequest, tableName: string, rowIds: (string | number)[]) {
+export async function deleteRows(req: { headers: HeadersLike }, tableName: string, rowIds: (string | number)[]) {
   const capp = initCatalyst(req);
   return capp.datastore().table(tableName).deleteRows(rowIds);
 }

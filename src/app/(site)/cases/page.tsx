@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { FilePlus2 } from "lucide-react";
 import PageShell from "@/components/PageShell";
 import CaseWorklistClient from "@/components/cases/CaseWorklistClient";
 import { getCaseWorklist } from "@/lib/caseWorklist";
@@ -24,6 +26,14 @@ export default function CasesPage() {
       description="Every registered case, searchable and filterable — open a row for the full case record. Not a category picker."
       breadcrumbs={[{ label: "Cases", href: "/cases" }]}
       heroImageSrc="/page-hero/cases.png"
+      actions={
+        <Link
+          href="/cases/new"
+          className="flex items-center gap-1.5 rounded-sm bg-navy px-3 py-1.5 text-[12.5px] font-medium text-white hover:bg-navy-hover"
+        >
+          <FilePlus2 size={13} aria-hidden="true" /> New FIR
+        </Link>
+      }
     >
       <CaseWorklistClient cases={cases} />
     </PageShell>
