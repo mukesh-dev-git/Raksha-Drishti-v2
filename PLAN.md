@@ -29,6 +29,7 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 | **P7** Kannada voice (Zia) | 🔵 **P7.1 done, 2026-08-29** | Text-to-Audio pipeline built and wired into case-detail witness statements; P7.2-P7.4 still open. |
 | **X** Cross-cutting | ✅ **done** | X1, X2, X3 all done - see below. |
 | **P9** Refined-prototype push | ✅ **done, today** | All five sub-items shipped and independently verified: P9.1+P9.1b (suspicion score + tool-schema guardrail), P9.3 (pattern/repeat cross-links), P9.2 (real IO assignment), P9.4 (relationship graph, built on a subagent's branch `feature/case-relationship-graph`, merged to `main` after review - the only real conflict was two adjacent import lines in `cases/[caseId]/page.tsx`; every other overlapping file (`caseWorklist.ts`, `contradictionDetector.ts`, `personFusion.ts`, `.gitignore`) merged clean with nothing lost, re-verified with `tsc --noEmit`, `next build`, and a live check on cases 9001+9002 showing the graph, MO-cluster card, repeat badges and IO picker all rendering together). |
+| **P10** Live Data Store as source of truth | 🔴 **open, not started** | **Raised 2026-09-02.** The app is a bundled-JSON app with a Data Store bolted to two corners: only `/` and `/dashboard`'s headline numbers read live, everything else renders from a 6 MB compiled snapshot — so a case-status write succeeds and is then invisible everywhere. CRUD inventory is thinner than it sounds: **no create, no delete**, and update covers exactly 2 columns of 1 table. Needs the read paths moved over, real FIR CRUD, and `zcqlAll()`'s off-by-one fixed first. A rearchitecture, not a task — **not a candidate for the 6 Sept deadline**; see P10 below for the real constraints (ZCQL's 300-row cap, `COUNT()` returning 0, console-only DDL). |
 
 **Done so far:** P0.1–P0.5 · P1.1 · P1.2 · P1.3 · P1.5 (occupation + religion)
 · **P2 (whole track)** · **P4 (whole track)** · P3.1 · P3.3 · P5.0 · P5.1 ·
@@ -38,6 +39,8 @@ P5.2 · P5.3 · P5.4 · P5.8 · P6 (closed) · P7.1 · X1 · X2 · X3
 P7.4 · redeploy to Slate (the deployed build still bundles the old 8-district /
 5,000-case seed, while its live Data Store routes now serve 31/12,000 — see
 below)
+
+**Biggest known architectural debt:** **P10** — the whole app should read the live Data Store, and real CRUD is largely missing. Recorded, scoped, and deliberately not started before the deadline.
 
 **Blocked on someone, not on effort:**
 
@@ -1184,3 +1187,125 @@ everything else this session.
       which `<option>` is selected) that case 9001 correctly pre-selects
       its real assigned officer, Inspector Manjunath R. Typecheck +
       production build clean.
+
+---
+
+## P10 — Live Data Store as the app's single source of truth 🔴 **open, not started**
+
+*Raised 2026-09-02, after P1.6 put the full 12,000-case dataset into the live
+Data Store and it became obvious how little of the app actually reads it.*
+
+### The problem, stated honestly
+
+**The application is a bundled-JSON app with a Data Store bolted to two
+corners of it.** Almost every page renders from `src/lib/nosql-seed/*.json` —
+a 6 MB snapshot compiled into the build — not from Catalyst. Verified by
+tracing every caller, not by reading the old docs (which overstated this: they
+listed four "live" routes, two of which nothing calls):
+
+| Surface | Reads from |
+|---|---|
+| `/` landing headline numbers | **live Data Store** (`/api/summary`) |
+| `/dashboard` trend chart, category donut | **live Data Store** (`/api/summary`, `/api/casetypes`) |
+| `/dashboard` evidence feed | live query picks *which* case; the evidence itself is bundled |
+| case status / IO assignment edits | **live Data Store** (the only writes in the app) |
+| `/cases`, `/districts`, `/persons` | bundled JSON |
+| `/crime-count`, `/crime-hotspots`, `/pattern-analysis` | bundled JSON |
+| `/repeat-offenders`, `/socio-economic`, Ask Anything | bundled JSON |
+| `/api/districts`, `/api/district-stats` | live — but **dead routes, nothing fetches them** |
+
+Two consequences that matter to a reviewer:
+
+1. **A write is invisible.** `/api/cases/[id]/status` and `/officer` write to
+   the live Data Store, but every read path serves the bundled snapshot — so
+   changing a case's status succeeds and then doesn't show up anywhere. This
+   has been a known gap since P2.4; it is the clearest symptom that the two
+   halves aren't actually connected.
+2. **The snapshot has to be rebuilt and redeployed to change a single row.**
+   That is not a database, it is a build artefact.
+
+### What CRUD actually exists today
+
+Complete inventory — there is less than the phrase "CRUD" implies:
+
+| | Present? | Where |
+|---|---|---|
+| **C**reate | none | no route creates a row in any table |
+| **R**ead | 2 routes feeding the UI | `/api/summary`, `/api/casetypes` |
+| **U**pdate | 2 columns, 1 table | `CaseMaster.CaseStatusID`, `CaseMaster.PolicePersonID` |
+| **D**elete | none | no delete path anywhere, CLI included |
+
+Everything goes through one helper, `updateRow()` in `src/lib/zcql.ts`, which
+does `SELECT ROWID WHERE <businessKey> = ?` then
+`capp.datastore().table(t).updateRow({ROWID, ...})`. There is no insert or
+delete helper at all.
+
+Missing entirely: register an FIR, edit FIR details, add/edit/remove accused,
+victims or complainants, attach charge sections, file a chargesheet, case
+diary entries.
+
+### Goal
+
+Make the live Data Store the single source of truth for the whole app, and
+add the CRUD the FIR workflow actually needs, so a change made in the UI is
+immediately visible everywhere without a rebuild.
+
+- [ ] **P10.1** Add the missing write primitives to `src/lib/zcql.ts`:
+      `insertRow()`/`insertRows()` and `deleteRow()`/`deleteRows()`, matching
+      the existing `updateRow()` pattern. The SDK exposes all of them
+      (`node_modules/zcatalyst-sdk-node/lib/datastore/table.d.ts`); nothing
+      here has ever called them.
+- [ ] **P10.2** Fix `zcqlAll()` before anything depends on it more heavily.
+      It returns **exactly one duplicate row** over 12,000 rows (found
+      2026-09-02, deterministic, inflates every live count by 1 —
+      `/api/summary` reports `totalCases: 12001` against 12,000 real rows).
+      It paginates `LIMIT {offset},300` with no `ORDER BY`, so page
+      boundaries aren't stable. This was invisible at 19 rows.
+- [ ] **P10.3** Move the read paths over, page by page, starting with the
+      ones whose queries are simplest (`/cases` list, `/districts`,
+      `/persons`) and leaving the heavy analytics for last.
+- [ ] **P10.4** Real CRUD endpoints for the FIR workflow: create/edit an FIR,
+      manage accused/victims/complainants, charge sections, chargesheet.
+      Each needs validation and an audit trail — this is police data; a
+      silent bad write is worse than a failed one.
+- [ ] **P10.5** Retire the bundled snapshot (or demote it to an explicit,
+      clearly-labelled offline fallback) and delete the dead
+      `/api/districts` + `/api/district-stats` routes or wire them up.
+
+### What makes this genuinely hard — read before estimating
+
+None of these are guesses; each was hit for real in this project:
+
+- **ZCQL caps any `SELECT` without its own `LIMIT` at 300 rows**, so reading
+  12,000 cases is 40 sequential paginated round trips per request. The
+  analytics pages (heatmap, hotspots, MO clustering, statewide network) each
+  need the *whole* register in memory to compute. Doing that live, per
+  request, is the core performance problem and the reason the bundled
+  snapshot exists in the first place — it is a deliberate tradeoff, not an
+  oversight. Expect to need caching, materialised aggregate tables, or both.
+- **`COUNT(...) AS alias` silently returns 0** rather than erroring, so every
+  aggregate has to be computed in JS over fetched rows.
+- **No DDL outside the console.** Tables and columns can only be created or
+  altered by hand in the Catalyst console — no ZCQL, no SDK, no CLI. Any new
+  table this work needs is a manual step.
+- **Lookup columns can silently corrupt data.** `ActSectionAssociation`'s
+  `ActID`/`SectionID` truncated 17-digit ROWIDs to 10 digits on import,
+  leaving 16,395 rows of garbage that *reported success* (see
+  `catalyst/README.md` §2). Validate what comes back out, never trust a
+  write's own success message.
+- **Writes can't be tested locally.** `catalyst.initialize(req)` needs a real
+  Catalyst request context, so every `zcql()` call fails locally with
+  "Failed to parse object". All of this can only be verified after a Slate
+  deploy — budget for that loop.
+- **Latency and cold starts.** The token cache in `llm.ts` is module-scope and
+  doesn't survive a cold start; the same will apply to any Data Store caching.
+
+### Scope note
+
+This is a **rearchitecture, not a task** — realistically the largest single
+item left in this plan, and it is not a candidate for the 6 Sept deadline. It
+is recorded here because the current split is a real architectural debt that a
+technical reviewer will ask about, and because P1.6 makes it tractable for the
+first time (the live store now actually holds the full dataset). Do it after
+the submission window, or scope it down to P10.1 + P10.2 + making writes
+visible, which is the part that removes the most obvious credibility gap.
