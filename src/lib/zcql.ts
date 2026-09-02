@@ -238,6 +238,46 @@ export async function updateRow(
   return capp.datastore().table(tableName).updateRow({ ROWID: rowId, ...columns });
 }
 
+// ---------------------------------------------------------------------------
+// P10 (2026-09-02) - the write primitives P2.4 never added. Every prior write
+// in this app went through updateRow() above; nothing here has ever inserted
+// or deleted a row, so this app has never had real create/delete anywhere.
+//
+// Deliberately the TABLE API (capp.datastore().table(name)), not ZCQL INSERT/
+// DELETE, even though ZCQL supports both (confirmed via the Catalyst MCP's
+// Execute_Query tool description and the official skill docs). Reason: the
+// values going into these rows are free text an officer or citizen types -
+// BriefFacts, a complainant's name - and ZCQL queries here are always
+// interpolated strings with no parameterized-query support found anywhere in
+// this SDK. Building INSERT/UPDATE VALUES from untrusted text via string
+// interpolation is a real injection surface; the table API takes typed
+// objects instead, so that surface doesn't exist. Same reasoning updateRow()
+// already implicitly relied on - made explicit here since these are the
+// first INSERT/DELETE paths this file has ever had.
+// ---------------------------------------------------------------------------
+
+export async function insertRow(req: NextRequest, tableName: string, row: Record<string, unknown>) {
+  const capp = initCatalyst(req);
+  return capp.datastore().table(tableName).insertRow(row);
+}
+
+/** SDK-documented cap: 200 rows per call (catalyst-datastore skill,
+ *  "BULK INSERT (up to 200 rows)"). Callers inserting more must batch. */
+export async function insertRows(req: NextRequest, tableName: string, rows: Record<string, unknown>[]) {
+  const capp = initCatalyst(req);
+  return capp.datastore().table(tableName).insertRows(rows);
+}
+
+export async function deleteRow(req: NextRequest, tableName: string, rowId: string | number) {
+  const capp = initCatalyst(req);
+  return capp.datastore().table(tableName).deleteRow(rowId);
+}
+
+export async function deleteRows(req: NextRequest, tableName: string, rowIds: (string | number)[]) {
+  const capp = initCatalyst(req);
+  return capp.datastore().table(tableName).deleteRows(rowIds);
+}
+
 export async function nosqlGetByExactId(req: NextRequest, tableName: string, id: string) {
   const capp = initCatalyst(req);
   const { NoSQLEnum, NoSQLMarshall } = require("zcatalyst-sdk-node/lib/no-sql");
