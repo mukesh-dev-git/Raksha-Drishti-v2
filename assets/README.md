@@ -27,7 +27,7 @@ driven directly (Puppeteer), not a manual screenshot tool.
 
 | File | Shot | Real finding while capturing |
 |---|---|---|
-| `demo-hotspots.png` | Kernel-density mode, statewide, all 8 districts' real clusters visible at once | — |
+| `demo-hotspots.png` | Kernel-density mode, statewide | ⚠️ **Stale.** Captured pre-P1.7, so it shows 5,000 FIRs across 8 districts; the app now renders 12,000 across all 31. Recapture before the next submission. |
 | `demo-case.png` | Case 9001, scrolled to the verified + AI-detected contradiction cards, cited record IDs legible | — |
 | `demo-fusion.png` | KA-P0001 (Suresh Naik), scrolled to show the suspicion score's real factor breakdown *and* the full cross-source timeline in one frame | — |
 | `demo-ask.png` | Ask Anything, **mid-query** (loading state), not a completed answer | Captured when the real question ("Which cases involve a repeat offender?") didn't complete: the multi-round tool-calling loop gave up after too many rounds (a real, honest error message, not a crash or a fake answer). **Fixed and live-verified 2026-08-31** — see PLAN.md's P5.8 entry for the 3 real bugs found (a loop off-by-one, and `role:"tool"` messages the model was silently ignoring, plus a broken `tool_choice` path). The exact same question now returns a real, correctly-cited answer end to end. This screenshot is stale as of the fix — worth a fresh capture (a real completed answer with visible citation chips) next time the demo assets are touched, rather than the loading state. |

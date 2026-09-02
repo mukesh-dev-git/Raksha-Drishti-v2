@@ -22,7 +22,7 @@
     <rect x="34" y="104" width="200" height="3" rx="1.5" fill="#FF9933"/>
     <text x="50" y="130" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#FFFFFF">Catalyst Data Store</text>
     <text x="50" y="150" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11.5" fill="#A8C8E8">21 tables · Karnataka FIR schema</text>
-    <text x="50" y="168" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11.5" fill="#A8C8E8">5,000 FIRs · 2022–2026</text>
+    <text x="50" y="168" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11.5" fill="#A8C8E8">12,000 FIRs · 2021–2026</text>
     <text x="50" y="184" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" fill="#6F9BCB">read via ZCQL</text>
 
     <rect x="34" y="216" width="200" height="88" rx="7" fill="url(#box)" stroke="#2a5f9e"/>

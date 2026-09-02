@@ -20,7 +20,7 @@
 
 <br>
 
-<img src="assets/stats.svg" alt="5,000 FIRs · 47 fused persons · 21 Data Store tables · 8 districts · 15 authored scenarios" width="100%">
+<img src="assets/stats.svg" alt="12,000 FIRs · 47 fused persons · 21 Data Store tables · 31 districts · 15 authored scenarios" width="100%">
 
 </div>
 
@@ -68,11 +68,11 @@ statewide questions from them.
 <tr>
 <td width="50%">
 
-<!-- Static screenshot for now (kernel-density mode, all 8 districts) - see assets/README.md for the animated-GIF upgrade path -->
-<img src="assets/demo-hotspots.png" alt="Statewide hotspots — real kernel-density surface across all 8 districts, 5,000 plotted FIRs" width="100%">
+<!-- Static screenshot for now (kernel-density mode) - predates the 31-district expansion; see assets/README.md for the recapture + animated-GIF path -->
+<img src="assets/demo-hotspots.png" alt="Statewide hotspots — real kernel-density surface across Karnataka, 12,000 plotted FIRs" width="100%">
 
 **Statewide hotspots**
-Choropleth, kernel density and cross-district flow layers over 5,000 georeferenced incidents, scrubbable across 2022–2026.
+Choropleth, kernel density and cross-district flow layers over 12,000 georeferenced incidents across all 31 Karnataka districts, scrubbable across 2022–2026.
 
 </td>
 <td width="50%">
@@ -101,7 +101,7 @@ One individual assembled from calls, CCTV, transactions and statements — acros
 <img src="assets/demo-ask.png" alt="Ask Anything mid-query, showing the real tool-calling round in progress, not a canned response" width="100%">
 
 **Ask Anything**
-A tool-calling agent over the whole dataset — not a prompt stuffed with 5,000 rows — every citation checked against the real register before it can render. Multi-round tool calls can take real time (or occasionally give up rather than guess); shown here mid-query, not a canned response.
+A tool-calling agent over the whole dataset — not a prompt stuffed with 12,000 rows — every citation checked against the real register before it can render. Multi-round tool calls can take real time (or occasionally give up rather than guess); shown here mid-query, not a canned response.
 
 </td>
 </tr>
@@ -115,7 +115,7 @@ A tool-calling agent over the whole dataset — not a prompt stuffed with 5,000 
 |---|---|---|
 | 🗺️ | **Hotspot mapping** — choropleth, kernel density, spatiotemporal and cross-district flow layers | `crime-map/*`, `districtGeo.ts`, `crossDistrictFlows.ts` |
 | 📊 | **Crime analytics** — category and district counts, 5-year trend with control-chart anomaly detection, time-of-day × day-of-week heatmap, chargesheet-rate analysis, case-flow Sankey | `crimeCountStats.ts`, `components/crimeCount/*` |
-| 🗂️ | **FIR Index** — all 5,000 FIRs, filterable by type, district, status and free text; the daily-use worklist screen | `caseWorklist.ts`, `/cases` |
+| 🗂️ | **FIR Index** — all 12,000 FIRs, filterable by type, district, status and free text; the daily-use worklist screen | `caseWorklist.ts`, `/cases` |
 | 📁 | **Case record** — facts, sections, sibling FIRs, cross-source evidence timeline, relationship graph, IO assignment, and a **real status write** to the live Data Store | `/cases/[caseId]`, `PATCH /api/cases/[caseId]/status` |
 | 🧬 | **Entity fusion** — one canonical person across five record shapes and multiple scenarios, with a merged chronological timeline | `personFusion.ts` |
 | 👤 | **Person register & repeat offenders** — every subject, searchable; anyone named in 2+ cases surfaced as a cross-jurisdiction repeat subject | `/persons`, `/repeat-offenders` |
@@ -202,7 +202,7 @@ Stated plainly, because a jury should not have to guess.
 
 | | Status |
 |---|---|
-| ✅ | **5,000 FIRs across 8 districts and 13 police stations, 2022–2026** — real dates, real per-incident coordinates, real time-of-day, 1,293 chargesheet records |
+| ✅ | **12,000 FIRs across all 31 Karnataka districts and 59 police stations, 2021–2026** — real dates, real per-incident coordinates, real time-of-day, 2,962 chargesheet records |
 | ✅ | **All analytics are genuine arithmetic** over that dataset — no RNG, no mock generator. The old placeholder rows and mock generator were deleted, not hidden |
 | ✅ | **The Data Store is real** — 21 tables on the actual Karnataka FIR schema, queried live over ZCQL |
 | ✅ | **The write path is real** — `PATCH /api/cases/[caseId]/status`, confirmed against the live Data Store, not just typechecked |
@@ -274,14 +274,14 @@ Three platform behaviours worth knowing, each found the hard way:
 
 ### The live-vs-snapshot split
 
-The generator's output (5,000 cases, real person IDs, real coordinates,
+The generator's output (12,000 cases, real person IDs, real coordinates,
 populated occupation and religion) is correct and committed. The **live**
 Data Store still holds an older, smaller import.
 
 Most of the app reads a bundled JSON snapshot of the generator's output
 specifically so it did not have to wait on that re-import — `/cases`,
 `/crime-count`, `/socio-economic`, `/pattern-analysis`, `/repeat-offenders`
-and `/persons` all show the correct 5,000-case dataset today.
+and `/persons` all show the correct 12,000-case dataset today.
 
 But `/api/summary`, `/api/casetypes` and `/api/district-stats` query the live
 store directly, so the dashboard's trend chart and category donut may show
@@ -297,7 +297,7 @@ behaviour here.
 
 ### Where the work stands
 
-**Complete:** the cases restructure and the FIR Index · the 5,000-case
+**Complete:** the cases restructure and the FIR Index · the 12,000-case
 dataset with real geography and time · the person spine (fusion + merged
 timeline) · all seven analytics sub-items · the AI layer with its citation
 guardrail · Kannada text-to-audio · suspicion scoring, relationship graph and
@@ -323,7 +323,7 @@ pass.
 | `src/app/(site)/` | Every signed-in page — route group, so no URL is affected by the shell split |
 | `src/app/api/` | Route Handlers: live Data Store reads, the status write, `ask`, `tts` |
 | `src/lib/` | The whole analytics and fusion layer — the substance of the project |
-| `src/lib/nosql-seed/` | Bundled seed JSON: 5,000 case facts, 15 scenarios, all evidence collections |
+| `src/lib/nosql-seed/` | Bundled seed JSON: 12,000 case facts, 15 scenarios, all evidence collections |
 | `src/components/` | UI, grouped by surface (`cases/`, `dashboard/`, `persons/`, `crimeCount/`) |
 | `catalyst/` | Backend source of truth — schema, dataset generator, deploy notes |
 | `assets/` | The animated brief assets used by this README |
