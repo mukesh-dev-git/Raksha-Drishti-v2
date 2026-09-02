@@ -157,7 +157,7 @@ export default function StatementAudioPlayer({
   const isBusy = status === "loading";
 
   return (
-    <div className={`rounded-lg border border-line bg-surface-2/40 p-3 ${className}`}>
+    <div className={`rounded-lg border border-line bg-surface-2 p-3 ${className}`}>
       <div className="flex flex-wrap items-center gap-2">
         <button
           type="button"

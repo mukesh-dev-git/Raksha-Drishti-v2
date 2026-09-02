@@ -38,7 +38,7 @@ export default async function PatternAnalysisPage() {
 
           {clusters.map((cluster) => (
             <div key={cluster.id} className="overflow-hidden rounded-xl border border-line bg-surface shadow-sm">
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line bg-surface-2/50 px-5 py-4">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line bg-surface-2 px-5 py-4">
                 <div className="flex items-center gap-2.5">
                   <Waypoints size={18} className="text-navy" aria-hidden="true" />
                   <p className="text-[15px] font-semibold text-navy">
@@ -90,7 +90,7 @@ export default async function PatternAnalysisPage() {
                     </div>
                   );
                   return m.link ? (
-                    <Link key={m.caseMasterId} href={m.link} className="transition hover:bg-surface-2/40">
+                    <Link key={m.caseMasterId} href={m.link} className="transition hover:bg-surface-2">
                       {card}
                     </Link>
                   ) : (

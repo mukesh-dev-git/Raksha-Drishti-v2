@@ -41,7 +41,7 @@ export default function RepeatOffendersClient({ people }: { people: EnrichedPers
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-[340px_1fr] lg:items-start">
       {/* Left: compact selectable list */}
       <div className="overflow-hidden rounded-xl border border-line bg-surface shadow-sm">
-        <div className="border-b border-line bg-surface-2/50 px-4 py-3">
+        <div className="border-b border-line bg-surface-2 px-4 py-3">
           <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted">
             {people.length} people · 2+ cases each
           </p>
@@ -54,7 +54,7 @@ export default function RepeatOffendersClient({ people }: { people: EnrichedPers
                 key={p.personId}
                 onClick={() => setSelectedId(p.personId)}
                 className={`flex w-full items-center gap-3 px-4 py-3 text-left transition ${
-                  active ? "bg-dash-blue-bg/60" : "hover:bg-surface-2/60"
+                  active ? "bg-dash-blue-bg" : "hover:bg-surface-2"
                 }`}
                 aria-pressed={active}
               >
@@ -78,7 +78,7 @@ export default function RepeatOffendersClient({ people }: { people: EnrichedPers
       {selected && (
         <div className="min-w-0 space-y-4">
           <div className="overflow-hidden rounded-xl border border-line bg-surface shadow-sm">
-            <div className="flex flex-wrap items-start gap-4 border-b border-line bg-surface-2/50 px-5 py-4">
+            <div className="flex flex-wrap items-start gap-4 border-b border-line bg-surface-2 px-5 py-4">
               <OffenderAvatar personId={selected.personId} name={selected.name} photoUrl={selected.photoUrl} size={112} />
               <div className="min-w-0 flex-1">
                 <p className="text-[16px] font-semibold text-navy">{selected.name}</p>
@@ -114,7 +114,7 @@ export default function RepeatOffendersClient({ people }: { people: EnrichedPers
             </div>
 
             {selected.identity && (
-              <div className="border-b border-line bg-surface-2/30 px-5 py-3">
+              <div className="border-b border-line bg-surface-2 px-5 py-3">
                 <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-muted">
                   Registered identity
                 </p>

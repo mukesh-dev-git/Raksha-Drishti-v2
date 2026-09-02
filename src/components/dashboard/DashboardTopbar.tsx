@@ -100,7 +100,7 @@ export default function DashboardTopbar({ alertCount }: { alertCount: number }) 
               if (query) setOpen(true);
             }}
             placeholder="Search cases, persons, districts…"
-            className="w-full rounded-lg border border-line bg-surface-2/50 py-2.5 pl-10 pr-4 text-sm text-ink placeholder:text-muted focus-visible:border-dash-blue"
+            className="w-full rounded-lg border border-line bg-surface-2 py-2.5 pl-10 pr-4 text-sm text-ink placeholder:text-muted focus-visible:border-dash-blue"
             aria-label="Search cases, persons, districts"
           />
         </label>

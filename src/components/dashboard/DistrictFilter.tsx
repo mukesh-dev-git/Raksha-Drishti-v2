@@ -47,7 +47,7 @@ export default function DistrictFilter({ districtIds = [] }: { districtIds?: num
           const v = e.target.value;
           router.push(v ? `/dashboard?district=${v}` : "/dashboard");
         }}
-        className="rounded-lg border border-line bg-surface-2/50 px-3 py-1.5 text-[13px] text-ink focus-visible:border-dash-blue"
+        className="rounded-lg border border-line bg-surface-2 px-3 py-1.5 text-[13px] text-ink focus-visible:border-dash-blue"
       >
         <option value="">All Karnataka — statewide</option>
         <optgroup label="Ranges (IGP) - real KSP ranges, only their seeded districts">

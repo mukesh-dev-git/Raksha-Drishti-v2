@@ -15,7 +15,7 @@ export default function AlertsPanel({ alerts }: { alerts: Alert[] }) {
       <ul className="mt-3 space-y-3">
         {alerts.map((a) => {
           const Item = (
-            <div className="flex gap-3 rounded-lg border border-line bg-surface-2/60 p-3">
+            <div className="flex gap-3 rounded-lg border border-line bg-surface-2 p-3">
               <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-danger-bg text-danger">
                 <AlertTriangle size={14} aria-hidden="true" />
               </span>

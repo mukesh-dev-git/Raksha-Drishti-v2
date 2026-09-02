@@ -197,7 +197,7 @@ export default function CaseRelationshipGraph({ nodes, edges }: { nodes: GraphNo
 
   return (
     <div>
-      <div className="min-w-0 overflow-hidden rounded-lg border border-line bg-surface-2/50">
+      <div className="min-w-0 overflow-hidden rounded-lg border border-line bg-surface-2">
         <svg
           ref={svgRef}
           viewBox={`${minX} ${minY} ${vbW} ${vbH}`}

@@ -55,7 +55,7 @@ export default async function PersonDetailPage({ params }: { params: Promise<{ p
     >
       <div className="space-y-5">
         <div className="overflow-hidden rounded-xl border border-line bg-surface shadow-sm">
-          <div className="flex flex-wrap items-start gap-4 border-b border-line bg-surface-2/50 px-5 py-4">
+          <div className="flex flex-wrap items-start gap-4 border-b border-line bg-surface-2 px-5 py-4">
             <OffenderAvatar personId={person.personId} name={person.name} photoUrl={photoUrl} size={112} />
             <div className="min-w-0 flex-1">
               <p className="text-[16px] font-semibold text-navy">{person.name}</p>
@@ -84,7 +84,7 @@ export default async function PersonDetailPage({ params }: { params: Promise<{ p
           </div>
 
           {identity && (
-            <div className="border-b border-line bg-surface-2/30 px-5 py-3">
+            <div className="border-b border-line bg-surface-2 px-5 py-3">
               <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-muted">Registered identity</p>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                 <span className="flex items-start gap-2 text-[13px] text-ink">

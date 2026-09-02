@@ -144,7 +144,7 @@ function ScenarioCard({
   const vbH = Math.max(140, maxY - minY);
 
   return (
-    <div className="min-w-0 overflow-hidden rounded-lg border border-line bg-surface-2/40">
+    <div className="min-w-0 overflow-hidden rounded-lg border border-line bg-surface-2">
       <div className="flex items-center gap-2 border-b border-line bg-surface px-3 py-2">
         <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: color }} />
         <p className="min-w-0 flex-1 truncate text-[12px] font-semibold text-ink" title={group.scenarioTitle}>

@@ -120,7 +120,7 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ cas
         <div className="min-w-0 space-y-5">
           {/* Case facts */}
           <div className="rounded-xl border border-line bg-surface shadow-sm">
-            <div className="border-b border-line bg-surface-2/50 px-5 py-3">
+            <div className="border-b border-line bg-surface-2 px-5 py-3">
               <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted">Case facts</p>
             </div>
             <div className="divide-y divide-surface-2 px-5">
@@ -331,7 +331,7 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ cas
               </p>
               <div className="space-y-3">
                 {witnessStatements.map((w) => (
-                  <div key={w.id} className="rounded-lg border border-line/70 p-3">
+                  <div key={w.id} className="rounded-lg border border-line p-3">
                     <div className="mb-2 flex items-center justify-between gap-2">
                       <p className="text-[12.5px] font-semibold text-ink">{w.witnessName}</p>
                       <span className="font-mono text-[10.5px] text-muted">{w.id} · {w.statementDate}</span>
