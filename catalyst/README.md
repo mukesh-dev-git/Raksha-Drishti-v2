@@ -78,7 +78,7 @@ success message):
 | `Victim` | 14 | **11,995** | 11,995 | count matches |
 | `Accused` | 53 | **7,129** | 7,129 | every field matches (real `KA-Pnnnn` PersonIDs now live) |
 | `ChargesheetDetails` | 0 | **2,962** | 2,962 | count matches |
-| `ActSectionAssociation` | 0 | 16,395 rows present but **NOT correct** | 16,395 | ⚠️ see below |
+| `ActSectionAssociation` | 0 | **16,395** | 16,395 | ✅ fixed 2026-09-02, see below |
 
 ¹ `latitude`/`longitude` round-trip at 4 decimal places, not the 6 the
 generator emits — that’s the live Decimal column’s precision. Worst-case
@@ -120,11 +120,11 @@ Three practical gotchas, all real, all cost time:
   looked like a total failure until it suddenly held all 2,962 rows. Re-export
   and count before concluding anything failed.
 
-### ⚠️ `ActSectionAssociation` is imported but wrong — needs a console fix
+### ✅ `ActSectionAssociation` — fixed 2026-09-02, no console step needed
 
 This table has **no primary key**, so it can’t be upserted, and it was empty
-live, so it was imported as a plain insert. Both attempts were wrong, and the
-second one left bad data:
+live, so it was imported as a plain insert. The first two attempts were
+wrong:
 
 1. Importing the generator’s own CSV (`ActID: "IPC"`, `SectionID: "379"`)
    failed **all 16,395 rows** with `Invalid input value for ActID. int value
@@ -133,20 +133,46 @@ second one left bad data:
    rows since the beginning — a pre-existing gap, not a P1.7 regression.
 2. Resolving the codes to real live ROWIDs (`prep_asa_import.mjs`, written
    for exactly this) made the import *succeed* — but the column silently
-   **truncated every 17-digit ROWID to 10 digits**, so all 16,395 rows now
-   hold the same meaningless value `5680600000` in both lookup columns.
+   **truncated every 17-digit ROWID to 10 digits**, so all 16,395 rows held
+   the same meaningless value `5680600000` in both lookup columns.
+
+The root cause, confirmed via `CatalystbyZoho_List_All_Columns` (Catalyst
+MCP), not guessed: `ActID`/`SectionID` were `data_type: "int"` with
+`max_length: 10` — the column itself couldn’t hold a 17-digit number.
+Compare `ROWID`/`CREATORID` in the same table, both `bigint`.
+
+**No console step was needed.** The obvious fix — `Update_Column` to change
+the type in place — is genuinely **blocked by the platform**:
+`{"message":"You cannot perform this operation. Data type of this column
+cannot be changed"}`. The real fix was drop-and-recreate, entirely through
+the Catalyst MCP:
+
+1. `Truncate_Table` — clear the 16,395 garbage rows.
+2. `Delete_Column` on `ActID` and `SectionID`.
+3. `Create_Column` on both again, this time as **`bigint`** (`max_length`
+   comes back `19` — comfortably fits a 17-digit ROWID). Kept as Lookup-style
+   ROWID columns rather than switching to Text, to stay faithful to the
+   original schema rather than redesigning it.
+4. Re-resolved `prep_asa_import.mjs`’s output against the (unchanged) live
+   Act/Section ROWIDs and re-imported via `catalyst ds:import`.
+
+Verified via ZCQL after: `SELECT COUNT(ROWID) FROM ActSectionAssociation` →
+**16,395**. `SELECT ActID, COUNT(ROWID) ... GROUP BY ActID` → exactly 2
+distinct values (15,881 / 514), matching the real IPC/ITACT split — not one
+repeated garbage value. Case 9001 spot-checked: its two real sections (379,
+34) resolve correctly.
+
+Three of the MCP’s Data Store tools that mattered here
+(`Update_Column`/`Delete_Column`/`Truncate_Table`/`Create_Column`) aren’t in
+the static skill docs bundled with `catalystbyzoho/agent-skills` — the live
+tool catalog has 186 tools across 22 groups, more than the docs enumerate.
+Worth checking `ZohoMCP_listTools` directly rather than assuming the docs are
+exhaustive.
 
 **Nothing in the app reads this table** (`grep ActSectionAssociation src/`
-returns only a comment; case sections come from the bundled
-`caseFacts.json`), so nothing user-facing is broken. But the rows are wrong
-and cannot be repaired in place: no PK means no upsert, and there is no
-delete path outside the console.
-
-**To fix, in the Catalyst console:** truncate `ActSectionAssociation`, change
-`ActID` and `SectionID` from int to **Text**, then re-import the generator’s
-portable CSV directly (no ROWID mapping, no `prep_asa_import.mjs`). Schema
-changes are console-only on this Data Store — same constraint that forced
-every other table to be hand-built.
+still returns only a comment; case sections come from the bundled
+`caseFacts.json`) — this had zero user-facing impact either way, but it’s
+clean now if anyone exports and inspects the table directly.
 
 ### Known live-read bug found by the scale-up
 

@@ -20,7 +20,7 @@ are blocked on **data**, not on AI — so the seed comes before the models.
 | Track | State | Where it's at |
 |---|---|---|
 | **P0** Credibility | ✅ **done** | All 5. App no longer promises what it can't do. |
-| **P1** Data foundation | 🔵 **nearly done** | P1.1 ✅ · P1.2 ✅ · P1.3 ✅ · **P1.7 ✅ 2026-09-01** (all **31** real Karnataka districts, **12,000** FIRs) · **P1.6 ✅ 2026-09-02** (live Data Store re-imported at full scale — `CaseMaster` 19 → 12,000, every table verified against source by re-export; done by upsert, no wipe needed) · P1.4 `[~]` built, not applied · **P1.5** `[~]` occupation + religion live, caste taxonomy still an open question. Two defects found by the scale-up and left open, see `catalyst/README.md` §2: `ActSectionAssociation` lookup ROWIDs truncated (console fix needed, unread by the app), and `zcqlAll()` off-by-one inflating every live count by 1. |
+| **P1** Data foundation | 🔵 **nearly done** | P1.1 ✅ · P1.2 ✅ · P1.3 ✅ · **P1.7 ✅ 2026-09-01** (all **31** real Karnataka districts, **12,000** FIRs) · **P1.6 ✅ 2026-09-02** (live Data Store re-imported at full scale — `CaseMaster` 19 → 12,000, every table verified against source by re-export; done by upsert, no wipe needed) · P1.4 `[~]` built, not applied · **P1.5** `[~]` occupation + religion live, caste taxonomy still an open question. Both defects the scale-up found are now resolved (2026-09-02, via the Catalyst MCP): `ActSectionAssociation`'s truncated ROWIDs fixed (drop-and-recreate as bigint, no console step needed after all), and `/api/summary`'s `zcqlAll()` off-by-one fixed as a side effect of rewriting it onto real ZCQL aggregates — see `catalyst/README.md` §2. |
 | **P2** Route restructure | ✅ **done, merged, deployed** | Merged to `main` and pushed to `v2/main` 2026-08-28 (17 commits) - confirmed live on Slate. P2.1+P2.1a+P2.1b+P2.1c+P2.1d+P2.2+P2.3 all real FIR Index, case/district/person pages, header search, old-URL redirects, attention-list dashboard. **P2.4's case-status write endpoint confirmed working against the live Data Store** (two real writes via curl, both directions, not just a 200 taken on faith) - the app's first-ever write, live. IO assignment/case-diary not started (diary blocked on console-only table provisioning, not a choice). One real gap surfaced: writes hit the live Data Store but every read path still serves bundled seed JSON, so a write is currently invisible in the UI - see P2.4. |
 | **P3** Person spine | ✅ **done** | P3.1+P3.3 (`589721d`) — fusion + timeline merge, 2 real bugs found and fixed. P3.2 (`/persons`) landed via the P2 restructure — see P2.1c. |
 | **P4** Real analytics | ✅ **all 7 sub-items done, 2026-08-30** | P4.1 (real statewide hotspot map), P4.2+P4.9 (time-of-day×day-of-week heatmap), P4.3+P4.9 (control-chart trend alerts), P4.4 (chargesheet rate/heinous split), P4.5 (socio-economic breakdown, `/socio-economic`, 2026-08-30 - occupation + religion, caste withheld pending taxonomy decision), P4.6+P4.7 (MO-clustering + repeat-offenders), P4.8 (real stat cards), P4.9 (choropleth, kernel-density, cross-district flow map, case-flow Sankey, statewide link-analysis graph). P4.1-P4.4/P4.6-P4.9 built via 6 parallel subagents 2026-08-29; P4.5 built directly 2026-08-30. |
@@ -283,7 +283,7 @@ locally, then wipe + re-import **once**. See `RESEARCH_AND_PLAN.md` §5.*
       zero cases everywhere. Natural to fold into **P1.6**'s wipe-and-
       reimport (same "one wipe, not per-fix" reasoning P1.6 already uses)
       rather than a second separate re-import.
-- [x] **P1.6** ✅ **Done 2026-09-02.** Live Data Store re-imported at full scale — `CaseMaster` 19 → **12,000**, `District` 8 → **31**, plus Unit/Court/Employee/Complainant/Victim/Accused/ChargesheetDetails, every table verified by re-exporting and diffing against the source CSVs field by field (not by trusting the import's success message). The real `KA-Pnnnn` PersonIDs (P1.1) and P1.5's demographics are now live. **No wipe was needed after all** — there is no wipe command (CLI has only import/export/status, ZCQL is SELECT-only, the SDK's `deleteRows()` needs a deployed request context), but every ID already live was also in the new dataset, so an **upsert** on each table's PK reaches the identical end state with zero stale rows and no destructive step. Two real defects found and left open, both documented in `catalyst/README.md` §2: (a) `ActSectionAssociation` imported 16,395 rows whose Lookup ROWIDs were silently truncated to 10 digits — needs a console truncate + column type change to Text; nothing in the app reads that table. (b) `zcqlAll()` returns exactly one duplicate row over 12,000 rows, inflating every live count by 1 — invisible at 19 rows, needs a deploy to test a fix. Original task text below.
+- [x] **P1.6** ✅ **Done 2026-09-02.** Live Data Store re-imported at full scale — `CaseMaster` 19 → **12,000**, `District` 8 → **31**, plus Unit/Court/Employee/Complainant/Victim/Accused/ChargesheetDetails, every table verified by re-exporting and diffing against the source CSVs field by field (not by trusting the import's success message). The real `KA-Pnnnn` PersonIDs (P1.1) and P1.5's demographics are now live. **No wipe was needed after all** — there is no wipe command (CLI has only import/export/status, ZCQL is SELECT-only, the SDK's `deleteRows()` needs a deployed request context), but every ID already live was also in the new dataset, so an **upsert** on each table's PK reaches the identical end state with zero stale rows and no destructive step. Two real defects were found by the scale-up; both since resolved, 2026-09-02, documented in `catalyst/README.md` §2: (a) `ActSectionAssociation` imported 16,395 rows whose Lookup ROWIDs were silently truncated to 10 digits — the in-place fix (`Update_Column` to bigint) turned out to be blocked by the platform itself (`"Data type of this column cannot be changed"`), so it was fixed by drop-and-recreate (`Delete_Column` + `Create_Column` as bigint) via the Catalyst MCP, no console step needed after all; verified via ZCQL (16,395 rows, exactly 2 distinct `ActID` values matching the real IPC/ITACT split, case 9001's real sections resolve correctly). (b) `zcqlAll()`'s one-duplicate-row bug is fixed for `/api/summary` specifically, as a side effect of rewriting that route onto real ZCQL aggregates instead of walking every row — `zcqlAll()` itself is unchanged and any other caller still has the bug. Original task text below.
 - [ ] ~~**P1.6**~~ Wipe the Data Store and re-import cleanly. Record row counts in
       `catalyst/README.md`. Now carries two real fixes at once, which is
       exactly why this was deferred to one wipe rather than done per-fix:
@@ -1281,29 +1281,73 @@ immediately visible everywhere without a rebuild.
 
 ### What makes this genuinely hard — read before estimating
 
-None of these are guesses; each was hit for real in this project:
+Revised 2026-09-02 after connecting the official Catalyst MCP and verifying
+several of these live rather than from docs. Two of the five constraints
+below were flat wrong; corrected in place with what actually happened,
+because trusting the wrong version cost real time twice already this
+project (see the `COUNT()` and `ActSectionAssociation` history in
+`catalyst/README.md` §2).
 
-- **ZCQL caps any `SELECT` without its own `LIMIT` at 300 rows**, so reading
-  12,000 cases is 40 sequential paginated round trips per request. The
-  analytics pages (heatmap, hotspots, MO clustering, statewide network) each
-  need the *whole* register in memory to compute. Doing that live, per
-  request, is the core performance problem and the reason the bundled
-  snapshot exists in the first place — it is a deliberate tradeoff, not an
-  oversight. Expect to need caching, materialised aggregate tables, or both.
-- **`COUNT(...) AS alias` silently returns 0** rather than erroring, so every
-  aggregate has to be computed in JS over fetched rows.
-- **No DDL outside the console.** Tables and columns can only be created or
-  altered by hand in the Catalyst console — no ZCQL, no SDK, no CLI. Any new
-  table this work needs is a manual step.
-- **Lookup columns can silently corrupt data.** `ActSectionAssociation`'s
-  `ActID`/`SectionID` truncated 17-digit ROWIDs to 10 digits on import,
-  leaving 16,395 rows of garbage that *reported success* (see
-  `catalyst/README.md` §2). Validate what comes back out, never trust a
-  write's own success message.
-- **Writes can't be tested locally.** `catalyst.initialize(req)` needs a real
-  Catalyst request context, so every `zcql()` call fails locally with
-  "Failed to parse object". All of this can only be verified after a Slate
-  deploy — budget for that loop.
+- **ZCQL caps any `SELECT` without its own `LIMIT` at 300 rows**, so a raw
+  row-by-row read of 12,000 cases is 40 sequential paginated round trips.
+  Still true, and still real for anything that needs the whole register in
+  memory — the analytics pages (heatmap, hotspots, MO clustering, statewide
+  network) fall in this bucket and still justify the bundled snapshot.
+  Row-*listing* pages are the genuinely hard case; aggregate-shaped ones no
+  longer are (see next point).
+- **~~`COUNT(...) AS alias` silently returns 0~~ — WRONG, corrected
+  2026-09-02.** `COUNT()` works fine. What ZCQL actually drops is the `AS`
+  alias itself — `SELECT COUNT(ROWID) AS total` returns the key
+  `COUNT(ROWID)`, not `total`; reading `row.total` silently returns
+  `undefined`. Verified live: `SELECT COUNT(ROWID) FROM CaseMaster` → exact
+  `12000`, `GROUP BY CaseStatusID` → the full real breakdown. `/api/summary`
+  was rewritten on this basis (2026-09-02): 40 sequential round trips → ~8
+  aggregate queries, 2.15s → 0.30s, and the `zcqlAll()` off-by-one
+  disappeared from that route as a side effect (still present anywhere else
+  still using `zcqlAll()` for a count). This means P10.3's row-*listing*
+  pages are still the hard part; aggregate-shaped reads (most of the
+  dashboard, district/status breakdowns, trend charts once `YEAR()`'s
+  absence is worked around) are cheap now, not blocked. Two real ZCQL gaps
+  found alongside this, both live-confirmed: no `YEAR()` function, and JOINs
+  need a declared Lookup relationship (`CaseMaster.PoliceStationID` is a
+  plain Number, not a Lookup, so district scoping needs a two-step query,
+  not a join).
+- **~~No DDL outside the console~~ — WRONG, corrected 2026-09-02.** The
+  Catalyst MCP (`catalyst.zohomcp.in`, connected this session) exposes real
+  DDL: `Create_Table`, `Create_Column`, `Update_Column`, `Delete_Column`,
+  `Delete_Table`, `Truncate_Table` — 19 Datastore-group tools in total, more
+  than the bundled `catalystbyzoho/agent-skills` docs enumerate (186 tools
+  across 22 groups live vs. a handful documented; check
+  `ZohoMCP_listTools` directly rather than trusting the skill's tool list).
+  One real sub-limit found using it: `Update_Column` cannot change an
+  existing column's `data_type` in place (`"Data type of this column cannot
+  be changed"`) — changing a column's type is drop-and-recreate
+  (`Delete_Column` + `Create_Column`), not an ALTER. Table/column creation
+  from application code (not just the console) is genuinely available for
+  P10's endpoints if they ever need a new table.
+- **Lookup columns can silently corrupt data.** ✅ **Fixed 2026-09-02** — see
+  `catalyst/README.md` §2's `ActSectionAssociation` writeup for the full
+  story (int column, 10-digit cap, truncated every 17-digit ROWID; fixed by
+  drop-and-recreate as bigint via the MCP, no console step needed in the
+  end). Keep the lesson even though the instance is fixed: validate what
+  comes back out of a write, never trust its own success message.
+- **Writes can't be tested locally.** Still true for `zcql.ts`'s
+  `catalyst.initialize(req)` path (needs a real Catalyst request context,
+  only exists in a deployed Slate route) — but this no longer blocks
+  *verifying Data Store behaviour*, just this app's own request-scoped SDK
+  calls. The Catalyst MCP talks to the same live Data Store directly, so ZCQL
+  queries, imports and DDL can all be tried and confirmed without a deploy
+  loop, as the `ActSectionAssociation` fix and the `/api/summary` rewrite
+  both did today. Testing an actual Next.js Route Handler's write still
+  needs a deploy.
+- **A different safety layer can block destructive Data Store calls even
+  with the user's go-ahead.** Not a Catalyst limitation — Claude Code's own
+  auto-mode classifier blocked `Truncate_Table`/`Delete_Rows` in a
+  non-interactive session regardless of chat-level approval; it only cleared
+  once the same calls were re-run in an interactive session where the user
+  could approve the specific prompt. Relevant to anyone continuing P10's
+  destructive steps (P10.4's writes, `/api/districts`'s removal): budget for
+  running those in an interactive session, not an automated one.
 - **Latency and cold starts.** The token cache in `llm.ts` is module-scope and
   doesn't survive a cold start; the same will apply to any Data Store caching.
 
