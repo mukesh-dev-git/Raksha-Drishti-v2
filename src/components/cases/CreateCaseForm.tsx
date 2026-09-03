@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Loader2, FileText } from "lucide-react";
 import { districts } from "@/lib/data";
 import { getEmployees } from "@/lib/employees";
+import TranslateButton from "@/components/ui/TranslateButton";
 
 // -----------------------------------------------------------------------------
 // P10 Phase 3 (2026-09-02) - the create half of real CRUD. Calls the real
@@ -205,6 +206,23 @@ export default function CreateCaseForm() {
             placeholder="What was reported, in the complainant's own words."
             required
           />
+          {/* P7.3 - real Kannada -> English translation on the same real
+              field POST /api/cases reads. Bridges station-level Kannada
+              intake (dictated via P7.2 on a sibling branch, or typed
+              directly) to the English an SCRB/NCRB report needs. See
+              translateClient.ts's module comment - this endpoint's exact
+              contract was NOT confirmed live despite extensive probing, so
+              this button is expected to surface a real, honest error until
+              the Catalyst console resolves the real field names. */}
+          <div className="mt-1.5">
+            <TranslateButton
+              text={briefFacts}
+              sourceLanguage="kn"
+              targetLanguage="en"
+              label="Translate to English"
+              onTranslated={(translated) => setBriefFacts(translated)}
+            />
+          </div>
         </Field>
         <Field label="Investigating officer">
           <select className={inputCls} value={policePersonId} onChange={(e) => setPolicePersonId(e.target.value ? Number(e.target.value) : "")} required>

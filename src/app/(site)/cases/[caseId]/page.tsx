@@ -8,6 +8,7 @@ import IOAssignmentEditor from "@/components/cases/IOAssignmentEditor";
 import CrossSourceTimeline from "@/components/CrossSourceTimeline";
 import CaseRelationshipGraph from "@/components/cases/CaseRelationshipGraph";
 import StatementAudioPlayer from "@/components/evidence/StatementAudioPlayer";
+import WitnessStatementTranslation from "@/components/evidence/WitnessStatementTranslation";
 import { getWorklistCase, getSiblingCases, caseDetailLink } from "@/lib/caseWorklist";
 import { getLiveCaseOverrides, getLiveOnlyCase } from "@/lib/liveCaseOverrides";
 import { getScenarioTimeline } from "@/lib/personFusion";
@@ -338,6 +339,7 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ cas
                     </div>
                     <p className="mb-2 text-[13px] leading-relaxed text-ink">&ldquo;{w.statementText}&rdquo;</p>
                     <StatementAudioPlayer statementId={w.id} text={w.statementText} />
+                    <WitnessStatementTranslation text={w.statementText} />
                   </div>
                 ))}
               </div>
