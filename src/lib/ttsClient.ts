@@ -36,7 +36,15 @@ import { getAccessToken } from "./llm";
 const TTS_URL = "https://api.catalyst.zoho.in/quickml/api/v1/models/zia/tts/synthesize";
 const REQUEST_TIMEOUT_MS = 30_000;
 
-export type TtsVoice = "Suresh" | "Chetan" | "Anu" | "Vidya";
+// Kannada speakers per the console's real inventory (module header), plus
+// the English speakers StatementAudioPlayer.tsx's "English text" toggle
+// already offers - found missing here live 2026-09-03 while sanity-checking
+// P7.2 credentials: /api/tts's own VOICES allowlist only listed the 4
+// Kannada names, so selecting any English voice silently dropped to
+// `undefined` -> this module's "Vidya" default -> a real, correct API
+// rejection ("Speaker 'Vidya' is not available for language 'en'"). English
+// playback was broken end-to-end until this fix.
+export type TtsVoice = "Suresh" | "Chetan" | "Anu" | "Vidya" | "Thomas" | "Adam" | "Brian" | "Mary" | "Anna" | "Beth";
 export type TtsLanguage = "kn" | "en";
 export type TtsPitch = "low" | "moderate" | "high";
 export type TtsSpeed = "slow" | "moderate" | "fast";
@@ -72,7 +80,11 @@ function requireEnv(name: string): string {
 export async function synthesizeSpeech(text: string, opts: TtsOptions = {}): Promise<TtsResult> {
   const orgId = requireEnv("QUICKML_ORG_ID");
   const language = opts.language ?? "kn";
-  const voice = opts.voice ?? "Vidya";
+  // Default voice must match the resolved language, not a fixed constant -
+  // {language:"en"} with no explicit voice used to still default to the
+  // Kannada-only "Vidya" and hit a real, correct API rejection. See the
+  // TtsVoice comment for the live bug this fixes.
+  const voice = opts.voice ?? (language === "en" ? "Mary" : "Vidya");
   const pitch = opts.pitch ?? "moderate";
   const speed = opts.speed ?? "moderate";
   const emotion = opts.emotion ?? "neutral";
