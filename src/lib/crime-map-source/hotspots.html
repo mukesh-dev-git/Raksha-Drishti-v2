@@ -152,6 +152,18 @@
     <div class="types" id="types"></div>
     <div class="allnone"><a id="selAll">All</a><a id="selNone">None</a></div>
   </div>
+
+  <div class="sect">
+    <h2>Real police stations</h2>
+    <label style="display:flex;align-items:center;gap:8px;font-size:12.5px;cursor:pointer;">
+      <input type="checkbox" id="stationsToggle" />
+      <span>Show station locations <span id="stationsCount" class="muted"></span></span>
+    </label>
+    <div class="note" style="margin-top:6px;color:var(--dim);font-size:10.5px;line-height:1.4;">
+      Real stations, statewide — source: KSRSAC, not this app's own case data.
+      Independent of the FIR points above; visible from zoom 9+.
+    </div>
+  </div>
 </div>
 
 <div id="info" class="card">
@@ -302,6 +314,7 @@ function addLayers() {
   map.addSource("hexes", { type: "geojson", data: emptyFC() });
   map.addSource("centroids", { type: "geojson", data: emptyFC() });
   map.addSource("crimes", { type: "geojson", data: emptyFC() });
+  map.addSource("stations", { type: "geojson", data: emptyFC() });
   const beforeLabels = firstSymbolLayerId();
 
   map.addLayer({
@@ -340,6 +353,22 @@ function addLayers() {
     layout: { "text-field": ["get", "countStr"], "text-size": 12, "text-font": ["Open Sans Bold"],
       "text-allow-overlap": false, "text-ignore-placement": false },
     paint: { "text-color": "#ffffff", "text-halo-color": "#000000", "text-halo-width": 1.2 },
+  });
+
+  // P13 Phase A — real KSRSAC station locations, a layer independent of the
+  // hex/heat layers above (those are the app's own, generator-placed FIR
+  // points; this is real, externally-sourced reference data — see
+  // stations.json's own route comment). Starts hidden: additive, opt-in, not
+  // a replacement for anything already shown by default.
+  map.addLayer({
+    id: "station-points", type: "circle", source: "stations", minzoom: 9,
+    layout: { visibility: "none" },
+    paint: {
+      "circle-radius": ["interpolate", ["linear"], ["zoom"], 9, 2.5, 14, 6],
+      "circle-color": "#f4c542",
+      "circle-stroke-color": "#0a0d12",
+      "circle-stroke-width": 1,
+    },
   });
 }
 
@@ -651,4 +680,53 @@ fetch("/crime-map/data/points.json").then(r => r.json()).then(data => {
 }).catch(err => {
   document.getElementById("loading").textContent = "Couldn't load real case data (" + err.message + ").";
 });
+
+// ---------------------------------------------------------------------------
+// Real police stations (P13 Phase A) — separate fetch, separate source, so a
+// failure here degrades to "no station layer" rather than blocking the FIR
+// points load above.
+// ---------------------------------------------------------------------------
+let stationsGeoJSON = null;
+fetch("/crime-map/data/stations.json").then(r => r.json()).then(data => {
+  stationsGeoJSON = {
+    type: "FeatureCollection",
+    features: data.stations.map(s => ({
+      type: "Feature",
+      geometry: { type: "Point", coordinates: [s.lng, s.lat] },
+      properties: { name: s.name, kgisCode: s.kgisCode || "" },
+    })),
+  };
+  document.getElementById("stationsCount").textContent = `(${data.total.toLocaleString("en-IN")})`;
+  const toggle = document.getElementById("stationsToggle");
+  if (toggle.checked && map.getSource("stations")) {
+    map.getSource("stations").setData(stationsGeoJSON);
+  }
+}).catch(err => {
+  document.getElementById("stationsCount").textContent = "(unavailable)";
+});
+
+document.getElementById("stationsToggle").addEventListener("change", (ev) => {
+  if (!map.getLayer("station-points")) return;
+  const on = ev.target.checked;
+  map.setLayoutProperty("station-points", "visibility", on ? "visible" : "none");
+  if (on && stationsGeoJSON && map.getSource("stations")) {
+    map.getSource("stations").setData(stationsGeoJSON);
+  }
+});
+
+let stationPopup = null;
+map.on("click", "station-points", (ev) => {
+  const f = ev.features && ev.features[0];
+  if (!f) return;
+  if (stationPopup) stationPopup.remove();
+  stationPopup = new maplibregl.Popup({ className: "crime-pop", closeButton: true, maxWidth: "240px" })
+    .setLngLat(f.geometry.coordinates)
+    .setHTML(
+      `<div class="pop-title">${f.properties.name}</div>` +
+      `<div class="pop-sub">${f.properties.kgisCode ? f.properties.kgisCode + " · " : ""}Real station — source: KSRSAC</div>`
+    )
+    .addTo(map);
+});
+map.on("mouseenter", "station-points", () => { map.getCanvas().style.cursor = "pointer"; });
+map.on("mouseleave", "station-points", () => { map.getCanvas().style.cursor = ""; });
 </script>

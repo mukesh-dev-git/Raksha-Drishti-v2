@@ -1497,3 +1497,97 @@ call: add this to the plan now, build it after a team review — not a
       "delete" in a live police system usually means something closer to
       "mark withdrawn/cancelled" than a hard row delete. Decide which one
       this app should model before building either.
+
+## P13 — Real AI/ML on real data 🔵 in progress
+
+*Raised 2026-09-03: the mentor's feedback was that AI/ML is expected (Zoho
+Catalyst supports QuickML), and that the 12,000-case synthetic dataset can't
+produce real trend patterns or real pattern recognition — "human intelligence
+is vast," synthetic data is a downer. The diagnosis, not just the fix: nothing
+in the app had actually learned a pattern from real-world data before this —
+`moPatterns.ts` is real but deterministic rule-matching, not ML; the LLM
+features reason over authored/live case rows, not predict from them; the
+12,000 bulk cases are internally consistent but invented, so training
+anything on them would just learn the generator's own shape back, producing
+zero real insight regardless of pipeline sophistication.*
+
+**The plan, in three phases, deliberately not solved by deleting the
+synthetic data** (no public dataset of real individual FIRs exists, nor
+should one — victim names and exact incident locations are exactly the kind
+of data no government publishes at row level; the 12,000 cases remain the
+right tool for giving the app operational scale to demo against):
+
+- **Phase A** — a real, additive geographic layer, no synthetic data touched.
+- **Phase B** — a real QuickML model trained on real KSP/SCRB published
+  numbers, honestly labeled, real accuracy shown.
+- **Phase C** — calibrate the synthetic generator's weights against a real
+  published snapshot (lower priority, bigger blast radius, deferred).
+
+**Real data sourced and verified before any of this was built** (not
+Kaggle's "Indian Crimes Dataset" — checked and rejected: no real provenance
+stated, `Sources: "Open data"`, every histogram bucket suspiciously exactly
+2,008 rows, a hallmark of a random generator, not real police-report timing):
+data.opencity.in's "Bengaluru City Police (BCP)" organization, mirroring
+`ksp.karnataka.gov.in` / `bcp.karnataka.gov.in` / KSRSAC. Actual files pulled
+and inspected (not just descriptions read) — see
+`catalyst/real-data/police-stations/parse-kml.mjs`'s header and [[real-ksp-crime-datasets]]
+(memory) for the full list. One real, load-bearing finding from actually
+opening the CSVs: **no single published table crosses district × crime-type
+× year** — KSP publishes district totals across years (2022/2023/2024/2025,
+~37 units × 4 years ≈ 150 real rows) and a rich crime-type breakdown for one
+year at a time (2024's 37×21 matrix, 777 real rows; 2025's 651-row motive
+breakdown) — never both dimensions together across years. This is why Phase
+B is scoped as regression on the multi-year district-total series, not a
+"predict crime type per district per year" model — that specific ask isn't
+supported by what's actually published, and building toward it anyway would
+have meant quietly interpolating a claim the real data doesn't back.
+
+- [x] **P13.A** ✅ **Done 2026-09-03.** Real police station locations added
+      as their own map layer on `/crime-hotspots`. Source: **KSRSAC**
+      (Karnataka's state remote-sensing agency), via
+      data.opencity.in/dataset/police-station-locations — 921 real stations
+      statewide, real name + precise lat/lng, parsed by
+      `catalyst/real-data/police-stations/parse-kml.mjs` (kept alongside the
+      real source KML for audit; re-runnable if OpenCity republishes an
+      update) into `src/lib/real-data/policeStations.json`, served via
+      `GET /crime-map/data/stations.json`
+      ([route.ts](src/app/(site)/crime-map/data/stations.json/route.ts)).
+      **Deliberately additive, not a replacement**: `CaseMaster`'s per-FIR
+      coordinates (the existing `points.json` layer) already come from
+      `geo_time.mjs`'s `placeIncident()`, which scatters incidents around
+      real, hand-verified Karnataka locality names — correct as far as it
+      goes. Rewriting that generator to key off these 921 real station names
+      instead would mean fuzzy-matching them against the app's own ~59
+      synthetic `Unit` rows (P1.7), risking a silent wrong-station mismatch
+      (the source data itself has entry artifacts, e.g. a station named
+      `"Bruceept PS"`) for a 12,000-row re-import — a bigger, less certain
+      change than a new opt-in layer. Toggleable in `hotspots.html`'s left
+      panel ("Show station locations"), off by default, visible from zoom 9,
+      labeled "source: KSRSAC" in its own popup and sidebar note so it's
+      never mistaken for the app's own case data. Verified: `tsc`/`build`
+      clean, real 921-count confirmed live via the route, dev-server check
+      confirmed the layer renders (real station density visible around
+      Bengaluru, distinct from the hex/heat crime layers) and toggles
+      on/off correctly, zero console errors, real network request
+      confirmed via `read_network_requests`.
+- [ ] **P13.B** Not started. Real QuickML regression, trained on the real
+      2022–2025 district-total series (~150 rows once cleaned/aligned across
+      4 differently-shaped source CSVs — district naming isn't consistent
+      year to year, that reconciliation is the real work here) via
+      `CatalystbyZoho_Create_AutoML_Pipeline` (confirmed live and available
+      on this project via the MCP 2026-09-03 — some Zoho docs list
+      AutoML/QuickML as unavailable in the India DC; checked, doesn't apply
+      here, `List_QuickML_Projects` returned this project directly). Deploy
+      the endpoint, wire a real prediction API route, add a clearly-labeled
+      forecast panel — real accuracy shown plainly, not hidden if modest,
+      same discipline as P5.3's eval.
+- [ ] **P13.C** Not started, lower priority. Compare `bulk_cases.mjs`'s
+      synthetic district/crime-type weights against the real 2024 777-row
+      snapshot (P13.B's data prep already produces this same reconciliation
+      groundwork), adjust where materially off. Flagged as bigger/riskier
+      than A or B: changing the generator means re-seeding all 12,000 live
+      rows, and destructive Data Store steps need an interactive session
+      (hit and documented under P10's "what makes this hard" — the
+      auto-mode classifier blocks them in a non-interactive one regardless
+      of chat-level approval). Scope and confirm before starting, not fold
+      in silently.

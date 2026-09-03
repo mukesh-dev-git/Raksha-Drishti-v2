@@ -1,0 +1,5528 @@
+[
+  {
+    "name": "Cowlbazar PS",
+    "kgisCode": "PS - 01",
+    "lat": 15.137706,
+    "lng": 76.902929
+  },
+  {
+    "name": "Bruceept PS",
+    "kgisCode": "PS - 02",
+    "lat": 15.138191,
+    "lng": 76.92634
+  },
+  {
+    "name": "Gandhinagar PS",
+    "kgisCode": "PS - 03",
+    "lat": 15.145357,
+    "lng": 76.93106
+  },
+  {
+    "name": "Moka PS",
+    "kgisCode": "PS - 04",
+    "lat": 15.241562,
+    "lng": 77.059221
+  },
+  {
+    "name": "P.D. Halli PS",
+    "kgisCode": "PS - 05",
+    "lat": 15.143128,
+    "lng": 77.05214
+  },
+  {
+    "name": "Siruguppa PS",
+    "kgisCode": "PS - 06",
+    "lat": 15.638336,
+    "lng": 76.89973
+  },
+  {
+    "name": "Hatcholli PS",
+    "kgisCode": "PS - 07",
+    "lat": 15.790947,
+    "lng": 76.987314
+  },
+  {
+    "name": "Tekkalkota PS",
+    "kgisCode": "PS - 08",
+    "lat": 15.53768,
+    "lng": 76.880982
+  },
+  {
+    "name": "Sirigeri PS",
+    "kgisCode": "PS - 09",
+    "lat": 15.441298,
+    "lng": 76.838891
+  },
+  {
+    "name": "Kurugodu PS",
+    "kgisCode": "PS - 10",
+    "lat": 15.344225,
+    "lng": 76.835315
+  },
+  {
+    "name": "Kuduthini PS",
+    "kgisCode": "PS - 11",
+    "lat": 15.2096,
+    "lng": 76.762425
+  },
+  {
+    "name": "Hospet Town PS",
+    "kgisCode": "PS - 12",
+    "lat": 15.273976,
+    "lng": 76.388473
+  },
+  {
+    "name": "Chittavadagi PS",
+    "kgisCode": "PS - 13",
+    "lat": 15.125978,
+    "lng": 76.388473
+  },
+  {
+    "name": "Hospet Rural PS",
+    "kgisCode": "PS - 14",
+    "lat": 15.274896,
+    "lng": 76.387347
+  },
+  {
+    "name": "Kampli PS",
+    "kgisCode": "PS - 15",
+    "lat": 15.406103,
+    "lng": 76.599131
+  },
+  {
+    "name": "Kamalapur PS",
+    "kgisCode": "PS - 16",
+    "lat": 15.302921,
+    "lng": 76.478884
+  },
+  {
+    "name": "Hagaribommanahalli PS",
+    "kgisCode": "PS - 17",
+    "lat": 15.053577,
+    "lng": 76.209131
+  },
+  {
+    "name": "TB Halli PS",
+    "kgisCode": "PS - 18",
+    "lat": 15.164732,
+    "lng": 76.15065
+  },
+  {
+    "name": "Hadagali PS",
+    "kgisCode": "PS - 19",
+    "lat": 15.018438,
+    "lng": 75.935768
+  },
+  {
+    "name": "Hirehadagali PS",
+    "kgisCode": "PS - 20",
+    "lat": 14.928225,
+    "lng": 75.831397
+  },
+  {
+    "name": "Itagi PS",
+    "kgisCode": "PS - 21",
+    "lat": 14.952765,
+    "lng": 76.092401
+  },
+  {
+    "name": "Sandur PS",
+    "kgisCode": "PS - 22",
+    "lat": 15.083465,
+    "lng": 76.543717
+  },
+  {
+    "name": "Thoranagal PS",
+    "kgisCode": "PS - 23",
+    "lat": 15.192713,
+    "lng": 76.672056
+  },
+  {
+    "name": "Gadiganur PS",
+    "kgisCode": "PS - 24",
+    "lat": 15.226319,
+    "lng": 76.588769
+  },
+  {
+    "name": "Marriyammanahalli PS",
+    "kgisCode": "PS - 25",
+    "lat": 15.152061,
+    "lng": 76.351353
+  },
+  {
+    "name": "Kudligi PS",
+    "kgisCode": "PS - 26",
+    "lat": 14.907031,
+    "lng": 76.389646
+  },
+  {
+    "name": "Gudekota PS",
+    "kgisCode": "PS - 27",
+    "lat": 14.832332,
+    "lng": 76.628239
+  },
+  {
+    "name": "Kottur PS",
+    "kgisCode": "PS - 28",
+    "lat": 14.82872,
+    "lng": 76.226911
+  },
+  {
+    "name": "Hosahalli PS",
+    "kgisCode": "PS - 29",
+    "lat": 14.648668,
+    "lng": 76.466464
+  },
+  {
+    "name": "Ballari Rural PS",
+    "kgisCode": "PS - 30",
+    "lat": 15.144489,
+    "lng": 76.925064
+  },
+  {
+    "name": "Gangavathi Rural PS",
+    "kgisCode": "PS - 31",
+    "lat": 15.426111,
+    "lng": 76.52972
+  },
+  {
+    "name": "Kanakagiri PS",
+    "kgisCode": "PS - 32",
+    "lat": 15.572357,
+    "lng": 76.423739
+  },
+  {
+    "name": "Karatagi PS",
+    "kgisCode": "PS - 33",
+    "lat": 15.600592,
+    "lng": 76.657984
+  },
+  {
+    "name": "Gangavathi Town PS",
+    "kgisCode": "PS - 34",
+    "lat": 15.425883,
+    "lng": 76.530187
+  },
+  {
+    "name": "Hanumasagar PS",
+    "kgisCode": "PS - 35",
+    "lat": 15.872772,
+    "lng": 76.04762
+  },
+  {
+    "name": "Kushtagi PS",
+    "kgisCode": "PS - 36",
+    "lat": 15.75488,
+    "lng": 76.193501
+  },
+  {
+    "name": "Tavaregera PS",
+    "kgisCode": "PS - 37",
+    "lat": 15.770049,
+    "lng": 76.404305
+  },
+  {
+    "name": "Alwandi PS",
+    "kgisCode": "PS - 39",
+    "lat": 15.231629,
+    "lng": 75.990565
+  },
+  {
+    "name": "Koppal Rural PS",
+    "kgisCode": "PS - 40",
+    "lat": 15.348639,
+    "lng": 76.150485
+  },
+  {
+    "name": "Munirabad PS",
+    "kgisCode": "PS - 41",
+    "lat": 15.279575,
+    "lng": 76.321852
+  },
+  {
+    "name": "Koppal Town PS",
+    "kgisCode": "PS - 42",
+    "lat": 15.348834,
+    "lng": 76.150712
+  },
+  {
+    "name": "Kuknoor PS",
+    "kgisCode": "PS - 43",
+    "lat": 15.49262,
+    "lng": 75.991514
+  },
+  {
+    "name": "Yelburga PS",
+    "kgisCode": "PS - 44",
+    "lat": 15.613321,
+    "lng": 76.01221
+  },
+  {
+    "name": "Devadurga PS",
+    "kgisCode": "PS - 45",
+    "lat": 16.415003,
+    "lng": 76.928705
+  },
+  {
+    "name": "Gabbur PS",
+    "kgisCode": "PS - 46",
+    "lat": 16.296086,
+    "lng": 77.160912
+  },
+  {
+    "name": "Jalhalli PS",
+    "kgisCode": "PS - 47",
+    "lat": 16.365109,
+    "lng": 76.783453
+  },
+  {
+    "name": "Hutti PS",
+    "kgisCode": "PS - 48",
+    "lat": 16.19456,
+    "lng": 76.655562
+  },
+  {
+    "name": "Lingasugur PS",
+    "kgisCode": "PS - 49",
+    "lat": 16.158393,
+    "lng": 76.522465
+  },
+  {
+    "name": "Maski PS",
+    "kgisCode": "PS - 50",
+    "lat": 15.953792,
+    "lng": 76.654068
+  },
+  {
+    "name": "Mudgal PS",
+    "kgisCode": "PS - 51",
+    "lat": 16.012247,
+    "lng": 76.441976
+  },
+  {
+    "name": "Netajinagar PS",
+    "kgisCode": "PS - 52",
+    "lat": 16.200567,
+    "lng": 77.369794
+  },
+  {
+    "name": "Sadar Bazar PS",
+    "kgisCode": "PS - 53",
+    "lat": 16.20262,
+    "lng": 77.356028
+  },
+  {
+    "name": "Raichur Women PS",
+    "kgisCode": "PS - 54",
+    "lat": 16.20262,
+    "lng": 77.356028
+  },
+  {
+    "name": "Raichur Rural PS",
+    "kgisCode": "PS - 55",
+    "lat": 16.219875,
+    "lng": 77.355274
+  },
+  {
+    "name": "Shakti Nagar PS",
+    "kgisCode": "PS - 56",
+    "lat": 16.370845,
+    "lng": 77.353313
+  },
+  {
+    "name": "Yapaladinni PS",
+    "kgisCode": "PS - 57",
+    "lat": 16.29626,
+    "lng": 77.525108
+  },
+  {
+    "name": "Market Yard PS",
+    "kgisCode": "PS - 58",
+    "lat": 16.216151,
+    "lng": 77.360676
+  },
+  {
+    "name": "Raichur West PS",
+    "kgisCode": "PS - 59",
+    "lat": 16.195123,
+    "lng": 77.342832
+  },
+  {
+    "name": "Idapanur PS",
+    "kgisCode": "PS - 60",
+    "lat": 16.004226,
+    "lng": 77.462164
+  },
+  {
+    "name": "Yeregera PS",
+    "kgisCode": "PS - 61",
+    "lat": 16.073026,
+    "lng": 77.414276
+  },
+  {
+    "name": "Kowthal PS",
+    "kgisCode": "PS - 62",
+    "lat": 16.087286,
+    "lng": 76.81443
+  },
+  {
+    "name": "Manvi PS",
+    "kgisCode": "PS - 63",
+    "lat": 15.9939,
+    "lng": 77.047991
+  },
+  {
+    "name": "Sirwar PS",
+    "kgisCode": "PS - 64",
+    "lat": 16.175904,
+    "lng": 77.015971
+  },
+  {
+    "name": "Balagaor PS",
+    "kgisCode": "PS - 65",
+    "lat": 15.955305,
+    "lng": 76.74995
+  },
+  {
+    "name": "Sindanur Rural PS",
+    "kgisCode": "PS - 66",
+    "lat": 15.786668,
+    "lng": 76.769521
+  },
+  {
+    "name": "Sindhanur Town PS",
+    "kgisCode": "PS - 67",
+    "lat": 15.768176,
+    "lng": 76.756161
+  },
+  {
+    "name": "Turvihal PS",
+    "kgisCode": "PS - 68",
+    "lat": 15.758739,
+    "lng": 76.5965
+  },
+  {
+    "name": "Bagewadi PS",
+    "kgisCode": "PS - 69",
+    "lat": 15.776152,
+    "lng": 74.637327
+  },
+  {
+    "name": "Belagavi Rural PS",
+    "kgisCode": "PS - 70",
+    "lat": 15.833171,
+    "lng": 74.514561
+  },
+  {
+    "name": "Kakati PS",
+    "kgisCode": "PS - 71",
+    "lat": 15.92986,
+    "lng": 74.527506
+  },
+  {
+    "name": "Marihal PS",
+    "kgisCode": "PS - 72",
+    "lat": 15.881446,
+    "lng": 74.664196
+  },
+  {
+    "name": "Belagavi Camp PS",
+    "kgisCode": "PS - 73",
+    "lat": 15.85471,
+    "lng": 74.50455
+  },
+  {
+    "name": "Khadebazar PS",
+    "kgisCode": "PS - 74",
+    "lat": 15.862379,
+    "lng": 74.510735
+  },
+  {
+    "name": "Thilakwadi PS",
+    "kgisCode": "PS - 75",
+    "lat": 15.835944,
+    "lng": 74.501535
+  },
+  {
+    "name": "Udyambag PS",
+    "kgisCode": "PS - 76",
+    "lat": 15.820688,
+    "lng": 74.491409
+  },
+  {
+    "name": "Belagavi City Women PS",
+    "kgisCode": "PS - 77",
+    "lat": 15.857701,
+    "lng": 74.50585
+  },
+  {
+    "name": "APMC Yard PS",
+    "kgisCode": "PS - 78",
+    "lat": 15.883995,
+    "lng": 74.508517
+  },
+  {
+    "name": "Malamaruthi PS",
+    "kgisCode": "PS - 79",
+    "lat": 15.88186,
+    "lng": 74.528871
+  },
+  {
+    "name": "Belagavi Market PS",
+    "kgisCode": "PS - 80",
+    "lat": 15.862471,
+    "lng": 74.519667
+  },
+  {
+    "name": "Shahapura PS",
+    "kgisCode": "PS - 81",
+    "lat": 15.838089,
+    "lng": 74.518013
+  },
+  {
+    "name": "Cubbon Park PS",
+    "kgisCode": "PS - 84",
+    "lat": 12.98003,
+    "lng": 77.597964
+  },
+  {
+    "name": "Vidhana Soudha PS",
+    "kgisCode": "PS - 85",
+    "lat": 12.977321,
+    "lng": 77.588614
+  },
+  {
+    "name": "Viveknagar PS",
+    "kgisCode": "PS - 86",
+    "lat": 12.951547,
+    "lng": 77.622299
+  },
+  {
+    "name": "Halasurgate PS",
+    "kgisCode": "PS - 87",
+    "lat": 12.967906,
+    "lng": 77.586777
+  },
+  {
+    "name": "Sampangiramanagar PS",
+    "kgisCode": "PS - 88",
+    "lat": 12.963065,
+    "lng": 77.59216
+  },
+  {
+    "name": "Wilsongarden PS",
+    "kgisCode": "PS - 89",
+    "lat": 12.950043,
+    "lng": 77.596198
+  },
+  {
+    "name": "High Grounds PS",
+    "kgisCode": "PS - 90",
+    "lat": 12.989957,
+    "lng": 77.592766
+  },
+  {
+    "name": "Sadashivanagar PS",
+    "kgisCode": "PS - 91",
+    "lat": 13.014909,
+    "lng": 77.572545
+  },
+  {
+    "name": "Seshadripuram PS",
+    "kgisCode": "PS - 92",
+    "lat": 12.987929,
+    "lng": 77.57359
+  },
+  {
+    "name": "Vyalikaval PS",
+    "kgisCode": "PS - 93",
+    "lat": 13.001493,
+    "lng": 77.578642
+  },
+  {
+    "name": "Banaswadi PS",
+    "kgisCode": "PS - 94",
+    "lat": 13.019635,
+    "lng": 77.640309
+  },
+  {
+    "name": "Devarajeevanahalli PS",
+    "kgisCode": "PS - 95",
+    "lat": 13.009332,
+    "lng": 77.610337
+  },
+  {
+    "name": "Hennur PS",
+    "kgisCode": "PS - 96",
+    "lat": 13.024142,
+    "lng": 77.645747
+  },
+  {
+    "name": "Kadugondana Halli PS",
+    "kgisCode": "PS - 97",
+    "lat": 13.025052,
+    "lng": 77.62746
+  },
+  {
+    "name": "Ramamurthy Nagar PS",
+    "kgisCode": "PS - 98",
+    "lat": 13.012196,
+    "lng": 77.667615
+  },
+  {
+    "name": "Byappanahalli PS",
+    "kgisCode": "PS - 99",
+    "lat": 12.991467,
+    "lng": 77.656873
+  },
+  {
+    "name": "Halasur PS",
+    "kgisCode": "PS - 100",
+    "lat": 12.974813,
+    "lng": 77.625333
+  },
+  {
+    "name": "Indiranagar PS",
+    "kgisCode": "PS - 101",
+    "lat": 12.982986,
+    "lng": 77.63828
+  },
+  {
+    "name": "Jeevan Bheemanagar PS",
+    "kgisCode": "PS - 102",
+    "lat": 12.967699,
+    "lng": 77.655385
+  },
+  {
+    "name": "Bharathi Nagar PS",
+    "kgisCode": "PS - 103",
+    "lat": 12.991203,
+    "lng": 77.612086
+  },
+  {
+    "name": "Commercial Street PS",
+    "kgisCode": "PS - 104",
+    "lat": 12.982076,
+    "lng": 77.606431
+  },
+  {
+    "name": "Pulakeshinagar PS",
+    "kgisCode": "PS - 105",
+    "lat": 12.999273,
+    "lng": 77.619653
+  },
+  {
+    "name": "Shivajinagar PS",
+    "kgisCode": "PS - 106",
+    "lat": 12.98551,
+    "lng": 77.605248
+  },
+  {
+    "name": "Amengad PS",
+    "kgisCode": "PS - 461",
+    "lat": 16.056613,
+    "lng": 75.945694
+  },
+  {
+    "name": "Hungunda PS",
+    "kgisCode": "PS - 462",
+    "lat": 16.0667,
+    "lng": 76.060362
+  },
+  {
+    "name": "Ilakal PS",
+    "kgisCode": "PS - 463",
+    "lat": 15.965696,
+    "lng": 76.1117
+  },
+  {
+    "name": "Teradal PS",
+    "kgisCode": "PS - 465",
+    "lat": 16.495468,
+    "lng": 75.056305
+  },
+  {
+    "name": "Bilagi PS",
+    "kgisCode": "PS - 466",
+    "lat": 16.349324,
+    "lng": 75.612253
+  },
+  {
+    "name": "Jamakhandi Rural PS",
+    "kgisCode": "PS - 467",
+    "lat": 16.509463,
+    "lng": 75.280445
+  },
+  {
+    "name": "Jamakhandi Town PS",
+    "kgisCode": "PS - 468",
+    "lat": 16.51054,
+    "lng": 75.28063
+  },
+  {
+    "name": "Savalgi PS",
+    "kgisCode": "PS - 469",
+    "lat": 16.67259,
+    "lng": 75.34659
+  },
+  {
+    "name": "Lokapur PS",
+    "kgisCode": "PS - 470",
+    "lat": 16.162806,
+    "lng": 75.367167
+  },
+  {
+    "name": "Tilak Nagar PS",
+    "kgisCode": "PS - 158",
+    "lat": 12.928363,
+    "lng": 77.590573
+  },
+  {
+    "name": "Chamarajpet PS",
+    "kgisCode": "PS - 159",
+    "lat": 12.960543,
+    "lng": 77.567026
+  },
+  {
+    "name": "City Market PS",
+    "kgisCode": "PS - 160",
+    "lat": 12.964958,
+    "lng": 77.576127
+  },
+  {
+    "name": "Cottonpet PS",
+    "kgisCode": "PS - 161",
+    "lat": 12.968017,
+    "lng": 77.570098
+  },
+  {
+    "name": "Kalasipalya PS",
+    "kgisCode": "PS - 162",
+    "lat": 12.95737,
+    "lng": 77.577358
+  },
+  {
+    "name": "Upparpet PS",
+    "kgisCode": "PS - 163",
+    "lat": 12.974476,
+    "lng": 77.574821
+  },
+  {
+    "name": "Kanakapura Rural PS",
+    "kgisCode": "PS - 235",
+    "lat": 12.554349,
+    "lng": 77.424467
+  },
+  {
+    "name": "Kanakapura Town PS",
+    "kgisCode": "PS - 236",
+    "lat": 12.546687,
+    "lng": 77.422638
+  },
+  {
+    "name": "Kodihalli PS",
+    "kgisCode": "PS - 237",
+    "lat": 12.435659,
+    "lng": 77.494988
+  },
+  {
+    "name": "Kudur PS",
+    "kgisCode": "PS - 238",
+    "lat": 13.107076,
+    "lng": 77.165265
+  },
+  {
+    "name": "Kumbalagudu PS",
+    "kgisCode": "PS - 239",
+    "lat": 12.875164,
+    "lng": 77.444146
+  },
+  {
+    "name": "M.K. Doddi PS",
+    "kgisCode": "PS - 240",
+    "lat": 12.596029,
+    "lng": 77.118314
+  },
+  {
+    "name": "Magadi PS",
+    "kgisCode": "PS - 241",
+    "lat": 12.955224,
+    "lng": 77.226469
+  },
+  {
+    "name": "Ramanagara Rural PS",
+    "kgisCode": "PS - 243",
+    "lat": 12.729712,
+    "lng": 77.285429
+  },
+  {
+    "name": "Ramanagara Town PS",
+    "kgisCode": "PS - 244",
+    "lat": 12.718978,
+    "lng": 77.280289
+  },
+  {
+    "name": "Ramanagara Women PS",
+    "kgisCode": "PS - 245",
+    "lat": 12.729769,
+    "lng": 77.285127
+  },
+  {
+    "name": "Sathanuru PS",
+    "kgisCode": "PS - 246",
+    "lat": 12.452427,
+    "lng": 77.320767
+  },
+  {
+    "name": "Tavarekere PS",
+    "kgisCode": "PS - 247",
+    "lat": 12.966244,
+    "lng": 77.400771
+  },
+  {
+    "name": "Chikkanayakanahalli PS",
+    "kgisCode": "PS - 248",
+    "lat": 13.409583,
+    "lng": 76.619117
+  },
+  {
+    "name": "Handanakere PS",
+    "kgisCode": "PS - 249",
+    "lat": 13.502821,
+    "lng": 76.447285
+  },
+  {
+    "name": "Malleshwarm PS",
+    "kgisCode": "PS - 107",
+    "lat": 12.996645,
+    "lng": 77.569587
+  },
+  {
+    "name": "Srirampura PS",
+    "kgisCode": "PS - 108",
+    "lat": 12.989993,
+    "lng": 77.565005
+  },
+  {
+    "name": "Subramanya Nagar PS",
+    "kgisCode": "PS - 109",
+    "lat": 13.003342,
+    "lng": 77.55368
+  },
+  {
+    "name": "Rajajinagar PS",
+    "kgisCode": "PS - 110",
+    "lat": 12.994626,
+    "lng": 77.554217
+  },
+  {
+    "name": "Rajgopal Nagar PS",
+    "kgisCode": "PS - 111",
+    "lat": 13.01735,
+    "lng": 77.513571
+  },
+  {
+    "name": "Nandini Layout PS",
+    "kgisCode": "PS - 113",
+    "lat": 13.012367,
+    "lng": 77.536706
+  },
+  {
+    "name": "Yeshwanthapura PS",
+    "kgisCode": "PS - 114",
+    "lat": 13.018195,
+    "lng": 77.558099
+  },
+  {
+    "name": "RMC Yard PS, Yeshwanthpura",
+    "kgisCode": "PS - 115",
+    "lat": 13.023521,
+    "lng": 77.549923
+  },
+  {
+    "name": "Peenya PS",
+    "kgisCode": "PS - 116",
+    "lat": 13.03604,
+    "lng": 77.521164
+  },
+  {
+    "name": "Bagalgunte PS",
+    "kgisCode": "PS - 117",
+    "lat": 13.059549,
+    "lng": 77.503657
+  },
+  {
+    "name": "Gangammagudi PS",
+    "kgisCode": "PS - 118",
+    "lat": 13.072155,
+    "lng": 77.529985
+  },
+  {
+    "name": "Soladevanahalli PS",
+    "kgisCode": "PS - 119",
+    "lat": 13.093431,
+    "lng": 77.48904
+  },
+  {
+    "name": "Jalahalli PS",
+    "kgisCode": "PS - 120",
+    "lat": 13.048668,
+    "lng": 77.54954
+  },
+  {
+    "name": "J.C. NagarPS",
+    "kgisCode": "PS - 121",
+    "lat": 13.005579,
+    "lng": 77.593574
+  },
+  {
+    "name": "R.T. Nagar PS",
+    "kgisCode": "PS - 122",
+    "lat": 13.024728,
+    "lng": 77.593199
+  },
+  {
+    "name": "Sanjay Nagara PS",
+    "kgisCode": "PS - 123",
+    "lat": 13.033354,
+    "lng": 77.5758
+  },
+  {
+    "name": "Hebbal PS",
+    "kgisCode": "PS - 124",
+    "lat": 13.03839,
+    "lng": 77.589661
+  },
+  {
+    "name": "BIAL PS",
+    "kgisCode": "PS - 125",
+    "lat": 13.199149,
+    "lng": 77.705988
+  },
+  {
+    "name": "Chikkajala PS",
+    "kgisCode": "PS - 126",
+    "lat": 13.173285,
+    "lng": 77.633214
+  },
+  {
+    "name": "Devanahalli PS",
+    "kgisCode": "PS - 127",
+    "lat": 13.245436,
+    "lng": 77.712386
+  },
+  {
+    "name": "Amruthahally PS",
+    "kgisCode": "PS - 128",
+    "lat": 13.056858,
+    "lng": 77.598565
+  },
+  {
+    "name": "Kothanur PS",
+    "kgisCode": "PS - 129",
+    "lat": 13.055513,
+    "lng": 77.646406
+  },
+  {
+    "name": "Sampigehalli PS",
+    "kgisCode": "PS - 130",
+    "lat": 13.075329,
+    "lng": 77.633343
+  },
+  {
+    "name": "Kodigehalli PS",
+    "kgisCode": "PS - 131",
+    "lat": 13.062104,
+    "lng": 77.574066
+  },
+  {
+    "name": "Yelahanka New Town PS",
+    "kgisCode": "PS - 132",
+    "lat": 13.099996,
+    "lng": 77.583817
+  },
+  {
+    "name": "Yelahanka PS",
+    "kgisCode": "PS - 133",
+    "lat": 13.094898,
+    "lng": 77.594094
+  },
+  {
+    "name": "Banashankari PS",
+    "kgisCode": "PS - 134",
+    "lat": 12.929274,
+    "lng": 77.567971
+  },
+  {
+    "name": "Basavanagudi PS",
+    "kgisCode": "PS - 135",
+    "lat": 12.941999,
+    "lng": 77.574241
+  },
+  {
+    "name": "Jayanagar PS",
+    "kgisCode": "PS - 136",
+    "lat": 12.928575,
+    "lng": 77.581388
+  },
+  {
+    "name": "Jayaprakash Nagar PS",
+    "kgisCode": "PS - 137",
+    "lat": 12.9118,
+    "lng": 77.5876
+  },
+  {
+    "name": "Siddapura PS",
+    "kgisCode": "PS - 138",
+    "lat": 12.939629,
+    "lng": 77.594178
+  },
+  {
+    "name": "Basavanagudi Women PS",
+    "kgisCode": "PS - 139",
+    "lat": 12.929008,
+    "lng": 77.567811
+  },
+  {
+    "name": "Konanakunte PS",
+    "kgisCode": "PS - 140",
+    "lat": 12.883932,
+    "lng": 77.566408
+  },
+  {
+    "name": "Kumaraswamy Layout PS",
+    "kgisCode": "PS - 141",
+    "lat": 12.905329,
+    "lng": 77.563298
+  },
+  {
+    "name": "Puttenahalli PS",
+    "kgisCode": "PS - 142",
+    "lat": 12.902403,
+    "lng": 77.581975
+  },
+  {
+    "name": "Subramanyapura PS",
+    "kgisCode": "PS - 143",
+    "lat": 12.901203,
+    "lng": 77.544317
+  },
+  {
+    "name": "Thalaghattapura PS",
+    "kgisCode": "PS - 144",
+    "lat": 12.869024,
+    "lng": 77.536286
+  },
+  {
+    "name": "V.V. Puram PS",
+    "kgisCode": "PS - 145",
+    "lat": 12.95962,
+    "lng": 77.572266
+  },
+  {
+    "name": "Channammanakere Achu Kattu PS",
+    "kgisCode": "PS - 146",
+    "lat": 12.930116,
+    "lng": 77.560605
+  },
+  {
+    "name": "Kempegowda Nagar PS",
+    "kgisCode": "PS - 147",
+    "lat": 12.94916,
+    "lng": 77.56318
+  },
+  {
+    "name": "Girinagar PS",
+    "kgisCode": "PS - 148",
+    "lat": 12.936,
+    "lng": 77.5439
+  },
+  {
+    "name": "Bandepalya PS",
+    "kgisCode": "PS - 149",
+    "lat": 12.9056,
+    "lng": 77.641533
+  },
+  {
+    "name": "Annapoorneshwari Nagar PS",
+    "kgisCode": "PS - 164",
+    "lat": 12.976495,
+    "lng": 77.512736
+  },
+  {
+    "name": "Byatarayanapura PS",
+    "kgisCode": "PS - 165",
+    "lat": 12.951396,
+    "lng": 77.540125
+  },
+  {
+    "name": "Chandra Layout PS",
+    "kgisCode": "PS - 166",
+    "lat": 12.958899,
+    "lng": 77.528395
+  },
+  {
+    "name": "Jagajeevanram Nagar PS",
+    "kgisCode": "PS - 167",
+    "lat": 12.964082,
+    "lng": 77.555076
+  },
+  {
+    "name": "Jnanabharathi PS",
+    "kgisCode": "PS - 168",
+    "lat": 12.950553,
+    "lng": 77.500267
+  },
+  {
+    "name": "Kengeri PS",
+    "kgisCode": "PS - 169",
+    "lat": 12.910478,
+    "lng": 77.481571
+  },
+  {
+    "name": "Rajarajeshwari Nagar PS",
+    "kgisCode": "PS - 170",
+    "lat": 12.91284,
+    "lng": 77.520633
+  },
+  {
+    "name": "Basaveshwara Nagar PS",
+    "kgisCode": "PS - 171",
+    "lat": 12.985307,
+    "lng": 77.542572
+  },
+  {
+    "name": "Kamakshipalya PS",
+    "kgisCode": "PS - 172",
+    "lat": 12.982224,
+    "lng": 77.532019
+  },
+  {
+    "name": "Kempapura Agrahara PS",
+    "kgisCode": "PS - 173",
+    "lat": 12.972513,
+    "lng": 77.561577
+  },
+  {
+    "name": "Magadi Road PS",
+    "kgisCode": "PS - 174",
+    "lat": 12.975566,
+    "lng": 77.55017
+  },
+  {
+    "name": "Vijayanagar PS",
+    "kgisCode": "PS - 175",
+    "lat": 12.97235,
+    "lng": 77.538467
+  },
+  {
+    "name": "Chikkaballapura Town PS",
+    "kgisCode": "PS - 176",
+    "lat": 13.437718,
+    "lng": 77.723897
+  },
+  {
+    "name": "Chikkaballapura Rural PS",
+    "kgisCode": "PS - 177",
+    "lat": 13.436005,
+    "lng": 77.729682
+  },
+  {
+    "name": "Chikkaballapura Women PS",
+    "kgisCode": "PS - 178",
+    "lat": 13.437718,
+    "lng": 77.723897
+  },
+  {
+    "name": "Nandi Girighama PS",
+    "kgisCode": "PS - 179",
+    "lat": 13.378142,
+    "lng": 77.725144
+  },
+  {
+    "name": "Chikkaballapura CEN Crime PS",
+    "kgisCode": "PS - 180",
+    "lat": 13.440356,
+    "lng": 77.729725
+  },
+  {
+    "name": "Gowribidanur Town PS",
+    "kgisCode": "PS - 181",
+    "lat": 13.608252,
+    "lng": 77.519916
+  },
+  {
+    "name": "Tadas PS",
+    "kgisCode": "PS - 341",
+    "lat": 15.124664,
+    "lng": 75.124199
+  },
+  {
+    "name": "Dharwad Sub Urban PS",
+    "kgisCode": "PS - 342",
+    "lat": 15.464553,
+    "lng": 74.997858
+  },
+  {
+    "name": "Dharwad Town PS",
+    "kgisCode": "PS - 343",
+    "lat": 15.458849,
+    "lng": 75.011203
+  },
+  {
+    "name": "Vidyagiri PS",
+    "kgisCode": "PS - 344",
+    "lat": 15.439022,
+    "lng": 75.011391
+  },
+  {
+    "name": "APMC Navanagar",
+    "kgisCode": "PS - 345",
+    "lat": 15.392779,
+    "lng": 75.081568
+  },
+  {
+    "name": "Ashoknagar PS",
+    "kgisCode": "PS - 346",
+    "lat": 15.368991,
+    "lng": 75.131845
+  },
+  {
+    "name": "Gokul Road PS",
+    "kgisCode": "PS - 347",
+    "lat": 15.350806,
+    "lng": 75.114306
+  },
+  {
+    "name": "Hubballi SubUrban PS",
+    "kgisCode": "PS - 348",
+    "lat": 15.350638,
+    "lng": 75.13926
+  },
+  {
+    "name": "Kamaripeth PS",
+    "kgisCode": "PS - 349",
+    "lat": 15.344601,
+    "lng": 75.136781
+  },
+  {
+    "name": "Keshavapur PS",
+    "kgisCode": "PS - 350",
+    "lat": 15.360279,
+    "lng": 75.162475
+  },
+  {
+    "name": "Vidyanagar PS",
+    "kgisCode": "PS - 351",
+    "lat": 15.363611,
+    "lng": 75.126309
+  },
+  {
+    "name": "Bendigeri PS",
+    "kgisCode": "PS - 353",
+    "lat": 15.342548,
+    "lng": 75.150344
+  },
+  {
+    "name": "Ghantikeri PS",
+    "kgisCode": "PS - 354",
+    "lat": 15.341193,
+    "lng": 75.141887
+  },
+  {
+    "name": "Hubballi Town PS",
+    "kgisCode": "PS - 355",
+    "lat": 15.345165,
+    "lng": 75.143004
+  },
+  {
+    "name": "Kasabapeth PS",
+    "kgisCode": "PS - 356",
+    "lat": 15.337016,
+    "lng": 75.133191
+  },
+  {
+    "name": "Old Hubli PS",
+    "kgisCode": "PS - 357",
+    "lat": 15.336722,
+    "lng": 75.126973
+  },
+  {
+    "name": "Aurad PS",
+    "kgisCode": "PS - 358",
+    "lat": 18.24903,
+    "lng": 77.412298
+  },
+  {
+    "name": "Chintaki PS",
+    "kgisCode": "PS - 359",
+    "lat": 18.268915,
+    "lng": 77.546775
+  },
+  {
+    "name": "Hokrana PS",
+    "kgisCode": "PS - 360",
+    "lat": 18.384576,
+    "lng": 77.32889
+  },
+  {
+    "name": "Shanthapur PS",
+    "kgisCode": "PS - 361",
+    "lat": 18.16028,
+    "lng": 77.436354
+  },
+  {
+    "name": "Bhalki Rural PS",
+    "kgisCode": "PS - 362",
+    "lat": 18.043487,
+    "lng": 77.210415
+  },
+  {
+    "name": "Dhannura PS",
+    "kgisCode": "PS - 363",
+    "lat": 17.958442,
+    "lng": 77.338003
+  },
+  {
+    "name": "Khataka Chincholi PS",
+    "kgisCode": "PS - 364",
+    "lat": 17.896665,
+    "lng": 77.20407
+  },
+  {
+    "name": "Mehakar PS",
+    "kgisCode": "PS - 365",
+    "lat": 18.101115,
+    "lng": 77.018817
+  },
+  {
+    "name": "Bhalki Town PS",
+    "kgisCode": "PS - 366",
+    "lat": 18.046496,
+    "lng": 77.214986
+  },
+  {
+    "name": "Kamalanagar PS",
+    "kgisCode": "PS - 367",
+    "lat": 18.2359,
+    "lng": 77.177699
+  },
+  {
+    "name": "Kushnoor PS",
+    "kgisCode": "PS - 368",
+    "lat": 18.154965,
+    "lng": 77.328555
+  },
+  {
+    "name": "Gandhi Gunj PS",
+    "kgisCode": "PS - 369",
+    "lat": 17.910056,
+    "lng": 77.514162
+  },
+  {
+    "name": "Mangalapet Market PS",
+    "kgisCode": "PS - 370",
+    "lat": 17.907077,
+    "lng": 77.531443
+  },
+  {
+    "name": "Bagdal PS",
+    "kgisCode": "PS - 371",
+    "lat": 17.749516,
+    "lng": 77.399969
+  },
+  {
+    "name": "Bidar Rural PS",
+    "kgisCode": "PS - 372",
+    "lat": 17.934786,
+    "lng": 77.475398
+  },
+  {
+    "name": "Janwada PS",
+    "kgisCode": "PS - 373",
+    "lat": 18.00355,
+    "lng": 77.481001
+  },
+  {
+    "name": "Mannalli PS",
+    "kgisCode": "PS - 374",
+    "lat": 17.761252,
+    "lng": 77.504927
+  },
+  {
+    "name": "Bidar Town PS",
+    "kgisCode": "PS - 375",
+    "lat": 17.912826,
+    "lng": 77.530783
+  },
+  {
+    "name": "Bidar New Town PS",
+    "kgisCode": "PS - 376",
+    "lat": 17.923521,
+    "lng": 77.50927
+  },
+  {
+    "name": "Bidar Women PS",
+    "kgisCode": "PS - 377",
+    "lat": 17.907348,
+    "lng": 77.532406
+  },
+  {
+    "name": "Basava Kalyana Town PS",
+    "kgisCode": "PS - 378",
+    "lat": 17.873878,
+    "lng": 76.947502
+  },
+  {
+    "name": "Hulsoor PS",
+    "kgisCode": "PS - 379",
+    "lat": 18.019928,
+    "lng": 77.005915
+  },
+  {
+    "name": "Chitaguppa PS",
+    "kgisCode": "PS - 380",
+    "lat": 17.6923,
+    "lng": 77.211229
+  },
+  {
+    "name": "Bemalkhed PS",
+    "kgisCode": "PS - 381",
+    "lat": 17.662055,
+    "lng": 77.424634
+  },
+  {
+    "name": "Manna Ekhelli PS",
+    "kgisCode": "PS - 382",
+    "lat": 17.727192,
+    "lng": 77.368328
+  },
+  {
+    "name": "Hallikhed PS",
+    "kgisCode": "PS - 383",
+    "lat": 17.851667,
+    "lng": 77.264413
+  },
+  {
+    "name": "Humnabad PS",
+    "kgisCode": "PS - 384",
+    "lat": 17.772095,
+    "lng": 77.1235
+  },
+  {
+    "name": "Manthala PS",
+    "kgisCode": "PS - 385",
+    "lat": 17.816678,
+    "lng": 76.849629
+  },
+  {
+    "name": "Mudbi PS",
+    "kgisCode": "PS - 386",
+    "lat": 17.730428,
+    "lng": 76.938688
+  },
+  {
+    "name": "Afzalpur PS",
+    "kgisCode": "PS - 387",
+    "lat": 17.20287,
+    "lng": 76.35825
+  },
+  {
+    "name": "Devalagangapur PS",
+    "kgisCode": "PS - 388",
+    "lat": 17.207207,
+    "lng": 76.543097
+  },
+  {
+    "name": "Revoor PS",
+    "kgisCode": "PS - 389",
+    "lat": 17.322037,
+    "lng": 76.464865
+  },
+  {
+    "name": "Alland PS",
+    "kgisCode": "PS - 390",
+    "lat": 17.56166,
+    "lng": 76.56071
+  },
+  {
+    "name": "Madanahipparga PS",
+    "kgisCode": "PS - 391",
+    "lat": 17.45725,
+    "lng": 76.37383
+  },
+  {
+    "name": "Narona PS",
+    "kgisCode": "PS - 392",
+    "lat": 17.513953,
+    "lng": 76.717303
+  },
+  {
+    "name": "Nimbarga PS",
+    "kgisCode": "PS - 393",
+    "lat": 17.387132,
+    "lng": 76.585307
+  },
+  {
+    "name": "Chincholi PS",
+    "kgisCode": "PS - 394",
+    "lat": 17.460081,
+    "lng": 77.419773
+  },
+  {
+    "name": "Kunchavaram PS",
+    "kgisCode": "PS - 395",
+    "lat": 17.4854,
+    "lng": 77.628178
+  },
+  {
+    "name": "Miryan PS",
+    "kgisCode": "PS - 396",
+    "lat": 17.364376,
+    "lng": 77.495649
+  },
+  {
+    "name": "Mudhol PS",
+    "kgisCode": "PS - 397",
+    "lat": 16.9067,
+    "lng": 77.450033
+  },
+  {
+    "name": "Huliyar PS",
+    "kgisCode": "PS - 250",
+    "lat": 13.58305,
+    "lng": 76.538451
+  },
+  {
+    "name": "Shanivarasanthe PS",
+    "kgisCode": "PS - 606",
+    "lat": 12.7267,
+    "lng": 75.8897
+  },
+  {
+    "name": "Somwarpet PS",
+    "kgisCode": "PS - 607",
+    "lat": 12.513219,
+    "lng": 75.809027
+  },
+  {
+    "name": "Gonikoppa PS",
+    "kgisCode": "PS - 608",
+    "lat": 12.185588,
+    "lng": 75.923044
+  },
+  {
+    "name": "Ponnampet PS",
+    "kgisCode": "PS - 609",
+    "lat": 12.147378,
+    "lng": 75.941903
+  },
+  {
+    "name": "Kutta PS",
+    "kgisCode": "PS - 610",
+    "lat": 11.968849,
+    "lng": 76.051883
+  },
+  {
+    "name": "Virajpet Town PS",
+    "kgisCode": "PS - 611",
+    "lat": 12.192873,
+    "lng": 75.801022
+  },
+  {
+    "name": "Gowribidanur Rural PS",
+    "kgisCode": "PS - 182",
+    "lat": 13.601402,
+    "lng": 77.508369
+  },
+  {
+    "name": "Manchenahalli PS",
+    "kgisCode": "PS - 183",
+    "lat": 13.500404,
+    "lng": 77.602284
+  },
+  {
+    "name": "Gudibande PS",
+    "kgisCode": "PS - 184",
+    "lat": 13.670545,
+    "lng": 77.706801
+  },
+  {
+    "name": "Bagepalli PS",
+    "kgisCode": "PS - 185",
+    "lat": 13.783313,
+    "lng": 77.792489
+  },
+  {
+    "name": "Patapalya PS",
+    "kgisCode": "PS - 186",
+    "lat": 13.756225,
+    "lng": 77.948938
+  },
+  {
+    "name": "Chelur PS",
+    "kgisCode": "PS - 187",
+    "lat": 13.709171,
+    "lng": 78.096873
+  },
+  {
+    "name": "Chinthamani TownPS",
+    "kgisCode": "PS - 188",
+    "lat": 13.40117,
+    "lng": 78.053792
+  },
+  {
+    "name": "Kencharlahalli PS",
+    "kgisCode": "PS - 189",
+    "lat": 13.5223,
+    "lng": 78.067346
+  },
+  {
+    "name": "Batalahalli PS",
+    "kgisCode": "PS - 190",
+    "lat": 13.582058,
+    "lng": 78.131431
+  },
+  {
+    "name": "Shidlagatta Town PS",
+    "kgisCode": "PS - 191",
+    "lat": 13.393695,
+    "lng": 77.86389
+  },
+  {
+    "name": "Shidlagatta Rural PS",
+    "kgisCode": "PS - 192",
+    "lat": 13.397129,
+    "lng": 77.863758
+  },
+  {
+    "name": "Dibburahalli PS",
+    "kgisCode": "PS - 193",
+    "lat": 13.56737,
+    "lng": 77.893588
+  },
+  {
+    "name": "Bangarpet PS",
+    "kgisCode": "PS - 194",
+    "lat": 12.98593,
+    "lng": 78.17882
+  },
+  {
+    "name": "Bethamangala PS",
+    "kgisCode": "PS - 195",
+    "lat": 13.00823,
+    "lng": 78.33332
+  },
+  {
+    "name": "Kamasamudram PS",
+    "kgisCode": "PS - 196",
+    "lat": 12.86323,
+    "lng": 78.19599
+  },
+  {
+    "name": "Marikuppam PS",
+    "kgisCode": "PS - 198",
+    "lat": 12.92712,
+    "lng": 78.26591
+  },
+  {
+    "name": "BEML Nagar PS",
+    "kgisCode": "PS - 199",
+    "lat": 12.98082,
+    "lng": 78.2367
+  },
+  {
+    "name": "Oorgaum PS",
+    "kgisCode": "PS - 200",
+    "lat": 12.95247,
+    "lng": 78.26465
+  },
+  {
+    "name": "Andersonpet PS",
+    "kgisCode": "PS - 201",
+    "lat": 12.93422,
+    "lng": 78.27026
+  },
+  {
+    "name": "Robertsonpet PS",
+    "kgisCode": "PS - 202",
+    "lat": 12.95756,
+    "lng": 78.27155
+  },
+  {
+    "name": "Kolar Rural PS",
+    "kgisCode": "PS - 206",
+    "lat": 13.141665,
+    "lng": 78.136921
+  },
+  {
+    "name": "Vemagal PS",
+    "kgisCode": "PS - 208",
+    "lat": 13.191904,
+    "lng": 78.017133
+  },
+  {
+    "name": "Gulpet PS",
+    "kgisCode": "PS - 210",
+    "lat": 13.14567,
+    "lng": 78.130952
+  },
+  {
+    "name": "Kolar Town PS",
+    "kgisCode": "PS - 211",
+    "lat": 13.131524,
+    "lng": 78.133516
+  },
+  {
+    "name": "Masti PS",
+    "kgisCode": "PS - 214",
+    "lat": 12.873052,
+    "lng": 77.997974
+  },
+  {
+    "name": "Mulbagal Rural PS",
+    "kgisCode": "PS - 216",
+    "lat": 13.058323,
+    "lng": 78.425844
+  },
+  {
+    "name": "Mulbagal Town PS",
+    "kgisCode": "PS - 218",
+    "lat": 13.168396,
+    "lng": 78.393034
+  },
+  {
+    "name": "Nangli PS",
+    "kgisCode": "PS - 219",
+    "lat": 13.194228,
+    "lng": 78.53718
+  },
+  {
+    "name": "Gownapalli PS",
+    "kgisCode": "PS - 221",
+    "lat": 13.511228,
+    "lng": 78.225625
+  },
+  {
+    "name": "Rayalpad PS",
+    "kgisCode": "PS - 222",
+    "lat": 13.531047,
+    "lng": 78.345193
+  },
+  {
+    "name": "Srinivasapura PS",
+    "kgisCode": "PS - 223",
+    "lat": 13.341221,
+    "lng": 78.212681
+  },
+  {
+    "name": "Akkur PS",
+    "kgisCode": "PS - 225",
+    "lat": 12.712605,
+    "lng": 77.289505
+  },
+  {
+    "name": "Bidadi PS",
+    "kgisCode": "PS - 226",
+    "lat": 12.800369,
+    "lng": 77.384775
+  },
+  {
+    "name": "Channapatna East PS",
+    "kgisCode": "PS - 228",
+    "lat": 12.664008,
+    "lng": 77.216879
+  },
+  {
+    "name": "Channapatna Rural PS",
+    "kgisCode": "PS - 229",
+    "lat": 12.663637,
+    "lng": 77.216682
+  },
+  {
+    "name": "Channapatna Town PS",
+    "kgisCode": "PS - 230",
+    "lat": 12.653864,
+    "lng": 77.200354
+  },
+  {
+    "name": "Harohalli PS",
+    "kgisCode": "PS - 232",
+    "lat": 12.681556,
+    "lng": 77.469674
+  },
+  {
+    "name": "Ijoor PS",
+    "kgisCode": "PS - 233",
+    "lat": 12.72977,
+    "lng": 77.28515
+  },
+  {
+    "name": "Kaggalipura PS",
+    "kgisCode": "PS - 234",
+    "lat": 12.799546,
+    "lng": 77.510082
+  },
+  {
+    "name": "Chikkamagalur Women PS",
+    "kgisCode": "PS - 231",
+    "lat": 13.320649,
+    "lng": 75.775462
+  },
+  {
+    "name": "Malur PS",
+    "kgisCode": "PS - 860",
+    "lat": 13.728975,
+    "lng": 75.339715
+  },
+  {
+    "name": "Yagati PS",
+    "kgisCode": "PS - 883",
+    "lat": 13.612781,
+    "lng": 76.148229
+  },
+  {
+    "name": "Haveri Town PS",
+    "kgisCode": "PS - 328",
+    "lat": 14.793035,
+    "lng": 75.396582
+  },
+  {
+    "name": "Hansabhavi PS",
+    "kgisCode": "PS - 329",
+    "lat": 14.569975,
+    "lng": 75.36876
+  },
+  {
+    "name": "Hirekerur PS",
+    "kgisCode": "PS - 330",
+    "lat": 14.455981,
+    "lng": 75.392932
+  },
+  {
+    "name": "Rattihalli PS",
+    "kgisCode": "PS - 331",
+    "lat": 14.427123,
+    "lng": 75.507661
+  },
+  {
+    "name": "Halageri PS",
+    "kgisCode": "PS - 332",
+    "lat": 14.553467,
+    "lng": 75.605669
+  },
+  {
+    "name": "Kumarapattanam PS",
+    "kgisCode": "PS - 333",
+    "lat": 14.520906,
+    "lng": 75.786378
+  },
+  {
+    "name": "Ranebennur Rural PS",
+    "kgisCode": "PS - 334",
+    "lat": 14.620481,
+    "lng": 75.625045
+  },
+  {
+    "name": "Ranebennur Town PS",
+    "kgisCode": "PS - 335",
+    "lat": 14.621535,
+    "lng": 75.635554
+  },
+  {
+    "name": "Adur PS",
+    "kgisCode": "PS - 336",
+    "lat": 14.773543,
+    "lng": 75.250905
+  },
+  {
+    "name": "Hanagal PS",
+    "kgisCode": "PS - 337",
+    "lat": 14.772104,
+    "lng": 75.124706
+  },
+  {
+    "name": "Savanoor PS",
+    "kgisCode": "PS - 338",
+    "lat": 14.977427,
+    "lng": 75.337762
+  },
+  {
+    "name": "Bankapura PS",
+    "kgisCode": "PS - 339",
+    "lat": 14.914705,
+    "lng": 75.270067
+  },
+  {
+    "name": "Shiggaon PS",
+    "kgisCode": "PS - 340",
+    "lat": 14.989392,
+    "lng": 75.226473
+  },
+  {
+    "name": "Kurakunta PS",
+    "kgisCode": "PS - 398",
+    "lat": 17.191919,
+    "lng": 77.357238
+  },
+  {
+    "name": "Malkhed PS",
+    "kgisCode": "PS - 399",
+    "lat": 17.195193,
+    "lng": 77.161095
+  },
+  {
+    "name": "Sedam PS",
+    "kgisCode": "PS - 400",
+    "lat": 17.17985,
+    "lng": 77.28518
+  },
+  {
+    "name": "Ratkal PS",
+    "kgisCode": "PS - 401",
+    "lat": 17.4517,
+    "lng": 77.1068
+  },
+  {
+    "name": "Sulepet PS",
+    "kgisCode": "PS - 402",
+    "lat": 17.402667,
+    "lng": 77.340333
+  },
+  {
+    "name": "Ashoknagar PS",
+    "kgisCode": "PS - 403",
+    "lat": 17.322333,
+    "lng": 76.815556
+  },
+  {
+    "name": "Brahmapur PS",
+    "kgisCode": "PS - 404",
+    "lat": 17.338408,
+    "lng": 76.837859
+  },
+  {
+    "name": "Kalaburagi Women PS",
+    "kgisCode": "PS - 405",
+    "lat": 17.328126,
+    "lng": 76.83673
+  },
+  {
+    "name": "Ragavendra nagar PS",
+    "kgisCode": "PS - 406",
+    "lat": 17.337269,
+    "lng": 76.818072
+  },
+  {
+    "name": "Station Bazar PS",
+    "kgisCode": "PS - 407",
+    "lat": 17.316846,
+    "lng": 76.825868
+  },
+  {
+    "name": "Roza PS",
+    "kgisCode": "PS - 408",
+    "lat": 17.345964,
+    "lng": 76.85183
+  },
+  {
+    "name": "Sub Urban PS",
+    "kgisCode": "PS - 409",
+    "lat": 17.3519,
+    "lng": 76.840317
+  },
+  {
+    "name": "Mahagoan PS",
+    "kgisCode": "PS - 410",
+    "lat": 17.519167,
+    "lng": 76.9415
+  },
+  {
+    "name": "Narasimharaja PS",
+    "kgisCode": "PS - 452",
+    "lat": 12.334837,
+    "lng": 76.664002
+  },
+  {
+    "name": "V.V. Puram PS",
+    "kgisCode": "PS - 453",
+    "lat": 12.326119,
+    "lng": 76.632836
+  },
+  {
+    "name": "Vijayanagar PS",
+    "kgisCode": "PS - 454",
+    "lat": 12.336889,
+    "lng": 76.601636
+  },
+  {
+    "name": "Badami PS",
+    "kgisCode": "PS - 455",
+    "lat": 15.923925,
+    "lng": 75.678577
+  },
+  {
+    "name": "Guledagudda PS",
+    "kgisCode": "PS - 456",
+    "lat": 16.04822,
+    "lng": 75.77413
+  },
+  {
+    "name": "Kerur PS",
+    "kgisCode": "PS - 457",
+    "lat": 16.014804,
+    "lng": 75.547655
+  },
+  {
+    "name": "Bagalkot Rural PS",
+    "kgisCode": "PS - 458",
+    "lat": 16.181008,
+    "lng": 75.692464
+  },
+  {
+    "name": "Kaladagi PS",
+    "kgisCode": "PS - 459",
+    "lat": 16.206482,
+    "lng": 75.497319
+  },
+  {
+    "name": "Navanagara PS",
+    "kgisCode": "PS - 460",
+    "lat": 16.15907,
+    "lng": 75.66154
+  },
+  {
+    "name": "Mahalingapur PS",
+    "kgisCode": "PS - 471",
+    "lat": 16.40214,
+    "lng": 75.10851
+  },
+  {
+    "name": "Mudhol PS",
+    "kgisCode": "PS - 472",
+    "lat": 16.32991,
+    "lng": 75.28498
+  },
+  {
+    "name": "Kagawad PS",
+    "kgisCode": "PS - 473",
+    "lat": 16.69599,
+    "lng": 74.71672
+  },
+  {
+    "name": "Aigali PS",
+    "kgisCode": "PS - 474",
+    "lat": 16.77946,
+    "lng": 75.24987
+  },
+  {
+    "name": "Raibag PS",
+    "kgisCode": "PS - 475",
+    "lat": 16.492311,
+    "lng": 74.770227
+  },
+  {
+    "name": "Kudachi PS",
+    "kgisCode": "PS - 476",
+    "lat": 16.62445,
+    "lng": 74.85453
+  },
+  {
+    "name": "Harugeri PS",
+    "kgisCode": "PS - 477",
+    "lat": 16.515856,
+    "lng": 74.949433
+  },
+  {
+    "name": "Bailhongal PS",
+    "kgisCode": "PS - 478",
+    "lat": 15.818437,
+    "lng": 74.862914
+  },
+  {
+    "name": "Nesargi PS",
+    "kgisCode": "PS - 479",
+    "lat": 15.905631,
+    "lng": 74.777317
+  },
+  {
+    "name": "Khanapur PS",
+    "kgisCode": "PS - 480",
+    "lat": 15.636301,
+    "lng": 74.505558
+  },
+  {
+    "name": "Nandagad PS",
+    "kgisCode": "PS - 481",
+    "lat": 15.57993,
+    "lng": 74.576365
+  },
+  {
+    "name": "Doddawad PS",
+    "kgisCode": "PS - 482",
+    "lat": 15.679069,
+    "lng": 74.9597
+  },
+  {
+    "name": "Kittur PS",
+    "kgisCode": "PS - 483",
+    "lat": 15.599846,
+    "lng": 74.788026
+  },
+  {
+    "name": "Ankali PS",
+    "kgisCode": "PS - 484",
+    "lat": 16.540048,
+    "lng": 74.670275
+  },
+  {
+    "name": "Chikkodi PS",
+    "kgisCode": "PS - 485",
+    "lat": 16.424031,
+    "lng": 74.576726
+  },
+  {
+    "name": "Sadalaga PS",
+    "kgisCode": "PS - 486",
+    "lat": 16.54974,
+    "lng": 74.532405
+  },
+  {
+    "name": "Basaweshwar Chowk PS",
+    "kgisCode": "PS - 487",
+    "lat": 16.410468,
+    "lng": 74.377665
+  },
+  {
+    "name": "Khadakalat PS",
+    "kgisCode": "PS - 488",
+    "lat": 16.44599,
+    "lng": 74.47087
+  },
+  {
+    "name": "Nippani Rural PS",
+    "kgisCode": "PS - 489",
+    "lat": 16.39426,
+    "lng": 74.38384
+  },
+  {
+    "name": "Nippani Town PS",
+    "kgisCode": "PS - 490",
+    "lat": 16.39426,
+    "lng": 74.38384
+  },
+  {
+    "name": "Gokak Rural PS",
+    "kgisCode": "PS - 491",
+    "lat": 16.162671,
+    "lng": 74.81036
+  },
+  {
+    "name": "Gokak Town PS",
+    "kgisCode": "PS - 492",
+    "lat": 16.16781,
+    "lng": 74.820942
+  },
+  {
+    "name": "Hukkeri PS",
+    "kgisCode": "PS - 493",
+    "lat": 16.23752,
+    "lng": 74.6052
+  },
+  {
+    "name": "Sankeshwar PS",
+    "kgisCode": "PS - 494",
+    "lat": 16.254672,
+    "lng": 74.487775
+  },
+  {
+    "name": "Yamakanmardi PS",
+    "kgisCode": "PS - 495",
+    "lat": 16.128704,
+    "lng": 74.516083
+  },
+  {
+    "name": "Ghataprabha PS",
+    "kgisCode": "PS - 496",
+    "lat": 16.236574,
+    "lng": 74.765748
+  },
+  {
+    "name": "Kulgod PS",
+    "kgisCode": "PS - 497",
+    "lat": 16.244638,
+    "lng": 75.046403
+  },
+  {
+    "name": "Mudalgi PS",
+    "kgisCode": "PS - 498",
+    "lat": 16.337437,
+    "lng": 74.964191
+  },
+  {
+    "name": "Virajpet Rural PS",
+    "kgisCode": "PS - 612",
+    "lat": 12.193049,
+    "lng": 75.801103
+  },
+  {
+    "name": "Halagur PS",
+    "kgisCode": "PS - 615",
+    "lat": 12.4275,
+    "lng": 77.228361
+  },
+  {
+    "name": "K.M. Doddi PS",
+    "kgisCode": "PS - 616",
+    "lat": 12.489308,
+    "lng": 77.035164
+  },
+  {
+    "name": "Besagaraghalli PS",
+    "kgisCode": "PS - 617",
+    "lat": 12.636139,
+    "lng": 77.006028
+  },
+  {
+    "name": "Kesthur PS",
+    "kgisCode": "PS - 618",
+    "lat": 12.691694,
+    "lng": 77.060778
+  },
+  {
+    "name": "Koppa PS",
+    "kgisCode": "PS - 619",
+    "lat": 12.707689,
+    "lng": 76.957233
+  },
+  {
+    "name": "Maddur PS",
+    "kgisCode": "PS - 620",
+    "lat": 12.587786,
+    "lng": 77.041381
+  },
+  {
+    "name": "Belakavadi PS",
+    "kgisCode": "PS - 621",
+    "lat": 12.256639,
+    "lng": 77.122647
+  },
+  {
+    "name": "Kirugavalu PS",
+    "kgisCode": "PS - 622",
+    "lat": 12.358472,
+    "lng": 76.945139
+  },
+  {
+    "name": "Malavalli Rural PS",
+    "kgisCode": "PS - 623",
+    "lat": 12.383642,
+    "lng": 77.060278
+  },
+  {
+    "name": "Malavalli Town PS",
+    "kgisCode": "PS - 624",
+    "lat": 12.383528,
+    "lng": 77.060444
+  },
+  {
+    "name": "Basaralu PS",
+    "kgisCode": "PS - 625",
+    "lat": 12.705844,
+    "lng": 76.817253
+  },
+  {
+    "name": "Keragodu PS",
+    "kgisCode": "PS - 626",
+    "lat": 12.642861,
+    "lng": 76.917028
+  },
+  {
+    "name": "Mandya Rural PS",
+    "kgisCode": "PS - 627",
+    "lat": 12.519478,
+    "lng": 76.884467
+  },
+  {
+    "name": "Shivalli PS",
+    "kgisCode": "PS - 628",
+    "lat": 12.585706,
+    "lng": 76.823897
+  },
+  {
+    "name": "Mandya Central PS",
+    "kgisCode": "PS - 629",
+    "lat": 12.523037,
+    "lng": 76.885144
+  },
+  {
+    "name": "Mandya East PS",
+    "kgisCode": "PS - 630",
+    "lat": 12.528458,
+    "lng": 76.900772
+  },
+  {
+    "name": "Mandya West PS",
+    "kgisCode": "PS - 631",
+    "lat": 12.526694,
+    "lng": 76.890722
+  },
+  {
+    "name": "Mandya Women PS",
+    "kgisCode": "PS - 632",
+    "lat": 12.528458,
+    "lng": 76.900772
+  },
+  {
+    "name": "K.R. Pet Rural PS",
+    "kgisCode": "PS - 633",
+    "lat": 12.659389,
+    "lng": 76.488328
+  },
+  {
+    "name": "K.R. Pet Town PS",
+    "kgisCode": "PS - 634",
+    "lat": 12.659242,
+    "lng": 76.488289
+  },
+  {
+    "name": "Kikkeri PS",
+    "kgisCode": "PS - 635",
+    "lat": 12.768717,
+    "lng": 76.422917
+  },
+  {
+    "name": "Bellur PS",
+    "kgisCode": "PS - 636",
+    "lat": 12.981442,
+    "lng": 76.735642
+  },
+  {
+    "name": "Bindiganavile PS",
+    "kgisCode": "PS - 637",
+    "lat": 12.881194,
+    "lng": 76.630966
+  },
+  {
+    "name": "Nagamangala Rural  PS",
+    "kgisCode": "PS - 638",
+    "lat": 12.830881,
+    "lng": 76.758853
+  },
+  {
+    "name": "Nagamangala Town PS",
+    "kgisCode": "PS - 639",
+    "lat": 12.819819,
+    "lng": 76.756303
+  },
+  {
+    "name": "Pandavapura PS",
+    "kgisCode": "PS - 640",
+    "lat": 12.503006,
+    "lng": 76.673581
+  },
+  {
+    "name": "Arakere PS",
+    "kgisCode": "PS - 641",
+    "lat": 12.410678,
+    "lng": 76.813574
+  },
+  {
+    "name": "K.R. Sagar PS",
+    "kgisCode": "PS - 642",
+    "lat": 12.405778,
+    "lng": 76.572417
+  },
+  {
+    "name": "Melukote PS",
+    "kgisCode": "PS - 643",
+    "lat": 12.661736,
+    "lng": 76.648083
+  },
+  {
+    "name": "Srirangapatna PS",
+    "kgisCode": "PS - 644",
+    "lat": 12.423985,
+    "lng": 76.683081
+  },
+  {
+    "name": "Srirangapatna Rural PS",
+    "kgisCode": "PS - 645",
+    "lat": 12.414586,
+    "lng": 76.691358
+  },
+  {
+    "name": "Beechanahalli PS",
+    "kgisCode": "PS - 646",
+    "lat": 11.990731,
+    "lng": 76.349967
+  },
+  {
+    "name": "H.D. Kote PS",
+    "kgisCode": "PS - 647",
+    "lat": 12.090181,
+    "lng": 76.331761
+  },
+  {
+    "name": "Saragur PS",
+    "kgisCode": "PS - 648",
+    "lat": 12.003,
+    "lng": 76.395369
+  },
+  {
+    "name": "Bilikere PS",
+    "kgisCode": "PS - 649",
+    "lat": 12.335911,
+    "lng": 76.447756
+  },
+  {
+    "name": "Hunusur Rural PS",
+    "kgisCode": "PS - 650",
+    "lat": 12.307419,
+    "lng": 76.294097
+  },
+  {
+    "name": "Hunusur Town PS",
+    "kgisCode": "PS - 651",
+    "lat": 12.305297,
+    "lng": 76.290497
+  },
+  {
+    "name": "Bettadapura PS",
+    "kgisCode": "PS - 652",
+    "lat": 12.465667,
+    "lng": 76.101239
+  },
+  {
+    "name": "Bylakuppe PS",
+    "kgisCode": "PS - 653",
+    "lat": 12.427189,
+    "lng": 75.997428
+  },
+  {
+    "name": "Periyapatna PS",
+    "kgisCode": "PS - 654",
+    "lat": 12.337469,
+    "lng": 76.088622
+  },
+  {
+    "name": "K.R. Nagar PS",
+    "kgisCode": "PS - 655",
+    "lat": 12.435586,
+    "lng": 76.380567
+  },
+  {
+    "name": "Saligrama PS",
+    "kgisCode": "PS - 656",
+    "lat": 12.562122,
+    "lng": 76.263647
+  },
+  {
+    "name": "Jayapura PS",
+    "kgisCode": "PS - 657",
+    "lat": 12.204706,
+    "lng": 76.555267
+  },
+  {
+    "name": "Mysore South PS",
+    "kgisCode": "PS - 658",
+    "lat": 12.312825,
+    "lng": 76.664389
+  },
+  {
+    "name": "Varuna PS",
+    "kgisCode": "PS - 659",
+    "lat": 12.254086,
+    "lng": 76.808903
+  },
+  {
+    "name": "Yelawala PS",
+    "kgisCode": "PS - 660",
+    "lat": 12.359389,
+    "lng": 76.541358
+  },
+  {
+    "name": "Biligere PS",
+    "kgisCode": "PS - 661",
+    "lat": 12.069892,
+    "lng": 76.745656
+  },
+  {
+    "name": "Hullahalli PS",
+    "kgisCode": "PS - 662",
+    "lat": 12.097306,
+    "lng": 76.556575
+  },
+  {
+    "name": "Kowlande PS",
+    "kgisCode": "PS - 663",
+    "lat": 12.032825,
+    "lng": 76.798794
+  },
+  {
+    "name": "Nanjanagudu Rural PS",
+    "kgisCode": "PS - 664",
+    "lat": 12.114561,
+    "lng": 76.67415
+  },
+  {
+    "name": "Nanjanagudu Town PS",
+    "kgisCode": "PS - 665",
+    "lat": 12.118122,
+    "lng": 76.686147
+  },
+  {
+    "name": "Bannur PS",
+    "kgisCode": "PS - 666",
+    "lat": 12.332886,
+    "lng": 76.866422
+  },
+  {
+    "name": "Kadur PS",
+    "kgisCode": "PS - 688",
+    "lat": 13.555318,
+    "lng": 76.011788
+  },
+  {
+    "name": "Panchanahalli PS",
+    "kgisCode": "PS - 689",
+    "lat": 13.547043,
+    "lng": 76.332933
+  },
+  {
+    "name": "Sakkaraya Patna PS",
+    "kgisCode": "PS - 690",
+    "lat": 13.435949,
+    "lng": 75.917489
+  },
+  {
+    "name": "Singatagere PS",
+    "kgisCode": "PS - 691",
+    "lat": 13.551783,
+    "lng": 76.174757
+  },
+  {
+    "name": "Ajjampura PS",
+    "kgisCode": "PS - 692",
+    "lat": 13.756626,
+    "lng": 75.999862
+  },
+  {
+    "name": "Lakkavalli PS",
+    "kgisCode": "PS - 693",
+    "lat": 13.70141,
+    "lng": 75.653419
+  },
+  {
+    "name": "Lingadahalli PS",
+    "kgisCode": "PS - 694",
+    "lat": 13.604146,
+    "lng": 75.840052
+  },
+  {
+    "name": "Tarikere Town PS",
+    "kgisCode": "PS - 695",
+    "lat": 13.424471,
+    "lng": 75.48285
+  },
+  {
+    "name": "Bantwala Rural PS",
+    "kgisCode": "PS - 696",
+    "lat": 12.890783,
+    "lng": 75.04045
+  },
+  {
+    "name": "Bantwala Town PS",
+    "kgisCode": "PS - 697",
+    "lat": 12.881396,
+    "lng": 75.031375
+  },
+  {
+    "name": "Vitla PS",
+    "kgisCode": "PS - 698",
+    "lat": 12.76336,
+    "lng": 75.10161
+  },
+  {
+    "name": "Belthangadi PS",
+    "kgisCode": "PS - 699",
+    "lat": 12.989959,
+    "lng": 75.282734
+  },
+  {
+    "name": "Dharmasthala PS",
+    "kgisCode": "PS - 700",
+    "lat": 12.952943,
+    "lng": 75.384192
+  },
+  {
+    "name": "Punjalkatte PS",
+    "kgisCode": "PS - 701",
+    "lat": 12.950576,
+    "lng": 75.16809
+  },
+  {
+    "name": "VenoorPS",
+    "kgisCode": "PS - 702",
+    "lat": 13.012608,
+    "lng": 75.139185
+  },
+  {
+    "name": "Puttur Rural PS",
+    "kgisCode": "PS - 703",
+    "lat": 12.729934,
+    "lng": 75.220621
+  },
+  {
+    "name": "Uppinangadi PS",
+    "kgisCode": "PS - 704",
+    "lat": 12.839455,
+    "lng": 75.24823
+  },
+  {
+    "name": "Bellare PS",
+    "kgisCode": "PS - 705",
+    "lat": 12.664061,
+    "lng": 75.370839
+  },
+  {
+    "name": "Sullia PS",
+    "kgisCode": "PS - 706",
+    "lat": 12.556422,
+    "lng": 75.392884
+  },
+  {
+    "name": "Kapu PS",
+    "kgisCode": "PS - 707",
+    "lat": 13.228467,
+    "lng": 74.74824
+  },
+  {
+    "name": "Padubidri PS",
+    "kgisCode": "PS - 708",
+    "lat": 13.140831,
+    "lng": 74.770143
+  },
+  {
+    "name": "Shirva PS",
+    "kgisCode": "PS - 709",
+    "lat": 13.211117,
+    "lng": 74.832212
+  },
+  {
+    "name": "Ajekar PS",
+    "kgisCode": "PS - 710",
+    "lat": 13.319033,
+    "lng": 74.999538
+  },
+  {
+    "name": "Hebri PS",
+    "kgisCode": "PS - 711",
+    "lat": 13.458648,
+    "lng": 74.989924
+  },
+  {
+    "name": "Karkala Rural PS",
+    "kgisCode": "PS - 712",
+    "lat": 13.222795,
+    "lng": 74.981179
+  },
+  {
+    "name": "Karkala Town PS",
+    "kgisCode": "PS - 713",
+    "lat": 13.222795,
+    "lng": 74.981179
+  },
+  {
+    "name": "Byndoor PS",
+    "kgisCode": "PS - 714",
+    "lat": 13.867096,
+    "lng": 74.626513
+  },
+  {
+    "name": "Gangolli PS",
+    "kgisCode": "PS - 715",
+    "lat": 13.68672,
+    "lng": 74.660375
+  },
+  {
+    "name": "Kollur PS",
+    "kgisCode": "PS - 716",
+    "lat": 13.863355,
+    "lng": 74.813526
+  },
+  {
+    "name": "Amasebailu PS",
+    "kgisCode": "PS - 718",
+    "lat": 13.603069,
+    "lng": 74.948588
+  },
+  {
+    "name": "Kundapura PS",
+    "kgisCode": "PS - 719",
+    "lat": 13.636996,
+    "lng": 74.689507
+  },
+  {
+    "name": "Kundapura Rural PS",
+    "kgisCode": "PS - 720",
+    "lat": 13.637675,
+    "lng": 74.772493
+  },
+  {
+    "name": "Shankaranarayana PS",
+    "kgisCode": "PS - 721",
+    "lat": 13.604506,
+    "lng": 74.862455
+  },
+  {
+    "name": "Brahmavar PS",
+    "kgisCode": "PS - 722",
+    "lat": 13.438247,
+    "lng": 74.744137
+  },
+  {
+    "name": "Hiriadka PS",
+    "kgisCode": "PS - 723",
+    "lat": 13.349243,
+    "lng": 74.856191
+  },
+  {
+    "name": "Kota PS",
+    "kgisCode": "PS - 724",
+    "lat": 13.528261,
+    "lng": 74.703973
+  },
+  {
+    "name": "Manipal PS",
+    "kgisCode": "PS - 725",
+    "lat": 13.349152,
+    "lng": 74.786086
+  },
+  {
+    "name": "Malpe PS",
+    "kgisCode": "PS - 726",
+    "lat": 13.360611,
+    "lng": 74.703383
+  },
+  {
+    "name": "Udupi Town PS",
+    "kgisCode": "PS - 727",
+    "lat": 13.330667,
+    "lng": 74.748168
+  },
+  {
+    "name": "Udupi Women PS",
+    "kgisCode": "PS - 728",
+    "lat": 13.330667,
+    "lng": 74.748168
+  },
+  {
+    "name": "Electronic City PS",
+    "kgisCode": "PS - 150",
+    "lat": 12.840009,
+    "lng": 77.663064
+  },
+  {
+    "name": "Parappana Agrahara PS",
+    "kgisCode": "PS - 151",
+    "lat": 12.877314,
+    "lng": 77.667356
+  },
+  {
+    "name": "Adugodi PS",
+    "kgisCode": "PS - 152",
+    "lat": 12.941431,
+    "lng": 77.611542
+  },
+  {
+    "name": "H.S.R.Layout PS",
+    "kgisCode": "PS - 153",
+    "lat": 12.920151,
+    "lng": 77.651389
+  },
+  {
+    "name": "Koramangala PS",
+    "kgisCode": "PS - 154",
+    "lat": 12.941214,
+    "lng": 77.621342
+  },
+  {
+    "name": "Bhatkal Rural PS",
+    "kgisCode": "PS - 729",
+    "lat": 13.998498,
+    "lng": 74.538512
+  },
+  {
+    "name": "Bhatkal Town PS",
+    "kgisCode": "PS - 730",
+    "lat": 13.989913,
+    "lng": 74.552125
+  },
+  {
+    "name": "Murudeshwar PS",
+    "kgisCode": "PS - 731",
+    "lat": 14.095215,
+    "lng": 74.488535
+  },
+  {
+    "name": "Honnavara PS",
+    "kgisCode": "PS - 732",
+    "lat": 14.281895,
+    "lng": 74.451063
+  },
+  {
+    "name": "Manki PS",
+    "kgisCode": "PS - 733",
+    "lat": 14.186222,
+    "lng": 74.486442
+  },
+  {
+    "name": "Gokarna PS",
+    "kgisCode": "PS - 734",
+    "lat": 14.539693,
+    "lng": 74.322276
+  },
+  {
+    "name": "Kumta PS",
+    "kgisCode": "PS - 735",
+    "lat": 14.42931,
+    "lng": 74.420178
+  },
+  {
+    "name": "Dandeli Rural PS",
+    "kgisCode": "PS - 736",
+    "lat": 15.257505,
+    "lng": 74.621174
+  },
+  {
+    "name": "Dandeli Town PS",
+    "kgisCode": "PS - 737",
+    "lat": 15.257492,
+    "lng": 74.621111
+  },
+  {
+    "name": "Ambikanagar PS",
+    "kgisCode": "PS - 738",
+    "lat": 15.123995,
+    "lng": 74.659326
+  },
+  {
+    "name": "Haliyal PS",
+    "kgisCode": "PS - 739",
+    "lat": 15.329497,
+    "lng": 74.767136
+  },
+  {
+    "name": "Joida PS",
+    "kgisCode": "PS - 740",
+    "lat": 15.162982,
+    "lng": 74.489816
+  },
+  {
+    "name": "Ramnagar PS",
+    "kgisCode": "PS - 741",
+    "lat": 15.423863,
+    "lng": 74.488625
+  },
+  {
+    "name": "Ankola PS",
+    "kgisCode": "PS - 742",
+    "lat": 14.659816,
+    "lng": 74.305462
+  },
+  {
+    "name": "Basavanagara PS",
+    "kgisCode": "PS - 302",
+    "lat": 14.469223,
+    "lng": 75.918426
+  },
+  {
+    "name": "Gandhi Nagar PS",
+    "kgisCode": "PS - 303",
+    "lat": 14.476327,
+    "lng": 75.920321
+  },
+  {
+    "name": "Davanagere RMC Yard PS",
+    "kgisCode": "PS - 304",
+    "lat": 14.459766,
+    "lng": 75.935871
+  },
+  {
+    "name": "Basavapatna PS",
+    "kgisCode": "PS - 306",
+    "lat": 14.206285,
+    "lng": 75.817123
+  },
+  {
+    "name": "Channagiri PS",
+    "kgisCode": "PS - 307",
+    "lat": 14.023085,
+    "lng": 75.928854
+  },
+  {
+    "name": "Santhebennur PS",
+    "kgisCode": "PS - 308",
+    "lat": 14.173175,
+    "lng": 76.006853
+  },
+  {
+    "name": "Davanagere Rural PS",
+    "kgisCode": "PS - 309",
+    "lat": 14.450796,
+    "lng": 75.920648
+  },
+  {
+    "name": "Hadadi PS",
+    "kgisCode": "PS - 310",
+    "lat": 14.369917,
+    "lng": 75.894417
+  },
+  {
+    "name": "Mayakonda PS",
+    "kgisCode": "PS - 311",
+    "lat": 14.28296,
+    "lng": 76.080583
+  },
+  {
+    "name": "Harihara Rural PS",
+    "kgisCode": "PS - 312",
+    "lat": 14.535545,
+    "lng": 75.812918
+  },
+  {
+    "name": "Harihara Town PS",
+    "kgisCode": "PS - 313",
+    "lat": 14.51475,
+    "lng": 75.806869
+  },
+  {
+    "name": "Malebennur PS",
+    "kgisCode": "PS - 314",
+    "lat": 14.351708,
+    "lng": 75.73856
+  },
+  {
+    "name": "Honnali PS",
+    "kgisCode": "PS - 315",
+    "lat": 14.23417,
+    "lng": 75.657334
+  },
+  {
+    "name": "Nyamathi PS",
+    "kgisCode": "PS - 316",
+    "lat": 14.147746,
+    "lng": 75.562851
+  },
+  {
+    "name": "Arasikere PS",
+    "kgisCode": "PS - 317",
+    "lat": 14.670283,
+    "lng": 76.074369
+  },
+  {
+    "name": "Chigateri PS",
+    "kgisCode": "PS - 318",
+    "lat": 14.792285,
+    "lng": 76.074645
+  },
+  {
+    "name": "Halavagilu PS",
+    "kgisCode": "PS - 319",
+    "lat": 14.710276,
+    "lng": 75.78058
+  },
+  {
+    "name": "Harapanahalli PS",
+    "kgisCode": "PS - 320",
+    "lat": 14.789117,
+    "lng": 75.986643
+  },
+  {
+    "name": "Bilichodu PS",
+    "kgisCode": "PS - 321",
+    "lat": 14.504583,
+    "lng": 76.160301
+  },
+  {
+    "name": "Jagalur PS",
+    "kgisCode": "PS - 322",
+    "lat": 14.51335,
+    "lng": 76.33749
+  },
+  {
+    "name": "Byadagi PS",
+    "kgisCode": "PS - 323",
+    "lat": 14.680182,
+    "lng": 75.494808
+  },
+  {
+    "name": "Kaginele PS",
+    "kgisCode": "PS - 324",
+    "lat": 14.691457,
+    "lng": 75.357926
+  },
+  {
+    "name": "Guttal PS",
+    "kgisCode": "PS - 325",
+    "lat": 14.839881,
+    "lng": 75.630241
+  },
+  {
+    "name": "Haveri Rural PS",
+    "kgisCode": "PS - 326",
+    "lat": 14.78392,
+    "lng": 75.388161
+  },
+  {
+    "name": "Haveri Women PS",
+    "kgisCode": "PS - 327",
+    "lat": 14.784032,
+    "lng": 75.388748
+  },
+  {
+    "name": "Nelogi PS",
+    "kgisCode": "PS - 412",
+    "lat": 17.058461,
+    "lng": 76.608358
+  },
+  {
+    "name": "Yedrami PS",
+    "kgisCode": "PS - 413",
+    "lat": 16.855291,
+    "lng": 76.531788
+  },
+  {
+    "name": "Ferhatabad PS",
+    "kgisCode": "PS - 414",
+    "lat": 17.171507,
+    "lng": 76.793339
+  },
+  {
+    "name": "University PS",
+    "kgisCode": "PS - 415",
+    "lat": 17.309899,
+    "lng": 76.876578
+  },
+  {
+    "name": "Chittapura PS",
+    "kgisCode": "PS - 416",
+    "lat": 17.119479,
+    "lng": 77.08355
+  },
+  {
+    "name": "Wadi PS",
+    "kgisCode": "PS - 417",
+    "lat": 17.057542,
+    "lng": 76.991861
+  },
+  {
+    "name": "Madbool PS",
+    "kgisCode": "PS - 419",
+    "lat": 17.285599,
+    "lng": 77.003741
+  },
+  {
+    "name": "Shahabad Town PS",
+    "kgisCode": "PS - 420",
+    "lat": 17.13044,
+    "lng": 76.9346
+  },
+  {
+    "name": "Bheemarayanagudi PS",
+    "kgisCode": "PS - 421",
+    "lat": 16.720639,
+    "lng": 76.803808
+  },
+  {
+    "name": "Gogi PS",
+    "kgisCode": "PS - 422",
+    "lat": 16.733016,
+    "lng": 76.746125
+  },
+  {
+    "name": "Chittakula PS",
+    "kgisCode": "PS - 743",
+    "lat": 14.854323,
+    "lng": 74.133078
+  },
+  {
+    "name": "Kadra PS",
+    "kgisCode": "PS - 744",
+    "lat": 14.905687,
+    "lng": 74.345528
+  },
+  {
+    "name": "Mallapura PS",
+    "kgisCode": "PS - 745",
+    "lat": 14.900379,
+    "lng": 74.332101
+  },
+  {
+    "name": "Karwar Rural PS",
+    "kgisCode": "PS - 746",
+    "lat": 14.808598,
+    "lng": 74.128972
+  },
+  {
+    "name": "Karwar Town PS",
+    "kgisCode": "PS - 747",
+    "lat": 14.808393,
+    "lng": 74.128225
+  },
+  {
+    "name": "UK CEN CrimePS",
+    "kgisCode": "PS - 748",
+    "lat": 14.808346,
+    "lng": 74.127023
+  },
+  {
+    "name": "Mundgod PS",
+    "kgisCode": "PS - 749",
+    "lat": 14.969709,
+    "lng": 75.038431
+  },
+  {
+    "name": "Siddapura PS",
+    "kgisCode": "PS - 750",
+    "lat": 14.345132,
+    "lng": 74.893742
+  },
+  {
+    "name": "Banavasi PS",
+    "kgisCode": "PS - 751",
+    "lat": 14.540638,
+    "lng": 75.021239
+  },
+  {
+    "name": "New Market PS",
+    "kgisCode": "PS - 752",
+    "lat": 14.621051,
+    "lng": 74.841239
+  },
+  {
+    "name": "Sirsi Rural PS",
+    "kgisCode": "PS - 753",
+    "lat": 14.625522,
+    "lng": 74.837743
+  },
+  {
+    "name": "Sirsi Town PS",
+    "kgisCode": "PS - 754",
+    "lat": 14.624197,
+    "lng": 74.825258
+  },
+  {
+    "name": "Doddapete PS",
+    "kgisCode": "PS - 755",
+    "lat": 13.930505,
+    "lng": 75.566598
+  },
+  {
+    "name": "Tunganagara PS",
+    "kgisCode": "PS - 756",
+    "lat": 13.923756,
+    "lng": 75.554479
+  },
+  {
+    "name": "Kote PS",
+    "kgisCode": "PS - 757",
+    "lat": 13.93036,
+    "lng": 75.582764
+  },
+  {
+    "name": "Jayanagar PS",
+    "kgisCode": "PS - 758",
+    "lat": 13.938437,
+    "lng": 75.57577
+  },
+  {
+    "name": "Shimogga Rural PS",
+    "kgisCode": "PS - 759",
+    "lat": 13.932578,
+    "lng": 75.564356
+  },
+  {
+    "name": "Shivamogga Women PS",
+    "kgisCode": "PS - 760",
+    "lat": 13.932399,
+    "lng": 75.564528
+  },
+  {
+    "name": "Vibanagara PS",
+    "kgisCode": "PS - 761",
+    "lat": 13.950527,
+    "lng": 75.560111
+  },
+  {
+    "name": "Paper Town PS",
+    "kgisCode": "PS - 762",
+    "lat": 13.821065,
+    "lng": 75.702042
+  },
+  {
+    "name": "Bhadravathi New Town PS",
+    "kgisCode": "PS - 763",
+    "lat": 13.837776,
+    "lng": 75.691048
+  },
+  {
+    "name": "Bhadravathi Old Town PS",
+    "kgisCode": "PS - 764",
+    "lat": 13.846898,
+    "lng": 75.70288
+  },
+  {
+    "name": "Hosamane PS",
+    "kgisCode": "PS - 765",
+    "lat": 13.852025,
+    "lng": 75.703794
+  },
+  {
+    "name": "Holehonnur PS",
+    "kgisCode": "PS - 766",
+    "lat": 13.988771,
+    "lng": 75.685603
+  },
+  {
+    "name": "Kumsi PS",
+    "kgisCode": "PS - 767",
+    "lat": 14.06092,
+    "lng": 75.391205
+  },
+  {
+    "name": "Shikaripura Rural PS",
+    "kgisCode": "PS - 768",
+    "lat": 14.273376,
+    "lng": 75.348862
+  },
+  {
+    "name": "Shikaripura Town PS",
+    "kgisCode": "PS - 769",
+    "lat": 14.260316,
+    "lng": 75.360696
+  },
+  {
+    "name": "Shiralakoppa PS",
+    "kgisCode": "PS - 770",
+    "lat": 14.381317,
+    "lng": 75.249847
+  },
+  {
+    "name": "Anavatti PS",
+    "kgisCode": "PS - 771",
+    "lat": 14.562775,
+    "lng": 75.150617
+  },
+  {
+    "name": "Soraba PS",
+    "kgisCode": "PS - 772",
+    "lat": 14.381081,
+    "lng": 75.09943
+  },
+  {
+    "name": "Kargal PS",
+    "kgisCode": "PS - 773",
+    "lat": 14.190054,
+    "lng": 74.814847
+  },
+  {
+    "name": "Joga PS",
+    "kgisCode": "PS - 774",
+    "lat": 14.209462,
+    "lng": 74.814631
+  },
+  {
+    "name": "Sagara Town PS",
+    "kgisCode": "PS - 775",
+    "lat": 14.167776,
+    "lng": 75.023189
+  },
+  {
+    "name": "Nagara PS",
+    "kgisCode": "PS - 776",
+    "lat": 13.81833,
+    "lng": 75.029621
+  },
+  {
+    "name": "Sagara Rural PS",
+    "kgisCode": "PS - 777",
+    "lat": 14.167675,
+    "lng": 75.032069
+  },
+  {
+    "name": "Agumbe PS",
+    "kgisCode": "PS - 778",
+    "lat": 13.510901,
+    "lng": 75.097434
+  },
+  {
+    "name": "Rippanpete PS",
+    "kgisCode": "PS - 779",
+    "lat": 13.993201,
+    "lng": 75.259791
+  },
+  {
+    "name": "Hosanagara PS",
+    "kgisCode": "PS - 780",
+    "lat": 13.91581,
+    "lng": 75.065798
+  },
+  {
+    "name": "Thirthahalli PS",
+    "kgisCode": "PS - 781",
+    "lat": 13.698217,
+    "lng": 75.246139
+  },
+  {
+    "name": "Bellanduru PS",
+    "kgisCode": "PS - 783",
+    "lat": 12.919162,
+    "lng": 77.667868
+  },
+  {
+    "name": "H.A.L. PS",
+    "kgisCode": "PS - 784",
+    "lat": 12.955006,
+    "lng": 77.682855
+  },
+  {
+    "name": "Marathahalli PS",
+    "kgisCode": "PS - 785",
+    "lat": 12.945619,
+    "lng": 77.698039
+  },
+  {
+    "name": "Varthur PS",
+    "kgisCode": "PS - 786",
+    "lat": 12.938034,
+    "lng": 77.74692
+  },
+  {
+    "name": "K.R. Puram PS",
+    "kgisCode": "PS - 787",
+    "lat": 13.009016,
+    "lng": 77.693287
+  },
+  {
+    "name": "Kadugodi PS",
+    "kgisCode": "PS - 788",
+    "lat": 12.995415,
+    "lng": 77.757821
+  },
+  {
+    "name": "Mahadevapura PS",
+    "kgisCode": "PS - 789",
+    "lat": 12.996694,
+    "lng": 77.692828
+  },
+  {
+    "name": "Whitefield PS",
+    "kgisCode": "PS - 790",
+    "lat": 12.975356,
+    "lng": 77.751076
+  },
+  {
+    "name": "Anekal PS",
+    "kgisCode": "PS - 791",
+    "lat": 12.710118,
+    "lng": 77.692886
+  },
+  {
+    "name": "Bannerghatta PS",
+    "kgisCode": "PS - 792",
+    "lat": 12.813543,
+    "lng": 77.579253
+  },
+  {
+    "name": "Jigani PS",
+    "kgisCode": "PS - 793",
+    "lat": 12.782461,
+    "lng": 77.639215
+  },
+  {
+    "name": "Hebbagodi PS",
+    "kgisCode": "PS - 794",
+    "lat": 12.826371,
+    "lng": 77.679932
+  },
+  {
+    "name": "Sarjapura PS",
+    "kgisCode": "PS - 795",
+    "lat": 12.860728,
+    "lng": 77.781283
+  },
+  {
+    "name": "Hosakote PS",
+    "kgisCode": "PS - 796",
+    "lat": 13.070119,
+    "lng": 77.780441
+  },
+  {
+    "name": "Avalahally PS",
+    "kgisCode": "PS - 797",
+    "lat": 13.042326,
+    "lng": 77.745721
+  },
+  {
+    "name": "Anugondanahalli PS",
+    "kgisCode": "PS - 798",
+    "lat": 12.974765,
+    "lng": 77.821356
+  },
+  {
+    "name": "Thirumalashettahalli PS",
+    "kgisCode": "PS - 799",
+    "lat": 12.98878,
+    "lng": 77.780143
+  },
+  {
+    "name": "Nandagudi PS",
+    "kgisCode": "PS - 800",
+    "lat": 13.203373,
+    "lng": 77.900903
+  },
+  {
+    "name": "Sulibele PS",
+    "kgisCode": "PS - 801",
+    "lat": 13.184435,
+    "lng": 77.788702
+  },
+  {
+    "name": "Vishwanathapura PS",
+    "kgisCode": "PS - 802",
+    "lat": 13.279043,
+    "lng": 77.622764
+  },
+  {
+    "name": "Vijayapura PS",
+    "kgisCode": "PS - 803",
+    "lat": 13.294284,
+    "lng": 77.800528
+  },
+  {
+    "name": "Doddabelavangala PS",
+    "kgisCode": "PS - 804",
+    "lat": 13.288229,
+    "lng": 77.422826
+  },
+  {
+    "name": "Rajanukunte PS",
+    "kgisCode": "PS - 805",
+    "lat": 13.173971,
+    "lng": 77.562424
+  },
+  {
+    "name": "Nelamangala Town PS",
+    "kgisCode": "PS - 806",
+    "lat": 13.087072,
+    "lng": 77.38839
+  },
+  {
+    "name": "Nelamangala Rural PS",
+    "kgisCode": "PS - 807",
+    "lat": 13.087074,
+    "lng": 77.388387
+  },
+  {
+    "name": "Panambur PS",
+    "kgisCode": "PS - 808",
+    "lat": 12.952555,
+    "lng": 74.816899
+  },
+  {
+    "name": "Kavoor PS",
+    "kgisCode": "PS - 809",
+    "lat": 12.924229,
+    "lng": 74.849349
+  },
+  {
+    "name": "Surathkal PS",
+    "kgisCode": "PS - 811",
+    "lat": 12.988175,
+    "lng": 74.801113
+  },
+  {
+    "name": "Mulki PS",
+    "kgisCode": "PS - 812",
+    "lat": 13.094263,
+    "lng": 74.789284
+  },
+  {
+    "name": "Moodabidre PS",
+    "kgisCode": "PS - 813",
+    "lat": 13.066451,
+    "lng": 74.999934
+  },
+  {
+    "name": "Mangaluru North PS",
+    "kgisCode": "PS - 814",
+    "lat": 12.864272,
+    "lng": 74.833502
+  },
+  {
+    "name": "Mangaluru East PS",
+    "kgisCode": "PS - 816",
+    "lat": 12.890303,
+    "lng": 74.85261
+  },
+  {
+    "name": "Urva PS",
+    "kgisCode": "PS - 817",
+    "lat": 12.899223,
+    "lng": 74.828781
+  },
+  {
+    "name": "Mangaluru Women PS",
+    "kgisCode": "PS - 818",
+    "lat": 12.856892,
+    "lng": 74.838213
+  },
+  {
+    "name": "Mangaluru South PS",
+    "kgisCode": "PS - 819",
+    "lat": 12.854983,
+    "lng": 74.83993
+  },
+  {
+    "name": "Mangaluru Rural PS",
+    "kgisCode": "PS - 820",
+    "lat": 12.882199,
+    "lng": 74.877642
+  },
+  {
+    "name": "Kankanady Town PS",
+    "kgisCode": "PS - 821",
+    "lat": 12.86983,
+    "lng": 74.87264
+  },
+  {
+    "name": "Konaje PS",
+    "kgisCode": "PS - 822",
+    "lat": 12.809497,
+    "lng": 74.91542
+  },
+  {
+    "name": "Ullal PS",
+    "kgisCode": "PS - 823",
+    "lat": 12.819506,
+    "lng": 74.841571
+  },
+  {
+    "name": "Lakshmeshwar PS",
+    "kgisCode": "PS - 826",
+    "lat": 15.120285,
+    "lng": 75.473565
+  },
+  {
+    "name": "Bagalkot Town PS",
+    "kgisCode": "PS - 827",
+    "lat": 16.117236,
+    "lng": 75.655719
+  },
+  {
+    "name": "Imangala PS",
+    "kgisCode": "PS - 829",
+    "lat": 14.09509,
+    "lng": 76.534267
+  },
+  {
+    "name": "Molakalmuru PS",
+    "kgisCode": "PS - 830",
+    "lat": 14.718023,
+    "lng": 76.745703
+  },
+  {
+    "name": "Chitradurga Town PS",
+    "kgisCode": "PS - 831",
+    "lat": 14.22401,
+    "lng": 76.403663
+  },
+  {
+    "name": "Abbinahole PS",
+    "kgisCode": "PS - 832",
+    "lat": 14.041715,
+    "lng": 76.751592
+  },
+  {
+    "name": "Ankalgi PS",
+    "kgisCode": "PS - 833",
+    "lat": 16.027837,
+    "lng": 74.693249
+  },
+  {
+    "name": "Athani PS",
+    "kgisCode": "PS - 834",
+    "lat": 16.726685,
+    "lng": 75.060008
+  },
+  {
+    "name": "Basava Kalyana Rural PS",
+    "kgisCode": "PS - 835",
+    "lat": 17.875699,
+    "lng": 76.962818
+  },
+  {
+    "name": "Srimangala PS",
+    "kgisCode": "PS - 836",
+    "lat": 12.018757,
+    "lng": 75.989882
+  },
+  {
+    "name": "Bevoor PS",
+    "kgisCode": "PS - 837",
+    "lat": 15.566831,
+    "lng": 76.170939
+  },
+  {
+    "name": "MB Nagar PS",
+    "kgisCode": "PS - 838",
+    "lat": 17.327,
+    "lng": 76.867495
+  },
+  {
+    "name": "Chowka PS",
+    "kgisCode": "PS - 839",
+    "lat": 17.337909,
+    "lng": 76.837404
+  },
+  {
+    "name": "Arehalli PS",
+    "kgisCode": "PS - 840",
+    "lat": 13.045427,
+    "lng": 75.80183
+  },
+  {
+    "name": "HebburuPS",
+    "kgisCode": "PS - 842",
+    "lat": 13.150975,
+    "lng": 77.031771
+  },
+  {
+    "name": "YellapuraPS",
+    "kgisCode": "PS - 890",
+    "lat": 14.96527,
+    "lng": 74.712053
+  },
+  {
+    "name": "Attibele PS",
+    "kgisCode": "PS - 843",
+    "lat": 12.778936,
+    "lng": 77.771671
+  },
+  {
+    "name": "Hosahalli PS",
+    "kgisCode": "PS - 845",
+    "lat": 13.439247,
+    "lng": 77.461075
+  },
+  {
+    "name": "Dobbespet PS",
+    "kgisCode": "PS - 846",
+    "lat": 13.230761,
+    "lng": 77.242232
+  },
+  {
+    "name": "Thyamagondlu PS",
+    "kgisCode": "PS - 847",
+    "lat": 13.216073,
+    "lng": 77.300534
+  },
+  {
+    "name": "Madhanayakanahally PS",
+    "kgisCode": "PS - 848",
+    "lat": 13.062247,
+    "lng": 77.46231
+  },
+  {
+    "name": "Suryanagar PS",
+    "kgisCode": "PS - 849",
+    "lat": 12.792896,
+    "lng": 77.704937
+  },
+  {
+    "name": "Ashoknagar PS",
+    "kgisCode": "PS - 850",
+    "lat": 12.971632,
+    "lng": 77.610185
+  },
+  {
+    "name": "UK Women PS",
+    "kgisCode": "PS - 844",
+    "lat": 14.808197,
+    "lng": 74.128764
+  },
+  {
+    "name": "S.J. Park PS",
+    "kgisCode": "PS - 851",
+    "lat": 12.960929,
+    "lng": 77.583145
+  },
+  {
+    "name": "Bagalur PS",
+    "kgisCode": "PS - 852",
+    "lat": 13.140042,
+    "lng": 77.670436
+  },
+  {
+    "name": "Hanumathanagar PS",
+    "kgisCode": "PS - 853",
+    "lat": 12.936236,
+    "lng": 77.561455
+  },
+  {
+    "name": "Begur PS",
+    "kgisCode": "PS - 854",
+    "lat": 12.878262,
+    "lng": 77.624338
+  },
+  {
+    "name": "Hulimavu PS",
+    "kgisCode": "PS - 855",
+    "lat": 12.876646,
+    "lng": 77.600071
+  },
+  {
+    "name": "Mico Layout PS",
+    "kgisCode": "PS - 856",
+    "lat": 12.908612,
+    "lng": 77.610659
+  },
+  {
+    "name": "Ballari APMC Yard PS",
+    "kgisCode": "PS - 870",
+    "lat": 15.120073,
+    "lng": 76.911989
+  },
+  {
+    "name": "Hospete extension PS",
+    "kgisCode": "PS - 872",
+    "lat": 15.261317,
+    "lng": 76.378148
+  },
+  {
+    "name": "T.B. Dam PS",
+    "kgisCode": "PS - 873",
+    "lat": 15.263483,
+    "lng": 76.34109
+  },
+  {
+    "name": "Ballari Women PS",
+    "kgisCode": "PS - 874",
+    "lat": 15.152899,
+    "lng": 76.9198
+  },
+  {
+    "name": "Vidyaranyapura PS",
+    "kgisCode": "PS - 857",
+    "lat": 13.083987,
+    "lng": 77.564386
+  },
+  {
+    "name": "Kora PS",
+    "kgisCode": "PS - 865",
+    "lat": 13.437567,
+    "lng": 77.061517
+  },
+  {
+    "name": "Jayanagara PS",
+    "kgisCode": "PS - 864",
+    "lat": 13.317426,
+    "lng": 77.11985
+  },
+  {
+    "name": "Kolala PS",
+    "kgisCode": "PS - 861",
+    "lat": 13.365307,
+    "lng": 77.309849
+  },
+  {
+    "name": "Tumkur Women PS",
+    "kgisCode": "PS - 867",
+    "lat": 13.348137,
+    "lng": 77.10547
+  },
+  {
+    "name": "Malur PS",
+    "kgisCode": "PS - 858",
+    "lat": 13.004063,
+    "lng": 77.937874
+  },
+  {
+    "name": "Kolar Women PS",
+    "kgisCode": "PS - 869",
+    "lat": 13.13282,
+    "lng": 78.133538
+  },
+  {
+    "name": "Doddaballapura Town PS",
+    "kgisCode": "PS - 877",
+    "lat": 13.30865,
+    "lng": 77.54463
+  },
+  {
+    "name": "Chinthamani Rural PS",
+    "kgisCode": "PS - 878",
+    "lat": 13.400902,
+    "lng": 78.053448
+  },
+  {
+    "name": "Bhadravathi Rural PS",
+    "kgisCode": "PS - 859",
+    "lat": 13.825744,
+    "lng": 75.686914
+  },
+  {
+    "name": "Nayakanahatti PS",
+    "kgisCode": "PS - 866",
+    "lat": 14.468122,
+    "lng": 76.545597
+  },
+  {
+    "name": "Arsikere PS",
+    "kgisCode": "PS - 862",
+    "lat": 14.084089,
+    "lng": 77.041386
+  },
+  {
+    "name": "Chandrashekarpura PS",
+    "kgisCode": "PS - 863",
+    "lat": 13.151218,
+    "lng": 76.88193
+  },
+  {
+    "name": "Kamalapur PS",
+    "kgisCode": "PS - 879",
+    "lat": 17.580797,
+    "lng": 76.987723
+  },
+  {
+    "name": "Koppal Women PS",
+    "kgisCode": "PS - 880",
+    "lat": 15.348598,
+    "lng": 76.150959
+  },
+  {
+    "name": "Yadgir CEN Crime PS",
+    "kgisCode": "PS - 881",
+    "lat": 16.773224,
+    "lng": 77.11606
+  },
+  {
+    "name": "Madiwala PS",
+    "kgisCode": "PS - 155",
+    "lat": 12.921,
+    "lng": 77.620668
+  },
+  {
+    "name": "Bommanahalli PS",
+    "kgisCode": "PS - 156",
+    "lat": 12.91062,
+    "lng": 77.62498
+  },
+  {
+    "name": "Huliyurdurga PS",
+    "kgisCode": "PS - 266",
+    "lat": 12.82473,
+    "lng": 77.034622
+  },
+  {
+    "name": "Turuvkere PS",
+    "kgisCode": "PS - 267",
+    "lat": 13.1639,
+    "lng": 76.6686
+  },
+  {
+    "name": "Dandinashivara PS",
+    "kgisCode": "PS - 268",
+    "lat": 13.2538,
+    "lng": 76.7118
+  },
+  {
+    "name": "Kyathasadra PS",
+    "kgisCode": "PS - 269",
+    "lat": 13.308262,
+    "lng": 77.148683
+  },
+  {
+    "name": "Tumakur Town PS",
+    "kgisCode": "PS - 270",
+    "lat": 13.344901,
+    "lng": 77.103448
+  },
+  {
+    "name": "Tumakur Rural PS",
+    "kgisCode": "PS - 271",
+    "lat": 13.342243,
+    "lng": 77.105938
+  },
+  {
+    "name": "Bellavi PS",
+    "kgisCode": "PS - 272",
+    "lat": 13.414646,
+    "lng": 77.017591
+  },
+  {
+    "name": "Thilak Park PS",
+    "kgisCode": "PS - 273",
+    "lat": 13.342261,
+    "lng": 77.090496
+  },
+  {
+    "name": "Patanayakanahalli PS",
+    "kgisCode": "PS - 274",
+    "lat": 13.88761,
+    "lng": 76.92129
+  },
+  {
+    "name": "Tavarekere PS",
+    "kgisCode": "PS - 275",
+    "lat": 13.796459,
+    "lng": 76.803948
+  },
+  {
+    "name": "Honnavalli PS",
+    "kgisCode": "PS - 251",
+    "lat": 13.33283,
+    "lng": 76.388205
+  },
+  {
+    "name": "K.B. Cross PS",
+    "kgisCode": "PS - 252",
+    "lat": 13.308909,
+    "lng": 76.640077
+  },
+  {
+    "name": "Nonavinakere PS",
+    "kgisCode": "PS - 253",
+    "lat": 13.165535,
+    "lng": 76.555436
+  },
+  {
+    "name": "Tiptur Rural PS",
+    "kgisCode": "PS - 254",
+    "lat": 13.261054,
+    "lng": 76.464461
+  },
+  {
+    "name": "Tiptur Town PS",
+    "kgisCode": "PS - 255",
+    "lat": 13.261211,
+    "lng": 76.460899
+  },
+  {
+    "name": "Kodigenahalli PS",
+    "kgisCode": "PS - 256",
+    "lat": 13.71731,
+    "lng": 77.38554
+  },
+  {
+    "name": "Madhugiri PS",
+    "kgisCode": "PS - 257",
+    "lat": 13.66248,
+    "lng": 77.209028
+  },
+  {
+    "name": "Medigeshi PS",
+    "kgisCode": "PS - 258",
+    "lat": 13.83262,
+    "lng": 77.205298
+  },
+  {
+    "name": "Koratagere PS",
+    "kgisCode": "PS - 259",
+    "lat": 13.527047,
+    "lng": 77.241365
+  },
+  {
+    "name": "Y. N. Hosakote PS",
+    "kgisCode": "PS - 260",
+    "lat": 14.279377,
+    "lng": 77.173922
+  },
+  {
+    "name": "Thirumani PS",
+    "kgisCode": "PS - 261",
+    "lat": 14.241035,
+    "lng": 77.440481
+  },
+  {
+    "name": "Badavanahalli PS",
+    "kgisCode": "PS - 262",
+    "lat": 13.675661,
+    "lng": 77.06488
+  },
+  {
+    "name": "Pavagada PS",
+    "kgisCode": "PS - 263",
+    "lat": 14.100838,
+    "lng": 77.28372
+  },
+  {
+    "name": "kunigal PS",
+    "kgisCode": "PS - 264",
+    "lat": 13.021,
+    "lng": 77.019167
+  },
+  {
+    "name": "Amruthur PS",
+    "kgisCode": "PS - 265",
+    "lat": 12.9146,
+    "lng": 76.9346
+  },
+  {
+    "name": "Metagalli PS",
+    "kgisCode": "PS - 451",
+    "lat": 12.347134,
+    "lng": 76.630384
+  },
+  {
+    "name": "Katkol PS",
+    "kgisCode": "PS - 499",
+    "lat": 15.985412,
+    "lng": 75.136056
+  },
+  {
+    "name": "Ramadurga PS",
+    "kgisCode": "PS - 500",
+    "lat": 15.949315,
+    "lng": 75.294858
+  },
+  {
+    "name": "Murgod PS",
+    "kgisCode": "PS - 501",
+    "lat": 15.886679,
+    "lng": 74.926905
+  },
+  {
+    "name": "Soundatti PS",
+    "kgisCode": "PS - 502",
+    "lat": 15.763274,
+    "lng": 75.108016
+  },
+  {
+    "name": "Alnavar PS",
+    "kgisCode": "PS - 503",
+    "lat": 15.431669,
+    "lng": 74.740028
+  },
+  {
+    "name": "Dharwad Rural PS",
+    "kgisCode": "PS - 504",
+    "lat": 15.471818,
+    "lng": 74.987901
+  },
+  {
+    "name": "Garag PS",
+    "kgisCode": "PS - 505",
+    "lat": 15.570111,
+    "lng": 74.929333
+  },
+  {
+    "name": "Gudageri PS",
+    "kgisCode": "PS - 506",
+    "lat": 15.12149,
+    "lng": 75.362845
+  },
+  {
+    "name": "Dharwad Women PS",
+    "kgisCode": "PS - 507",
+    "lat": 15.471329,
+    "lng": 74.992006
+  },
+  {
+    "name": "Hubballi Rural PS",
+    "kgisCode": "PS - 508",
+    "lat": 15.350806,
+    "lng": 75.159694
+  },
+  {
+    "name": "Kalaghatagi PS",
+    "kgisCode": "PS - 509",
+    "lat": 15.174824,
+    "lng": 74.968939
+  },
+  {
+    "name": "Kundagol PS",
+    "kgisCode": "PS - 510",
+    "lat": 15.25975,
+    "lng": 75.240111
+  },
+  {
+    "name": "Navalgund PS",
+    "kgisCode": "PS - 513",
+    "lat": 15.556972,
+    "lng": 75.35836
+  },
+  {
+    "name": "Annigeri PS",
+    "kgisCode": "PS - 515",
+    "lat": 15.429389,
+    "lng": 75.433528
+  },
+  {
+    "name": "Betageri PS",
+    "kgisCode": "PS - 516",
+    "lat": 15.445262,
+    "lng": 75.646882
+  },
+  {
+    "name": "Betageri Extention PS",
+    "kgisCode": "PS - 517",
+    "lat": 15.427639,
+    "lng": 75.652214
+  },
+  {
+    "name": "Gadag Rural PS",
+    "kgisCode": "PS - 518",
+    "lat": 15.434402,
+    "lng": 75.63517
+  },
+  {
+    "name": "Mulagund PS",
+    "kgisCode": "PS - 519",
+    "lat": 15.282206,
+    "lng": 75.51812
+  },
+  {
+    "name": "Gadag Town PS",
+    "kgisCode": "PS - 520",
+    "lat": 15.429768,
+    "lng": 75.632724
+  },
+  {
+    "name": "Gadag Women PS",
+    "kgisCode": "PS - 521",
+    "lat": 15.429768,
+    "lng": 75.632724
+  },
+  {
+    "name": "Shirahatti PS",
+    "kgisCode": "PS - 522",
+    "lat": 15.237278,
+    "lng": 75.583111
+  },
+  {
+    "name": "Mundargi PS",
+    "kgisCode": "PS - 523",
+    "lat": 15.211,
+    "lng": 75.883806
+  },
+  {
+    "name": "Kallambella PS",
+    "kgisCode": "PS - 276",
+    "lat": 13.639812,
+    "lng": 76.937048
+  },
+  {
+    "name": "Chelur PS",
+    "kgisCode": "PS - 277",
+    "lat": 13.441667,
+    "lng": 76.906944
+  },
+  {
+    "name": "Gubbi PS",
+    "kgisCode": "PS - 278",
+    "lat": 13.309389,
+    "lng": 76.948535
+  },
+  {
+    "name": "Sira PS",
+    "kgisCode": "PS - 279",
+    "lat": 13.744167,
+    "lng": 76.903333
+  },
+  {
+    "name": "Challakere PS",
+    "kgisCode": "PS - 280",
+    "lat": 14.3147,
+    "lng": 76.6486
+  },
+  {
+    "name": "Parasurampura PS",
+    "kgisCode": "PS - 281",
+    "lat": 14.2552,
+    "lng": 76.8836
+  },
+  {
+    "name": "Thalak PS",
+    "kgisCode": "PS - 282",
+    "lat": 14.4482,
+    "lng": 76.6735
+  },
+  {
+    "name": "Rampura PS",
+    "kgisCode": "PS - 283",
+    "lat": 14.8848,
+    "lng": 76.7842
+  },
+  {
+    "name": "Bharamasagara PS",
+    "kgisCode": "PS - 284",
+    "lat": 14.3697,
+    "lng": 76.1923
+  },
+  {
+    "name": "Chitradurga Rural PS",
+    "kgisCode": "PS - 285",
+    "lat": 14.236,
+    "lng": 76.4039
+  },
+  {
+    "name": "Turuvanur (Jogi) PS",
+    "kgisCode": "PS - 286",
+    "lat": 14.403752,
+    "lng": 76.438554
+  },
+  {
+    "name": "Chitradurga Kote PS",
+    "kgisCode": "PS - 287",
+    "lat": 14.2175,
+    "lng": 76.3874
+  },
+  {
+    "name": "Chitradurga Extension PS",
+    "kgisCode": "PS - 288",
+    "lat": 14.22844,
+    "lng": 76.41321
+  },
+  {
+    "name": "Chitradurga Women PS",
+    "kgisCode": "PS - 289",
+    "lat": 14.22844,
+    "lng": 76.41321
+  },
+  {
+    "name": "Chikkajajur PS",
+    "kgisCode": "PS - 290",
+    "lat": 14.1275,
+    "lng": 76.1397
+  },
+  {
+    "name": "Chitrahalli Gate PS",
+    "kgisCode": "PS - 291",
+    "lat": 14.095852,
+    "lng": 76.272409
+  },
+  {
+    "name": "Holalkere PS",
+    "kgisCode": "PS - 292",
+    "lat": 14.04126,
+    "lng": 76.184713
+  },
+  {
+    "name": "Hiriyur Rural PS",
+    "kgisCode": "PS - 293",
+    "lat": 13.959327,
+    "lng": 76.610935
+  },
+  {
+    "name": "Hiriyur Town PS",
+    "kgisCode": "PS - 294",
+    "lat": 13.9447,
+    "lng": 76.6145
+  },
+  {
+    "name": "Hosadurga PS",
+    "kgisCode": "PS - 295",
+    "lat": 13.79795,
+    "lng": 76.28226
+  },
+  {
+    "name": "Srirampura PS",
+    "kgisCode": "PS - 296",
+    "lat": 13.6191,
+    "lng": 76.4205
+  },
+  {
+    "name": "Davanagere Extention PS",
+    "kgisCode": "PS - 297",
+    "lat": 14.464818,
+    "lng": 75.919836
+  },
+  {
+    "name": "K.T.J Nagar PS",
+    "kgisCode": "PS - 298",
+    "lat": 14.454097,
+    "lng": 75.924679
+  },
+  {
+    "name": "Vidyanagar PS",
+    "kgisCode": "PS - 299",
+    "lat": 14.434675,
+    "lng": 75.916073
+  },
+  {
+    "name": "Davangere Women PS",
+    "kgisCode": "PS - 300",
+    "lat": 14.465126,
+    "lng": 75.920173
+  },
+  {
+    "name": "Azad Nagar PS",
+    "kgisCode": "PS - 301",
+    "lat": 14.480899,
+    "lng": 75.925349
+  },
+  {
+    "name": "Gurmitkal PS",
+    "kgisCode": "PS - 423",
+    "lat": 16.865502,
+    "lng": 77.389429
+  },
+  {
+    "name": "Hunsagi PS",
+    "kgisCode": "PS - 424",
+    "lat": 16.456341,
+    "lng": 76.52852
+  },
+  {
+    "name": "Kodekal PS",
+    "kgisCode": "PS - 425",
+    "lat": 16.353917,
+    "lng": 76.406567
+  },
+  {
+    "name": "Kembhavi PS",
+    "kgisCode": "PS - 426",
+    "lat": 16.647739,
+    "lng": 76.532386
+  },
+  {
+    "name": "Narayanpur PS",
+    "kgisCode": "PS - 427",
+    "lat": 16.255679,
+    "lng": 76.368691
+  },
+  {
+    "name": "Saidapur PS",
+    "kgisCode": "PS - 428",
+    "lat": 16.574804,
+    "lng": 77.252274
+  },
+  {
+    "name": "Shahapur PS",
+    "kgisCode": "PS - 429",
+    "lat": 16.69948,
+    "lng": 76.841783
+  },
+  {
+    "name": "Shorapur PS",
+    "kgisCode": "PS - 430",
+    "lat": 16.525896,
+    "lng": 76.759465
+  },
+  {
+    "name": "Wadagera PS",
+    "kgisCode": "PS - 431",
+    "lat": 16.593072,
+    "lng": 77.100549
+  },
+  {
+    "name": "Yadgir Town PS",
+    "kgisCode": "PS - 432",
+    "lat": 16.771604,
+    "lng": 77.137846
+  },
+  {
+    "name": "Yadgir Rural PS",
+    "kgisCode": "PS - 433",
+    "lat": 16.762764,
+    "lng": 77.132348
+  },
+  {
+    "name": "Yadgir Women PS",
+    "kgisCode": "PS - 434",
+    "lat": 16.762764,
+    "lng": 77.132348
+  },
+  {
+    "name": "Alanahally PS",
+    "kgisCode": "PS - 436",
+    "lat": 12.307119,
+    "lng": 76.703769
+  },
+  {
+    "name": "Devaraja PS",
+    "kgisCode": "PS - 437",
+    "lat": 12.312823,
+    "lng": 76.649419
+  },
+  {
+    "name": "Lashkar PS",
+    "kgisCode": "PS - 438",
+    "lat": 12.314403,
+    "lng": 76.656792
+  },
+  {
+    "name": "Nazarbad PS",
+    "kgisCode": "PS - 439",
+    "lat": 12.308276,
+    "lng": 76.667327
+  },
+  {
+    "name": "Udayagiri PS",
+    "kgisCode": "PS - 440",
+    "lat": 12.32679,
+    "lng": 76.680944
+  },
+  {
+    "name": "Women PS Mysuru City",
+    "kgisCode": "PS - 441",
+    "lat": 12.301432,
+    "lng": 76.656821
+  },
+  {
+    "name": "Ashokpuram PS",
+    "kgisCode": "PS - 442",
+    "lat": 12.289306,
+    "lng": 76.631298
+  },
+  {
+    "name": "Krishnaraja PS",
+    "kgisCode": "PS - 443",
+    "lat": 12.29791,
+    "lng": 76.650296
+  },
+  {
+    "name": "Kuvempunagar PS",
+    "kgisCode": "PS - 444",
+    "lat": 12.286078,
+    "lng": 76.627722
+  },
+  {
+    "name": "Laxmipuram PS",
+    "kgisCode": "PS - 445",
+    "lat": 12.297736,
+    "lng": 76.642838
+  },
+  {
+    "name": "Saraswathipuram PS",
+    "kgisCode": "PS - 446",
+    "lat": 12.301749,
+    "lng": 76.623963
+  },
+  {
+    "name": "Vidyaranyarpuram PS",
+    "kgisCode": "PS - 447",
+    "lat": 12.263299,
+    "lng": 76.644632
+  },
+  {
+    "name": "Hebbal PS",
+    "kgisCode": "PS - 448",
+    "lat": 12.35327,
+    "lng": 76.616104
+  },
+  {
+    "name": "Jayalakshmipuram PS",
+    "kgisCode": "PS - 449",
+    "lat": 12.32369,
+    "lng": 76.612993
+  },
+  {
+    "name": "Mandi PS",
+    "kgisCode": "PS - 450",
+    "lat": 12.316337,
+    "lng": 76.654194
+  },
+  {
+    "name": "Naragund PS",
+    "kgisCode": "PS - 524",
+    "lat": 15.72129,
+    "lng": 75.388326
+  },
+  {
+    "name": "Gajendragad PS",
+    "kgisCode": "PS - 525",
+    "lat": 15.73592,
+    "lng": 75.96701
+  },
+  {
+    "name": "Naregal PS",
+    "kgisCode": "PS - 526",
+    "lat": 15.570253,
+    "lng": 75.805569
+  },
+  {
+    "name": "Ron PS",
+    "kgisCode": "PS - 527",
+    "lat": 15.692127,
+    "lng": 75.735676
+  },
+  {
+    "name": "Alamatti PS",
+    "kgisCode": "PS - 528",
+    "lat": 16.34302,
+    "lng": 75.89777
+  },
+  {
+    "name": "Basavan Bagewadi PS",
+    "kgisCode": "PS - 529",
+    "lat": 16.5721,
+    "lng": 75.969
+  },
+  {
+    "name": "Kolhar PS",
+    "kgisCode": "PS - 530",
+    "lat": 16.486941,
+    "lng": 75.686253
+  },
+  {
+    "name": "Managoli PS",
+    "kgisCode": "PS - 531",
+    "lat": 16.64865,
+    "lng": 75.81688
+  },
+  {
+    "name": "Nidagundi PS",
+    "kgisCode": "PS - 532",
+    "lat": 16.36418,
+    "lng": 75.92764
+  },
+  {
+    "name": "Muddebihal PS",
+    "kgisCode": "PS - 533",
+    "lat": 16.3491,
+    "lng": 76.12877
+  },
+  {
+    "name": "Talikot PS",
+    "kgisCode": "PS - 534",
+    "lat": 16.47981,
+    "lng": 76.31056
+  },
+  {
+    "name": "Babaleshwar PS",
+    "kgisCode": "PS - 535",
+    "lat": 16.66583,
+    "lng": 75.58032
+  },
+  {
+    "name": "Bijapur Rural PS",
+    "kgisCode": "PS - 536",
+    "lat": 16.8265,
+    "lng": 75.73869
+  },
+  {
+    "name": "Tikota PS",
+    "kgisCode": "PS - 537",
+    "lat": 16.844498,
+    "lng": 75.51793
+  },
+  {
+    "name": "Gandhi Chowk PS",
+    "kgisCode": "PS - 538",
+    "lat": 16.82882,
+    "lng": 75.71503
+  },
+  {
+    "name": "Adarsh Nagar PS",
+    "kgisCode": "PS - 539",
+    "lat": 16.85022,
+    "lng": 75.71071
+  },
+  {
+    "name": "Vijayapura APMC PS",
+    "kgisCode": "PS - 540",
+    "lat": 16.8356,
+    "lng": 75.72165
+  },
+  {
+    "name": "Golgumbaz PS",
+    "kgisCode": "PS - 541",
+    "lat": 16.82638,
+    "lng": 75.73872
+  },
+  {
+    "name": "Jalanagar PS",
+    "kgisCode": "PS - 542",
+    "lat": 16.8068,
+    "lng": 75.7266
+  },
+  {
+    "name": "Chadachan PS",
+    "kgisCode": "PS - 543",
+    "lat": 17.311206,
+    "lng": 75.66832
+  },
+  {
+    "name": "Zalaki PS",
+    "kgisCode": "PS - 544",
+    "lat": 17.251487,
+    "lng": 75.801274
+  },
+  {
+    "name": "Hortti PS",
+    "kgisCode": "PS - 545",
+    "lat": 17.1179,
+    "lng": 75.7849
+  },
+  {
+    "name": "Indi PS",
+    "kgisCode": "PS - 546",
+    "lat": 17.17691,
+    "lng": 75.95422
+  },
+  {
+    "name": "Almel PS",
+    "kgisCode": "PS - 547",
+    "lat": 17.090083,
+    "lng": 76.218782
+  },
+  {
+    "name": "Devara Hipparagi PS",
+    "kgisCode": "PS - 548",
+    "lat": 16.817805,
+    "lng": 76.06317
+  },
+  {
+    "name": "Kalkeri PS",
+    "kgisCode": "PS - 549",
+    "lat": 16.67108,
+    "lng": 76.30807
+  },
+  {
+    "name": "Sindagi PS",
+    "kgisCode": "PS - 550",
+    "lat": 16.921824,
+    "lng": 76.231617
+  },
+  {
+    "name": "Chamarajanagar East PS",
+    "kgisCode": "PS - 552",
+    "lat": 11.935022,
+    "lng": 76.962749
+  },
+  {
+    "name": "Chamarajanagar Rural PS",
+    "kgisCode": "PS - 553",
+    "lat": 11.926097,
+    "lng": 76.92982
+  },
+  {
+    "name": "Chamarajanagar Women PS",
+    "kgisCode": "PS - 554",
+    "lat": 11.936201,
+    "lng": 76.962923
+  },
+  {
+    "name": "Kuderu PS",
+    "kgisCode": "PS - 555",
+    "lat": 12.045709,
+    "lng": 76.93921
+  },
+  {
+    "name": "Santemaralli PS",
+    "kgisCode": "PS - 556",
+    "lat": 12.04348,
+    "lng": 76.977948
+  },
+  {
+    "name": "Chamarajanagar Town PS",
+    "kgisCode": "PS - 557",
+    "lat": 11.927153,
+    "lng": 76.936623
+  },
+  {
+    "name": "Begur PS",
+    "kgisCode": "PS - 558",
+    "lat": 11.934593,
+    "lng": 76.671146
+  },
+  {
+    "name": "Gundlupete PS",
+    "kgisCode": "PS - 559",
+    "lat": 11.811033,
+    "lng": 76.684746
+  },
+  {
+    "name": "Terakanambi PS",
+    "kgisCode": "PS - 560",
+    "lat": 11.818149,
+    "lng": 76.792633
+  },
+  {
+    "name": "Hanur PS",
+    "kgisCode": "PS - 561",
+    "lat": 12.088345,
+    "lng": 77.30076
+  },
+  {
+    "name": "Kollegala Rural PS",
+    "kgisCode": "PS - 562",
+    "lat": 12.157992,
+    "lng": 77.112592
+  },
+  {
+    "name": "Kollegala Town PS",
+    "kgisCode": "PS - 563",
+    "lat": 12.157405,
+    "lng": 77.109415
+  },
+  {
+    "name": "M.M. Hills PS",
+    "kgisCode": "PS - 564",
+    "lat": 12.030714,
+    "lng": 77.5914
+  },
+  {
+    "name": "Ramapura PS",
+    "kgisCode": "PS - 565",
+    "lat": 12.003718,
+    "lng": 77.397863
+  },
+  {
+    "name": "Mambali PS",
+    "kgisCode": "PS - 566",
+    "lat": 12.118468,
+    "lng": 77.074004
+  },
+  {
+    "name": "Yelandur PS",
+    "kgisCode": "PS - 567",
+    "lat": 12.053167,
+    "lng": 77.031453
+  },
+  {
+    "name": "Arasikere Rural PS",
+    "kgisCode": "PS - 568",
+    "lat": 13.312675,
+    "lng": 76.256993
+  },
+  {
+    "name": "Banavara PS",
+    "kgisCode": "PS - 569",
+    "lat": 13.404782,
+    "lng": 76.162881
+  },
+  {
+    "name": "Gandasi PS",
+    "kgisCode": "PS - 570",
+    "lat": 13.155786,
+    "lng": 76.304673
+  },
+  {
+    "name": "Javagal PS",
+    "kgisCode": "PS - 571",
+    "lat": 13.30206,
+    "lng": 76.056799
+  },
+  {
+    "name": "Arasikere Town PS",
+    "kgisCode": "PS - 572",
+    "lat": 13.312283,
+    "lng": 76.256881
+  },
+  {
+    "name": "Belur PS",
+    "kgisCode": "PS - 573",
+    "lat": 13.174192,
+    "lng": 75.875449
+  },
+  {
+    "name": "Halebeedu PS",
+    "kgisCode": "PS - 574",
+    "lat": 13.217303,
+    "lng": 75.993785
+  },
+  {
+    "name": "Hassan City PS",
+    "kgisCode": "PS - 575",
+    "lat": 13.003018,
+    "lng": 76.100573
+  },
+  {
+    "name": "Hassan Extention PS",
+    "kgisCode": "PS - 576",
+    "lat": 13.006944,
+    "lng": 76.113592
+  },
+  {
+    "name": "Hassan Women PS",
+    "kgisCode": "PS - 577",
+    "lat": 13.00282,
+    "lng": 76.10761
+  },
+  {
+    "name": "Pension Mohalla PS",
+    "kgisCode": "PS - 578",
+    "lat": 13.008908,
+    "lng": 76.095452
+  },
+  {
+    "name": "Dudda PS",
+    "kgisCode": "PS - 579",
+    "lat": 13.086272,
+    "lng": 76.204833
+  },
+  {
+    "name": "Goruru PS",
+    "kgisCode": "PS - 580",
+    "lat": 12.818432,
+    "lng": 76.061641
+  },
+  {
+    "name": "Hassan Rural PS",
+    "kgisCode": "PS - 581",
+    "lat": 13.010977,
+    "lng": 76.106263
+  },
+  {
+    "name": "Shanthigrama PS",
+    "kgisCode": "PS - 582",
+    "lat": 12.985158,
+    "lng": 76.217721
+  },
+  {
+    "name": "Arakalagud PS",
+    "kgisCode": "PS - 583",
+    "lat": 12.765886,
+    "lng": 76.057
+  },
+  {
+    "name": "Konanur PS",
+    "kgisCode": "PS - 584",
+    "lat": 12.629028,
+    "lng": 76.05456
+  },
+  {
+    "name": "Channarayapatna Rural PS",
+    "kgisCode": "PS - 585",
+    "lat": 12.9,
+    "lng": 76.39
+  },
+  {
+    "name": "Channarayapatna Town PS",
+    "kgisCode": "PS - 586",
+    "lat": 12.903317,
+    "lng": 76.389545
+  },
+  {
+    "name": "Hirisave PS",
+    "kgisCode": "PS - 587",
+    "lat": 12.943907,
+    "lng": 76.551151
+  },
+  {
+    "name": "Nuggehalli PS",
+    "kgisCode": "PS - 588",
+    "lat": 13.008617,
+    "lng": 76.47653
+  },
+  {
+    "name": "Shravanabelagola PS",
+    "kgisCode": "PS - 589",
+    "lat": 12.859784,
+    "lng": 76.483876
+  },
+  {
+    "name": "Hallymysore PS",
+    "kgisCode": "PS - 590",
+    "lat": 12.658461,
+    "lng": 76.258041
+  },
+  {
+    "name": "Holenarasipura Rural PS",
+    "kgisCode": "PS - 591",
+    "lat": 12.780773,
+    "lng": 76.247407
+  },
+  {
+    "name": "Holenarasipura Town PS",
+    "kgisCode": "PS - 592",
+    "lat": 12.783257,
+    "lng": 76.246418
+  },
+  {
+    "name": "Alur PS",
+    "kgisCode": "PS - 593",
+    "lat": 12.977353,
+    "lng": 75.98999
+  },
+  {
+    "name": "Sakaleshpura Rural PS",
+    "kgisCode": "PS - 594",
+    "lat": 12.94629,
+    "lng": 75.787113
+  },
+  {
+    "name": "Sakaleshpura Town PS",
+    "kgisCode": "PS - 595",
+    "lat": 12.945902,
+    "lng": 75.787991
+  },
+  {
+    "name": "Yeslur PS",
+    "kgisCode": "PS - 596",
+    "lat": 12.78104,
+    "lng": 75.858664
+  },
+  {
+    "name": "Kodagu Women PS",
+    "kgisCode": "PS - 597",
+    "lat": 12.42093,
+    "lng": 75.74048
+  },
+  {
+    "name": "Bhagamandala PS",
+    "kgisCode": "PS - 598",
+    "lat": 12.387089,
+    "lng": 75.534939
+  },
+  {
+    "name": "Madikeri Rural PS",
+    "kgisCode": "PS - 599",
+    "lat": 12.429657,
+    "lng": 75.725505
+  },
+  {
+    "name": "Napoklu PS",
+    "kgisCode": "PS - 600",
+    "lat": 12.310208,
+    "lng": 75.689361
+  },
+  {
+    "name": "Madikeri Town PS",
+    "kgisCode": "PS - 601",
+    "lat": 12.42093,
+    "lng": 75.74048
+  },
+  {
+    "name": "Siddapura PS",
+    "kgisCode": "PS - 602",
+    "lat": 12.298101,
+    "lng": 75.875627
+  },
+  {
+    "name": "Kushalanagar Rural PS",
+    "kgisCode": "PS - 603",
+    "lat": 12.484527,
+    "lng": 75.956565
+  },
+  {
+    "name": "Kushalnagar Town PS",
+    "kgisCode": "PS - 604",
+    "lat": 12.460277,
+    "lng": 75.962296
+  },
+  {
+    "name": "Sunticoppa PS",
+    "kgisCode": "PS - 605",
+    "lat": 12.4525,
+    "lng": 75.8289
+  },
+  {
+    "name": "T. Narasipura PS",
+    "kgisCode": "PS - 667",
+    "lat": 12.208267,
+    "lng": 76.898317
+  },
+  {
+    "name": "Talakadu PS",
+    "kgisCode": "PS - 668",
+    "lat": 12.189728,
+    "lng": 77.029528
+  },
+  {
+    "name": "Mysuru Women PS",
+    "kgisCode": "PS - 669",
+    "lat": 12.312678,
+    "lng": 76.664675
+  },
+  {
+    "name": "Aldur PS",
+    "kgisCode": "PS - 670",
+    "lat": 13.243247,
+    "lng": 75.65182
+  },
+  {
+    "name": "Chickmagalur Rural PS",
+    "kgisCode": "PS - 671",
+    "lat": 13.326077,
+    "lng": 75.797444
+  },
+  {
+    "name": "Mallanduru PS",
+    "kgisCode": "PS - 672",
+    "lat": 13.366472,
+    "lng": 75.659024
+  },
+  {
+    "name": "Basavanahalli PS",
+    "kgisCode": "PS - 673",
+    "lat": 13.32817,
+    "lng": 75.773586
+  },
+  {
+    "name": "Chickmagalur Town PS",
+    "kgisCode": "PS - 674",
+    "lat": 13.320542,
+    "lng": 75.775424
+  },
+  {
+    "name": "Balur PS",
+    "kgisCode": "PS - 675",
+    "lat": 13.153394,
+    "lng": 75.503146
+  },
+  {
+    "name": "Banakal PS",
+    "kgisCode": "PS - 676",
+    "lat": 13.137426,
+    "lng": 75.554486
+  },
+  {
+    "name": "Gonibeedu PS",
+    "kgisCode": "PS - 677",
+    "lat": 13.099921,
+    "lng": 75.708073
+  },
+  {
+    "name": "Mudigere PS",
+    "kgisCode": "PS - 678",
+    "lat": 13.13392,
+    "lng": 75.641794
+  },
+  {
+    "name": "Hariharapura PS",
+    "kgisCode": "PS - 679",
+    "lat": 13.519511,
+    "lng": 75.2992
+  },
+  {
+    "name": "Jayapura PS",
+    "kgisCode": "PS - 680",
+    "lat": 13.403303,
+    "lng": 75.373736
+  },
+  {
+    "name": "Koppa PS",
+    "kgisCode": "PS - 681",
+    "lat": 13.551121,
+    "lng": 75.363768
+  },
+  {
+    "name": "Kalasa PS",
+    "kgisCode": "PS - 682",
+    "lat": 13.24145,
+    "lng": 75.358982
+  },
+  {
+    "name": "Kuduremukh PS",
+    "kgisCode": "PS - 683",
+    "lat": 13.213955,
+    "lng": 75.252447
+  },
+  {
+    "name": "Balehonnur PS",
+    "kgisCode": "PS - 684",
+    "lat": 13.351184,
+    "lng": 75.465797
+  },
+  {
+    "name": "N.R. Pura PS",
+    "kgisCode": "PS - 685",
+    "lat": 13.614871,
+    "lng": 75.504166
+  },
+  {
+    "name": "Sringeri PS",
+    "kgisCode": "PS - 686",
+    "lat": 13.41886,
+    "lng": 75.253062
+  },
+  {
+    "name": "Birur PS",
+    "kgisCode": "PS - 687",
+    "lat": 13.599025,
+    "lng": 75.972407
+  },
+  {
+    "name": "Hubballi-Dharwad Women PS",
+    "kgisCode": "PS - 884",
+    "lat": 15.464388,
+    "lng": 74.997866
+  },
+  {
+    "name": "Kadaba PS",
+    "kgisCode": "PS - 885",
+    "lat": 12.742258,
+    "lng": 75.468038
+  },
+  {
+    "name": "Puttur Town PS",
+    "kgisCode": "PS - 886",
+    "lat": 12.762109,
+    "lng": 75.200189
+  },
+  {
+    "name": "Subramanya PS",
+    "kgisCode": "PS - 887",
+    "lat": 12.667603,
+    "lng": 75.612779
+  },
+  {
+    "name": "DK Women PS",
+    "kgisCode": "PS - 888",
+    "lat": 12.764557,
+    "lng": 75.198054
+  },
+  {
+    "name": "Doddaballapura Rural PS",
+    "kgisCode": "PS - 889",
+    "lat": 13.308413,
+    "lng": 77.537945
+  },
+  {
+    "name": "Kalaburagi City Women PS",
+    "kgisCode": "PS - 891",
+    "lat": 17.326437,
+    "lng": 76.836276
+  },
+  {
+    "name": "Kalaburagi City CENCrime PS",
+    "kgisCode": "PS - 892",
+    "lat": 17.327359,
+    "lng": 76.836945
+  },
+  {
+    "name": "Chennarayapatana PS",
+    "kgisCode": null,
+    "lat": 13.289769,
+    "lng": 77.799708
+  },
+  {
+    "name": "Mahalakshmipuram PS",
+    "kgisCode": null,
+    "lat": 13.002739,
+    "lng": 77.547308
+  },
+  {
+    "name": "Shankarpura PS",
+    "kgisCode": null,
+    "lat": 12.953608,
+    "lng": 77.569995
+  },
+  {
+    "name": "Suddaguntepalya PS",
+    "kgisCode": null,
+    "lat": 12.925779,
+    "lng": 77.607748
+  },
+  {
+    "name": "Belagavi Women PS",
+    "kgisCode": null,
+    "lat": 15.857791,
+    "lng": 74.50571
+  },
+  {
+    "name": "Hampi Tourism PS",
+    "kgisCode": null,
+    "lat": 15.334967,
+    "lng": 76.461379
+  },
+  {
+    "name": "Indi Rural PS",
+    "kgisCode": null,
+    "lat": 17.176895,
+    "lng": 75.954219
+  },
+  {
+    "name": "Kudagi PS",
+    "kgisCode": null,
+    "lat": 16.488855,
+    "lng": 75.834096
+  },
+  {
+    "name": "Vijayapura Women PS",
+    "kgisCode": null,
+    "lat": 16.828786,
+    "lng": 75.715029
+  },
+  {
+    "name": "Jewargi PS",
+    "kgisCode": null,
+    "lat": 17.015916,
+    "lng": 76.775798
+  },
+  {
+    "name": "Kalagi PS",
+    "kgisCode": null,
+    "lat": 17.216535,
+    "lng": 77.092448
+  },
+  {
+    "name": "New Extention PS",
+    "kgisCode": null,
+    "lat": 13.33867,
+    "lng": 77.109145
+  },
+  {
+    "name": "Bagalkot Women PS",
+    "kgisCode": null,
+    "lat": 16.11724,
+    "lng": 75.65572
+  },
+  {
+    "name": "Banahatti PS",
+    "kgisCode": null,
+    "lat": 16.477116,
+    "lng": 75.12331
+  },
+  {
+    "name": "Ilakal Rural PS",
+    "kgisCode": null,
+    "lat": 15.965675,
+    "lng": 76.111707
+  },
+  {
+    "name": "E and N Crime PS HD city",
+    "kgisCode": null,
+    "lat": 15.350625,
+    "lng": 75.13926
+  },
+  {
+    "name": "Champion Reefs  PS",
+    "kgisCode": null,
+    "lat": 12.958499,
+    "lng": 78.271027
+  },
+  {
+    "name": "Ramanagar CEN Crime PS",
+    "kgisCode": null,
+    "lat": 12.729699,
+    "lng": 77.285428
+  },
+  {
+    "name": "E and N Crime PS Mangaluru City",
+    "kgisCode": null,
+    "lat": 12.854969,
+    "lng": 74.83993
+  },
+  {
+    "name": "Belagavi City CEN Crime PS",
+    "kgisCode": null,
+    "lat": 15.873555,
+    "lng": 74.529618
+  },
+  {
+    "name": "ISD PS",
+    "kgisCode": null,
+    "lat": 12.969332,
+    "lng": 77.616757
+  },
+  {
+    "name": "Davanagere CEN Crime PS",
+    "kgisCode": null,
+    "lat": 14.459408,
+    "lng": 75.915379
+  },
+  {
+    "name": "Haveri CEN Crime PS",
+    "kgisCode": null,
+    "lat": 14.783907,
+    "lng": 75.388161
+  },
+  {
+    "name": "Gadag CEN Crime PS",
+    "kgisCode": null,
+    "lat": 15.429216,
+    "lng": 75.632629
+  },
+  {
+    "name": "Bengaluru CEN Crime PS",
+    "kgisCode": null,
+    "lat": 12.989832,
+    "lng": 77.591665
+  },
+  {
+    "name": "Central CEN Crime PS",
+    "kgisCode": null,
+    "lat": 12.966799,
+    "lng": 77.587172
+  },
+  {
+    "name": "East CEN Crime PS",
+    "kgisCode": null,
+    "lat": 12.987846,
+    "lng": 77.603634
+  },
+  {
+    "name": "North CEN Crime PS",
+    "kgisCode": null,
+    "lat": 13.01805,
+    "lng": 77.558417
+  },
+  {
+    "name": "NorthEast CEN Crime PS",
+    "kgisCode": null,
+    "lat": 13.056892,
+    "lng": 77.598541
+  },
+  {
+    "name": "South CEN Crime PS",
+    "kgisCode": null,
+    "lat": 12.936424,
+    "lng": 77.579217
+  },
+  {
+    "name": "SouthEast CEN Crime PS",
+    "kgisCode": null,
+    "lat": 12.941177,
+    "lng": 77.621411
+  },
+  {
+    "name": "West CEN Crime PS",
+    "kgisCode": null,
+    "lat": 12.985478,
+    "lng": 77.542536
+  },
+  {
+    "name": "Whitefield CEN Crime PS",
+    "kgisCode": null,
+    "lat": 12.97541,
+    "lng": 77.751126
+  },
+  {
+    "name": "Belagavi CEN Crime PS",
+    "kgisCode": null,
+    "lat": 15.873555,
+    "lng": 74.529618
+  },
+  {
+    "name": "Ballari CEN Crime PS",
+    "kgisCode": null,
+    "lat": 15.150574,
+    "lng": 76.929242
+  },
+  {
+    "name": "Bidar CEN Crime PS",
+    "kgisCode": null,
+    "lat": 17.909041,
+    "lng": 77.533346
+  },
+  {
+    "name": "Vijayapur CEN Crime PS",
+    "kgisCode": null,
+    "lat": 16.833578,
+    "lng": 75.707368
+  },
+  {
+    "name": "Kodagu CEN Crime PS",
+    "kgisCode": null,
+    "lat": 12.429695,
+    "lng": 75.72562
+  },
+  {
+    "name": "Dharwad CEN Crime PS",
+    "kgisCode": null,
+    "lat": 15.468277,
+    "lng": 74.98642
+  },
+  {
+    "name": "Kalaburagi CEN Crime PS",
+    "kgisCode": null,
+    "lat": 17.327865,
+    "lng": 76.837918
+  },
+  {
+    "name": "Hassan CEN Crime PS",
+    "kgisCode": null,
+    "lat": 13.312664,
+    "lng": 76.256992
+  },
+  {
+    "name": "Kolar CEN Crime PS",
+    "kgisCode": null,
+    "lat": 13.141659,
+    "lng": 78.136917
+  },
+  {
+    "name": "Mandya CEN Crime PS",
+    "kgisCode": null,
+    "lat": 12.526683,
+    "lng": 76.89072
+  },
+  {
+    "name": "Mysuru CEN Crime PS",
+    "kgisCode": null,
+    "lat": 12.314649,
+    "lng": 76.667468
+  },
+  {
+    "name": "Raichur CEN Crime PS",
+    "kgisCode": null,
+    "lat": 16.221292,
+    "lng": 77.355254
+  },
+  {
+    "name": "Shivamogga CEN Crime PS",
+    "kgisCode": null,
+    "lat": 13.932387,
+    "lng": 75.564528
+  },
+  {
+    "name": "DK CEN Crime PS",
+    "kgisCode": null,
+    "lat": 12.860433,
+    "lng": 74.838601
+  },
+  {
+    "name": "Tumkur CEN Crime PS",
+    "kgisCode": null,
+    "lat": 13.345218,
+    "lng": 77.103193
+  },
+  {
+    "name": "Chamarajanagar CEN Crime PS",
+    "kgisCode": null,
+    "lat": 11.936191,
+    "lng": 76.962921
+  },
+  {
+    "name": "Koppal CEN Crime PS",
+    "kgisCode": null,
+    "lat": 15.352447,
+    "lng": 76.150929
+  },
+  {
+    "name": "Udupi CEN Crime PS",
+    "kgisCode": null,
+    "lat": 13.332629,
+    "lng": 74.74833
+  },
+  {
+    "name": "Bagalkot CEN Crime PS",
+    "kgisCode": null,
+    "lat": 16.158571,
+    "lng": 75.664969
+  },
+  {
+    "name": "KGF CEN Crime PS",
+    "kgisCode": null,
+    "lat": 12.956099,
+    "lng": 78.272118
+  },
+  {
+    "name": "E and N Crime PS Mysuru City",
+    "kgisCode": null,
+    "lat": 12.320016,
+    "lng": 76.657866
+  },
+  {
+    "name": "Peresandra PS",
+    "kgisCode": null,
+    "lat": 13.589087,
+    "lng": 77.784273
+  },
+  {
+    "name": "Chitradurga CEN Crime PS",
+    "kgisCode": null,
+    "lat": 14.234648,
+    "lng": 76.405673
+  },
+  {
+    "name": "Chickmagalur CEN Crime PS",
+    "kgisCode": null,
+    "lat": 13.320129,
+    "lng": 75.77104
+  },
+  {
+    "name": "Bajpe PS",
+    "kgisCode": null,
+    "lat": 12.981182,
+    "lng": 74.892425
+  },
+  {
+    "name": "Barke PS",
+    "kgisCode": null,
+    "lat": 12.886815,
+    "lng": 74.83198
+  },
+  {
+    "name": "Budikote PS",
+    "kgisCode": null,
+    "lat": 12.906501,
+    "lng": 78.129687
+  },
+  {
+    "name": "Kyasamballi PS",
+    "kgisCode": null,
+    "lat": 12.952519,
+    "lng": 78.359357
+  },
+  {
+    "name": "CEN Crime PS Mysuru City",
+    "kgisCode": null,
+    "lat": 12.311822,
+    "lng": 76.66307
+  },
+  {
+    "name": "Choranuru PS",
+    "kgisCode": null,
+    "lat": 14.925963,
+    "lng": 76.529206
+  },
+  {
+    "name": "Govindapura PS",
+    "kgisCode": null,
+    "lat": 13.034459,
+    "lng": 77.619464
+  },
+  {
+    "name": "Govindaraja Nagar PS",
+    "kgisCode": null,
+    "lat": 12.972337,
+    "lng": 77.529219
+  },
+  {
+    "name": "Cyber Crime Police Station",
+    "kgisCode": null,
+    "lat": 12.982158,
+    "lng": 77.586251
+  },
+  {
+    "name": "CEN Crime PS Mangaluru City",
+    "kgisCode": null,
+    "lat": 12.9011,
+    "lng": 74.83589
+  },
+  {
+    "name": "Bengaluru Dist Women PS",
+    "kgisCode": null,
+    "lat": 13.307764,
+    "lng": 77.537864
+  },
+  {
+    "name": "Cyber Crime PS Mangaluru City",
+    "kgisCode": null,
+    "lat": 12.864155,
+    "lng": 74.833505
+  },
+  {
+    "name": "Byadarahalli PS",
+    "kgisCode": null,
+    "lat": 12.986961,
+    "lng": 77.491322
+  },
+  {
+    "name": "CEN Crime PS Hubballi Dharwad City",
+    "kgisCode": null,
+    "lat": 15.350649,
+    "lng": 75.139294
+  },
+  {
+    "name": "East Zone Women PS",
+    "kgisCode": null,
+    "lat": 12.988038,
+    "lng": 77.603738
+  },
+  {
+    "name": "Anandapura PS",
+    "kgisCode": null,
+    "lat": 14.07493,
+    "lng": 75.232758
+  }
+]
