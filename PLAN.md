@@ -862,20 +862,50 @@ reasons over it.*
       item, different label.
 - [x] **P5.6** ~~Citation guardrail in the tool schema~~ — done as **P9.1b**
       (see below), same item, different label.
-- [ ] **P5.7** *(added 2026-08-26 — user request)* **AI insights panel below
-      the map on `/crime-count` and `/crime-hotspots`** (needs P4.8's real
-      stats to exist first). Plain narrative prose via `llm.ts` (no
-      `tools`/`tool_choice` needed here — this is a summary, not a
-      structured finding), reasoning over real `getSummary`/`getCaseTypes`/
-      district-stats numbers: "Theft is up X% in Bengaluru Urban this
-      quarter while clearance held steady in Mysuru" - the PS's "Pattern &
-      Trend Discovery" and "Sociological... Predictive Dashboards" made
-      concrete for the two pages that most need it. Same honest caveat as
-      the rest of P4: reasoning over 19 real cases across 8 districts (pre-
-      P1.2) will read thin - a real number of cases, but not enough to
-      narrate convincingly. Worth shipping now regardless (labelled
-      "generated once" like P5.3b, same pattern), and gets materially
-      better the moment P1.2 lands, not blocked on it.
+- [x] **P5.7** ✅ **Done 2026-09-03.** AI insights panel on `/crime-count`
+      and `/crime-hotspots`. Original scope text above is stale in two real
+      ways, both corrected during the build, not assumed:
+      - **Not "generated once" like P5.3b — generated on demand, every
+        click.** P5.3b's build-time-baked pattern was right for its own
+        context (15 fixed authored scenarios); it would be WRONG now that
+        P10 made this app's case data live and mutable — a baked-in insight
+        would silently go stale the moment a real FIR is registered via
+        `POST /api/cases`. `CrimeInsightPanel.tsx`'s "Generate insight"
+        button calls GLM live, on the real numbers at click time — same
+        "always current" reasoning as P13.B's forecast panel.
+      - **The "no tools/tool_choice needed" plan didn't survive contact with
+        a real call.** Live-tested: with no `tools` at all, GLM-4.7
+        consistently produced a full draft/refine/review scratchpad
+        ("1. Analyze the Request... 3. Drafting... 6. Final Review") instead
+        of a clean answer, even when explicitly told not to — a genuinely
+        new failure mode, distinct from the documented `<think>`-tag case
+        `llm.ts` already strips (no `<think>` wrapper here at all, so that
+        stripping never engaged). Fixed by forcing the answer through a
+        single tool call (`write_briefing`) — the same "forced final answer"
+        pattern `askTools.ts`'s `RESPOND_TOOL`/P5.8 already proved reliable.
+      - **A second, real Zoho-side bug found and isolated along the way**:
+        the forced-specific-function form of `tool_choice`
+        (`{type:"function", function:{name:...}}`) makes this GLM endpoint's
+        gateway 400 with `MORE_THAN_MAX_LENGTH` / `"Error in processing
+        zoho-inputstream parameter"` — **regardless of payload size**,
+        reproduced with a two-word prompt and a one-field tool schema via a
+        direct `curl`. `toolChoice: "auto"` with exactly one tool and an
+        explicit "call `write_briefing` with…" instruction reliably gets the
+        same result without the bug.
+      Real data used, not thin: reasons over the full 12,000-case register
+      (P1.2's original "will read thin" caveat is long since moot),
+      statewide totals, year-over-year trend, crime-type totals, and
+      top/bottom-5 district clearance rates — real numbers only, with the
+      model explicitly told not to invent, estimate, or extrapolate beyond
+      what's given (the hallucination defense here is prompt-level, not a
+      citation guardrail like P5.4/P5.8 — stated honestly in the UI's own
+      caption, not hidden). `src/lib/crimeInsights.ts`,
+      `GET /api/crime-insight`, `CrimeInsightPanel.tsx` (shared between both
+      pages). Verified live end-to-end in dev with real `.env.local`
+      credentials: a real 4-sentence briefing citing only real figures
+      (e.g. "Bengaluru Urban leads all districts with 2,406 cases and a 51%
+      clearance rate, while Chamarajanagar reports the lowest clearance rate
+      at 45%"), zero scratchpad leakage, on both pages.
 - [x] **P5.8** Done (2026-08-29, subagent, `feature/p5-8-chatbot`, merged).
       Site-wide "Ask Anything" floating chat widget - `src/lib/askTools.ts`
       (6 real read tools wrapping `caseWorklist.ts`/`personFusion.ts`/

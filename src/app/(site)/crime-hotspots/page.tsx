@@ -1,5 +1,6 @@
 import PageShell from "@/components/PageShell";
 import CrimeHotspotsTabs from "@/components/crime-hotspots/CrimeHotspotsTabs";
+import CrimeInsightPanel from "@/components/crimeCount/CrimeInsightPanel";
 import { BASE_PATH } from "@/lib/basePath";
 
 // -----------------------------------------------------------------------------
@@ -10,6 +11,9 @@ import { BASE_PATH } from "@/lib/basePath";
 // they didn't read as real maps). Every figure traces back to
 // getCaseWorklist()/getDistrictStats()/getCrossDistrictFlows() via the
 // /crime-map/data/*.json Route Handlers each embed fetches.
+//
+// P5.7 (2026-09-03) adds the AI Insight panel below the map, shared with
+// /crime-count - see CrimeInsightPanel.tsx / crimeInsights.ts.
 // -----------------------------------------------------------------------------
 export const metadata = { title: "Crime Hotspots" };
 
@@ -26,6 +30,9 @@ export default function CrimeHotspotsPage() {
         choroplethSrc={`${BASE_PATH}/crime-map/choropleth.html`}
         flowsSrc={`${BASE_PATH}/crime-map/flows.html`}
       />
+      <div className="mt-6">
+        <CrimeInsightPanel />
+      </div>
     </PageShell>
   );
 }
