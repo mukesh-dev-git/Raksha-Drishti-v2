@@ -1,0 +1,153 @@
+unit,range,year,ipcCases
+Bagalkot,Northern Range,2022,2199
+Bagalkot,Northern Range,2023,2317
+Bagalkot,Northern Range,2024,2468
+Bagalkot,Northern Range,2025,2208
+Ballari,Ballari Range,2022,1792
+Ballari,Ballari Range,2023,2053
+Ballari,Ballari Range,2024,2500
+Ballari,Ballari Range,2025,1924
+Belagavi City,Commissionerate,2022,1721
+Belagavi City,Commissionerate,2023,1694
+Belagavi City,Commissionerate,2024,1680
+Belagavi City,Commissionerate,2025,1655
+Belagavi Dist,Northern Range,2022,4703
+Belagavi Dist,Northern Range,2023,4955
+Belagavi Dist,Northern Range,2024,4992
+Belagavi Dist,Northern Range,2025,4535
+Bengaluru City,Commissionerate,2022,28666
+Bengaluru City,Commissionerate,2023,41637
+Bengaluru City,Commissionerate,2024,42968
+Bengaluru City,Commissionerate,2025,37181
+Bengaluru Dist,Central Range,2022,6031
+Bengaluru Dist,Central Range,2023,7568
+Bengaluru Dist,Central Range,2024,7365
+Bengaluru Dist,Central Range,2025,6433
+Bengaluru South,Central Range,2025,3644
+Bidar,North Eastern Range,2022,3136
+Bidar,North Eastern Range,2023,3110
+Bidar,North Eastern Range,2024,3122
+Bidar,North Eastern Range,2025,3054
+Chamarajanagar,Southern Range,2022,1705
+Chamarajanagar,Southern Range,2023,1951
+Chamarajanagar,Southern Range,2024,2097
+Chamarajanagar,Southern Range,2025,2068
+Chikkaballapura,Central Range,2022,2577
+Chikkaballapura,Central Range,2023,2734
+Chikkaballapura,Central Range,2024,3072
+Chikkaballapura,Central Range,2025,2542
+Chikkamagaluru,Western Range,2022,2759
+Chikkamagaluru,Western Range,2023,3036
+Chikkamagaluru,Western Range,2024,2724
+Chikkamagaluru,Western Range,2025,2722
+Chitradurga,Eastern Range,2022,4057
+Chitradurga,Eastern Range,2023,4367
+Chitradurga,Eastern Range,2024,4811
+Chitradurga,Eastern Range,2025,4098
+Dakshina Kannada,Western Range,2022,1812
+Dakshina Kannada,Western Range,2023,1835
+Dakshina Kannada,Western Range,2024,1743
+Dakshina Kannada,Western Range,2025,1816
+Davanagere,Eastern Range,2022,3396
+Davanagere,Eastern Range,2023,3755
+Davanagere,Eastern Range,2024,3525
+Davanagere,Eastern Range,2025,3385
+Dharwad,Northern Range,2022,1193
+Dharwad,Northern Range,2023,1237
+Dharwad,Northern Range,2024,1294
+Dharwad,Northern Range,2025,1016
+Gadag,Northern Range,2022,1060
+Gadag,Northern Range,2023,1229
+Gadag,Northern Range,2024,1468
+Gadag,Northern Range,2025,1043
+Hassan,Southern Range,2022,4652
+Hassan,Southern Range,2023,5163
+Hassan,Southern Range,2024,5120
+Hassan,Southern Range,2025,4781
+Haveri,Eastern Range,2022,2409
+Haveri,Eastern Range,2023,2519
+Haveri,Eastern Range,2024,3065
+Haveri,Eastern Range,2025,2406
+Hubballi Dharwad City,Commissionerate,2022,2006
+Hubballi Dharwad City,Commissionerate,2023,1776
+Hubballi Dharwad City,Commissionerate,2024,2055
+Hubballi Dharwad City,Commissionerate,2025,1488
+K.G.F,Central Range,2022,855
+K.G.F,Central Range,2023,836
+K.G.F,Central Range,2024,855
+K.G.F,Central Range,2025,782
+Kalaburagi,North Eastern Range,2022,2462
+Kalaburagi,North Eastern Range,2023,2555
+Kalaburagi,North Eastern Range,2024,2904
+Kalaburagi,North Eastern Range,2025,2683
+Kalaburagi City,Commissionerate,2022,1768
+Kalaburagi City,Commissionerate,2023,2112
+Kalaburagi City,Commissionerate,2024,1812
+Kalaburagi City,Commissionerate,2025,1730
+Karnataka Railways,Statewide function,2022,1296
+Karnataka Railways,Statewide function,2023,928
+Karnataka Railways,Statewide function,2024,824
+Karnataka Railways,Statewide function,2025,662
+Kodagu,Southern Range,2022,1355
+Kodagu,Southern Range,2023,1576
+Kodagu,Southern Range,2024,1431
+Kodagu,Southern Range,2025,1724
+Kolar,Central Range,2022,2417
+Kolar,Central Range,2023,2552
+Kolar,Central Range,2024,2273
+Kolar,Central Range,2025,2245
+Koppal,Ballari Range,2022,2175
+Koppal,Ballari Range,2023,1819
+Koppal,Ballari Range,2024,2238
+Koppal,Ballari Range,2025,1945
+Mandya,Southern Range,2022,4830
+Mandya,Southern Range,2023,4932
+Mandya,Southern Range,2024,4452
+Mandya,Southern Range,2025,4780
+Mangaluru City,Commissionerate,2022,1979
+Mangaluru City,Commissionerate,2023,2122
+Mangaluru City,Commissionerate,2024,2208
+Mangaluru City,Commissionerate,2025,2278
+Mysuru City,Commissionerate,2022,2658
+Mysuru City,Commissionerate,2023,2553
+Mysuru City,Commissionerate,2024,2688
+Mysuru City,Commissionerate,2025,2224
+Mysuru Dist,Southern Range,2022,4315
+Mysuru Dist,Southern Range,2023,4542
+Mysuru Dist,Southern Range,2024,4793
+Mysuru Dist,Southern Range,2025,4952
+Raichur,Ballari Range,2022,2577
+Raichur,Ballari Range,2023,2642
+Raichur,Ballari Range,2024,3513
+Raichur,Ballari Range,2025,2813
+Ramanagara,Central Range,2022,4155
+Ramanagara,Central Range,2023,4163
+Ramanagara,Central Range,2024,3892
+Shivamogga,Eastern Range,2022,4591
+Shivamogga,Eastern Range,2023,4654
+Shivamogga,Eastern Range,2024,4756
+Shivamogga,Eastern Range,2025,4840
+Tumakuru,Central Range,2022,5520
+Tumakuru,Central Range,2023,6440
+Tumakuru,Central Range,2024,6499
+Tumakuru,Central Range,2025,5961
+Udupi,Western Range,2022,2342
+Udupi,Western Range,2023,2444
+Udupi,Western Range,2024,2594
+Udupi,Western Range,2025,2249
+Uttara Kannada,Western Range,2022,2323
+Uttara Kannada,Western Range,2023,2460
+Uttara Kannada,Western Range,2024,2751
+Uttara Kannada,Western Range,2025,2334
+Vijayanagara,Ballari Range,2022,1795
+Vijayanagara,Ballari Range,2023,1837
+Vijayanagara,Ballari Range,2024,2269
+Vijayanagara,Ballari Range,2025,1781
+Vijayapur,Northern Range,2022,2858
+Vijayapur,Northern Range,2023,3103
+Vijayapur,Northern Range,2024,3333
+Vijayapur,Northern Range,2025,3062
+Yadgir,North Eastern Range,2022,1316
+Yadgir,North Eastern Range,2023,1442
+Yadgir,North Eastern Range,2024,1968
+Yadgir,North Eastern Range,2025,1622
