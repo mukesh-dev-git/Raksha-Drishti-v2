@@ -1,0 +1,1218 @@
+[
+  {
+    "unit": "Bagalkot",
+    "range": "Northern Range",
+    "year": 2022,
+    "ipcCases": 2199,
+    "sllCases": 735,
+    "total": 2934
+  },
+  {
+    "unit": "Bagalkot",
+    "range": "Northern Range",
+    "year": 2023,
+    "ipcCases": 2317,
+    "sllCases": 985,
+    "total": 3302
+  },
+  {
+    "unit": "Bagalkot",
+    "range": "Northern Range",
+    "year": 2024,
+    "ipcCases": 2468,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Bagalkot",
+    "range": "Northern Range",
+    "year": 2025,
+    "ipcCases": 2208,
+    "sllCases": 1362,
+    "total": 3570
+  },
+  {
+    "unit": "Ballari",
+    "range": "Ballari Range",
+    "year": 2022,
+    "ipcCases": 1792,
+    "sllCases": 1434,
+    "total": 3226
+  },
+  {
+    "unit": "Ballari",
+    "range": "Ballari Range",
+    "year": 2023,
+    "ipcCases": 2053,
+    "sllCases": 1386,
+    "total": 3439
+  },
+  {
+    "unit": "Ballari",
+    "range": "Ballari Range",
+    "year": 2024,
+    "ipcCases": 2500,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Ballari",
+    "range": "Ballari Range",
+    "year": 2025,
+    "ipcCases": 1924,
+    "sllCases": 1961,
+    "total": 3885
+  },
+  {
+    "unit": "Belagavi City",
+    "range": "Commissionerate",
+    "year": 2022,
+    "ipcCases": 1721,
+    "sllCases": 406,
+    "total": 2127
+  },
+  {
+    "unit": "Belagavi City",
+    "range": "Commissionerate",
+    "year": 2023,
+    "ipcCases": 1694,
+    "sllCases": 393,
+    "total": 2087
+  },
+  {
+    "unit": "Belagavi City",
+    "range": "Commissionerate",
+    "year": 2024,
+    "ipcCases": 1680,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Belagavi City",
+    "range": "Commissionerate",
+    "year": 2025,
+    "ipcCases": 1655,
+    "sllCases": 652,
+    "total": 2307
+  },
+  {
+    "unit": "Belagavi Dist",
+    "range": "Northern Range",
+    "year": 2022,
+    "ipcCases": 4703,
+    "sllCases": 1324,
+    "total": 6027
+  },
+  {
+    "unit": "Belagavi Dist",
+    "range": "Northern Range",
+    "year": 2023,
+    "ipcCases": 4955,
+    "sllCases": 1830,
+    "total": 6785
+  },
+  {
+    "unit": "Belagavi Dist",
+    "range": "Northern Range",
+    "year": 2024,
+    "ipcCases": 4992,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Belagavi Dist",
+    "range": "Northern Range",
+    "year": 2025,
+    "ipcCases": 4535,
+    "sllCases": 2059,
+    "total": 6594
+  },
+  {
+    "unit": "Bengaluru City",
+    "range": "Commissionerate",
+    "year": 2022,
+    "ipcCases": 28666,
+    "sllCases": 17521,
+    "total": 46187
+  },
+  {
+    "unit": "Bengaluru City",
+    "range": "Commissionerate",
+    "year": 2023,
+    "ipcCases": 41637,
+    "sllCases": 26883,
+    "total": 68520
+  },
+  {
+    "unit": "Bengaluru City",
+    "range": "Commissionerate",
+    "year": 2024,
+    "ipcCases": 42968,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Bengaluru City",
+    "range": "Commissionerate",
+    "year": 2025,
+    "ipcCases": 37181,
+    "sllCases": 19291,
+    "total": 56472
+  },
+  {
+    "unit": "Bengaluru Dist",
+    "range": "Central Range",
+    "year": 2022,
+    "ipcCases": 6031,
+    "sllCases": 961,
+    "total": 6992
+  },
+  {
+    "unit": "Bengaluru Dist",
+    "range": "Central Range",
+    "year": 2023,
+    "ipcCases": 7568,
+    "sllCases": 1853,
+    "total": 9421
+  },
+  {
+    "unit": "Bengaluru Dist",
+    "range": "Central Range",
+    "year": 2024,
+    "ipcCases": 7365,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Bengaluru Dist",
+    "range": "Central Range",
+    "year": 2025,
+    "ipcCases": 6433,
+    "sllCases": 1187,
+    "total": 7620
+  },
+  {
+    "unit": "Bengaluru South",
+    "range": "Central Range",
+    "year": 2025,
+    "ipcCases": 3644,
+    "sllCases": 936,
+    "total": 4580
+  },
+  {
+    "unit": "Bidar",
+    "range": "North Eastern Range",
+    "year": 2022,
+    "ipcCases": 3136,
+    "sllCases": 886,
+    "total": 4022
+  },
+  {
+    "unit": "Bidar",
+    "range": "North Eastern Range",
+    "year": 2023,
+    "ipcCases": 3110,
+    "sllCases": 1224,
+    "total": 4334
+  },
+  {
+    "unit": "Bidar",
+    "range": "North Eastern Range",
+    "year": 2024,
+    "ipcCases": 3122,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Bidar",
+    "range": "North Eastern Range",
+    "year": 2025,
+    "ipcCases": 3054,
+    "sllCases": 1172,
+    "total": 4226
+  },
+  {
+    "unit": "Chamarajanagar",
+    "range": "Southern Range",
+    "year": 2022,
+    "ipcCases": 1705,
+    "sllCases": 668,
+    "total": 2373
+  },
+  {
+    "unit": "Chamarajanagar",
+    "range": "Southern Range",
+    "year": 2023,
+    "ipcCases": 1951,
+    "sllCases": 717,
+    "total": 2668
+  },
+  {
+    "unit": "Chamarajanagar",
+    "range": "Southern Range",
+    "year": 2024,
+    "ipcCases": 2097,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Chamarajanagar",
+    "range": "Southern Range",
+    "year": 2025,
+    "ipcCases": 2068,
+    "sllCases": 844,
+    "total": 2912
+  },
+  {
+    "unit": "Chikkaballapura",
+    "range": "Central Range",
+    "year": 2022,
+    "ipcCases": 2577,
+    "sllCases": 1743,
+    "total": 4320
+  },
+  {
+    "unit": "Chikkaballapura",
+    "range": "Central Range",
+    "year": 2023,
+    "ipcCases": 2734,
+    "sllCases": 1223,
+    "total": 3957
+  },
+  {
+    "unit": "Chikkaballapura",
+    "range": "Central Range",
+    "year": 2024,
+    "ipcCases": 3072,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Chikkaballapura",
+    "range": "Central Range",
+    "year": 2025,
+    "ipcCases": 2542,
+    "sllCases": 1619,
+    "total": 4161
+  },
+  {
+    "unit": "Chikkamagaluru",
+    "range": "Western Range",
+    "year": 2022,
+    "ipcCases": 2759,
+    "sllCases": 1096,
+    "total": 3855
+  },
+  {
+    "unit": "Chikkamagaluru",
+    "range": "Western Range",
+    "year": 2023,
+    "ipcCases": 3036,
+    "sllCases": 1211,
+    "total": 4247
+  },
+  {
+    "unit": "Chikkamagaluru",
+    "range": "Western Range",
+    "year": 2024,
+    "ipcCases": 2724,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Chikkamagaluru",
+    "range": "Western Range",
+    "year": 2025,
+    "ipcCases": 2722,
+    "sllCases": 1488,
+    "total": 4210
+  },
+  {
+    "unit": "Chitradurga",
+    "range": "Eastern Range",
+    "year": 2022,
+    "ipcCases": 4057,
+    "sllCases": 1264,
+    "total": 5321
+  },
+  {
+    "unit": "Chitradurga",
+    "range": "Eastern Range",
+    "year": 2023,
+    "ipcCases": 4367,
+    "sllCases": 1545,
+    "total": 5912
+  },
+  {
+    "unit": "Chitradurga",
+    "range": "Eastern Range",
+    "year": 2024,
+    "ipcCases": 4811,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Chitradurga",
+    "range": "Eastern Range",
+    "year": 2025,
+    "ipcCases": 4098,
+    "sllCases": 1740,
+    "total": 5838
+  },
+  {
+    "unit": "Dakshina Kannada",
+    "range": "Western Range",
+    "year": 2022,
+    "ipcCases": 1812,
+    "sllCases": 266,
+    "total": 2078
+  },
+  {
+    "unit": "Dakshina Kannada",
+    "range": "Western Range",
+    "year": 2023,
+    "ipcCases": 1835,
+    "sllCases": 375,
+    "total": 2210
+  },
+  {
+    "unit": "Dakshina Kannada",
+    "range": "Western Range",
+    "year": 2024,
+    "ipcCases": 1743,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Dakshina Kannada",
+    "range": "Western Range",
+    "year": 2025,
+    "ipcCases": 1816,
+    "sllCases": 417,
+    "total": 2233
+  },
+  {
+    "unit": "Davanagere",
+    "range": "Eastern Range",
+    "year": 2022,
+    "ipcCases": 3396,
+    "sllCases": 995,
+    "total": 4391
+  },
+  {
+    "unit": "Davanagere",
+    "range": "Eastern Range",
+    "year": 2023,
+    "ipcCases": 3755,
+    "sllCases": 1170,
+    "total": 4925
+  },
+  {
+    "unit": "Davanagere",
+    "range": "Eastern Range",
+    "year": 2024,
+    "ipcCases": 3525,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Davanagere",
+    "range": "Eastern Range",
+    "year": 2025,
+    "ipcCases": 3385,
+    "sllCases": 1386,
+    "total": 4771
+  },
+  {
+    "unit": "Dharwad",
+    "range": "Northern Range",
+    "year": 2022,
+    "ipcCases": 1193,
+    "sllCases": 536,
+    "total": 1729
+  },
+  {
+    "unit": "Dharwad",
+    "range": "Northern Range",
+    "year": 2023,
+    "ipcCases": 1237,
+    "sllCases": 571,
+    "total": 1808
+  },
+  {
+    "unit": "Dharwad",
+    "range": "Northern Range",
+    "year": 2024,
+    "ipcCases": 1294,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Dharwad",
+    "range": "Northern Range",
+    "year": 2025,
+    "ipcCases": 1016,
+    "sllCases": 625,
+    "total": 1641
+  },
+  {
+    "unit": "Gadag",
+    "range": "Northern Range",
+    "year": 2022,
+    "ipcCases": 1060,
+    "sllCases": 856,
+    "total": 1916
+  },
+  {
+    "unit": "Gadag",
+    "range": "Northern Range",
+    "year": 2023,
+    "ipcCases": 1229,
+    "sllCases": 958,
+    "total": 2187
+  },
+  {
+    "unit": "Gadag",
+    "range": "Northern Range",
+    "year": 2024,
+    "ipcCases": 1468,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Gadag",
+    "range": "Northern Range",
+    "year": 2025,
+    "ipcCases": 1043,
+    "sllCases": 1225,
+    "total": 2268
+  },
+  {
+    "unit": "Hassan",
+    "range": "Southern Range",
+    "year": 2022,
+    "ipcCases": 4652,
+    "sllCases": 1189,
+    "total": 5841
+  },
+  {
+    "unit": "Hassan",
+    "range": "Southern Range",
+    "year": 2023,
+    "ipcCases": 5163,
+    "sllCases": 1200,
+    "total": 6363
+  },
+  {
+    "unit": "Hassan",
+    "range": "Southern Range",
+    "year": 2024,
+    "ipcCases": 5120,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Hassan",
+    "range": "Southern Range",
+    "year": 2025,
+    "ipcCases": 4781,
+    "sllCases": 1366,
+    "total": 6147
+  },
+  {
+    "unit": "Haveri",
+    "range": "Eastern Range",
+    "year": 2022,
+    "ipcCases": 2409,
+    "sllCases": 767,
+    "total": 3176
+  },
+  {
+    "unit": "Haveri",
+    "range": "Eastern Range",
+    "year": 2023,
+    "ipcCases": 2519,
+    "sllCases": 885,
+    "total": 3404
+  },
+  {
+    "unit": "Haveri",
+    "range": "Eastern Range",
+    "year": 2024,
+    "ipcCases": 3065,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Haveri",
+    "range": "Eastern Range",
+    "year": 2025,
+    "ipcCases": 2406,
+    "sllCases": 1155,
+    "total": 3561
+  },
+  {
+    "unit": "Hubballi Dharwad City",
+    "range": "Commissionerate",
+    "year": 2022,
+    "ipcCases": 2006,
+    "sllCases": 1139,
+    "total": 3145
+  },
+  {
+    "unit": "Hubballi Dharwad City",
+    "range": "Commissionerate",
+    "year": 2023,
+    "ipcCases": 1776,
+    "sllCases": 1289,
+    "total": 3065
+  },
+  {
+    "unit": "Hubballi Dharwad City",
+    "range": "Commissionerate",
+    "year": 2024,
+    "ipcCases": 2055,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Hubballi Dharwad City",
+    "range": "Commissionerate",
+    "year": 2025,
+    "ipcCases": 1488,
+    "sllCases": 1160,
+    "total": 2648
+  },
+  {
+    "unit": "K.G.F",
+    "range": "Central Range",
+    "year": 2022,
+    "ipcCases": 855,
+    "sllCases": 370,
+    "total": 1225
+  },
+  {
+    "unit": "K.G.F",
+    "range": "Central Range",
+    "year": 2023,
+    "ipcCases": 836,
+    "sllCases": 506,
+    "total": 1342
+  },
+  {
+    "unit": "K.G.F",
+    "range": "Central Range",
+    "year": 2024,
+    "ipcCases": 855,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "K.G.F",
+    "range": "Central Range",
+    "year": 2025,
+    "ipcCases": 782,
+    "sllCases": 360,
+    "total": 1142
+  },
+  {
+    "unit": "Kalaburagi",
+    "range": "North Eastern Range",
+    "year": 2022,
+    "ipcCases": 2462,
+    "sllCases": 850,
+    "total": 3312
+  },
+  {
+    "unit": "Kalaburagi",
+    "range": "North Eastern Range",
+    "year": 2023,
+    "ipcCases": 2555,
+    "sllCases": 1114,
+    "total": 3669
+  },
+  {
+    "unit": "Kalaburagi",
+    "range": "North Eastern Range",
+    "year": 2024,
+    "ipcCases": 2904,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Kalaburagi",
+    "range": "North Eastern Range",
+    "year": 2025,
+    "ipcCases": 2683,
+    "sllCases": 1025,
+    "total": 3708
+  },
+  {
+    "unit": "Kalaburagi City",
+    "range": "Commissionerate",
+    "year": 2022,
+    "ipcCases": 1768,
+    "sllCases": 582,
+    "total": 2350
+  },
+  {
+    "unit": "Kalaburagi City",
+    "range": "Commissionerate",
+    "year": 2023,
+    "ipcCases": 2112,
+    "sllCases": 629,
+    "total": 2741
+  },
+  {
+    "unit": "Kalaburagi City",
+    "range": "Commissionerate",
+    "year": 2024,
+    "ipcCases": 1812,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Kalaburagi City",
+    "range": "Commissionerate",
+    "year": 2025,
+    "ipcCases": 1730,
+    "sllCases": 1010,
+    "total": 2740
+  },
+  {
+    "unit": "Karnataka Railways",
+    "range": "Statewide function",
+    "year": 2022,
+    "ipcCases": 1296,
+    "sllCases": 57,
+    "total": 1353
+  },
+  {
+    "unit": "Karnataka Railways",
+    "range": "Statewide function",
+    "year": 2023,
+    "ipcCases": 928,
+    "sllCases": 95,
+    "total": 1023
+  },
+  {
+    "unit": "Karnataka Railways",
+    "range": "Statewide function",
+    "year": 2024,
+    "ipcCases": 824,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Karnataka Railways",
+    "range": "Statewide function",
+    "year": 2025,
+    "ipcCases": 662,
+    "sllCases": 138,
+    "total": 800
+  },
+  {
+    "unit": "Kodagu",
+    "range": "Southern Range",
+    "year": 2022,
+    "ipcCases": 1355,
+    "sllCases": 284,
+    "total": 1639
+  },
+  {
+    "unit": "Kodagu",
+    "range": "Southern Range",
+    "year": 2023,
+    "ipcCases": 1576,
+    "sllCases": 535,
+    "total": 2111
+  },
+  {
+    "unit": "Kodagu",
+    "range": "Southern Range",
+    "year": 2024,
+    "ipcCases": 1431,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Kodagu",
+    "range": "Southern Range",
+    "year": 2025,
+    "ipcCases": 1724,
+    "sllCases": 600,
+    "total": 2324
+  },
+  {
+    "unit": "Kolar",
+    "range": "Central Range",
+    "year": 2022,
+    "ipcCases": 2417,
+    "sllCases": 360,
+    "total": 2777
+  },
+  {
+    "unit": "Kolar",
+    "range": "Central Range",
+    "year": 2023,
+    "ipcCases": 2552,
+    "sllCases": 628,
+    "total": 3180
+  },
+  {
+    "unit": "Kolar",
+    "range": "Central Range",
+    "year": 2024,
+    "ipcCases": 2273,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Kolar",
+    "range": "Central Range",
+    "year": 2025,
+    "ipcCases": 2245,
+    "sllCases": 505,
+    "total": 2750
+  },
+  {
+    "unit": "Koppal",
+    "range": "Ballari Range",
+    "year": 2022,
+    "ipcCases": 2175,
+    "sllCases": 893,
+    "total": 3068
+  },
+  {
+    "unit": "Koppal",
+    "range": "Ballari Range",
+    "year": 2023,
+    "ipcCases": 1819,
+    "sllCases": 927,
+    "total": 2746
+  },
+  {
+    "unit": "Koppal",
+    "range": "Ballari Range",
+    "year": 2024,
+    "ipcCases": 2238,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Koppal",
+    "range": "Ballari Range",
+    "year": 2025,
+    "ipcCases": 1945,
+    "sllCases": 1255,
+    "total": 3200
+  },
+  {
+    "unit": "Mandya",
+    "range": "Southern Range",
+    "year": 2022,
+    "ipcCases": 4830,
+    "sllCases": 781,
+    "total": 5611
+  },
+  {
+    "unit": "Mandya",
+    "range": "Southern Range",
+    "year": 2023,
+    "ipcCases": 4932,
+    "sllCases": 1032,
+    "total": 5964
+  },
+  {
+    "unit": "Mandya",
+    "range": "Southern Range",
+    "year": 2024,
+    "ipcCases": 4452,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Mandya",
+    "range": "Southern Range",
+    "year": 2025,
+    "ipcCases": 4780,
+    "sllCases": 1150,
+    "total": 5930
+  },
+  {
+    "unit": "Mangaluru City",
+    "range": "Commissionerate",
+    "year": 2022,
+    "ipcCases": 1979,
+    "sllCases": 686,
+    "total": 2665
+  },
+  {
+    "unit": "Mangaluru City",
+    "range": "Commissionerate",
+    "year": 2023,
+    "ipcCases": 2122,
+    "sllCases": 1276,
+    "total": 3398
+  },
+  {
+    "unit": "Mangaluru City",
+    "range": "Commissionerate",
+    "year": 2024,
+    "ipcCases": 2208,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Mangaluru City",
+    "range": "Commissionerate",
+    "year": 2025,
+    "ipcCases": 2278,
+    "sllCases": 1205,
+    "total": 3483
+  },
+  {
+    "unit": "Mysuru City",
+    "range": "Commissionerate",
+    "year": 2022,
+    "ipcCases": 2658,
+    "sllCases": 647,
+    "total": 3305
+  },
+  {
+    "unit": "Mysuru City",
+    "range": "Commissionerate",
+    "year": 2023,
+    "ipcCases": 2553,
+    "sllCases": 716,
+    "total": 3269
+  },
+  {
+    "unit": "Mysuru City",
+    "range": "Commissionerate",
+    "year": 2024,
+    "ipcCases": 2688,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Mysuru City",
+    "range": "Commissionerate",
+    "year": 2025,
+    "ipcCases": 2224,
+    "sllCases": 1040,
+    "total": 3264
+  },
+  {
+    "unit": "Mysuru Dist",
+    "range": "Southern Range",
+    "year": 2022,
+    "ipcCases": 4315,
+    "sllCases": 1088,
+    "total": 5403
+  },
+  {
+    "unit": "Mysuru Dist",
+    "range": "Southern Range",
+    "year": 2023,
+    "ipcCases": 4542,
+    "sllCases": 882,
+    "total": 5424
+  },
+  {
+    "unit": "Mysuru Dist",
+    "range": "Southern Range",
+    "year": 2024,
+    "ipcCases": 4793,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Mysuru Dist",
+    "range": "Southern Range",
+    "year": 2025,
+    "ipcCases": 4952,
+    "sllCases": 912,
+    "total": 5864
+  },
+  {
+    "unit": "Raichur",
+    "range": "Ballari Range",
+    "year": 2022,
+    "ipcCases": 2577,
+    "sllCases": 1348,
+    "total": 3925
+  },
+  {
+    "unit": "Raichur",
+    "range": "Ballari Range",
+    "year": 2023,
+    "ipcCases": 2642,
+    "sllCases": 1445,
+    "total": 4087
+  },
+  {
+    "unit": "Raichur",
+    "range": "Ballari Range",
+    "year": 2024,
+    "ipcCases": 3513,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Raichur",
+    "range": "Ballari Range",
+    "year": 2025,
+    "ipcCases": 2813,
+    "sllCases": 1458,
+    "total": 4271
+  },
+  {
+    "unit": "Ramanagara",
+    "range": "Central Range",
+    "year": 2022,
+    "ipcCases": 4155,
+    "sllCases": 1720,
+    "total": 5875
+  },
+  {
+    "unit": "Ramanagara",
+    "range": "Central Range",
+    "year": 2023,
+    "ipcCases": 4163,
+    "sllCases": 1089,
+    "total": 5252
+  },
+  {
+    "unit": "Ramanagara",
+    "range": "Central Range",
+    "year": 2024,
+    "ipcCases": 3892,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Shivamogga",
+    "range": "Eastern Range",
+    "year": 2022,
+    "ipcCases": 4591,
+    "sllCases": 1500,
+    "total": 6091
+  },
+  {
+    "unit": "Shivamogga",
+    "range": "Eastern Range",
+    "year": 2023,
+    "ipcCases": 4654,
+    "sllCases": 1750,
+    "total": 6404
+  },
+  {
+    "unit": "Shivamogga",
+    "range": "Eastern Range",
+    "year": 2024,
+    "ipcCases": 4756,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Shivamogga",
+    "range": "Eastern Range",
+    "year": 2025,
+    "ipcCases": 4840,
+    "sllCases": 2155,
+    "total": 6995
+  },
+  {
+    "unit": "Tumakuru",
+    "range": "Central Range",
+    "year": 2022,
+    "ipcCases": 5520,
+    "sllCases": 1524,
+    "total": 7044
+  },
+  {
+    "unit": "Tumakuru",
+    "range": "Central Range",
+    "year": 2023,
+    "ipcCases": 6440,
+    "sllCases": 1809,
+    "total": 8249
+  },
+  {
+    "unit": "Tumakuru",
+    "range": "Central Range",
+    "year": 2024,
+    "ipcCases": 6499,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Tumakuru",
+    "range": "Central Range",
+    "year": 2025,
+    "ipcCases": 5961,
+    "sllCases": 2509,
+    "total": 8470
+  },
+  {
+    "unit": "Udupi",
+    "range": "Western Range",
+    "year": 2022,
+    "ipcCases": 2342,
+    "sllCases": 566,
+    "total": 2908
+  },
+  {
+    "unit": "Udupi",
+    "range": "Western Range",
+    "year": 2023,
+    "ipcCases": 2444,
+    "sllCases": 877,
+    "total": 3321
+  },
+  {
+    "unit": "Udupi",
+    "range": "Western Range",
+    "year": 2024,
+    "ipcCases": 2594,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Udupi",
+    "range": "Western Range",
+    "year": 2025,
+    "ipcCases": 2249,
+    "sllCases": 752,
+    "total": 3001
+  },
+  {
+    "unit": "Uttara Kannada",
+    "range": "Western Range",
+    "year": 2022,
+    "ipcCases": 2323,
+    "sllCases": 1202,
+    "total": 3525
+  },
+  {
+    "unit": "Uttara Kannada",
+    "range": "Western Range",
+    "year": 2023,
+    "ipcCases": 2460,
+    "sllCases": 1035,
+    "total": 3495
+  },
+  {
+    "unit": "Uttara Kannada",
+    "range": "Western Range",
+    "year": 2024,
+    "ipcCases": 2751,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Uttara Kannada",
+    "range": "Western Range",
+    "year": 2025,
+    "ipcCases": 2334,
+    "sllCases": 1596,
+    "total": 3930
+  },
+  {
+    "unit": "Vijayanagara",
+    "range": "Ballari Range",
+    "year": 2022,
+    "ipcCases": 1795,
+    "sllCases": 1091,
+    "total": 2886
+  },
+  {
+    "unit": "Vijayanagara",
+    "range": "Ballari Range",
+    "year": 2023,
+    "ipcCases": 1837,
+    "sllCases": 1341,
+    "total": 3178
+  },
+  {
+    "unit": "Vijayanagara",
+    "range": "Ballari Range",
+    "year": 2024,
+    "ipcCases": 2269,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Vijayanagara",
+    "range": "Ballari Range",
+    "year": 2025,
+    "ipcCases": 1781,
+    "sllCases": 1467,
+    "total": 3248
+  },
+  {
+    "unit": "Vijayapur",
+    "range": "Northern Range",
+    "year": 2022,
+    "ipcCases": 2858,
+    "sllCases": 1438,
+    "total": 4296
+  },
+  {
+    "unit": "Vijayapur",
+    "range": "Northern Range",
+    "year": 2023,
+    "ipcCases": 3103,
+    "sllCases": 1403,
+    "total": 4506
+  },
+  {
+    "unit": "Vijayapur",
+    "range": "Northern Range",
+    "year": 2024,
+    "ipcCases": 3333,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Vijayapur",
+    "range": "Northern Range",
+    "year": 2025,
+    "ipcCases": 3062,
+    "sllCases": 1992,
+    "total": 5054
+  },
+  {
+    "unit": "Yadgir",
+    "range": "North Eastern Range",
+    "year": 2022,
+    "ipcCases": 1316,
+    "sllCases": 508,
+    "total": 1824
+  },
+  {
+    "unit": "Yadgir",
+    "range": "North Eastern Range",
+    "year": 2023,
+    "ipcCases": 1442,
+    "sllCases": 799,
+    "total": 2241
+  },
+  {
+    "unit": "Yadgir",
+    "range": "North Eastern Range",
+    "year": 2024,
+    "ipcCases": 1968,
+    "sllCases": null,
+    "total": null
+  },
+  {
+    "unit": "Yadgir",
+    "range": "North Eastern Range",
+    "year": 2025,
+    "ipcCases": 1622,
+    "sllCases": 1093,
+    "total": 2715
+  }
+]
