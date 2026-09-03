@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import SearchInput from "@/components/ui/SearchInput";
 import CaseStatusPill from "@/components/CaseStatusPill";
+import OffenderAvatar from "@/components/OffenderAvatar";
 import { caseDetailLink } from "@/lib/caseLinks";
 import type { WorklistCase } from "@/lib/caseWorklist";
 import { CASE_STATUS_LABEL, type CaseStatusId } from "@/lib/caseStatus";
@@ -46,7 +47,7 @@ export default function CaseWorklistClient({
       if (district && c.districtSlug !== district) return false;
       if (status && c.statusId !== status) return false;
       if (q) {
-        const haystack = `${c.title} ${c.crimeNo} ${c.accusedNames.join(" ")}`.toLowerCase();
+        const haystack = `${c.title} ${c.crimeNo} ${c.accusedNames.join(" ")} ${c.victims.map((v) => v.name).join(" ")}`.toLowerCase();
         if (!haystack.includes(q)) return false;
       }
       return true;
@@ -143,8 +144,27 @@ export default function CaseWorklistClient({
                   <Link href={caseDetailLink(c.caseMasterId)} className="block font-medium text-navy hover:underline">
                     {c.title}
                   </Link>
-                  {c.accusedNames.length > 0 && (
-                    <p className="mt-0.5 text-[11.5px] text-muted">{c.accusedNames.join(", ")}</p>
+                  {c.accused.length > 0 && (
+                    <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-muted">Accused</span>
+                      {c.accused.map((a) => (
+                        <span key={a.personId} className="inline-flex items-center gap-1 rounded-full border border-line bg-surface-2 py-0.5 pl-0.5 pr-2 text-[11px] text-ink">
+                          <OffenderAvatar personId={a.personId} name={a.name} photoUrl={a.photoUrl} size={20} />
+                          {a.name}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  {c.victims.length > 0 && (
+                    <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-dash-teal">Victims</span>
+                      {c.victims.map((v) => (
+                        <span key={v.personId} className="inline-flex items-center gap-1 rounded-full border border-dash-teal/30 bg-dash-teal-bg py-0.5 pl-0.5 pr-2 text-[11px] text-dash-teal">
+                          <OffenderAvatar personId={v.personId} name={v.name} photoUrl={v.photoUrl} size={20} />
+                          {v.name}
+                        </span>
+                      ))}
+                    </div>
                   )}
                 </td>
                 <td className="px-4 py-3 text-ink">{c.districtName}</td>

@@ -12,6 +12,7 @@ import { caseTypes, districts } from "./data";
 import { fuseAllPersons } from "./personFusion";
 import { CASE_STATUS_LABEL, isCaseStatusId, type CaseStatusId } from "./caseStatus";
 import { getLiveCaseFacts, type CaseFact } from "./liveCaseFacts";
+import { getOffenderPhotoUrl } from "./offenderPhotos";
 
 type RawAccused = { caseMasterId: number; personId: string; name: string; caseCount: number; linked: boolean };
 const RAW_ACCUSED = accusedRaw as RawAccused[];
@@ -47,7 +48,8 @@ export type WorklistCase = {
    *  a real, stable, cross-case personId (see accused.json/bulk_cases.mjs),
    *  but no evidence-backed profile exists to link to - so the UI must not
    *  render them as a link. */
-  accused: { personId: string; name: string; caseCount: number; linked: boolean }[];
+  accused: { personId: string; name: string; caseCount: number; linked: boolean; photoUrl: string | null }[];
+  victims: { personId: string; name: string; caseCount: number; linked: boolean; photoUrl: string | null }[];
   sections: string[];
   policeStationName: string | null;
   policePersonId: number | null;
@@ -95,17 +97,27 @@ export async function getCaseWorklist(): Promise<WorklistCase[]> {
   // caseMasterId -> accused, reusing the same fused-person register
   // repeat-offenders/pattern-analysis already trust, rather than a third
   // way of reading Accused rows.
+  type PersonDetail = { personId: string; name: string; caseCount: number; linked: boolean; photoUrl: string | null };
   const accusedByCase = new Map<number, string[]>();
-  const accusedDetailByCase = new Map<number, { personId: string; name: string; caseCount: number; linked: boolean }[]>();
+  const accusedDetailByCase = new Map<number, PersonDetail[]>();
+  const victimDetailByCase = new Map<number, PersonDetail[]>();
   for (const p of fuseAllPersons().values()) {
+    const isVictim = p.types.some((t) => t === "Victim" || t === "Complainant");
+    const photo = getOffenderPhotoUrl(p.personId);
     for (const cid of p.caseMasterIds) {
-      const list = accusedByCase.get(cid) ?? [];
-      if (!list.includes(p.name)) list.push(p.name);
-      accusedByCase.set(cid, list);
+      if (isVictim) {
+        const vList = victimDetailByCase.get(cid) ?? [];
+        vList.push({ personId: p.personId, name: p.name, caseCount: p.caseMasterIds.length, linked: true, photoUrl: photo });
+        victimDetailByCase.set(cid, vList);
+      } else {
+        const list = accusedByCase.get(cid) ?? [];
+        if (!list.includes(p.name)) list.push(p.name);
+        accusedByCase.set(cid, list);
 
-      const detailList = accusedDetailByCase.get(cid) ?? [];
-      detailList.push({ personId: p.personId, name: p.name, caseCount: p.caseMasterIds.length, linked: true });
-      accusedDetailByCase.set(cid, detailList);
+        const detailList = accusedDetailByCase.get(cid) ?? [];
+        detailList.push({ personId: p.personId, name: p.name, caseCount: p.caseMasterIds.length, linked: true, photoUrl: photo });
+        accusedDetailByCase.set(cid, detailList);
+      }
     }
   }
 
@@ -121,7 +133,7 @@ export async function getCaseWorklist(): Promise<WorklistCase[]> {
     accusedByCase.set(a.caseMasterId, list);
 
     const detailList = accusedDetailByCase.get(a.caseMasterId) ?? [];
-    detailList.push({ personId: a.personId, name: a.name, caseCount: a.caseCount, linked: a.linked });
+    detailList.push({ personId: a.personId, name: a.name, caseCount: a.caseCount, linked: a.linked, photoUrl: getOffenderPhotoUrl(a.personId) });
     accusedDetailByCase.set(a.caseMasterId, detailList);
   }
 
@@ -145,6 +157,7 @@ export async function getCaseWorklist(): Promise<WorklistCase[]> {
       registeredDate: f.crimeRegisteredDate,
       accusedNames: accusedByCase.get(f.caseMasterId) ?? [],
       accused: accusedDetailByCase.get(f.caseMasterId) ?? [],
+      victims: victimDetailByCase.get(f.caseMasterId) ?? [],
       sections: f.sections,
       policeStationName: f.policeStationName,
       policePersonId: f.policePersonId,
