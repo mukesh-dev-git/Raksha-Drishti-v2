@@ -1570,17 +1570,51 @@ have meant quietly interpolating a claim the real data doesn't back.
       Bengaluru, distinct from the hex/heat crime layers) and toggles
       on/off correctly, zero console errors, real network request
       confirmed via `read_network_requests`.
-- [ ] **P13.B** Not started. Real QuickML regression, trained on the real
-      2022–2025 district-total series (~150 rows once cleaned/aligned across
-      4 differently-shaped source CSVs — district naming isn't consistent
-      year to year, that reconciliation is the real work here) via
-      `CatalystbyZoho_Create_AutoML_Pipeline` (confirmed live and available
-      on this project via the MCP 2026-09-03 — some Zoho docs list
-      AutoML/QuickML as unavailable in the India DC; checked, doesn't apply
-      here, `List_QuickML_Projects` returned this project directly). Deploy
-      the endpoint, wire a real prediction API route, add a clearly-labeled
-      forecast panel — real accuracy shown plainly, not hidden if modest,
-      same discipline as P5.3's eval.
+- [x] **P13.B** ✅ **Done 2026-09-03.** Real QuickML regression, trained on
+      152 real (unit, year) rows reconciled from 4 differently-shaped KSP
+      source CSVs across 2022–2025 (`catalyst/real-data/crime-trends/
+      reconcile.mjs` — district naming genuinely isn't consistent year to
+      year, both within a source and across KSP's own reports; two real
+      gaps found and kept honest rather than smoothed: "Bengaluru South"
+      only exists from 2025, "Ramanagara" is missing from the 2025 source
+      itself). User decision: kept KSP's real native unit taxonomy (39
+      units — 6 City Commissionerates + Range-grouped districts), not
+      force-aggregated into the app's 31-district roster.
+      **A real leakage bug was caught and fixed before training, not
+      after**: the first AutoML pipeline auto-selected `sllCases`/`total`
+      as predictor features for `ipcCases` — but `total = ipcCases +
+      sllCases` by construction, so QuickML's own correlation matrix showed
+      0.996 between them. That pipeline+model was deleted unexecuted (no
+      training compute spent on it) and a second, leak-free dataset
+      (`unit, range, year, ipcCases` only) trained instead.
+      **Real, disclosed accuracy**: R² 0.998, MAE ≈ 211, MAPE ≈ 7.8% —
+      stated in the UI with the honest caveat that most of that R² is the
+      model learning each unit's baseline scale (a real ~65× spread across
+      units), not the harder year-over-year trend signal underneath it.
+      **The real invocation contract was pulled from the Catalyst Console,
+      not guessed** — same discipline as P7.1's TTS contract fix: 4 guessed
+      URL patterns (`model/{id}/predict` etc.) all 404'd before the real
+      shape (`POST .../endpoints/predict`, needing BOTH an OAuth token AND
+      a per-endpoint `X-QUICKML-ENDPOINT-KEY` header together) was found via
+      the Console's own API Details tab and confirmed live via curl before
+      writing any app code. `src/lib/crimeForecast.ts` (server-only, reuses
+      `llm.ts`'s `getAccessToken()`), `GET /api/crime-forecast`,
+      `CrimeForecastPanel.tsx` on `/crime-count` (unit/year picker, real
+      prediction, real 4-year history sparkline). Verified live in dev:
+      real network round-trip, e.g. Bagalkot 2026 → 2,521 predicted
+      IPC/BNS crimes, consistent with its real 2022–2025 history
+      (2199/2317/2468/2208), zero console errors.
+      **Real, separate finding surfaced while wiring credentials**: the
+      deployed Slate app had **zero** environment variables set at all —
+      meaning the pre-existing GLM/TTS/Ask-Anything features have likely
+      never actually run live in production, only verified locally (the
+      `/api/ask` route's own header comment already said as much: "not
+      exercised against the deployed Slate app itself"). Fixing this was
+      necessary for this feature and fixes that pre-existing gap too. MCP
+      env-var writes were blocked by Claude Code's own auto-mode
+      classifier (same class of block hit on destructive Data Store calls
+      under P10) — asked the user to set the 7 real `QUICKML_*` values via
+      the Console directly rather than working around it.
 - [ ] **P13.C** Not started, lower priority. Compare `bulk_cases.mjs`'s
       synthetic district/crime-type weights against the real 2024 777-row
       snapshot (P13.B's data prep already produces this same reconciliation
