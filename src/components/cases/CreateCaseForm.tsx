@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Loader2, FileText } from "lucide-react";
 import { districts } from "@/lib/data";
 import { getEmployees } from "@/lib/employees";
+import KannadaDictationButton from "./KannadaDictationButton";
 
 // -----------------------------------------------------------------------------
 // P10 Phase 3 (2026-09-02) - the create half of real CRUD. Calls the real
@@ -204,6 +205,9 @@ export default function CreateCaseForm() {
             onChange={(e) => setBriefFacts(e.target.value)}
             placeholder="What was reported, in the complainant's own words."
             required
+          />
+          <KannadaDictationButton
+            onTranscribed={(text) => setBriefFacts((prev) => (prev.trim() ? `${prev.trim()} ${text}` : text))}
           />
         </Field>
         <Field label="Investigating officer">
