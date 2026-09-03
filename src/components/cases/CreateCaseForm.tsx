@@ -7,6 +7,7 @@ import { districts } from "@/lib/data";
 import { getEmployees } from "@/lib/employees";
 import KannadaDictationButton from "./KannadaDictationButton";
 import TranslateButton from "@/components/ui/TranslateButton";
+import KannadaIntakePipelineButton from "./KannadaIntakePipelineButton";
 
 // -----------------------------------------------------------------------------
 // P10 Phase 3 (2026-09-02) - the create half of real CRUD. Calls the real
@@ -225,6 +226,13 @@ export default function CreateCaseForm() {
               label="Translate to English"
               onTranslated={(translated) => setBriefFacts(translated)}
             />
+          </div>
+          {/* P7.4 - the same two real API calls above, run as one pipeline
+              plus a GLM summarization step, with every stage's real result
+              shown transparently. See KannadaIntakePipelineButton.tsx's
+              module comment. */}
+          <div className="mt-2">
+            <KannadaIntakePipelineButton onSummaryAccepted={(summary) => setBriefFacts(summary)} />
           </div>
         </Field>
         <Field label="Investigating officer">
