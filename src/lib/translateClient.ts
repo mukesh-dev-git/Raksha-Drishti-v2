@@ -7,44 +7,29 @@
 // cache, same `QuickML.deployment.READ` scope) instead of minting a second
 // token.
 //
-// CONTRACT STATUS - PARTIALLY confirmed by live-probing 2026-09-03 (~40
-// request variants against the real API), unlike its two sibling models
-// (TTS's contract came straight off the console's API Details tab; STT's
-// wrong field name was found and corrected in 3 live tries). This
-// endpoint's own parameter validator gave genuinely INCONSISTENT signals -
-// the same field name was accepted in one request and rejected in another
-// depending purely on what it was paired with, with no combination found
-// that returned a 200. That inconsistency is being recorded honestly rather
-// than papered over with a confident-looking guess:
-//
-// CONFIRMED:
-//   - URL is real: POST https://api.catalyst.zoho.in/quickml/api/v1/models/zia/translate
-//     (a GET probe against it returned a genuine `INVALID_METHOD` API
-//     error, not a generic 404 - same proof technique that confirmed the
-//     STT URL)
-//   - Body must be multipart/form-data, NOT application/json - every JSON
-//     attempt failed with `LESS_THAN_MIN_OCCURANCE` on an internal
-//     `zoho-inputstream` parameter regardless of JSON field names tried
-//   - A plain-string `text` field is very likely the source-text field -
-//     it was accepted (not flagged as invalid) in most, but not all,
-//     variants tried
-//
-// UNCONFIRMED - genuinely not found:
-//   - The target-language field name. ~15 candidates tried
-//     (targetLanguage, target_language, to, language, target, toLang,
-//     targetLang, dest, translate, and more) - every one was rejected as
-//     `EXTRA_PARAM_FOUND`, but WHICH field got blamed in the error
-//     shifted unpredictably between requests with no pattern found.
-//
-// `text` + `targetLanguage` is used below as the best-available guess
-// (closest to ttsClient.ts's own confirmed `language` field naming style),
-// but this has NOT produced a real 200 - do not trust this in production
-// without checking the Catalyst console's own API Details tab for this
-// specific model first (the console is the ground truth that resolved this
-// exact class of uncertainty for the TTS model - RESEARCH_AND_PLAN.md
-// §2.1's inventory table alone was not enough for that endpoint either).
-//   Response: JSON (field names likewise not confirmed - never reached a
-//   200 to observe one)
+// CONFIRMED CONTRACT (2026-09-04, read directly off the Catalyst console's
+// own Model Details + Sample Request/Response tabs for this model - QuickML
+// -> Trained NLP Models -> Text Translation, NOT the "Zia" microservices
+// section, which is a different catalog entirely and does not list this
+// model at all). Extensive live-probing (~40 request variants, logged in
+// this file's git history) never found this - every JSON attempt used the
+// wrong field names (targetLanguage, target_language, to, language, ...),
+// which is why every one of them was rejected; the endpoint was never
+// actually multipart-only, that was a misreading of a generic gateway
+// error against consistently-wrong JSON field names.
+//   POST https://api.catalyst.zoho.in/quickml/api/v1/models/zia/translate
+//   Headers: CATALYST-ORG, Authorization: Zoho-oauthtoken <token>
+//   Body (application/json): { text, src_lang, tgt_lang }
+//     - src_lang / tgt_lang: short ISO codes ("hi", "en", "kn", ...) - NOT
+//       sourceLanguage/targetLanguage, this module's old best-guess names.
+//   Response: 200 JSON { status: "success", src_lang, tgt_lang,
+//   translated_text, processing_time_ms } - "translated_text" was already
+//   this module's first-tried candidate field, so no response-parsing
+//   change was needed, only the request shape.
+//   Error response: { status: "error", message, error_code } - e.g.
+//   { status:"error", message:"Unsupported language: fr",
+//   error_code:"UNSUPPORTED_LANGUAGE" } for HTTP 400/422/500 per the
+//   console's own documented status codes.
 // -----------------------------------------------------------------------------
 import { getAccessToken } from "./llm";
 
@@ -52,8 +37,10 @@ const TRANSLATE_URL = "https://api.catalyst.zoho.in/quickml/api/v1/models/zia/tr
 const REQUEST_TIMEOUT_MS = 20_000;
 
 // Kannada ⇄ English is the point of P7.3 (RESEARCH_AND_PLAN.md §2.1); the
-// model supports 8 other Indian languages too, per the same inventory, but
-// this app only exposes the two it actually needs.
+// model supports several other Indian languages too (Hindi, Tamil, Telugu,
+// Malayalam, Marathi, Bengali, Gujarati, Punjabi, Odia, per the console's
+// own Supported Languages list), but this app only exposes the two it
+// actually needs.
 export type TranslateLanguage = "kn" | "en";
 
 export type TranslateResult =
@@ -64,20 +51,6 @@ function requireEnv(name: string): string {
   const v = process.env[name];
   if (!v) throw new Error(`translateClient.ts: missing required env var ${name} - see .env.local, RESEARCH_AND_PLAN.md §2.1`);
   return v;
-}
-
-// Response field name is unconfirmed (see module header) - tried in this
-// order against whatever the server actually returns, same
-// never-fabricate-never-guess-further discipline as sttClient.ts's
-// CANDIDATE_TEXT_FIELDS.
-const CANDIDATE_TEXT_FIELDS = ["translated_text", "translatedText", "text", "translation", "result", "output"] as const;
-
-function extractTranslation(body: Record<string, unknown>): string | null {
-  for (const key of CANDIDATE_TEXT_FIELDS) {
-    const v = body[key];
-    if (typeof v === "string" && v.trim().length > 0) return v;
-  }
-  return null;
 }
 
 /**
@@ -91,11 +64,6 @@ function extractTranslation(body: Record<string, unknown>): string | null {
  */
 export async function translateText(
   text: string,
-  // `sourceLanguage` is kept in the public signature (callers should always
-  // state it - the model likely needs to know the input language even if
-  // this module hasn't found where to put it) but is NOT currently sent -
-  // no source-language field name was found among ~15 tried (see module
-  // header). Wire it in once the console confirms the real field name.
   opts: { sourceLanguage: TranslateLanguage; targetLanguage: TranslateLanguage }
 ): Promise<TranslateResult> {
   const orgId = requireEnv("QUICKML_ORG_ID");
@@ -111,14 +79,6 @@ export async function translateText(
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
-  // multipart/form-data is CONFIRMED required (see module header - every
-  // application/json attempt failed outright). `text` is the best-evidenced
-  // guess for the content field; `targetLanguage` for the language field is
-  // UNCONFIRMED - see module header before trusting this in production.
-  const form = new FormData();
-  form.append("text", text);
-  form.append("targetLanguage", opts.targetLanguage);
-
   let res: Response;
   try {
     res = await fetch(TRANSLATE_URL, {
@@ -126,12 +86,11 @@ export async function translateText(
       headers: {
         Authorization: `Zoho-oauthtoken ${accessToken}`,
         "CATALYST-ORG": orgId,
-        // No Content-Type set deliberately - fetch generates the correct
-        // multipart boundary itself for a FormData body (same reasoning as
-        // sttClient.ts).
+        "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: form,
+      // Field names confirmed live off the console (see module header).
+      body: JSON.stringify({ text, src_lang: opts.sourceLanguage, tgt_lang: opts.targetLanguage }),
       signal: controller.signal,
     });
   } catch (e) {
@@ -145,14 +104,15 @@ export async function translateText(
   const rawText = await res.text();
 
   if (!res.ok) {
-    // Same discipline as ttsClient.ts/sttClient.ts: never assume the
-    // documented {code,message,details} error shape holds, and detect a
-    // raw HTML error page (edge/app-server 404/502) rather than dumping it
-    // verbatim to a caller.
+    // Documented error shape is { status:"error", message, error_code } -
+    // but same discipline as every other client here: read as text first,
+    // only parse as JSON if it looks like JSON, never assume a shape holds
+    // for every real failure (an auth failure upstream of this endpoint
+    // could still return an empty body or an HTML error page).
     let errMsg = rawText || `HTTP ${res.status} (empty body)`;
     try {
-      const parsed = JSON.parse(rawText) as { code?: string; message?: string; details?: { reason?: string } };
-      errMsg = parsed.message ?? parsed.code ?? errMsg;
+      const parsed = JSON.parse(rawText) as { message?: string; error_code?: string };
+      errMsg = parsed.message ?? parsed.error_code ?? errMsg;
     } catch {
       const looksLikeHtml = /^\s*<(!doctype|html)/i.test(rawText);
       errMsg = looksLikeHtml
@@ -163,7 +123,7 @@ export async function translateText(
     return { ok: false, status: res.status, error: errMsg };
   }
 
-  let parsed: Record<string, unknown>;
+  let parsed: { status?: string; translated_text?: string };
   try {
     parsed = JSON.parse(rawText);
   } catch {
@@ -171,21 +131,20 @@ export async function translateText(
     return { ok: false, status: res.status, error: "non-JSON success response" };
   }
 
-  const translatedText = extractTranslation(parsed);
-  if (translatedText === null) {
-    console.error("[translateClient.ts] Translation 200 body didn't match any expected field", {
-      keysSeen: Object.keys(parsed),
-      bodyPreview: rawText.slice(0, 300),
-    });
-    return { ok: false, status: res.status, error: `unexpected response shape (keys: ${Object.keys(parsed).join(", ") || "none"}) - see server log` };
+  if (typeof parsed.translated_text !== "string" || !parsed.translated_text.trim()) {
+    // A 200 with status "success" but a missing/empty translated_text would
+    // violate the confirmed contract - surface that honestly rather than
+    // silently returning an empty string as if it were a real translation.
+    console.error("[translateClient.ts] Translation 200 body missing translated_text", { bodyPreview: rawText.slice(0, 300) });
+    return { ok: false, status: res.status, error: "response missing translated_text - see server log" };
   }
 
   console.log("[translateClient.ts] Translation call ok", {
     sourceLanguage: opts.sourceLanguage,
     targetLanguage: opts.targetLanguage,
     inputLength: text.length,
-    outputLength: translatedText.length,
+    outputLength: parsed.translated_text.length,
   });
 
-  return { ok: true, translatedText, raw: parsed };
+  return { ok: true, translatedText: parsed.translated_text, raw: parsed };
 }

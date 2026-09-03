@@ -14,15 +14,13 @@ const MAX_CHARS = 4000; // no documented limit for this model - a sane client-si
 // (src/lib/translateClient.ts). Kept as its own route so QUICKML_* secrets
 // never reach the client bundle - same discipline as /api/tts and /api/stt.
 //
-// UNCONFIRMED against a live 200 - see translateClient.ts's module comment
-// for the full honesty note: this endpoint's contract resisted live
-// discovery unlike its two siblings (~40 request variants tried, all
-// rejected, with the API's own validator giving inconsistent signals about
-// which field was wrong). This route's own job is narrower and IS fully
-// covered without a live 200: reject a bad request before ever calling
-// out, and never fabricate a translation - every failure from
-// translateClient.ts is passed through as a real error, never swallowed
-// into a fake success.
+// CONFIRMED live 2026-09-04 off the Catalyst console's own API Details tab
+// - see translateClient.ts's module comment for the real request/response
+// contract (JSON, not the multipart shape this route originally guessed).
+// This route's own job stays the same either way: reject a bad request
+// before ever calling out, and never fabricate a translation - every
+// failure from translateClient.ts is passed through as a real error, never
+// swallowed into a fake success.
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => null);
   const text = typeof body?.text === "string" ? body.text.trim() : "";
