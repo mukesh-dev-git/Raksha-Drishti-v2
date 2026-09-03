@@ -8,27 +8,30 @@
 // three Trained NLP Models share GLM's auth) instead of minting a second
 // token.
 //
-// CONTRACT STATUS - UNCONFIRMED, read from RESEARCH_AND_PLAN.md §2.1's
-// inventory table (built 2026-08-26 off the Catalyst console's model list),
-// NOT yet read live off this specific model's own "API Details" tab the way
-// llm.ts's and ttsClient.ts's contracts were. That inventory gives:
+// CONFIRMED CONTRACT (2026-09-03, discovered by live-probing the real API -
+// this model has no console "API Details" tab entry the way GLM/TTS do, and
+// the freshly-installed catalyst-zia skill's reference docs don't cover the
+// Trained NLP Models capability at all, so a real live call was the only
+// way to find this, exactly as ttsClient.ts's own history predicted it
+// might go. The originally-guessed field name (`audio`) was WRONG - a real
+// 404 from Zoho's own infra for that field name specifically, not a
+// URL/auth/config problem; a GET probe against the same URL got a genuine
+// `INVALID_METHOD` API error, proving the URL itself was always right):
 //   POST https://api.catalyst.zoho.in/quickml/api/v1/models/zia/audio/transcribe
 //   Headers: CATALYST-ORG, Authorization: Zoho-oauthtoken <token>
-//   Body: multipart/form-data, audio file (WAV/MP3) + a Kannada language
-//     identifier
-//   Response: JSON (exact field names not documented in the inventory)
-// ttsClient.ts's own history is the reason this gets flagged so loudly: its
-// FIRST-inferred URL (`.../models/zia/audio/synthesize`) was live-verified
-// WRONG - a real 404, not a config problem - and the real path
-// (`.../models/zia/tts/synthesize`) plus three field names only surfaced by
-// reading the console's actual API Details tab. This module's URL, form
-// field names (`audio`, `language`), and response-field guesses
-// (`text`/`transcript`/`transcription`) are exactly that same class of
-// inference, not yet confirmed the same way - correct against the console
-// (or a real live call's error/response body) before trusting this in
-// production, per PLAN.md issue #7's own guidance. Every guess is called
-// out at its point of use below so a live-testing pass has a short list of
-// exactly what to check.
+//   Body (multipart/form-data):
+//     - file: the audio blob (confirmed live with a WAV file; MP3 support
+//       is per RESEARCH_AND_PLAN.md's inventory, not independently
+//       re-verified) - NOT "audio", the originally-guessed field name.
+//     - language: REQUIRED, not optional - omitting it is a real 400
+//       (`LESS_THAN_MIN_OCCURANCE`, "Error in processing `language`
+//       parameter"). Both "kn" and "en" confirmed live.
+//   Response: 200 JSON `{ status: "success", language, text,
+//   processing_time_ms }` - `text` is the transcript field (one of this
+//   module's original candidate guesses, confirmed correct); `transcript`/
+//   `transcription`/`result`/`output` were never real, kept in
+//   CANDIDATE_TEXT_FIELDS below only as defense-in-depth in case the
+//   response shape ever changes.
 // -----------------------------------------------------------------------------
 import { getAccessToken } from "./llm";
 
@@ -73,18 +76,20 @@ function extractTranscript(body: Record<string, unknown>): string | null {
  * `audio` is the raw recorded/uploaded bytes; `filename`/`mimeType` are
  * passed straight through as given by the browser (MediaRecorder or a file
  * <input>) - this module does not transcode or validate the audio
- * container. The documented contract says WAV/MP3; a browser microphone
- * recording is very often webm/opus or ogg instead (browsers do not record
- * WAV natively), so a live 4xx citing an unsupported format is expected and
- * real, not a bug in this client - see StatementDictationButton.tsx's own
- * note on the two supported intake paths (record vs. upload a real
- * WAV/MP3 file).
+ * container. WAV is confirmed live (see module header); a browser
+ * microphone recording is very often webm/opus or ogg instead (browsers do
+ * not record WAV natively), so a live 4xx citing an unsupported format is
+ * plausible and real, not a bug in this client - see
+ * KannadaDictationButton.tsx's own note on the two supported intake paths
+ * (record vs. upload a real WAV file).
  */
 export async function transcribeAudio(
   audio: Blob,
   opts: { filename: string; mimeType: string; language?: SttLanguage } = { filename: "audio", mimeType: "audio/wav" }
 ): Promise<SttResult> {
   const orgId = requireEnv("QUICKML_ORG_ID");
+  // REQUIRED by the real API (see module header) - always sent, never
+  // omitted even when the caller doesn't specify one.
   const language = opts.language ?? "kn";
 
   let accessToken: string;
@@ -95,12 +100,10 @@ export async function transcribeAudio(
     return { ok: false, status: 0, error: e instanceof Error ? e.message : "token acquisition failed" };
   }
 
-  // Field name "audio" is a guess (see module header) - the inventory only
-  // says "multipart/form-data in (WAV/MP3)", not the part name. "language"
-  // mirrors ttsClient.ts's confirmed field name for the sibling TTS model;
-  // reasonable by analogy, not independently confirmed for this endpoint.
+  // Field names confirmed live 2026-09-03 (see module header) - "file", NOT
+  // "audio" (the originally-guessed name, which got a real 404).
   const form = new FormData();
-  form.append("audio", audio, opts.filename);
+  form.append("file", audio, opts.filename);
   form.append("language", language);
 
   const controller = new AbortController();

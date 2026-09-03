@@ -3,7 +3,13 @@ import { synthesizeSpeech, type TtsLanguage, type TtsVoice } from "@/lib/ttsClie
 
 export const dynamic = "force-dynamic";
 
-const VOICES: TtsVoice[] = ["Suresh", "Chetan", "Anu", "Vidya"];
+// Real bug fixed 2026-09-03 (live-verified while sanity-checking P7.2
+// credentials): this only listed the 4 Kannada names, so any English voice
+// StatementAudioPlayer.tsx offers (Mary/Anna/Beth/Thomas/Adam/Brian) was
+// silently rejected here and dropped to ttsClient.ts's Kannada default,
+// which the real API then correctly rejected for language "en". See
+// ttsClient.ts's TtsVoice comment for the full trace.
+const VOICES: TtsVoice[] = ["Suresh", "Chetan", "Anu", "Vidya", "Thomas", "Adam", "Brian", "Mary", "Anna", "Beth"];
 const LANGUAGES: TtsLanguage[] = ["kn", "en"];
 const MAX_CHARS = 4000; // no documented limit for this model (unlike Zia Text Analytics'
 // 1500-char cap, RESEARCH_AND_PLAN.md §2.1) - this is a sane client-side
