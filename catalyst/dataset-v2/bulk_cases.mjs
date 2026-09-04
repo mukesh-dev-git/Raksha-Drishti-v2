@@ -65,16 +65,44 @@ function pad(n, len) {
   return String(n).padStart(len, "0");
 }
 
-// Real district-weight SHAPE (population-derived, with a modest urbanisation
-// multiplier - Bengaluru Urban carries the most caseload, Kodagu the least),
-// NOT copied from data.ts's fake placeholder counts - those were invented for
-// a UI mock before any real data existed and are exactly the numbers this
-// generator makes obsolete. Equally: these are not real per-district FIR
-// counts either - see karnataka_districts.mjs's header on exactly what is and
-// isn't real here. P1.7 moved this from an 8-entry literal to all 31
-// districts, derived from the one district registry.
+// Calibrated against real 2024 KSP IPC data (see calibrate.mjs).
+const CRIME_WEIGHTS = [[1, 20], [2, 37], [3, 36], [4, 7]]; // Theft/Assault/Fraud/Burglary
 
-const CRIME_WEIGHTS = [[1, 40], [2, 23], [3, 21], [4, 16]]; // Theft/Assault/Fraud/Burglary
+// Per-district crime-type distribution — so Bengaluru gets more Fraud/Cyber
+// and rural districts get more Assault, matching the real KSP pattern.
+const DISTRICT_CRIME_MATRIX = {
+  4401: [[1,26],[2,21],[3,48],[4,5]],  // Bengaluru Urban
+  4402: [[1,19],[2,42],[3,30],[4,9]],  // Mysuru
+  4403: [[1,16],[2,47],[3,29],[4,8]],  // Belagavi
+  4404: [[1,16],[2,47],[3,28],[4,9]],  // Kalaburagi
+  4405: [[1,18],[2,39],[3,35],[4,8]],  // Dakshina Kannada
+  4406: [[1,17],[2,44],[3,31],[4,8]],  // Tumakuru
+  4407: [[1,17],[2,48],[3,26],[4,9]],  // Ballari
+  4408: [[1,15],[2,49],[3,27],[4,9]],  // Shivamogga
+  4409: [[1,14],[2,52],[3,25],[4,9]],  // Bagalkote
+  4410: [[1,26],[2,21],[3,48],[4,5]],  // Bengaluru Rural (estimated from Urban)
+  4411: [[1,14],[2,49],[3,29],[4,8]],  // Bidar
+  4412: [[1,11],[2,65],[3,15],[4,9]],  // Chamarajanagar
+  4413: [[1,17],[2,43],[3,31],[4,9]],  // Chikkaballapura
+  4414: [[1,16],[2,51],[3,24],[4,9]],  // Chikkamagaluru
+  4415: [[1,13],[2,50],[3,28],[4,9]],  // Chitradurga
+  4416: [[1,15],[2,48],[3,29],[4,8]],  // Davanagere
+  4417: [[1,18],[2,36],[3,39],[4,7]],  // Dharwad
+  4418: [[1,14],[2,56],[3,22],[4,8]],  // Gadag
+  4419: [[1,15],[2,50],[3,26],[4,9]],  // Hassan
+  4420: [[1,14],[2,55],[3,23],[4,8]],  // Haveri
+  4421: [[1,16],[2,51],[3,25],[4,8]],  // Kodagu
+  4422: [[1,17],[2,43],[3,32],[4,8]],  // Kolar
+  4423: [[1,14],[2,55],[3,23],[4,8]],  // Koppal
+  4424: [[1,14],[2,54],[3,23],[4,9]],  // Mandya
+  4425: [[1,14],[2,52],[3,25],[4,9]],  // Raichur
+  4426: [[1,18],[2,38],[3,35],[4,9]],  // Ramanagara
+  4427: [[1,18],[2,44],[3,30],[4,8]],  // Udupi
+  4428: [[1,15],[2,50],[3,27],[4,8]],  // Uttara Kannada
+  4429: [[1,15],[2,51],[3,27],[4,7]],  // Vijayapura
+  4430: [[1,16],[2,50],[3,25],[4,9]],  // Vijayanagara
+  4431: [[1,13],[2,55],[3,24],[4,8]],  // Yadgir
+};
 
 const SECTION_POOL = {
   1: { primary: [["379", 75], ["380", 20], ["411", 5]], secondary: [["34", 0.2], ["411", 0.1]] },
@@ -201,7 +229,7 @@ export function generateBulkCases(lookups, opts) {
     const stationWeights = stations.map((u) => [u.UnitID, u.UnitName.includes("Rural") ? 1 : 3]);
     const policeStationId = pickWeighted(r, stationWeights);
 
-    const crimeMinorHeadId = pickWeighted(r, CRIME_WEIGHTS);
+    const crimeMinorHeadId = pickWeighted(r, DISTRICT_CRIME_MATRIX[districtId] ?? CRIME_WEIGHTS);
 
     const dayOffset = Math.floor(r() * totalDays);
     const crimeRegisteredDate = addDays(startIso, dayOffset);

@@ -26,12 +26,12 @@
 //     roster. Karnataka has ~1,000 police stations; this seeds two per new
 //     district (one town, one rural) named after the real town they'd police.
 //     A real deployment reads the real Unit table from CCTNS.
-//   - `weight`: population-derived (2011 Census district populations) with a
-//     modest urbanisation multiplier, NOT real per-district FIR counts. Real
-//     NCRB district-level counts weren't used because we don't have them
-//     bundled - this produces a realistically-SHAPED distribution (Bengaluru
-//     Urban dominant, Kodagu smallest), not a real one. Never present a
-//     per-district total from this seed as a real Karnataka crime statistic.
+//   - `weight`: calibrated against real 2024 KSP IPC crime data
+//     (ka-district-ipc-2024.csv), scaled so Bengaluru Urban ≈ 120. KSP
+//     commissionerates are merged into their parent revenue districts
+//     (see calibrate.mjs for the full mapping). The distribution is
+//     realistic but still synthetic — never present per-district totals
+//     from this seed as real Karnataka crime statistics.
 //
 // NOTE ON POLICE vs REVENUE DISTRICTS: KSP's police units don't map 1:1 onto
 // revenue districts - Bengaluru City is its own commissionerate, as are
@@ -54,18 +54,18 @@
  */
 export const KA_DISTRICTS = [
   // --- the original 8 (IDs unchanged; localities live in geo_time.mjs) ------
-  { id: 4401, name: "Bengaluru Urban", slug: "bengaluru", pinPrefix: "560", weight: 115, stations: [] },
-  { id: 4402, name: "Mysuru", slug: "mysuru", pinPrefix: "570", weight: 33, stations: [] },
-  { id: 4403, name: "Belagavi", slug: "belagavi", pinPrefix: "590", weight: 43, stations: [] },
-  { id: 4404, name: "Kalaburagi", slug: "kalaburagi", pinPrefix: "585", weight: 23, stations: [] },
-  { id: 4405, name: "Dakshina Kannada", slug: "dakshina-kannada", pinPrefix: "575", weight: 25, stations: [] },
-  { id: 4406, name: "Tumakuru", slug: "tumakuru", pinPrefix: "572", weight: 23, stations: [] },
-  { id: 4407, name: "Ballari", slug: "ballari", pinPrefix: "583", weight: 14, stations: [] },
-  { id: 4408, name: "Shivamogga", slug: "shivamogga", pinPrefix: "577", weight: 17, stations: [] },
+  { id: 4401, name: "Bengaluru Urban", slug: "bengaluru", pinPrefix: "560", weight: 120, stations: [] },
+  { id: 4402, name: "Mysuru", slug: "mysuru", pinPrefix: "570", weight: 12, stations: [] },
+  { id: 4403, name: "Belagavi", slug: "belagavi", pinPrefix: "590", weight: 12, stations: [] },
+  { id: 4404, name: "Kalaburagi", slug: "kalaburagi", pinPrefix: "585", weight: 9, stations: [] },
+  { id: 4405, name: "Dakshina Kannada", slug: "dakshina-kannada", pinPrefix: "575", weight: 6, stations: [] },
+  { id: 4406, name: "Tumakuru", slug: "tumakuru", pinPrefix: "572", weight: 11, stations: [] },
+  { id: 4407, name: "Ballari", slug: "ballari", pinPrefix: "583", weight: 5, stations: [] },
+  { id: 4408, name: "Shivamogga", slug: "shivamogga", pinPrefix: "577", weight: 9, stations: [] },
 
   // --- the 23 added by P1.7 -------------------------------------------------
   {
-    id: 4409, name: "Bagalkote", slug: "bagalkote", pinPrefix: "587", weight: 16,
+    id: 4409, name: "Bagalkote", slug: "bagalkote", pinPrefix: "587", weight: 4,
     stations: [
       { id: 440901, name: "Bagalkote Town PS", spreadKm: 1.5, localities: [
         ["Bagalkote", 16.1848, 75.6961], ["Navanagar", 16.1700, 75.6600], ["Vidyagiri", 16.1950, 75.7000],
@@ -77,7 +77,7 @@ export const KA_DISTRICTS = [
     ],
   },
   {
-    id: 4410, name: "Bengaluru Rural", slug: "bengaluru-rural", pinPrefix: "562", weight: 10,
+    id: 4410, name: "Bengaluru Rural", slug: "bengaluru-rural", pinPrefix: "562", weight: 10,  // estimated from Bengaluru Dist
     stations: [
       { id: 441001, name: "Devanahalli PS", spreadKm: 2.5, localities: [
         ["Devanahalli", 13.2437, 77.7085], ["Vijayapura", 13.3167, 77.7833], ["Doddaballapura", 13.2957, 77.5382],
@@ -88,7 +88,7 @@ export const KA_DISTRICTS = [
     ],
   },
   {
-    id: 4411, name: "Bidar", slug: "bidar", pinPrefix: "585", weight: 14,
+    id: 4411, name: "Bidar", slug: "bidar", pinPrefix: "585", weight: 6,
     stations: [
       { id: 441101, name: "Bidar Town PS", spreadKm: 1.5, localities: [
         ["Bidar", 17.9106, 77.5199], ["Naubad", 17.9250, 77.5000],
@@ -100,7 +100,7 @@ export const KA_DISTRICTS = [
     ],
   },
   {
-    id: 4412, name: "Chamarajanagar", slug: "chamarajanagar", pinPrefix: "571", weight: 8,
+    id: 4412, name: "Chamarajanagar", slug: "chamarajanagar", pinPrefix: "571", weight: 4,
     stations: [
       { id: 441201, name: "Chamarajanagar Town PS", spreadKm: 1.5, localities: [
         ["Chamarajanagar", 11.9261, 76.9438], ["Santhemarahalli", 11.9800, 76.8700],
@@ -112,7 +112,7 @@ export const KA_DISTRICTS = [
     ],
   },
   {
-    id: 4413, name: "Chikkaballapura", slug: "chikkaballapura", pinPrefix: "562", weight: 10,
+    id: 4413, name: "Chikkaballapura", slug: "chikkaballapura", pinPrefix: "562", weight: 6,
     stations: [
       { id: 441301, name: "Chikkaballapura Town PS", spreadKm: 1.5, localities: [
         ["Chikkaballapura", 13.4355, 77.7315], ["Nandi Hills", 13.3702, 77.6835],
@@ -124,7 +124,7 @@ export const KA_DISTRICTS = [
     ],
   },
   {
-    id: 4414, name: "Chikkamagaluru", slug: "chikkamagaluru", pinPrefix: "577", weight: 9,
+    id: 4414, name: "Chikkamagaluru", slug: "chikkamagaluru", pinPrefix: "577", weight: 5,
     stations: [
       { id: 441401, name: "Chikkamagaluru Town PS", spreadKm: 1.8, localities: [
         ["Chikkamagaluru", 13.3161, 75.7720], ["Mudigere", 13.1333, 75.6333],
@@ -136,7 +136,7 @@ export const KA_DISTRICTS = [
     ],
   },
   {
-    id: 4415, name: "Chitradurga", slug: "chitradurga", pinPrefix: "577", weight: 13,
+    id: 4415, name: "Chitradurga", slug: "chitradurga", pinPrefix: "577", weight: 9,
     stations: [
       { id: 441501, name: "Chitradurga Town PS", spreadKm: 1.5, localities: [
         ["Chitradurga", 14.2251, 76.3980], ["Turuvanur", 14.2000, 76.4700],
@@ -148,7 +148,7 @@ export const KA_DISTRICTS = [
     ],
   },
   {
-    id: 4416, name: "Davanagere", slug: "davanagere", pinPrefix: "577", weight: 19,
+    id: 4416, name: "Davanagere", slug: "davanagere", pinPrefix: "577", weight: 7,
     stations: [
       { id: 441601, name: "Davanagere City PS", spreadKm: 1.8, localities: [
         ["Davanagere", 14.4644, 75.9218], ["Vidyanagar", 14.4500, 75.9400], ["Nittuvalli", 14.4400, 75.9000],
@@ -160,7 +160,7 @@ export const KA_DISTRICTS = [
     ],
   },
   {
-    id: 4417, name: "Dharwad", slug: "dharwad", pinPrefix: "580", weight: 21,
+    id: 4417, name: "Dharwad", slug: "dharwad", pinPrefix: "580", weight: 7,
     stations: [
       { id: 441701, name: "Hubballi City PS", spreadKm: 2.0, localities: [
         ["Hubballi", 15.3647, 75.1240], ["Gokul Road", 15.3500, 75.1000], ["Keshwapur", 15.3600, 75.1300],
@@ -172,7 +172,7 @@ export const KA_DISTRICTS = [
     ],
   },
   {
-    id: 4418, name: "Gadag", slug: "gadag", pinPrefix: "582", weight: 9,
+    id: 4418, name: "Gadag", slug: "gadag", pinPrefix: "582", weight: 3,
     stations: [
       { id: 441801, name: "Gadag Town PS", spreadKm: 1.5, localities: [
         ["Gadag", 15.4315, 75.6355], ["Betageri", 15.4200, 75.6200],
@@ -184,7 +184,7 @@ export const KA_DISTRICTS = [
     ],
   },
   {
-    id: 4419, name: "Hassan", slug: "hassan", pinPrefix: "573", weight: 14,
+    id: 4419, name: "Hassan", slug: "hassan", pinPrefix: "573", weight: 8,
     stations: [
       { id: 441901, name: "Hassan Town PS", spreadKm: 1.8, localities: [
         ["Hassan", 13.0072, 76.0962], ["Hemavathi Nagar", 13.0200, 76.1100],
@@ -197,7 +197,7 @@ export const KA_DISTRICTS = [
     ],
   },
   {
-    id: 4420, name: "Haveri", slug: "haveri", pinPrefix: "581", weight: 13,
+    id: 4420, name: "Haveri", slug: "haveri", pinPrefix: "581", weight: 6,
     stations: [
       { id: 442001, name: "Haveri Town PS", spreadKm: 1.5, localities: [
         ["Haveri", 14.7935, 75.4044], ["Devagiri", 14.8100, 75.3900],
@@ -210,7 +210,7 @@ export const KA_DISTRICTS = [
     ],
   },
   {
-    id: 4421, name: "Kodagu", slug: "kodagu", pinPrefix: "571", weight: 5,
+    id: 4421, name: "Kodagu", slug: "kodagu", pinPrefix: "571", weight: 3,
     stations: [
       { id: 442101, name: "Madikeri Town PS", spreadKm: 2.0, localities: [
         ["Madikeri", 12.4244, 75.7382], ["Napoklu", 12.3900, 75.6600],
@@ -222,7 +222,7 @@ export const KA_DISTRICTS = [
     ],
   },
   {
-    id: 4422, name: "Kolar", slug: "kolar", pinPrefix: "563", weight: 14,
+    id: 4422, name: "Kolar", slug: "kolar", pinPrefix: "563", weight: 6,
     stations: [
       { id: 442201, name: "Kolar Town PS", spreadKm: 1.8, localities: [
         ["Kolar", 13.1367, 78.1292], ["Kolar Gold Fields", 12.9560, 78.2750],
@@ -234,7 +234,7 @@ export const KA_DISTRICTS = [
     ],
   },
   {
-    id: 4423, name: "Koppal", slug: "koppal", pinPrefix: "583", weight: 11,
+    id: 4423, name: "Koppal", slug: "koppal", pinPrefix: "583", weight: 4,
     stations: [
       { id: 442301, name: "Koppal Town PS", spreadKm: 1.5, localities: [
         ["Koppal", 15.3547, 76.1544], ["Bhagyanagar", 15.3300, 76.1700],
@@ -246,7 +246,7 @@ export const KA_DISTRICTS = [
     ],
   },
   {
-    id: 4424, name: "Mandya", slug: "mandya", pinPrefix: "571", weight: 14,
+    id: 4424, name: "Mandya", slug: "mandya", pinPrefix: "571", weight: 7,
     stations: [
       { id: 442401, name: "Mandya Town PS", spreadKm: 1.8, localities: [
         ["Mandya", 12.5218, 76.8951], ["Vidyanagar", 12.5400, 76.9100],
@@ -259,7 +259,7 @@ export const KA_DISTRICTS = [
     ],
   },
   {
-    id: 4425, name: "Raichur", slug: "raichur", pinPrefix: "584", weight: 16,
+    id: 4425, name: "Raichur", slug: "raichur", pinPrefix: "584", weight: 8,
     stations: [
       { id: 442501, name: "Raichur Town PS", spreadKm: 1.8, localities: [
         ["Raichur", 16.2076, 77.3463], ["Ashapur", 16.2200, 77.3600],
@@ -271,7 +271,7 @@ export const KA_DISTRICTS = [
     ],
   },
   {
-    id: 4426, name: "Ramanagara", slug: "ramanagara", pinPrefix: "562", weight: 9,
+    id: 4426, name: "Ramanagara", slug: "ramanagara", pinPrefix: "562", weight: 6,
     stations: [
       { id: 442601, name: "Ramanagara Town PS", spreadKm: 1.8, localities: [
         ["Ramanagara", 12.7217, 77.2812], ["Ijoor", 12.7000, 77.3000],
@@ -283,7 +283,7 @@ export const KA_DISTRICTS = [
     ],
   },
   {
-    id: 4427, name: "Udupi", slug: "udupi", pinPrefix: "576", weight: 12,
+    id: 4427, name: "Udupi", slug: "udupi", pinPrefix: "576", weight: 4,
     stations: [
       { id: 442701, name: "Udupi Town PS", spreadKm: 2.0, localities: [
         ["Udupi", 13.3409, 74.7421], ["Manipal", 13.3525, 74.7868], ["Malpe", 13.3500, 74.7050],
@@ -295,7 +295,7 @@ export const KA_DISTRICTS = [
     ],
   },
   {
-    id: 4428, name: "Uttara Kannada", slug: "uttara-kannada", pinPrefix: "581", weight: 12,
+    id: 4428, name: "Uttara Kannada", slug: "uttara-kannada", pinPrefix: "581", weight: 5,
     stations: [
       { id: 442801, name: "Karwar Town PS", spreadKm: 2.0, localities: [
         ["Karwar", 14.8136, 74.1297], ["Baithkol", 14.8000, 74.1200],
@@ -308,7 +308,7 @@ export const KA_DISTRICTS = [
     ],
   },
   {
-    id: 4429, name: "Vijayapura", slug: "vijayapura", pinPrefix: "586", weight: 19,
+    id: 4429, name: "Vijayapura", slug: "vijayapura", pinPrefix: "586", weight: 7,
     stations: [
       { id: 442901, name: "Vijayapura City PS", spreadKm: 1.8, localities: [
         ["Vijayapura", 16.8302, 75.7100], ["Gol Gumbaz", 16.8270, 75.7360], ["Jalanagar", 16.8100, 75.7200],
@@ -321,7 +321,7 @@ export const KA_DISTRICTS = [
     ],
   },
   {
-    id: 4430, name: "Vijayanagara", slug: "vijayanagara", pinPrefix: "583", weight: 11,
+    id: 4430, name: "Vijayanagara", slug: "vijayanagara", pinPrefix: "583", weight: 5,
     stations: [
       { id: 443001, name: "Hosapete Town PS", spreadKm: 1.8, localities: [
         ["Hosapete", 15.2689, 76.3909], ["Hampi", 15.3350, 76.4600],
@@ -333,7 +333,7 @@ export const KA_DISTRICTS = [
     ],
   },
   {
-    id: 4431, name: "Yadgir", slug: "yadgir", pinPrefix: "585", weight: 9,
+    id: 4431, name: "Yadgir", slug: "yadgir", pinPrefix: "585", weight: 4,
     stations: [
       { id: 443101, name: "Yadgir Town PS", spreadKm: 1.5, localities: [
         ["Yadgir", 16.7700, 77.1376], ["Yadgir Extension", 16.7800, 77.1500],
