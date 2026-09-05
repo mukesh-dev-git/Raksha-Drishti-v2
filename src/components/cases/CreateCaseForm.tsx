@@ -209,12 +209,8 @@ export default function CreateCaseForm() {
             required
           />
           {/* P7.2 -> P7.3: dictate in Kannada, then translate the same
-              real field to English before submitting. See
-              KannadaDictationButton.tsx / translateClient.ts's module
-              comments - translation's exact field-name contract was NOT
-              confirmed live despite extensive probing, so "Translate to
-              English" is expected to surface a real, honest error until
-              the Catalyst console resolves the real field names. */}
+              real field to English before submitting. Both live-verified
+              against the real Zia API. */}
           <KannadaDictationButton
             onTranscribed={(text) => setBriefFacts((prev) => (prev.trim() ? `${prev.trim()} ${text}` : text))}
           />

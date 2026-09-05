@@ -105,7 +105,7 @@ export async function getLiveOnlyCase(caseMasterId: number): Promise<WorklistCas
       // fused profile to link to. caseCount is unknown without a
       // cross-case scan this function deliberately doesn't do (a live-only
       // case's accused have no repeat-offender history to compute yet).
-      accused.push({ personId: String(a.PersonID ?? ""), name, caseCount: 1, linked: false });
+      accused.push({ personId: String(a.PersonID ?? ""), name, caseCount: 1, linked: false, photoUrl: null });
     }
 
     const complainantRows = await zcql(src, `SELECT OccupationID, ReligionID FROM ComplainantDetails WHERE CaseMasterID = ${caseMasterId}`);
@@ -127,6 +127,7 @@ export async function getLiveOnlyCase(caseMasterId: number): Promise<WorklistCas
       registeredDate: cm.CrimeRegisteredDate ? String(cm.CrimeRegisteredDate) : null,
       accusedNames,
       accused,
+      victims: [],
       sections: [], // ActSectionAssociation deliberately not inserted for a new case - see caseCreate.ts's header note
       policeStationName: unit ? String(unit.UnitName ?? "") : null,
       policePersonId: Number.isFinite(Number(cm.PolicePersonID)) ? Number(cm.PolicePersonID) : null,

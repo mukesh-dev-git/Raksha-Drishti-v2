@@ -1,105 +1,155 @@
-import Link from "next/link";
-import { Waypoints, ArrowRight, Link2 } from "lucide-react";
+import { Waypoints, ShieldAlert, ShieldCheck, ShieldQuestion, Info, BookOpen } from "lucide-react";
 import PageShell from "@/components/PageShell";
-import StatusBadge from "@/components/ui/StatusBadge";
+import StatTile from "@/components/ui/StatTile";
+import PatternClusterCard from "@/components/patterns/PatternClusterCard";
 import { getMoPatternClusters } from "@/lib/moPatterns";
+import { getPatternClusterSummaries } from "@/lib/patternSummary";
+import { getOffenderPhotoUrl } from "@/lib/offenderPhotos";
 
-// -----------------------------------------------------------------------------
-// P4.6 - MO pattern-clustering. Real, deterministic (moPatterns.ts), computed
-// from Act/Section data that was seeded into the Data Store but read nowhere
-// in src/ until now (Part 5 of RESEARCH_AND_PLAN.md). No LLM involved.
-//
-// Honest about scale: 19 real cases -> 3 real clusters today. That's the
-// actual number, not a placeholder - see moPatterns.ts's module comment for
-// the clustering rule and why a looser one produced a useless mega-cluster.
-// -----------------------------------------------------------------------------
 export const metadata = { title: "Pattern Analysis" };
 
 export default async function PatternAnalysisPage() {
   const clusters = await getMoPatternClusters();
+  const summaries = await getPatternClusterSummaries(clusters);
+
+  const totalCases = clusters.reduce((n, c) => n + c.members.length, 0);
+  const exact = clusters.filter((c) => c.strength === "exact").length;
+  const partial = clusters.filter((c) => c.strength === "partial").length;
+
+  const clientClusters = clusters.map((c) => ({
+    ...c,
+    members: c.members.map((m) => ({
+      ...m,
+      accused: m.accused.map((a) => ({
+        ...a,
+        photoUrl: getOffenderPhotoUrl(a.personId),
+      })),
+    })),
+  }));
 
   return (
     <PageShell
       title="Pattern Analysis"
-      description="Cases from different investigations that share a distinctive method — same combination of charged sections, not just the same crime type. Every cluster below links records that were never compared to each other until now."
+      description="Cross-investigation MO clustering — cases from independent investigations that share distinctive legal charge signatures, surfaced by deterministic section-overlap analysis."
       breadcrumbs={[{ label: "Pattern Analysis", href: "/pattern-analysis" }]}
       heroImageSrc="/page-hero/pattern-analysis.png"
     >
+      {/* Stats row */}
+      <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <StatTile
+          label="Total Patterns"
+          value={String(clusters.length)}
+          hint="Cross-case clusters detected"
+          icon={<Waypoints size={20} />}
+        />
+        <StatTile
+          label="Cases Linked"
+          value={String(totalCases)}
+          hint="Across all pattern clusters"
+          icon={<ShieldAlert size={20} />}
+        />
+        <StatTile
+          label="Exact Matches"
+          value={String(exact)}
+          hint="Identical charge signatures"
+          icon={<ShieldCheck size={20} />}
+        />
+        <StatTile
+          label="Partial Matches"
+          value={String(partial)}
+          hint="Shared distinctive sections"
+          icon={<ShieldQuestion size={20} />}
+        />
+      </div>
+
       {clusters.length === 0 ? (
         <div className="rounded-xl border border-dashed border-line bg-surface p-8 text-center text-sm text-muted">
-          No cross-case pattern found in the current seeded dataset.
+          No cross-case pattern found in the current dataset.
         </div>
       ) : (
-        <div className="space-y-6">
-          <p className="text-sm text-muted">
-            {clusters.length} pattern{clusters.length === 1 ? "" : "s"} found across {clusters.reduce((n, c) => n + c.members.length, 0)} cases,
-            from independently-authored investigations — none of these cases reference each other.
-          </p>
+        <div className="grid grid-cols-1 gap-8 xl:grid-cols-[1fr_300px]">
+          {/* Main content */}
+          <div className="space-y-6">
+            <p className="text-sm text-muted">
+              {clusters.length} pattern{clusters.length === 1 ? "" : "s"} found across{" "}
+              {totalCases} cases from independently-authored investigations — none of
+              these cases reference each other.
+            </p>
 
-          {clusters.map((cluster) => (
-            <div key={cluster.id} className="overflow-hidden rounded-xl border border-line bg-surface shadow-sm">
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line bg-surface-2 px-5 py-4">
-                <div className="flex items-center gap-2.5">
-                  <Waypoints size={18} className="text-navy" aria-hidden="true" />
-                  <p className="text-[15px] font-semibold text-navy">
-                    {cluster.members.length} linked cases
-                  </p>
-                  <StatusBadge
-                    status={cluster.strength === "exact" ? "verified" : "pending"}
-                    label={cluster.strength === "exact" ? "Exact method match" : "Shared distinctive elements"}
-                  />
+            {clientClusters.map((cluster, i) => {
+              const s = summaries.get(cluster.id);
+              return (
+                <PatternClusterCard
+                  key={cluster.id}
+                  cluster={cluster}
+                  summary={s?.text ?? ""}
+                  isGlm={s?.isGlm ?? false}
+                  defaultExpanded={i === 0}
+                />
+              );
+            })}
+          </div>
+
+          {/* Sidebar */}
+          <aside className="hidden space-y-5 xl:block">
+            <div className="sticky top-24 space-y-5">
+              {/* How to read */}
+              <div className="rounded-xl border border-line bg-surface p-5 shadow-sm">
+                <div className="mb-3 flex items-center gap-2">
+                  <BookOpen size={16} className="text-navy" />
+                  <p className="text-sm font-semibold text-navy">How to read this page</p>
                 </div>
-                <div className="flex flex-wrap items-center gap-1.5">
-                  <Link2 size={13} className="text-muted" aria-hidden="true" />
-                  {cluster.linkingSections.map((s) => (
-                    <span
-                      key={s}
-                      className="rounded-sm border border-line bg-surface px-2 py-0.5 font-mono text-[12px] text-ink"
-                    >
-                      {s}
-                    </span>
-                  ))}
+                <ul className="space-y-2 text-xs leading-relaxed text-muted">
+                  <li>Each card groups cases that were <strong className="text-ink">never compared</strong> to each other until this analysis.</li>
+                  <li>Shared sections highlighted in <span className="rounded bg-navy/10 px-1 font-mono text-navy">navy</span> are the linking evidence.</li>
+                  <li>Click a case to view its full investigation.</li>
+                  <li>Expand a card to see the AI-generated analytical summary.</li>
+                </ul>
+              </div>
+
+              {/* Confidence legend */}
+              <div className="rounded-xl border border-line bg-surface p-5 shadow-sm">
+                <div className="mb-3 flex items-center gap-2">
+                  <Info size={16} className="text-navy" />
+                  <p className="text-sm font-semibold text-navy">Match confidence</p>
+                </div>
+                <div className="space-y-3 text-xs">
+                  <div className="flex items-start gap-2">
+                    <span className="mt-0.5 inline-block h-2.5 w-2.5 shrink-0 rounded-full bg-success" />
+                    <div>
+                      <p className="font-semibold text-ink">Exact match</p>
+                      <p className="text-muted">Identical legal charge signature across cases</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="mt-0.5 inline-block h-2.5 w-2.5 shrink-0 rounded-full bg-warning" />
+                    <div>
+                      <p className="font-semibold text-ink">Distinctive overlap</p>
+                      <p className="text-muted">2+ shared sections, at least one rare (≤3 occurrences)</p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 divide-y divide-line sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-3">
-                {cluster.members.map((m) => {
-                  const card = (
-                    <div className="flex h-full flex-col gap-2 p-5">
-                      <div className="flex items-start justify-between gap-2">
-                        <p className="text-[15px] font-semibold text-ink">{m.scenarioTitle}</p>
-                        {m.link && <ArrowRight size={15} className="mt-1 shrink-0 text-muted" aria-hidden="true" />}
-                      </div>
-                      <p className="text-[13px] text-muted">
-                        {m.crimeTypeName} · {m.districtName} · Case {m.caseMasterId}
-                      </p>
-                      <div className="mt-auto flex flex-wrap gap-1.5 pt-2">
-                        {m.sections.map((s) => (
-                          <span
-                            key={s}
-                            className={`rounded-sm px-1.5 py-0.5 font-mono text-[11px] ${
-                              cluster.linkingSections.includes(s)
-                                ? "bg-navy/10 text-navy"
-                                : "bg-surface-2 text-muted"
-                            }`}
-                          >
-                            {s}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                  return m.link ? (
-                    <Link key={m.caseMasterId} href={m.link} className="transition hover:bg-surface-2">
-                      {card}
-                    </Link>
-                  ) : (
-                    <div key={m.caseMasterId}>{card}</div>
-                  );
-                })}
+              {/* Section code legend */}
+              <div className="rounded-xl border border-line bg-surface p-5 shadow-sm">
+                <div className="mb-3 flex items-center gap-2">
+                  <Info size={16} className="text-navy" />
+                  <p className="text-sm font-semibold text-navy">Section codes</p>
+                </div>
+                <div className="space-y-2 text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="rounded bg-navy/10 px-1.5 py-0.5 font-mono text-navy">IPC-420</span>
+                    <span className="text-muted">= shared / linking</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="rounded bg-surface-2 px-1.5 py-0.5 font-mono text-muted">IPC-120B</span>
+                    <span className="text-muted">= case-specific only</span>
+                  </div>
+                </div>
               </div>
             </div>
-          ))}
+          </aside>
         </div>
       )}
     </PageShell>

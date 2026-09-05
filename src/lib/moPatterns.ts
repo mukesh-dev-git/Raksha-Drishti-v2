@@ -36,9 +36,18 @@
 // -----------------------------------------------------------------------------
 import caseFactsRaw from "./nosql-seed/caseFacts.json";
 import scenarioMeta from "./nosql-seed/scenarioMeta.json";
+import accusedRaw from "./nosql-seed/accused.json";
 import { caseTypes, districts } from "./data";
 import { caseDetailLink } from "./caseWorklist";
 import { getLiveCaseFacts, type CaseFact } from "./liveCaseFacts";
+
+type RawAccused = { caseMasterId: number; personId: string; name: string };
+const ACCUSED_BY_CASE = new Map<number, { personId: string; name: string }[]>();
+for (const a of accusedRaw as RawAccused[]) {
+  const list = ACCUSED_BY_CASE.get(a.caseMasterId) ?? [];
+  list.push({ personId: a.personId, name: a.name });
+  ACCUSED_BY_CASE.set(a.caseMasterId, list);
+}
 
 // Bundled fallback if the live fetch fails (local dev, a real outage) - same
 // honest-degradation pattern as every other P10 Phase 4 module. CaseFact's
@@ -55,6 +64,7 @@ export type PatternMember = {
   districtName: string;
   sections: string[];
   link: string | null;
+  accused: { personId: string; name: string }[];
 };
 
 export type PatternCluster = {
@@ -100,6 +110,7 @@ function toMember(f: CaseFact): PatternMember {
     districtName: d?.name ?? "Unknown",
     sections: f.sections,
     link: caseDetailLink(f.caseMasterId),
+    accused: ACCUSED_BY_CASE.get(f.caseMasterId) ?? [],
   };
 }
 
