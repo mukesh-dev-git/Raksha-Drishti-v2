@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { FolderKanban, MapPin, Building2, Calendar, Users, ShieldAlert, AlertTriangle, Sparkles, CheckCircle2, Waypoints, MessageCircleQuestion, MessageSquareQuote } from "lucide-react";
+import { FolderKanban, MapPin, Building2, Calendar, Users, UserCheck, ShieldAlert, AlertTriangle, Sparkles, CheckCircle2, Waypoints, MessageCircleQuestion, MessageSquareQuote } from "lucide-react";
 import PageShell from "@/components/PageShell";
+import OffenderAvatar from "@/components/OffenderAvatar";
 import CaseStatusPill from "@/components/CaseStatusPill";
 import CaseStatusEditor from "@/components/cases/CaseStatusEditor";
 import IOAssignmentEditor from "@/components/cases/IOAssignmentEditor";
@@ -13,6 +14,7 @@ import { getWorklistCase, getSiblingCases, caseDetailLink } from "@/lib/caseWork
 import { getLiveCaseOverrides, getLiveOnlyCase } from "@/lib/liveCaseOverrides";
 import { getScenarioTimeline } from "@/lib/personFusion";
 import { getMoPatternClusters } from "@/lib/moPatterns";
+import { getOffenderPhotoUrl } from "@/lib/offenderPhotos";
 import { getEmployeesByDistrict } from "@/lib/employees";
 import { getCaseRelationshipGraph } from "@/lib/relationshipGraph";
 import { suggestNextQuestion } from "@/lib/nextQuestion";
@@ -135,12 +137,13 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ cas
                 <Users size={12} aria-hidden="true" /> Accused
               </p>
               {c.accused.length > 0 ? (
-                <div className="flex flex-wrap gap-1.5">
+                <div className="flex flex-wrap gap-2">
                   {c.accused.map((a) => {
                     const pillClass = "flex items-center gap-1.5 rounded-full border border-line bg-surface-2 py-1 pl-1 pr-2.5 text-[12.5px] text-ink";
                     const pillContent = (
                       <>
-                        <span className="rounded-full bg-dash-blue-bg px-2 py-0.5 text-[11px] font-medium text-dash-blue">
+                        <OffenderAvatar personId={a.personId} name={a.name} photoUrl={a.photoUrl} size={28} />
+                        <span className="text-[11.5px] font-medium text-ink">
                           {a.name}
                         </span>
                         {a.caseCount > 1 && (
@@ -150,10 +153,6 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ cas
                         )}
                       </>
                     );
-                    // P1.2 - a bulk case's accused has a real, stable
-                    // personId but no evidence-fused /persons profile (see
-                    // caseWorklist.ts's `linked`), so it renders as plain
-                    // text rather than a link that would 404.
                     return a.linked ? (
                       <Link key={a.personId} href={`/persons/${a.personId}`} className={`${pillClass} transition hover:border-navy`}>
                         {pillContent}
@@ -169,6 +168,41 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ cas
                 <p className="text-[13px] text-ink">Unidentified</p>
               )}
             </div>
+            {c.victims.length > 0 && (
+              <div className="border-t border-surface-2 px-5 py-4">
+                <p className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-muted">
+                  <UserCheck size={12} aria-hidden="true" /> Victims / Complainants
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {c.victims.map((v) => {
+                    const photoUrl = getOffenderPhotoUrl(v.personId);
+                    const pillClass = "flex items-center gap-1.5 rounded-full border border-line bg-surface-2 py-1 pl-1 pr-2.5 text-[12.5px] text-ink";
+                    const pillContent = (
+                      <>
+                        <OffenderAvatar personId={v.personId} name={v.name} photoUrl={photoUrl} size={24} />
+                        <span className="rounded-full bg-dash-teal-bg px-2 py-0.5 text-[11px] font-medium text-dash-teal">
+                          {v.name}
+                        </span>
+                        {v.caseCount > 1 && (
+                          <span className="flex items-center gap-0.5 text-[10.5px] font-medium text-dash-orange">
+                            {v.caseCount} cases
+                          </span>
+                        )}
+                      </>
+                    );
+                    return v.linked ? (
+                      <Link key={v.personId} href={`/persons/${v.personId}`} className={`${pillClass} transition hover:border-dash-teal`}>
+                        {pillContent}
+                      </Link>
+                    ) : (
+                      <span key={v.personId} className={pillClass}>
+                        {pillContent}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
             <div className="border-t border-surface-2 px-5 py-4">
               <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-muted">Sections</p>
               <div className="flex flex-wrap gap-1.5">

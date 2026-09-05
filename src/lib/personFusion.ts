@@ -45,19 +45,17 @@ import callRecords from "./nosql-seed/CallRecords.json";
 import cctvSightings from "./nosql-seed/CCTVSightings.json";
 import witnessStatements from "./nosql-seed/WitnessStatements.json";
 import transactions from "./nosql-seed/Transactions.json";
+import scenarioMeta from "./nosql-seed/scenarioMeta.json";
 
-// resolvedPersons entries come in TWO shapes, found live (not documented
-// anywhere before now): Accused entries carry the full P1.1 apparatus
-// (personId/aliases/caseMasterIds/accusedMasterIds); Victim entries are
-// {id, name, type} only - NO global personId, because P1.1 scoped itself to
-// `Accused.PersonID` specifically and never touched Victim/Complainant.
-// Fusing a victim would mean inventing an id or keying by name, which is
-// exactly the bug P1.1 fixed for Accused - so victims are skipped (see
-// isFusable below), not guessed at. Real follow-up work, not done here:
-// give Victim/Complainant the same global-id treatment P1.1 gave Accused.
-// Exported (not just module-local) so P9.4's relationshipGraph.ts can build
-// person nodes off the exact same shape every evidence collection already
-// carries, instead of redeclaring it.
+// P3 gap (issue #8): Victim/Complainant entries originally had no global
+// personId - P1.1 only covered Accused. The enrichment pass below
+// (enrichVictimsOnce) now scans all evidence records, mints stable
+// KA-Vxxxx IDs keyed on the unique numeric `id` each victim already
+// carries, and backfills personId/aliases/caseMasterIds so they pass
+// isFusable and flow into the fusion exactly like Accused do.
+//
+// Exported so P9.4's relationshipGraph.ts can build person nodes off
+// the exact same shape every evidence collection already carries.
 export type ResolvedPerson = {
   type: "Accused" | "Victim" | "Complainant" | string;
   id: number;
@@ -71,6 +69,66 @@ export type ResolvedPersonsMap = Record<string, ResolvedPerson>;
 type FusableResolvedPerson = ResolvedPerson & { personId: string; aliases: string[]; caseMasterIds: number[] };
 function isFusable(rp: ResolvedPerson): rp is FusableResolvedPerson {
   return !!rp.personId;
+}
+
+// ---------------------------------------------------------------------------
+// Issue #8: enrich Victim (and Complainant, if any appear) entries with the
+// same apparatus Accused already carry — a stable personId, aliases[], and
+// caseMasterIds[]. This runs once on first access (lazy, module-scope), then
+// every subsequent resolvedPersons lookup sees the enriched entries.
+// ---------------------------------------------------------------------------
+const SCENARIO_META = scenarioMeta as Record<string, { caseMasterIds?: number[] }>;
+type HasResolved = { scenarioId: string; resolvedPersons: ResolvedPersonsMap };
+const ALL_RECORDS: HasResolved[] = [
+  ...(callRecords as unknown as HasResolved[]),
+  ...(cctvSightings as unknown as HasResolved[]),
+  ...(witnessStatements as unknown as HasResolved[]),
+  ...(transactions as unknown as HasResolved[]),
+];
+
+let victimEnrichmentDone = false;
+
+function enrichVictimsOnce() {
+  if (victimEnrichmentDone) return;
+  victimEnrichmentDone = true;
+
+  // First pass: collect unique victims by their numeric id
+  const registry = new Map<number, { name: string; type: string; scenarios: Set<string> }>();
+  for (const r of ALL_RECORDS) {
+    for (const rp of Object.values(r.resolvedPersons ?? {})) {
+      if (rp.type !== "Victim" && rp.type !== "Complainant") continue;
+      if (rp.personId) continue; // already enriched (shouldn't happen, but be safe)
+      if (!registry.has(rp.id)) {
+        registry.set(rp.id, { name: rp.name, type: rp.type, scenarios: new Set() });
+      }
+      registry.get(rp.id)!.scenarios.add(r.scenarioId);
+    }
+  }
+
+  // Build personId -> caseMasterIds mapping
+  const idToCases = new Map<number, number[]>();
+  for (const [vid, entry] of registry) {
+    const cases: number[] = [];
+    for (const sid of entry.scenarios) {
+      const meta = SCENARIO_META[sid];
+      if (meta?.caseMasterIds) cases.push(...meta.caseMasterIds);
+    }
+    idToCases.set(vid, cases);
+  }
+
+  // Second pass: enrich in-place so isFusable passes
+  let enriched = 0;
+  for (const r of ALL_RECORDS) {
+    for (const rp of Object.values(r.resolvedPersons ?? {})) {
+      if (rp.type !== "Victim" && rp.type !== "Complainant") continue;
+      if (rp.personId) continue;
+      const prefix = rp.type === "Victim" ? "KA-V" : "KA-C";
+      rp.personId = `${prefix}${String(rp.id).padStart(4, "0")}`;
+      rp.aliases = [];
+      rp.caseMasterIds = idToCases.get(rp.id) ?? [];
+      enriched++;
+    }
+  }
 }
 
 export type EvidenceKind = "call" | "cctv" | "statement" | "transaction";
@@ -121,7 +179,7 @@ function push(map: Map<string, FusedPerson>, resolved: ResolvedPersonsMap, scena
   if (!token) return;
   const rp = resolved[token];
   if (!rp) return; // token cited by a record but not in this record's own resolvedPersons - treat as unresolved rather than guess
-  if (!isFusable(rp)) return; // Victim/Complainant - no global personId yet, see the type comment above
+  if (!isFusable(rp)) return;
   const person = addPerson(map, rp, scenarioId);
   person.timeline.push(item);
 }
@@ -162,6 +220,7 @@ let cache: Map<string, FusedPerson> | null = null;
  *  same assumption dashboardData.ts already makes. */
 export function fuseAllPersons(): Map<string, FusedPerson> {
   if (cache) return cache;
+  enrichVictimsOnce();
   const map = new Map<string, FusedPerson>();
 
   for (const r of callRecords as (ResolvedPersonsMap extends never ? never : any)[]) {
@@ -223,6 +282,18 @@ export function fuseAllPersons(): Map<string, FusedPerson> {
       ...base,
       summary: `Received ₹${Number(r.amount).toLocaleString("en-IN")} from ${r.fromAccount}${r.note ? ` — ${r.note}` : ""}`,
     });
+  }
+
+  // Issue #8: ensure every enriched victim/complainant gets a profile even if
+  // they're only listed in resolvedPersons as context and never cited as a
+  // primary subject (from/to/relatedPerson) of any evidence record.
+  for (const r of ALL_RECORDS) {
+    for (const rp of Object.values(r.resolvedPersons ?? {})) {
+      if (!isFusable(rp)) continue;
+      if (rp.type !== "Victim" && rp.type !== "Complainant") continue;
+      if (map.has(rp.personId)) continue;
+      addPerson(map, rp, r.scenarioId);
+    }
   }
 
   for (const person of map.values()) {
