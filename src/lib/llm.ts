@@ -336,12 +336,28 @@ export async function callGlm(opts: GlmChatOptions): Promise<LlmResult> {
   // response doesn't show it either. Same "never render reasoning" rule as
   // the module header applies here - strip it before `text` ever reaches a
   // caller, log it (truncated) for audit, never surface it in the UI.
+  // A THIRD malformed variant found live 2026-09-03 (src/lib/
+  // kannadaIntakePipeline.ts's P7.4 summarization call, again with no
+  // `tools` in the request): a real response had a closing `</think>` tag
+  // with NO matching opening `<think>` before it at all - neither branch
+  // below originally caught this (the first needs both tags; the second
+  // needs an opening tag present), so the entire raw scratchpad
+  // ("1. **Analyze the Request:** ...") leaked straight into `text`
+  // unstripped. This is exactly the "never render reasoning" violation
+  // this module's header explicitly guards against - fixed by checking for
+  // an unpaired closing tag as its own case.
   let text = parsed.response ?? "";
   let inlineThinking: string | null = null;
   const thinkMatch = /^\s*<think>([\s\S]*?)<\/think>\s*/i.exec(text);
+  const closeOnlyMatch = /<\/think>\s*/i.exec(text);
   if (thinkMatch) {
     inlineThinking = thinkMatch[1];
     text = text.slice(thinkMatch[0].length);
+  } else if (closeOnlyMatch) {
+    // Unpaired closing tag - everything before and including it is leaked
+    // reasoning; only what follows is the real answer.
+    inlineThinking = text.slice(0, closeOnlyMatch.index);
+    text = text.slice(closeOnlyMatch.index + closeOnlyMatch[0].length);
   } else if (/^\s*<think>/i.test(text)) {
     // Opened but never closed - budget ran out mid-thought (same class of
     // truncation already documented below for a missing `response`
