@@ -3,198 +3,350 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
-<title>Raksha Drishti — District Choropleth</title>
+<title>Raksha Drishti — District Crime Map</title>
 
-<!-- P4.9 item 1, rebuilt on a real basemap (2026-08-30, direct feedback: the
-     prior SVG-schematic version had no real geography at all). Same free,
-     token-free CARTO dark-matter style the other crime-map pages use.
-
-     Still honest about what's real and what isn't: there is no Karnataka
-     district-BOUNDARY GeoJSON bundled here, and none is fabricated - see
-     districtGeo.ts's own comment on that. What IS real and plotted exactly
-     as computed: each district's centroid is the mean lat/lng of its own
-     real case coordinates (getDistrictCentroids()), and circle size/color
-     encode real totalCases/clearanceRate from getDistrictStats(). This is a
-     standard, honest cartographic form - a proportional symbol map - not a
-     boundary choropleth, because we don't have boundary data to draw one
-     without inventing it. -->
+<!-- SCRB district map (rebuilt 2026-10-15). A real boundary choropleth now:
+     Census 2011 district polygons (DataMeet, CC BY 4.0), Census 2011
+     population, and real KSP/SCRB IPC counts - all joined and validated in
+     catalyst/real-data/district-map/build.mjs, served by
+     /crime-map/data/district-map.json. Three views:
+       - Crime rate per lakh population, 2025 (real)
+       - Change vs the 2022-23 average, with pulsing trend alerts (real)
+       - Clearance rate (the app's demo case data - labelled as such)
+     Every known limitation (2011 boundaries/population, Vijayanagara inside
+     Ballari, police units merged into revenue districts, 2024 excluded) is
+     stated on the map itself, not only in the build script. -->
 <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 
 <style>
   :root {
-    --panel: rgba(17,22,30,0.94); --border: #2b3340; --ink: #e6edf3; --dim: #93a1b0; --accent: #2e90e5;
+    --bg: #f4f5f2; --panel: #ffffff; --line: #d9dcd6; --ink: #1d2327; --dim: #5d666d;
+    --navy: #1f3a5f; --alert: #b3261e; --rise: #c2410c; --fall: #2f5d8a;
   }
-  html, body { margin: 0; height: 100%; overflow: hidden; background: #0a0d12; color: var(--ink);
-    font-family: Inter, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg); color: var(--ink);
+    font-family: Inter, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 13px; }
   #map { position: absolute; inset: 0; }
-  .card { position: absolute; z-index: 10; background: var(--panel); border: 1px solid var(--border);
-    border-radius: 12px; backdrop-filter: blur(8px); box-shadow: 0 8px 30px rgba(0,0,0,.55); }
-  #left { top: 14px; left: 14px; width: 240px; }
-  #left .sect { padding: 13px 15px; }
-  .sect h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .6px; color: var(--dim); margin: 0 0 10px; }
-  .seg { display: flex; gap: 6px; }
-  .seg button { flex: 1; font-size: 11px; padding: 7px 0; border-radius: 7px; cursor: pointer;
-    border: 1px solid var(--border); background: #10151d; color: var(--dim); }
-  .seg button.active { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; }
-  #legend { bottom: 14px; left: 14px; padding: 12px 14px; font-size: 11.5px; }
-  #legend .row { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
-  #legend .sw { width: 11px; height: 11px; border-radius: 50%; flex: none; }
-  #note { top: 14px; right: 14px; max-width: 260px; padding: 12px 14px; font-size: 11.5px; color: var(--dim); }
-  .maplibregl-popup-content { background: var(--panel); color: var(--ink); border: 1px solid var(--border);
-    border-radius: 10px; font-family: inherit; font-size: 12.5px; padding: 10px 12px; }
-  .maplibregl-popup-tip { border-top-color: var(--panel) !important; }
-  .pop-title { font-weight: 700; margin-bottom: 4px; }
-  .pop-row { display: flex; justify-content: space-between; gap: 12px; color: var(--dim); }
-  .pop-row b { color: var(--ink); font-variant-numeric: tabular-nums; }
+  .card { position: absolute; z-index: 10; background: var(--panel); border: 1px solid var(--line);
+    border-radius: 10px; box-shadow: 0 4px 18px rgba(20,30,40,.10); }
+
+  #left { top: 12px; left: 12px; width: 268px; }
+  .sect { padding: 13px 14px; }
+  .sect + .sect { border-top: 1px solid var(--line); }
+  .eyebrow { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--dim); margin: 0 0 8px; }
+  .views { display: grid; gap: 6px; }
+  .views button { text-align: left; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line);
+    background: #fafbf9; color: var(--ink); cursor: pointer; font: inherit; }
+  .views button small { display: block; color: var(--dim); font-size: 11px; margin-top: 1px; }
+  .views button.active { border-color: var(--navy); background: #eef2f7; box-shadow: inset 3px 0 0 var(--navy); }
+  .views button:focus-visible, .row-btn:focus-visible, a:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
+  .tag { display: inline-block; font-size: 9.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+    padding: 1px 5px; border-radius: 4px; margin-left: 4px; vertical-align: 1px; }
+  .tag.real { background: #e3f1e6; color: #1a6b33; }
+  .tag.demo { background: #f4ecd9; color: #8a5a00; }
+
+  .scale { display: flex; height: 10px; border-radius: 3px; overflow: hidden; margin-top: 4px; }
+  .scale span { flex: 1; }
+  .scale-labels { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--dim); margin-top: 3px;
+    font-variant-numeric: tabular-nums; }
+  .key { display: flex; align-items: center; gap: 7px; margin-top: 8px; font-size: 11.5px; color: var(--dim); }
+  .ring { width: 14px; height: 10px; border: 2px solid var(--alert); border-radius: 3px; flex: none; animation: pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse { 50% { opacity: .25; } }
+  @media (prefers-reduced-motion: reduce) { .ring { animation: none; } }
+  label.toggle { display: flex; gap: 7px; align-items: center; margin-top: 10px; font-size: 12px; cursor: pointer; }
+
+  #right { top: 12px; right: 12px; width: 300px; max-height: calc(100% - 24px); overflow: auto; }
+  .state-line { font-size: 12px; color: var(--dim); line-height: 1.5; }
+  .state-line b { color: var(--ink); font-variant-numeric: tabular-nums; }
+  .row-btn { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 8px;
+    padding: 7px 8px; margin: 0 -8px; border: 0; background: none; border-radius: 6px; cursor: pointer; font: inherit; color: var(--ink); text-align: left; width: calc(100% + 16px); }
+  .row-btn:hover { background: #f1f3ef; }
+  .chip { font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 999px; font-variant-numeric: tabular-nums; flex: none; }
+  .chip.spike { background: #fbe4e2; color: var(--alert); }
+  .chip.rise { background: #fdeee2; color: var(--rise); }
+  .chip.fall { background: #e4edf6; color: var(--fall); }
+  .empty { color: var(--dim); font-size: 12px; }
+
+  h3 { margin: 0; font-size: 16px; }
+  .sub { color: var(--dim); font-size: 11.5px; margin-top: 2px; }
+  .kv { display: grid; grid-template-columns: 1fr auto; gap: 5px 10px; margin-top: 10px; font-size: 12.5px; }
+  .kv span { color: var(--dim); }
+  .kv b { font-variant-numeric: tabular-nums; text-align: right; }
+  .bars { display: flex; align-items: flex-end; gap: 10px; height: 74px; margin-top: 12px; }
+  .bar { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10.5px; color: var(--dim); }
+  .bar i { display: block; width: 100%; background: #9aa7b3; border-radius: 3px 3px 0 0; }
+  .bar.cur i { background: var(--navy); }
+  .bar b { color: var(--ink); font-variant-numeric: tabular-nums; font-size: 11px; }
+  .note { margin-top: 10px; padding: 8px 9px; background: #fbf6ea; border: 1px solid #efe1bd; border-radius: 7px; font-size: 11.5px; line-height: 1.45; color: #5c4610; }
+  .units { margin-top: 10px; font-size: 11.5px; color: var(--dim); }
+  .actions { display: flex; gap: 8px; margin-top: 12px; }
+  .actions a, .actions button { flex: 1; text-align: center; padding: 8px; border-radius: 7px; font: inherit; font-size: 12px; font-weight: 600; cursor: pointer; text-decoration: none; }
+  .actions a { background: var(--navy); color: #fff; border: 1px solid var(--navy); }
+  .actions button { background: #fff; color: var(--ink); border: 1px solid var(--line); }
+
+  #src { bottom: 12px; left: 12px; max-width: 520px; padding: 8px 11px; font-size: 10.5px; color: var(--dim); line-height: 1.45; }
+  .maplibregl-popup-content { font-family: inherit; font-size: 12px; padding: 7px 10px; border-radius: 7px; box-shadow: 0 3px 12px rgba(0,0,0,.15); }
+  .pop-name { font-weight: 700; }
+  .pop-val { color: var(--dim); font-variant-numeric: tabular-nums; }
 </style>
 
-<div id="map"></div>
+<div id="map" role="img" aria-label="Karnataka district crime map"></div>
 
 <div class="card" id="left">
   <div class="sect">
-    <h2>Shade by</h2>
-    <div class="seg" id="metric">
-      <button data-metric="volume" class="active">Case volume</button>
-      <button data-metric="clearance">Clearance rate</button>
+    <p class="eyebrow">Shade districts by</p>
+    <div class="views" id="views">
+      <button data-view="rate" class="active">Crime rate per lakh, 2025 <span class="tag real">Real</span>
+        <small>IPC/BNS cases per 1,00,000 people</small></button>
+      <button data-view="change">Change vs 2022–23 average <span class="tag real">Real</span>
+        <small>Is this district rising against its own history?</small></button>
+      <button data-view="clearance">Clearance rate <span class="tag demo">Demo data</span>
+        <small>Share of the app's cases charge-sheeted or closed</small></button>
     </div>
   </div>
+  <div class="sect" id="legend"></div>
 </div>
 
-<div class="card" id="legend"></div>
-<div class="card" id="note">
-  Real case data. Each circle is a district's real mean case coordinate — there is no boundary
-  file bundled, so district shapes are not drawn to avoid inventing one.
+<div class="card" id="right"><div class="sect" id="panel"></div></div>
+
+<div class="card" id="src">
+  Boundaries &amp; population: Census of India 2011 (boundaries via DataMeet, CC BY 4.0).
+  Crime: Karnataka State Police / SCRB district IPC counts. City commissionerates are added into their district;
+  Vijayanagara is shown inside Ballari (it has no separate 2011 boundary). Rates use 2011 population, so fast-growing
+  districts are overstated.
 </div>
 
 <script>
-const CARTO_STYLE = "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json";
+const BASEMAP = "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json";
+const SPIKE = 10, RISE = 5, FALL = -10;  // % change thresholds, stated in the legend
+
+const VIEWS = {
+  rate: {
+    prop: "ratePerLakh2025",
+    stops: [125, 150, 175, 200, 250, 300],
+    colors: ["#fff4e6", "#fdd9b0", "#fdb87a", "#f8924c", "#e8692b", "#c44a1a", "#8f2f0e"],
+    title: "Crime rate per lakh (2025)",
+    fmt: v => v.toFixed(0),
+    unit: "/lakh",
+  },
+  change: {
+    prop: "changePct",
+    stops: [-10, -5, 5, 10, 15],
+    colors: ["#2f5d8a", "#8fb0cf", "#ecebe6", "#f6b48a", "#e0613a", "#a8231a"],
+    title: "Change, 2025 vs 2022–23 average",
+    fmt: v => (v > 0 ? "+" : "") + v.toFixed(1) + "%",
+    unit: "",
+  },
+  clearance: {
+    prop: "demoClearanceRate",
+    stops: [30, 40, 50, 60, 70],
+    colors: ["#f2f0e6", "#d4e5c8", "#a9d09a", "#74b26b", "#3f8f45", "#1e6630"],
+    title: "Clearance rate (demo case data)",
+    fmt: v => v + "%",
+    unit: "",
+  },
+};
+
+let view = "rate", DATA = null, selected = null, showAlerts = true;
 
 const map = new maplibregl.Map({
-  container: "map", style: CARTO_STYLE,
-  center: [76.3, 14.9], zoom: 6.1, minZoom: 5.5, maxZoom: 12,
+  container: "map", style: BASEMAP,
+  center: [76.15, 14.75], zoom: 6.15, minZoom: 5.5, maxZoom: 10,
+  attributionControl: { compact: true },
 });
-map.addControl(new maplibregl.NavigationControl(), "top-right");
+map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "bottom-right");
 
-let DISTRICTS = [];
-let metric = "volume";
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const n = v => Number(v).toLocaleString("en-IN");
 
-function clearanceColor(rate) {
-  if (rate >= 60) return "#1a7f37";
-  if (rate >= 35) return "#b45309";
-  return "#b3261e";
+function stepExpr(v) {
+  const expr = ["step", ["coalesce", ["get", v.prop], -9999], v.colors[0]];
+  v.stops.forEach((s, i) => expr.push(s, v.colors[i + 1]));
+  return expr;
+}
+
+function alertOf(p) {
+  if (p.changePct >= SPIKE) return "spike";
+  if (p.changePct >= RISE) return "rise";
+  if (p.changePct <= FALL) return "fall";
+  return null;
 }
 
 function renderLegend() {
-  const el = document.getElementById("legend");
-  if (metric === "clearance") {
-    el.innerHTML = `<div style="font-weight:600;margin-bottom:4px">Clearance rate</div>
-      <div class="row"><span class="sw" style="background:#1a7f37"></span>&ge; 60%</div>
-      <div class="row"><span class="sw" style="background:#b45309"></span>35&ndash;59%</div>
-      <div class="row"><span class="sw" style="background:#b3261e"></span>&lt; 35%</div>`;
-  } else {
-    el.innerHTML = `<div style="font-weight:600;margin-bottom:4px">Case volume</div>
-      <div style="color:var(--dim)">Circle area scales with real registered case count.</div>`;
-  }
-}
-
-function toFeatureCollection() {
-  const maxCases = Math.max(...DISTRICTS.map(d => d.totalCases), 1);
-  return {
-    type: "FeatureCollection",
-    features: DISTRICTS.map(d => ({
-      type: "Feature",
-      geometry: { type: "Point", coordinates: [d.lng, d.lat] },
-      properties: {
-        slug: d.slug, name: d.name, totalCases: d.totalCases,
-        clearanceRate: d.clearanceRate, repeatSubjectCount: d.repeatSubjectCount,
-        // Precomputed here (not in a MapLibre expression) since sqrt-of-ratio
-        // needs maxCases, which isn't a per-feature property.
-        volumeRadius: 10 + Math.sqrt(d.totalCases / maxCases) * 26,
-        clearanceRadius: 14 + (d.clearanceRate / 100) * 18,
-        clearanceFill: clearanceColor(d.clearanceRate),
-      },
-    })),
+  const v = VIEWS[view];
+  const labels = [`< ${v.stops[0]}`, ...v.stops.slice(1).map((s, i) => `${v.stops[i]}–${s}`), `≥ ${v.stops[v.stops.length - 1]}`];
+  document.getElementById("legend").innerHTML =
+    `<p class="eyebrow">${esc(v.title)}</p>
+     <div class="scale">${v.colors.map(c => `<span style="background:${c}"></span>`).join("")}</div>
+     <div class="scale-labels"><span>${esc(labels[0])}</span><span>${esc(labels[labels.length - 1])}</span></div>
+     <div class="key"><span class="ring"></span>Trend alert: up ≥ ${SPIKE}% on its 2022–23 average</div>
+     <label class="toggle"><input type="checkbox" id="alertsToggle" ${showAlerts ? "checked" : ""}> Show trend alerts</label>`;
+  document.getElementById("alertsToggle").onchange = e => {
+    showAlerts = e.target.checked;
+    map.setLayoutProperty("alert-ring", "visibility", showAlerts ? "visible" : "none");
   };
 }
 
-function addLayers() {
-  map.addSource("districts", { type: "geojson", data: toFeatureCollection() });
-  map.addLayer({
-    id: "district-circles", type: "circle", source: "districts",
-    paint: {
-      "circle-radius": ["case", ["==", ["literal", metric], "clearance"], ["get", "clearanceRadius"], ["get", "volumeRadius"]],
-      "circle-color": ["case", ["==", ["literal", metric], "clearance"], ["get", "clearanceFill"], "#2563eb"],
-      "circle-opacity": 0.75,
-      "circle-stroke-width": 1.5,
-      "circle-stroke-color": "#e6edf3",
-      "circle-stroke-opacity": 0.6,
-    },
-  });
-  map.addLayer({
-    id: "district-labels", type: "symbol", source: "districts",
-    layout: {
-      "text-field": ["get", "name"],
-      "text-size": 12, "text-offset": [0, -2.2], "text-anchor": "bottom",
-      "text-font": ["Noto Sans Regular"],
-    },
-    paint: { "text-color": "#e6edf3", "text-halo-color": "#0a0d12", "text-halo-width": 1.4 },
-  });
-  map.addLayer({
-    id: "district-values", type: "symbol", source: "districts",
-    layout: {
-      "text-field": metric === "clearance" ? ["concat", ["to-string", ["get", "clearanceRate"]], "%"] : ["to-string", ["get", "totalCases"]],
-      "text-size": 11, "text-font": ["Noto Sans Regular"],
-    },
-    paint: { "text-color": "#0a0d12" },
+function renderOverview() {
+  const s = DATA.meta.state;
+  const feats = DATA.features.map(f => f.properties);
+  const rows = feats.filter(p => alertOf(p) === "spike" || alertOf(p) === "rise").sort((a, b) => b.changePct - a.changePct);
+  const falls = feats.filter(p => alertOf(p) === "fall").sort((a, b) => a.changePct - b.changePct);
+  const row = p => `<button class="row-btn" data-code="${p.censusCode}"><span>${esc(p.label)}</span>
+      <span class="chip ${alertOf(p)}">${VIEWS.change.fmt(p.changePct)}</span></button>`;
+  document.getElementById("panel").innerHTML =
+    `<p class="eyebrow">Karnataka, 2025</p>
+     <div class="state-line"><b>${n(s.ipc[2025])}</b> IPC/BNS cases · <b>${s.ratePerLakh2025.toFixed(0)}</b> per lakh ·
+       <b>${VIEWS.change.fmt(s.changePct)}</b> on the 2022–23 average statewide</div>
+     <p class="eyebrow" style="margin-top:14px">Trend alerts — rising districts</p>
+     ${rows.length ? rows.map(row).join("") : `<p class="empty">No district is up ${RISE}% or more.</p>`}
+     <p class="eyebrow" style="margin-top:14px">Falling ≥ ${Math.abs(FALL)}%</p>
+     ${falls.length ? falls.map(row).join("") : `<p class="empty">None.</p>`}
+     <p class="empty" style="margin-top:12px">Click any district for its numbers and to open its stations and cases.</p>`;
+  bindRows();
+}
+
+function renderDetail(p) {
+  const years = [2022, 2023, 2025];
+  const max = Math.max(...years.map(y => p.ipc[y]));
+  const a = alertOf(p);
+  const notes = [];
+  if (p.censusCode === 565) notes.push("Includes Vijayanagara, which was part of Ballari in the 2011 Census and has no separate boundary or population figure.");
+  if (p.censusCode === 583) notes.push("The rate is likely overstated: KSP's Bengaluru District police unit covers more people than the 2011 Bengaluru Rural boundary.");
+  if (p.censusCode === 572) notes.push("Bengaluru's population has grown far past its 2011 figure, so this rate is overstated.");
+  if (p.censusCode === 584) notes.push("Renamed Bengaluru South; KSP's 2025 report uses the new name.");
+  const appLinks = p.appDistricts.map(d => d.slug);
+  document.getElementById("panel").innerHTML =
+    `<h3>${esc(p.label)}</h3>
+     <div class="sub">${a === "spike" ? '<span class="chip spike">Trend alert</span> ' : ""}Population ${n(p.population2011)} (2011) · ${p.urbanHouseholdPct}% urban households</div>
+     <div class="bars" aria-label="IPC cases by year">${years.map(y =>
+       `<div class="bar ${y === 2025 ? "cur" : ""}"><b>${n(p.ipc[y])}</b><i style="height:${Math.max(4, (p.ipc[y] / max) * 46)}px"></i>${y}</div>`).join("")}</div>
+     <div class="kv">
+       <span>Rate per lakh, 2025</span><b>${p.ratePerLakh2025.toFixed(0)}</b>
+       <span>Rate per lakh, 2022–23 avg</span><b>${p.baselineRatePerLakh.toFixed(0)}</b>
+       <span>Change</span><b>${VIEWS.change.fmt(p.changePct)}</b>
+       <span>App cases (demo data)</span><b>${p.demoCases ? n(p.demoCases) : "—"}</b>
+       <span>Clearance rate (demo data)</span><b>${p.demoClearanceRate != null ? p.demoClearanceRate + "%" : "—"}</b>
+     </div>
+     <div class="units">KSP units counted: ${p.kspUnits.map(esc).join(", ")}</div>
+     ${notes.map(t => `<div class="note">${esc(t)}</div>`).join("")}
+     <div class="actions">
+       ${appLinks.map(s => `<a href="/districts/${encodeURIComponent(s)}" target="_top">Open ${esc(s === "vijayanagara" ? "Vijayanagara" : p.name)} →</a>`).join("")}
+       <button id="back">All districts</button>
+     </div>`;
+  document.getElementById("back").onclick = () => select(null);
+}
+
+function bindRows() {
+  document.querySelectorAll(".row-btn").forEach(b => b.onclick = () => {
+    const f = DATA.features.find(f => f.properties.censusCode === Number(b.dataset.code));
+    if (f) select(f.properties.censusCode, true);
   });
 }
 
-function refresh() {
-  const src = map.getSource("districts");
-  if (src) src.setData(toFeatureCollection());
-  if (map.getLayer("district-circles")) {
-    map.setPaintProperty("district-circles", "circle-radius",
-      ["case", ["==", ["literal", metric], "clearance"], ["get", "clearanceRadius"], ["get", "volumeRadius"]]);
-    map.setPaintProperty("district-circles", "circle-color",
-      ["case", ["==", ["literal", metric], "clearance"], ["get", "clearanceFill"], "#2563eb"]);
-  }
-  if (map.getLayer("district-values")) {
-    map.setLayoutProperty("district-values", "text-field",
-      metric === "clearance" ? ["concat", ["to-string", ["get", "clearanceRate"]], "%"] : ["to-string", ["get", "totalCases"]]);
-  }
+function bboxOf(geom) {
+  let x0 = 180, y0 = 90, x1 = -180, y1 = -90;
+  const walk = c => typeof c[0] === "number" ? (x0 = Math.min(x0, c[0]), x1 = Math.max(x1, c[0]), y0 = Math.min(y0, c[1]), y1 = Math.max(y1, c[1])) : c.forEach(walk);
+  walk(geom.coordinates);
+  return [[x0, y0], [x1, y1]];
+}
+
+function select(code, fly) {
+  selected = code;
+  map.setFilter("district-selected", ["==", ["get", "censusCode"], code ?? -1]);
+  if (code == null) { renderOverview(); return; }
+  const f = DATA.features.find(f => f.properties.censusCode === code);
+  renderDetail(f.properties);
+  if (fly) map.fitBounds(bboxOf(f.geometry), { padding: { top: 60, bottom: 60, left: 300, right: 330 }, maxZoom: 8.5, duration: 700 });
+}
+
+function applyView() {
+  const v = VIEWS[view];
+  map.setPaintProperty("district-fill", "fill-color", stepExpr(v));
+  map.setLayoutProperty("district-label", "text-field",
+    ["format", ["get", "name"], { "font-scale": 1 }, "\n", {},
+      ["case", ["==", ["get", v.prop], null], "—",
+        view === "change"
+          ? ["concat", ["case", [">", ["get", v.prop], 0], "+", ""], ["to-string", ["/", ["round", ["*", ["get", v.prop], 10]], 10]], "%"]
+          : view === "clearance" ? ["concat", ["to-string", ["get", v.prop]], "%"]
+          : ["to-string", ["round", ["get", v.prop]]]],
+      { "font-scale": 0.9 }]);
   renderLegend();
 }
 
-document.querySelectorAll("#metric button").forEach(btn => {
-  btn.onclick = () => {
-    document.querySelectorAll("#metric button").forEach(x => x.classList.remove("active"));
-    btn.classList.add("active");
-    metric = btn.dataset.metric;
-    refresh();
-  };
+map.on("load", async () => {
+  try {
+    const res = await fetch("/crime-map/data/district-map.json");
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    DATA = await res.json();
+  } catch (err) {
+    document.getElementById("panel").innerHTML = `<p class="empty">Couldn't load district data (${esc(err.message)}).</p>`;
+    return;
+  }
+
+  // Draw district fills beneath the basemap's place labels so town names stay readable.
+  const firstSymbol = map.getStyle().layers.find(l => l.type === "symbol")?.id;
+  // The basemap's city/town names duplicate the district labels ("Belagavi"
+  // twice) - hidden; state names stay for orientation.
+  for (const l of map.getStyle().layers) {
+    if (l.type === "symbol" && /^(place_(town|city|capital|villages|hamlet|suburbs)|roadname_|poi_)/.test(l.id)) {
+      map.setLayoutProperty(l.id, "visibility", "none");
+    }
+  }
+  map.addSource("districts", { type: "geojson", data: DATA, promoteId: "censusCode" });
+  map.addLayer({ id: "district-fill", type: "fill", source: "districts",
+    paint: { "fill-color": stepExpr(VIEWS[view]), "fill-opacity": ["case", ["boolean", ["feature-state", "hover"], false], 0.95, 0.82] } }, firstSymbol);
+  map.addLayer({ id: "district-line", type: "line", source: "districts",
+    paint: { "line-color": "#ffffff", "line-width": 1.2 } }, firstSymbol);
+  map.addLayer({ id: "alert-ring", type: "line", source: "districts",
+    filter: [">=", ["get", "changePct"], SPIKE],
+    paint: { "line-color": "#b3261e", "line-width": 3, "line-opacity": 0.9 } });
+  map.addLayer({ id: "district-selected", type: "line", source: "districts", filter: ["==", ["get", "censusCode"], -1],
+    paint: { "line-color": "#1f3a5f", "line-width": 3 } });
+  map.addLayer({ id: "district-label", type: "symbol", source: "districts",
+    layout: { "text-field": ["get", "name"], "text-font": ["Noto Sans Regular"], "text-size": 11, "text-line-height": 1.15,
+      "text-allow-overlap": false, "text-padding": 2 },
+    paint: { "text-color": "#1d2327", "text-halo-color": "rgba(255,255,255,.85)", "text-halo-width": 1.3 } });
+  applyView();
+  renderOverview();
+
+  // Pulse the alert outline (the PS's "red-zone pulsing"), unless the viewer prefers reduced motion.
+  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const t0 = performance.now();
+    const tick = now => {
+      const k = (Math.sin((now - t0) / 260) + 1) / 2;
+      if (map.getLayer("alert-ring")) {
+        map.setPaintProperty("alert-ring", "line-opacity", 0.25 + 0.75 * k);
+        map.setPaintProperty("alert-ring", "line-width", 2 + 2.5 * k);
+      }
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+
+  let hoverId = null;
+  const popup = new maplibregl.Popup({ closeButton: false, closeOnClick: false, offset: 8 });
+  map.on("mousemove", "district-fill", e => {
+    const f = e.features[0];
+    if (hoverId !== null) map.setFeatureState({ source: "districts", id: hoverId }, { hover: false });
+    hoverId = f.id;
+    map.setFeatureState({ source: "districts", id: hoverId }, { hover: true });
+    map.getCanvas().style.cursor = "pointer";
+    const v = VIEWS[view], val = f.properties[v.prop];
+    popup.setLngLat(e.lngLat).setHTML(`<div class="pop-name">${esc(f.properties.label)}</div>
+      <div class="pop-val">${val == null || val === "null" ? "—" : esc(v.fmt(Number(val)) + v.unit)}</div>`).addTo(map);
+  });
+  map.on("mouseleave", "district-fill", () => {
+    if (hoverId !== null) map.setFeatureState({ source: "districts", id: hoverId }, { hover: false });
+    hoverId = null; map.getCanvas().style.cursor = ""; popup.remove();
+  });
+  map.on("click", "district-fill", e => select(Number(e.features[0].properties.censusCode), true));
 });
 
-map.on("load", () => {
-  fetch("/crime-map/data/districts.json").then(r => r.json()).then(data => {
-    DISTRICTS = data.districts || [];
-    addLayers();
-    renderLegend();
-
-    const popup = new maplibregl.Popup({ closeButton: false, offset: 14 });
-    map.on("mouseenter", "district-circles", (e) => {
-      map.getCanvas().style.cursor = "pointer";
-      const p = e.features[0].properties;
-      popup.setLngLat(e.lngLat).setHTML(
-        `<div class="pop-title">${p.name}</div>` +
-        `<div class="pop-row"><span>Total cases</span><b>${Number(p.totalCases).toLocaleString("en-IN")}</b></div>` +
-        `<div class="pop-row"><span>Clearance rate</span><b>${p.clearanceRate}%</b></div>` +
-        (p.repeatSubjectCount > 0 ? `<div class="pop-row"><span>Repeat subjects</span><b>${p.repeatSubjectCount}</b></div>` : "")
-      ).addTo(map);
-    });
-    map.on("mouseleave", "district-circles", () => { map.getCanvas().style.cursor = ""; popup.remove(); });
-  }).catch(err => {
-    document.getElementById("note").textContent = "Couldn't load district data: " + err.message;
-  });
+document.querySelectorAll("#views button").forEach(btn => btn.onclick = () => {
+  document.querySelectorAll("#views button").forEach(b => b.classList.toggle("active", b === btn));
+  view = btn.dataset.view;
+  if (map.getLayer("district-fill")) applyView();
 });
 </script>

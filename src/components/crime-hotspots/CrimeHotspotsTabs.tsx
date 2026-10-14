@@ -7,8 +7,8 @@ import MapEmbed from "@/components/MapEmbed";
 type Tab = "map" | "choropleth" | "flows";
 
 const TABS: { id: Tab; label: string; icon: typeof MapIcon }[] = [
+  { id: "choropleth", label: "District Map", icon: Grid3x3 },
   { id: "map", label: "Hotspot Map", icon: MapIcon },
-  { id: "choropleth", label: "District Choropleth", icon: Grid3x3 },
   { id: "flows", label: "Cross-District Flows", icon: Waypoints },
 ];
 
@@ -23,9 +23,11 @@ const TABS: { id: Tab; label: string; icon: typeof MapIcon }[] = [
 // (DistrictChoropleth.tsx/CrossDistrictFlowMap.tsx, since deleted). They now
 // plot the exact same real data (district centroids from getDistrictCentroids(),
 // cross-district flows from getCrossDistrictFlows()) on the same free CARTO
-// basemap the hotspot map already uses - see choropleth.html/flows.html for
-// why no district-boundary shape is drawn (no such data is bundled, and none
-// was fabricated to fill the gap).
+// basemap the hotspot map already uses.
+//
+// 2026-10-15: the District Map is now a real boundary choropleth (Census 2011
+// polygons, real KSP crime per lakh, pulsing trend alerts - see
+// choropleth.html) and is the default tab: it's the statewide SCRB view.
 // -----------------------------------------------------------------------------
 export default function CrimeHotspotsTabs({
   mapSrc,
@@ -36,7 +38,7 @@ export default function CrimeHotspotsTabs({
   choroplethSrc: string;
   flowsSrc: string;
 }) {
-  const [tab, setTab] = useState<Tab>("map");
+  const [tab, setTab] = useState<Tab>("choropleth");
 
   return (
     <div>
@@ -61,7 +63,7 @@ export default function CrimeHotspotsTabs({
       </div>
 
       {tab === "map" && <MapEmbed src={mapSrc} title="Karnataka crime hotspots — real registered FIRs" />}
-      {tab === "choropleth" && <MapEmbed src={choroplethSrc} title="Karnataka district choropleth — real case volume and clearance rate" />}
+      {tab === "choropleth" && <MapEmbed src={choroplethSrc} title="Karnataka district crime map — real crime rate per lakh and trend alerts" />}
       {tab === "flows" && <MapEmbed src={flowsSrc} title="Karnataka cross-district investigation flows" />}
     </div>
   );
