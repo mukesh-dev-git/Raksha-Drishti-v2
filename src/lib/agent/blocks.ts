@@ -47,4 +47,6 @@ export type AgentEvent =
    *  result - the UI flags them rather than presenting them as checked. */
   | { type: "answer"; text: string; unverified: string[] }
   | { type: "error"; text: string }
+  /** More rounds to go: POST again with this signed state (see /api/agent). */
+  | { type: "continue"; state: string }
   | { type: "done" };
