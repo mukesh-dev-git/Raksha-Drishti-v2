@@ -90,37 +90,48 @@ export default function AgentWorkspace() {
     const S = sid!;
 
     try {
-      const res = await fetch("/api/agent", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: q, history, context: history.length ? "" : context }),
-      });
-      if (!res.ok || !res.body) {
-        const body = await res.json().catch(() => null);
-        throw new Error(body?.error ?? `HTTP ${res.status}`);
-      }
-      const reader = res.body.getReader();
-      const dec = new TextDecoder();
-      let buf = "";
-      for (;;) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        buf += dec.decode(value, { stream: true });
-        let nl;
-        while ((nl = buf.indexOf("\n")) >= 0) {
-          const line = buf.slice(0, nl).trim();
-          buf = buf.slice(nl + 1);
-          if (!line) continue;
-          const e = JSON.parse(line) as AgentEvent;
-          updateTurn(S, turn.id, (t) => {
-            switch (e.type) {
-              case "step": return { ...t, steps: [...t.steps, e.text] };
-              case "block": return { ...t, blocks: [...t.blocks, e.block] };
-              case "answer": return { ...t, answer: e.text, unverified: e.unverified };
-              case "error": return { ...t, error: e.text };
-              case "done": return { ...t, status: "done" };
-            }
-          });
+      // One request per agent round (see /api/agent for why): each round's
+      // charts show as soon as it ends, then the next round is requested
+      // with the signed state the server handed back.
+      updateTurn(S, turn.id, (t) => ({ ...t, steps: ["Reading the question"] }));
+      let payload: Record<string, unknown> = { question: q, history, context: history.length ? "" : context };
+      for (let round = 0; round < 8; round++) {
+        const res = await fetch("/api/agent", {
+          method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload),
+        });
+        if (!res.ok || !res.body) {
+          const body = await res.json().catch(() => null);
+          throw new Error(body?.error ?? `HTTP ${res.status}`);
         }
+        let nextState: string | null = null;
+        const reader = res.body.getReader();
+        const dec = new TextDecoder();
+        let buf = "";
+        for (;;) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          buf += dec.decode(value, { stream: true });
+          let nl;
+          while ((nl = buf.indexOf("\n")) >= 0) {
+            const line = buf.slice(0, nl).trim();
+            buf = buf.slice(nl + 1);
+            if (!line) continue;
+            const e = JSON.parse(line) as AgentEvent;
+            if (e.type === "continue") { nextState = e.state; continue; }
+            if (e.type === "done") continue;
+            updateTurn(S, turn.id, (t) => {
+              switch (e.type) {
+                case "step": return { ...t, steps: [...t.steps, e.text] };
+                case "block": return { ...t, blocks: [...t.blocks, e.block] };
+                case "answer": return { ...t, answer: e.text, unverified: e.unverified };
+                case "error": return { ...t, error: e.text };
+              }
+            });
+          }
+        }
+        if (!nextState) break;
+        updateTurn(S, turn.id, (t) => ({ ...t, steps: [...t.steps, "Thinking about the results"] }));
+        payload = { state: nextState };
       }
     } catch (err) {
       updateTurn(S, turn.id, (t) => ({ ...t, error: err instanceof Error ? err.message : "Request failed" }));
