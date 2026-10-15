@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------
 // P4.9 - real district centroids for /crime-hotspots's choropleth and
 // cross-district flow map (both real MapLibre basemaps as of 2026-08-30 -
-// see crime-map-source/choropleth.html and flows.html).
+// see crime-map-source/choropleth.html).
 //
 // There is no Karnataka district-boundary GeoJSON bundled into this app, and
 // none is fabricated to fill that gap. What IS real: per-FIR latitude/

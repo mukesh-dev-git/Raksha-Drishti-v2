@@ -21,14 +21,13 @@ export default function CrimeHotspotsPage() {
   return (
     <PageShell
       title="Crime Hotspots"
-      description="Real geographic concentration of registered FIRs across Karnataka - hex-binned clusters, a kernel-density surface, a district choropleth, and cross-district investigation flows. Every figure traces back to a real case."
+      description="Where crime is rising across Karnataka's districts, and where it concentrates inside each one. District rates and trend alerts use real Karnataka State Police figures; the hotspot drill-down uses the app's case records."
       breadcrumbs={[{ label: "Crime Hotspots", href: "/crime-hotspots" }]}
       heroImageSrc="/page-hero/crime-hotspots.png"
     >
       <CrimeHotspotsTabs
-        mapSrc={`${BASE_PATH}/crime-map/hotspots.html`}
-        choroplethSrc={`${BASE_PATH}/crime-map/choropleth.html`}
-        flowsSrc={`${BASE_PATH}/crime-map/flows.html`}
+        districtMapSrc={`${BASE_PATH}/crime-map/choropleth.html`}
+        hotspotMapSrc={`${BASE_PATH}/crime-map/hotspots.html`}
       />
       <div className="mt-6">
         <CrimeInsightPanel />

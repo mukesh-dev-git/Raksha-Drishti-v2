@@ -28,7 +28,14 @@ export function useBlobMapSrc(src: string) {
         // A blob: document has no real path of its own, so a root-relative
         // fetch inside the map HTML needs a <base> tag to resolve against
         // the real origin - see MapEmbed.tsx.
-        const withBase = `<base href="${window.location.origin}/">` + text;
+        // A blob: document also has no query string, so the src's own
+        // ?params (e.g. ?district=kodagu) are handed over as a global the map
+        // script reads instead of location.search.
+        const params = new URL(src, window.location.origin).search;
+        const withBase =
+          `<base href="${window.location.origin}/">` +
+          `<script>window.__MAP_PARAMS = ${JSON.stringify(params)};</script>` +
+          text;
         objectUrl = URL.createObjectURL(new Blob([withBase], { type: "text/html" }));
         setBlobUrl(objectUrl);
       })

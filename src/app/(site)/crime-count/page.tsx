@@ -47,11 +47,11 @@ export default async function CrimeCountPage() {
   return (
     <PageShell
       title="Crime Count"
-      description="Total registered crime, broken down by category, time period, and region. Use the interactive map below to explore totals across Bengaluru."
+      description="Total registered crime, broken down by category, time period, and region. The map shows each district's real crime rate and where it is rising."
       breadcrumbs={[{ label: "Crime Count", href: "/crime-count" }]}
       heroImageSrc="/page-hero/crime-count.png"
     >
-      <MapEmbed src={`${BASE_PATH}/crime-map/map.html`} title="Bengaluru crime map" />
+      <MapEmbed src={`${BASE_PATH}/crime-map/choropleth.html`} title="Karnataka district crime map — real crime rate per lakh and trend alerts" />
 
       <div className="mt-10 space-y-6">
         <CrimeCountStatCards summary={summary} />

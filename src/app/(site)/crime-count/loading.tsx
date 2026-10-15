@@ -5,7 +5,7 @@ export default function CrimeCountLoading() {
   return (
     <PageShell
       title="Crime Count"
-      description="Total registered crime, broken down by category, time period, and region. Use the interactive map below to explore totals across Bengaluru."
+      description="Total registered crime, broken down by category, time period, and region. The map shows each district's real crime rate and where it is rising."
       breadcrumbs={[{ label: "Crime Count", href: "/crime-count" }]}
     >
       {/* MapEmbed's own real height, so the page doesn't jump when the map replaces this block. */}

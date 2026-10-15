@@ -82,10 +82,27 @@
   .units { margin-top: 10px; font-size: 11.5px; color: var(--dim); }
   .actions { display: flex; gap: 8px; margin-top: 12px; }
   .actions a, .actions button { flex: 1; text-align: center; padding: 8px; border-radius: 7px; font: inherit; font-size: 12px; font-weight: 600; cursor: pointer; text-decoration: none; }
+  .actions { flex-wrap: wrap; }
   .actions a { background: var(--navy); color: #fff; border: 1px solid var(--navy); }
+  .actions a.secondary { background: #fff; color: var(--navy); }
   .actions button { background: #fff; color: var(--ink); border: 1px solid var(--line); }
 
   #src { bottom: 12px; left: 12px; max-width: 520px; padding: 8px 11px; font-size: 10.5px; color: var(--dim); line-height: 1.45; }
+  /* Narrow embeds (page-width iframe on a small laptop, tablets): slimmer
+     panels, then the district panel moves to the bottom so the map stays visible. */
+  @media (max-width: 1000px) {
+    #left { width: 220px; } #right { width: 250px; }
+    .views button small { display: none; }
+    #src { display: none; }
+  }
+  @media (max-width: 680px) {
+    #left { width: auto; right: 12px; }
+    .views { grid-template-columns: repeat(3, 1fr); }
+    .views button { font-size: 11px; padding: 6px; }
+    .views .tag { display: none; }
+    #legend .key, #legend label.toggle { display: none; }
+    #right { top: auto; bottom: 12px; left: 12px; right: 12px; width: auto; max-height: 38%; }
+  }
   .maplibregl-popup-content { font-family: inherit; font-size: 12px; padding: 7px 10px; border-radius: 7px; box-shadow: 0 3px 12px rgba(0,0,0,.15); }
   .pop-name { font-weight: 700; }
   .pop-val { color: var(--dim); font-variant-numeric: tabular-nums; }
@@ -148,7 +165,7 @@ const VIEWS = {
   },
 };
 
-let view = "rate", DATA = null, selected = null, showAlerts = true;
+let view = "rate", DATA = null, selected = null, showAlerts = true, showFlows = false, FLOW_COUNT = 0;
 
 const map = new maplibregl.Map({
   container: "map", style: BASEMAP,
@@ -181,10 +198,16 @@ function renderLegend() {
      <div class="scale">${v.colors.map(c => `<span style="background:${c}"></span>`).join("")}</div>
      <div class="scale-labels"><span>${esc(labels[0])}</span><span>${esc(labels[labels.length - 1])}</span></div>
      <div class="key"><span class="ring"></span>Trend alert: up ≥ ${SPIKE}% on its 2022–23 average</div>
-     <label class="toggle"><input type="checkbox" id="alertsToggle" ${showAlerts ? "checked" : ""}> Show trend alerts</label>`;
+     <label class="toggle"><input type="checkbox" id="alertsToggle" ${showAlerts ? "checked" : ""}> Show trend alerts</label>
+     <label class="toggle"><input type="checkbox" id="flowsToggle" ${showFlows ? "checked" : ""} ${FLOW_COUNT ? "" : "disabled"}>
+       Cross-district cases <span style="color:var(--dim)">(${FLOW_COUNT}, demo data)</span></label>`;
   document.getElementById("alertsToggle").onchange = e => {
     showAlerts = e.target.checked;
     map.setLayoutProperty("alert-ring", "visibility", showAlerts ? "visible" : "none");
+  };
+  document.getElementById("flowsToggle").onchange = e => {
+    showFlows = e.target.checked;
+    if (map.getLayer("flow-lines")) map.setLayoutProperty("flow-lines", "visibility", showFlows ? "visible" : "none");
   };
 }
 
@@ -232,9 +255,10 @@ function renderDetail(p) {
      <div class="units">KSP units counted: ${p.kspUnits.map(esc).join(", ")}</div>
      ${notes.map(t => `<div class="note">${esc(t)}</div>`).join("")}
      <div class="actions">
-       ${appLinks.map(s => `<a href="/districts/${encodeURIComponent(s)}" target="_top">Open ${esc(s === "vijayanagara" ? "Vijayanagara" : p.name)} →</a>`).join("")}
-       <button id="back">All districts</button>
-     </div>`;
+       <a href="/crime-hotspots?view=hotspots&district=${encodeURIComponent(appLinks[0])}" target="_top">Show hotspots</a>
+       ${appLinks.map(s => `<a class="secondary" href="/districts/${encodeURIComponent(s)}" target="_top">${esc(s === "vijayanagara" ? "Vijayanagara" : p.name)} cases →</a>`).join("")}
+     </div>
+     <div class="actions" style="margin-top:6px"><button id="back">← All districts</button></div>`;
   document.getElementById("back").onclick = () => select(null);
 }
 
@@ -308,6 +332,31 @@ map.on("load", async () => {
     layout: { "text-field": ["get", "name"], "text-font": ["Noto Sans Regular"], "text-size": 11, "text-line-height": 1.15,
       "text-allow-overlap": false, "text-padding": 2 },
     paint: { "text-color": "#1d2327", "text-halo-color": "rgba(255,255,255,.85)", "text-halo-width": 1.3 } });
+  // Cross-district cases (was its own tab): one arc per investigation whose
+  // FIRs span two districts. App case data, so off by default and labelled.
+  fetch("/crime-map/data/flows.json").then(r => r.json()).then(fd => {
+    const flows = fd.flows || [];
+    FLOW_COUNT = flows.length;
+    const arc = (a, b, c, d) => {
+      const mx = (a + c) / 2, my = (b + d) / 2, dx = c - a, dy = d - b, dist = Math.hypot(dx, dy) || 1, bow = dist * 0.15;
+      const cx = mx - dy * bow / dist, cy = my + dx * bow / dist, out = [];
+      for (let i = 0; i <= 40; i++) { const t = i / 40; out.push([(1-t)*(1-t)*a + 2*(1-t)*t*cx + t*t*c, (1-t)*(1-t)*b + 2*(1-t)*t*cy + t*t*d]); }
+      return out;
+    };
+    map.addSource("flows", { type: "geojson", data: { type: "FeatureCollection", features: flows.map(f => ({
+      type: "Feature", geometry: { type: "LineString", coordinates: arc(f.fromLng, f.fromLat, f.toLng, f.toLat) },
+      properties: { title: f.title, from: f.fromName, to: f.toName, type: f.crimeTypeName } })) } });
+    map.addLayer({ id: "flow-lines", type: "line", source: "flows", layout: { visibility: "none", "line-cap": "round" },
+      paint: { "line-color": "#1f3a5f", "line-width": 2.5, "line-dasharray": [2, 1.5] } });
+    const fp = new maplibregl.Popup({ closeButton: false, offset: 6 });
+    map.on("mouseenter", "flow-lines", e => {
+      const q = e.features[0].properties;
+      fp.setLngLat(e.lngLat).setHTML(`<div class="pop-name">${esc(q.title)}</div><div class="pop-val">${esc(q.from)} → ${esc(q.to)} · ${esc(q.type)}</div>`).addTo(map);
+    });
+    map.on("mouseleave", "flow-lines", () => fp.remove());
+    renderLegend();
+  }).catch(() => {});
+
   applyView();
   renderOverview();
 

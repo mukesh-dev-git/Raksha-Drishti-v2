@@ -1,44 +1,49 @@
 "use client";
 
-import { useState } from "react";
-import { Map as MapIcon, Grid3x3, Waypoints } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Map as MapIcon, Grid3x3 } from "lucide-react";
 import MapEmbed from "@/components/MapEmbed";
 
-type Tab = "map" | "choropleth" | "flows";
+type Tab = "districts" | "hotspots";
 
 const TABS: { id: Tab; label: string; icon: typeof MapIcon }[] = [
-  { id: "choropleth", label: "District Map", icon: Grid3x3 },
-  { id: "map", label: "Hotspot Map", icon: MapIcon },
-  { id: "flows", label: "Cross-District Flows", icon: Waypoints },
+  { id: "districts", label: "District Map", icon: Grid3x3 },
+  { id: "hotspots", label: "Hotspot Map", icon: MapIcon },
 ];
 
 // -----------------------------------------------------------------------------
-// P4.1 + P4.9 - the three real-data crime-geography views live behind one
-// tab switcher so /crime-hotspots stays a single page rather than three, and
-// only the active tab's content mounts (each maplibre iframe is heavy - no
-// reason to load three at once).
+// The two crime-geography views on /crime-hotspots (map cleanup, 2026-10-15):
 //
-// All three tabs are now real MapLibre basemaps (2026-08-30) - choropleth
-// and flows used to be plain SVG schematics with no real geography at all
-// (DistrictChoropleth.tsx/CrossDistrictFlowMap.tsx, since deleted). They now
-// plot the exact same real data (district centroids from getDistrictCentroids(),
-// cross-district flows from getCrossDistrictFlows()) on the same free CARTO
-// basemap the hotspot map already uses.
+//   - District Map (default): the statewide SCRB view - real Census 2011
+//     boundaries, real KSP crime per lakh, pulsing trend alerts, and the
+//     cross-district cases as an optional layer (formerly its own tab).
+//   - Hotspot Map: the drill-down - where inside a district, by location and
+//     time of day.
 //
-// 2026-10-15: the District Map is now a real boundary choropleth (Census 2011
-// polygons, real KSP crime per lakh, pulsing trend alerts - see
-// choropleth.html) and is the default tab: it's the statewide SCRB view.
+// The District Map's "Show hotspots" button links here with
+// ?view=hotspots&district=<slug>; that district is passed into the hotspot
+// map so it opens already zoomed onto it. Read from window.location in an
+// effect rather than useSearchParams, so the page itself can stay static.
+// Only the active tab's iframe mounts - each MapLibre embed is heavy.
 // -----------------------------------------------------------------------------
 export default function CrimeHotspotsTabs({
-  mapSrc,
-  choroplethSrc,
-  flowsSrc,
+  districtMapSrc,
+  hotspotMapSrc,
 }: {
-  mapSrc: string;
-  choroplethSrc: string;
-  flowsSrc: string;
+  districtMapSrc: string;
+  hotspotMapSrc: string;
 }) {
-  const [tab, setTab] = useState<Tab>("choropleth");
+  const [tab, setTab] = useState<Tab>("districts");
+  const [district, setDistrict] = useState<string | null>(null);
+
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+    if (q.get("view") === "hotspots") setTab("hotspots");
+    const d = q.get("district");
+    if (d && /^[a-z-]+$/.test(d)) setDistrict(d);
+  }, []);
+
+  const hotspotSrc = district ? `${hotspotMapSrc}?district=${encodeURIComponent(district)}` : hotspotMapSrc;
 
   return (
     <div>
@@ -51,9 +56,7 @@ export default function CrimeHotspotsTabs({
             aria-selected={tab === id}
             onClick={() => setTab(id)}
             className={`flex items-center gap-1.5 border-b-2 px-3 py-2.5 text-sm font-medium transition-colors ${
-              tab === id
-                ? "border-navy text-navy"
-                : "border-transparent text-muted hover:text-ink"
+              tab === id ? "border-navy text-navy" : "border-transparent text-muted hover:text-ink"
             }`}
           >
             <Icon size={15} aria-hidden="true" />
@@ -62,9 +65,10 @@ export default function CrimeHotspotsTabs({
         ))}
       </div>
 
-      {tab === "map" && <MapEmbed src={mapSrc} title="Karnataka crime hotspots — real registered FIRs" />}
-      {tab === "choropleth" && <MapEmbed src={choroplethSrc} title="Karnataka district crime map — real crime rate per lakh and trend alerts" />}
-      {tab === "flows" && <MapEmbed src={flowsSrc} title="Karnataka cross-district investigation flows" />}
+      {tab === "districts" && (
+        <MapEmbed src={districtMapSrc} title="Karnataka district crime map — real crime rate per lakh and trend alerts" />
+      )}
+      {tab === "hotspots" && <MapEmbed src={hotspotSrc} title="Karnataka crime hotspots by location and time of day" />}
     </div>
   );
 }

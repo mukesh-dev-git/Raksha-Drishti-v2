@@ -4,7 +4,7 @@ import StatStrip, { type StripStat } from "@/components/dashboard/StatStrip";
 import AttentionSignals, { type AttentionSignal } from "@/components/dashboard/AttentionSignals";
 import CrimeTrendChart from "@/components/dashboard/CrimeTrendChart";
 import CategoryDonut from "@/components/dashboard/CategoryDonut";
-import HotspotsMini from "@/components/dashboard/HotspotsMini";
+import DistrictAlertsMini from "@/components/dashboard/DistrictAlertsMini";
 import FeaturedInvestigationCard from "@/components/dashboard/FeaturedInvestigationCard";
 import AlertsPanel from "@/components/dashboard/AlertsPanel";
 import EvidenceFeedStrip from "@/components/dashboard/EvidenceFeedStrip";
@@ -144,7 +144,7 @@ export default async function DashboardPage({
           </div>
         </div>
 
-        <HotspotsMini />
+        <DistrictAlertsMini />
       </div>
 
       {/* Verified evidence feed */}
