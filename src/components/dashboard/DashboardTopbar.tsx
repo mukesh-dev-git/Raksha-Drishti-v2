@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { Search, Bell, Mail, UserCircle, FolderKanban, User, MapPin } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { Search, Bell, Mail, UserCircle, FolderKanban, User, MapPin, Sparkles } from "lucide-react";
 import AccessibilityControls from "@/components/layout/AccessibilityControls";
 import type { SearchItem } from "@/lib/searchIndex";
 
@@ -144,6 +145,10 @@ export default function DashboardTopbar({ alertCount }: { alertCount: number }) 
         )}
       </div>
 
+      {/* Agent Workspace (#16) - opens the full-screen workspace, carrying
+          the current page as context (like VS Code's "Open in Agents"). */}
+      <AgentWorkspaceButton />
+
       <div className="hidden shrink-0 border-r border-line pr-4 lg:block">
         <AccessibilityControls variant="light" />
       </div>
@@ -173,5 +178,27 @@ export default function DashboardTopbar({ alertCount }: { alertCount: number }) 
         </div>
       </div>
     </header>
+  );
+}
+
+function AgentWorkspaceButton() {
+  const pathname = usePathname();
+  const router = useRouter();
+  return (
+    <Link
+      href={`/agent-workspace?context=${encodeURIComponent(pathname)}`}
+      onClick={(e) => {
+        // The page title ("Crime Hotspots") reads better as context than the
+        // path, but only exists client-side - so it's added at click time,
+        // keeping the server-rendered href stable.
+        e.preventDefault();
+        const title = document.title.replace(/ · Raksha-Drishti$/, "");
+        router.push(`/agent-workspace?context=${encodeURIComponent(title || pathname)}`);
+      }}
+      className="flex shrink-0 items-center gap-1.5 rounded-md border border-navy bg-navy px-3 py-1.5 text-[13px] font-medium text-white hover:bg-navy-hover"
+    >
+      <Sparkles size={15} aria-hidden="true" />
+      Agent Workspace
+    </Link>
   );
 }

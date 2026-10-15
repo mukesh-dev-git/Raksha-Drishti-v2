@@ -258,7 +258,10 @@ function renderDetail(p) {
        <a href="/crime-hotspots?view=hotspots&district=${encodeURIComponent(appLinks[0])}" target="_top">Show hotspots</a>
        ${appLinks.map(s => `<a class="secondary" href="/districts/${encodeURIComponent(s)}" target="_top">${esc(s === "vijayanagara" ? "Vijayanagara" : p.name)} cases →</a>`).join("")}
      </div>
-     <div class="actions" style="margin-top:6px"><button id="back">← All districts</button></div>`;
+     <div class="actions" style="margin-top:6px">
+       <a class="secondary" target="_top" href="/agent-workspace?context=${encodeURIComponent("District Map: " + p.label)}&q=${encodeURIComponent(`What's behind the crime figures in ${p.name}?`)}">Ask the agent</a>
+       <button id="back">← All districts</button>
+     </div>`;
   document.getElementById("back").onclick = () => select(null);
 }
 
