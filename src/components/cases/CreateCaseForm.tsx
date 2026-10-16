@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Loader2, FileText } from "lucide-react";
 import { districts } from "@/lib/data";
 import { getEmployees } from "@/lib/employees";
+import TranslateButton from "@/components/ui/TranslateButton";
 import KannadaDictationButton from "./KannadaDictationButton";
 
 // -----------------------------------------------------------------------------
@@ -206,9 +207,22 @@ export default function CreateCaseForm() {
             placeholder="What was reported, in the complainant's own words."
             required
           />
+          {/* P7.2 -> P7.3: dictate in Kannada, then translate the same
+              real field to English before submitting. Both are now
+              live-verified against the real Zia API (translateClient.ts's
+              module comment has the confirmed src_lang/tgt_lang contract). */}
           <KannadaDictationButton
             onTranscribed={(text) => setBriefFacts((prev) => (prev.trim() ? `${prev.trim()} ${text}` : text))}
           />
+          <div className="mt-1.5">
+            <TranslateButton
+              text={briefFacts}
+              sourceLanguage="kn"
+              targetLanguage="en"
+              label="Translate to English"
+              onTranslated={(translated) => setBriefFacts(translated)}
+            />
+          </div>
         </Field>
         <Field label="Investigating officer">
           <select className={inputCls} value={policePersonId} onChange={(e) => setPolicePersonId(e.target.value ? Number(e.target.value) : "")} required>
